@@ -17,35 +17,22 @@ Proof with sauto.
   revert L1 L2 PL H;
   induction n using lt_wf_ind; intros...
   inversion H0... 
-    + rewrite PL in H1.
-      LL1init A.  
-    + rewrite PL in H1.
-      LL1tensor F G M N.
-    + rewrite PL in H1.
-      LL1plus1 F G M.
-    + rewrite PL in H1.
-      LL1plus2 F G M.
-    + rewrite PL in H1. 
-      LL1bang F M. 
-    + rewrite PL in H1.
-      LL1top M.
-    + rewrite PL in H1.
-      LL1bot M.
-    + rewrite PL in H1.
-      LL1par F G M.
-    + rewrite PL in H1.
-      LL1with F G M.
-    + rewrite PL in H1.
-      LL1store F M.
-    + rewrite PL in H1.
-      LL1exist t FX M.
-    + rewrite PL in H1.
-      LL1forall FX M.
-    + rewrite PL in H1.
-      LL1weak F M.
-    + rewrite PL in H1.
-      LL1contr F M.
-      eapply H with (L1:=? F :: L1)...
+  all: try rewrite PL in H1. 
+  LL1init A.  
+  LL1top M.  
+  LL1plus1 F G M.
+  LL1plus2 F G M.  
+  LL1with F G M.    
+  LL1bot M.                          
+  LL1par F G M.
+  LL1tensor F G M N.
+  LL1store F M.
+  LL1bang F M. 
+  LL1exist t FX M.
+  LL1forall FX M.
+  LL1weak F M.
+  LL1contr F M.
+        eapply H with (L1:=? F :: L1)...
 Qed.
 
 Global Instance LL1N_morphism n:
@@ -65,23 +52,23 @@ Proof with sauto.
   intros L1 L2 PL H.
   revert dependent L2. 
   induction H;intros L2 PL...
-  LL1init A.
-  all: try rewrite PL in H. 
-  LL1tensor F G M N.
+    all: try rewrite PL in H. 
+  LL1init A.  
+  LL1top M.  
   LL1plus1 F G M.
-  LL1plus2 F G M.
-      LL1bang F M. 
-  LL1top M.
-  LL1bot M.
+  LL1plus2 F G M.  
+  LL1with F G M.    
+  LL1bot M.                          
   LL1par F G M.
-  LL1with F G M.
+  LL1tensor F G M N.
   LL1store F M.
+  LL1bang F M. 
   LL1exist t FX M.
   LL1forall FX M.
-      LL1weak F M.
-      LL1contr F M.
- Qed. 
-
+  LL1weak F M.
+  LL1contr F M.
+ Qed.   
+  
 Global Instance LL1S_morphism:
   Proper (Permutation (A:=oo) ==> iff) (LL1S).
 Proof.
@@ -113,22 +100,21 @@ Lemma LL1NtoLL1S : forall n L,
     [H1: LL1N _ _ |- _] => 
     apply H in H1;sauto
     end.
-   LL1tensor F G M N.
-   LL1plus1 F G M.
-    LL1plus2 F G M.
-    LL1bang F M.
     LL1top M.
+    LL1plus1 F G M.
+    LL1plus2 F G M.
+    LL1with F G M.
     LL1bot M.
     LL1par F G M.
-    LL1with F G M.
+    LL1tensor F G M N.
     LL1store F M.
+    LL1bang F M.
     LL1exist t FX M.
     LL1forall FX M.
     specialize (H3 x H0).
     apply H in H3...
-        LL1weak F M.
-      LL1contr F M.
- 
+    LL1weak F M.
+    LL1contr F M.
   Qed.    
 
   
@@ -238,35 +224,27 @@ Section GeneralResults.
    - inversion H0...
    - inversion H0...
      inversion H...
-     LL1init A.  
-     LL1tensor F G M N. 
-     apply IHm in H3...
-     apply IHm in H4...
-     LL1plus1 F G M.
-     apply IHm in H3... 
-    LL1plus2 F G M.
-    apply IHm in H3... 
-    LL1bang F M.
-    apply IHm in H3...
-    LL1top M. 
-    LL1bot M.
-    apply IHm in H3... 
-    LL1par F G M.
-    apply IHm in H3... 
-    LL1with F G M.
-    apply IHm in H3...
-    apply IHm in H4... 
-    LL1store F M.
-    apply IHm in H3... 
-    LL1exist t FX M.
-    apply IHm in H5... 
-    LL1forall FX M.
-    specialize(H4 x H5).
-    apply IHm in H4...
-    LL1weak F M.
-    apply IHm in H3...
-    LL1contr F M.
-    apply IHm in H3...
+
+  LL1init A.  
+  LL1top M.
+  all: try apply IHm in H3...
+  all: try apply IHm in H4...
+  all: try apply IHm in H5...
+  
+  LL1plus1 F G M.
+  LL1plus2 F G M.
+  LL1with F G M.
+  LL1bot M.                          
+  LL1par F G M.
+  LL1tensor F G M N.
+  LL1store F M.
+  LL1bang F M. 
+  LL1exist t FX M.
+  LL1forall FX M.
+  specialize(H4 x H5).
+  apply IHm in H4...  
+  LL1weak F M.
+  LL1contr F M.
  Qed.
  
   End GeneralResults.

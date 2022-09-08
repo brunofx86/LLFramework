@@ -3,28 +3,6 @@ Require Export LL.SL.Dyadic.StructuralRules.
 Export LLNotations.
 Set Implicit Arguments.
 
-(* Instance LL2N_morphism {OLS : OLSig} n:
-  Proper (Permutation (A:=oo) ==> Permutation (A:=oo) ==> iff) (LL2N n).
-Proof.
-  unfold Proper; unfold respectful. 
-  intros B1 B2 PB L1 L2 PL.
-  split; intro H.
-  refine (LL2N_compat PB PL H).
-  refine (LL2N_compat (symmetry PB) (symmetry PL) H).
-Qed.
-
- 
- Instance LL2S_morphism {OLS : OLSig}:
-  Proper (Permutation (A:=oo) ==> Permutation (A:=oo) ==> iff) (LL2S).
-Proof.
-  unfold Proper; unfold respectful. 
-  intros B1 B2 PB L1 L2 PL.
-  split; intro H.
-  refine (LL2S_compat PB PL H).
-  refine (LL2S_compat (symmetry PB) (symmetry PL) H).
-Qed.
- *)  
-
 Ltac solvell2 :=
  try
  match goal with
@@ -102,7 +80,7 @@ end.
          LL2S _ _ ] => eapply H with (m := x + y) (C:=Quest FF);sauto
   | [ H: CutH _ _ |- LL2N ?x _ _ -> 
          LL2N ?y _ _ -> 
-         LL2S _ _ ] => eapply H with (m := x + y);sauto
+         LL2S _ _ ] => eapply H ;sauto
   | _ => idtac end.
 
 
@@ -114,7 +92,7 @@ Ltac applyCutW :=
  
   | [ H: CutW _ |- LL2N _ _ (?CF::_) -> 
          LL2N _ _ _ -> 
-         LL2S _ _ ] => eapply H with (m := complexity CF);sauto
+         LL2S _ _ ] => eapply H ;sauto
   | _ => idtac end.
   
 Tactic Notation "cutH" constr(P1) constr(P2) :=

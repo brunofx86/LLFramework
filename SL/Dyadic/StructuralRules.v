@@ -17,47 +17,37 @@ Lemma LL2N_compat : forall n B1 B2 L1 L2,
 Proof with sauto.
   intros n B1 B2 L1 L2 PB PL H.
   revert L1 L2 PL B1 B2 PB H;
-    induction n using lt_wf_ind; intros...
-  - inversion H0... 
-    + rewrite PL in H1.
-      LL2init A.  
-    + rewrite PL in H1.
-      LL2tensor F G M N.
-      eapply H with (B1:=B1)...
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2plus1 F G M.
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2plus2 F G M.
-      eapply H with (B1:=B1)...
-    + LL2bang. 
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2top M.
-    + rewrite PL in H1.
-      LL2bot M.
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2par F G M.
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2with F G M.
-      eapply H with (B1:=B1)...
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2store F M.
-      eapply H with (B1:=F::B1)...
-    + rewrite PB in H1.
-      LL2copy F. 
-      eapply H with (B1:=B1) (L1:=F::L1)... 
-    + rewrite PL in H1.
-      LL2exist t FX M.
-      eapply H with (B1:=B1)...
-    + rewrite PL in H1.
-      LL2forall FX M.
-      eapply H with (B1:=B1)...
-Qed.
+  induction n using lt_wf_ind; intros...
+  inversion H0...
+  all: try rewrite PL in H1. 
+  LL2init A.  
+  LL2top M.  
+  LL2plus1 F G M.
+  eapply H with (B1:=B1)...
+  LL2plus2 F G M.
+  eapply H with (B1:=B1)...  
+  LL2with F G M.
+  eapply H with (B1:=B1)...
+  eapply H with (B1:=B1)...    
+  LL2bot M.
+  eapply H with (B1:=B1)...                          
+  LL2par F G M.
+  eapply H with (B1:=B1)...
+  LL2tensor F G M N.
+  eapply H with (B1:=B1)...
+  eapply H with (B1:=B1)...
+  LL2store F M.
+  eapply H with (B1:=F::B1)...
+  LL2bang.
+  eapply H with (B1:=B1)... 
+  LL2exist t FX M.
+  eapply H with (B1:=B1)...
+  LL2forall FX M.
+  eapply H with (B1:=B1)...
+  LL2copy F.
+  rewrite <- PB...
+  eapply H with (B1:=B1) (L1:=F::L1)... 
+ Qed.
 
 Global Instance LL2N_morphism n:
   Proper (Permutation (A:=oo) ==> Permutation (A:=oo) ==> iff) (LL2N n).
@@ -78,20 +68,20 @@ Proof with sauto.
   revert dependent L2. 
   induction H;intros L2 PL B2 PB...
   LL2init A.
-  all: try rewrite PL in H. 
-  LL2tensor F G M N.
+  all: try rewrite PL in H.
+  LL2top M.   
   LL2plus1 F G M.
   LL2plus2 F G M.
-  LL2top M.
+  LL2with F G M.
   LL2bot M.
   LL2par F G M.
-  LL2with F G M.
+  LL2tensor F G M N.
   LL2store F M.
-  rewrite PB in H.
-  LL2copy F.
   LL2exist t FX M.
   LL2forall FX M.
   eapply H2 with (x:=x)...
+  rewrite PB in H.
+  LL2copy F.
  Qed. 
 
 Global Instance LL2S_morphism:
@@ -125,19 +115,19 @@ Lemma LL2NtoLL2S : forall n B L,
     [H1: LL2N _ _ _ |- _] => 
     apply H in H1;sauto
     end.
-   LL2tensor F G M N.
+   LL2top M. 
    LL2plus1 F G M.
-    LL2plus2 F G M.
-    LL2top M.
-    LL2bot M.
-    LL2par F G M.
-    LL2with F G M.
-    LL2store F M.
-    LL2copy F.
-    LL2exist t FX M.
-    LL2forall FX M.
-    specialize (H3 x H0).
+   LL2plus2 F G M.
+   LL2with F G M.
+   LL2bot M.
+   LL2par F G M.
+   LL2tensor F G M N.
+   LL2store F M.
+   LL2exist t FX M.
+   LL2forall FX M.
+   specialize (H3 x H0).
     apply H in H3...
+   LL2copy F.
   Qed.    
 
   
@@ -150,19 +140,19 @@ Theorem LL2weakeningN : forall n CC LC F ,
     induction n using lt_wf_ind;intros.
       inversion H0...
       LL2init A.
-      LL2tensor F0 G M N.
+      LL2top M.
       LL2plus1 F0 G M.
       LL2plus2 F0 G M.
-      LL2top M.
+      LL2with F0 G M.
       LL2bot M.
       LL2par F0 G M.
-      LL2with F0 G M.
+      LL2tensor F0 G M N.
       LL2store F0 M.
       rewrite perm_swap;auto.
-      LL2copy F0.
-      firstorder.
       LL2exist t FX M.
       LL2forall FX M.
+      LL2copy F0.
+      firstorder.
   Qed.
 
     
@@ -173,19 +163,19 @@ Theorem LL2weakening (CC LC : multiset oo) F:
     revert dependent F.
     induction H;intros...
     LL2init A.
-    LL2tensor F G M N.
+    LL2top M.
     LL2plus1 F G M.
     LL2plus2 F G M.
-    LL2top M.
+    LL2with F G M.
     LL2bot M.
     LL2par F G M.
-    LL2with F G M.
+    LL2tensor F G M N.
     LL2store F M.
     rewrite perm_swap;auto.
-    LL2copy F.
-    firstorder.
     LL2exist t FX M.
     LL2forall FX M.
+    LL2copy F.
+    firstorder.
  Qed.     
 
 Theorem LL2weakeningGen (CC' CC LC : multiset oo):
@@ -233,20 +223,20 @@ Theorem LL2contractionN  : forall n F CC LC,
   induction n using lt_wf_ind;intros... 
     inversion H0...
     LL2init A.
-    LL2tensor F0 G M N.
+    LL2top M.
     LL2plus1 F0 G M.
     LL2plus2 F0 G M.
-    LL2top M.
+    LL2with F0 G M.
     LL2bot M.
     LL2par F0 G M.
-    LL2with F0 G M.
+    LL2tensor F0 G M N.
     LL2store F0 M.
     rewrite perm_swap in H3... 
     apply H in H3...
-    LL2copy F0.
-    inversion H2...
     LL2exist t FX M.
     LL2forall FX M.
+    LL2copy F0.
+    inversion H2...
 Qed.
 
 Theorem LL2contraction  : forall F CC LC,
@@ -255,21 +245,21 @@ Theorem LL2contraction  : forall F CC LC,
   intros.
   dependent induction H generalizing CC... 
     LL2init A.
-    LL2tensor F0 G M N.
+    LL2top M.
     LL2plus1 F0 G M.
     LL2plus2 F0 G M.
-    LL2top M.
+    LL2with F0 G M.
     LL2bot M.
     LL2par F0 G M.
-    LL2with F0 G M.
+    LL2tensor F0 G M N.
     LL2store F0 M.
     apply IHLL2S...
+    LL2exist t FX M.
+    LL2forall FX M.
     apply in_app_or in H...
     LL2copy F0.
     inversion H2...
     LL2copy F0.
-    LL2exist t FX M.
-    LL2forall FX M.
 Qed.
  
 End StructuralProperties.
@@ -286,33 +276,33 @@ Section GeneralResults.
    - inversion H0...
    - inversion H0...
      inversion H...
-     LL2init A.  
+     LL2init A.
+     LL2top M. 
+     LL2plus1 F G M.
+     apply IHm in H3... 
+     LL2plus2 F G M.
+     apply IHm in H3... 
+     LL2with F G M.
+     apply IHm in H3...
+     apply IHm in H4...
+     LL2bot M.
+     apply IHm in H3... 
+     LL2par F G M.
+     apply IHm in H3... 
      LL2tensor F G M N. 
      apply IHm in H3...
      apply IHm in H4...
-     LL2plus1 F G M.
+     LL2store F M.
      apply IHm in H3... 
-    LL2plus2 F G M.
-    apply IHm in H3... 
-    LL2bang.
-    apply IHm in H1...
-    LL2top M. 
-    LL2bot M.
-    apply IHm in H3... 
-    LL2par F G M.
-    apply IHm in H3... 
-    LL2with F G M.
-    apply IHm in H3...
-    apply IHm in H4... 
-    LL2store F M.
-    apply IHm in H3... 
-    LL2copy F.
-    apply IHm in H3...
-    LL2exist t FX M.
-    apply IHm in H5... 
-    LL2forall FX M.
-    specialize(H4 x H5).
-    apply IHm in H4... 
+     LL2bang.
+     apply IHm in H1...
+     LL2exist t FX M.
+     apply IHm in H5... 
+     LL2forall FX M.
+     specialize(H4 x H5).
+     apply IHm in H4...
+     LL2copy F.
+     apply IHm in H3...
  Qed.
  
   End GeneralResults.
