@@ -14,7 +14,7 @@ Context `{OLS: OLSig}.
     intros HC WC Hc Ha Hb.
     destruct N.
     * inversion Hb...
-    2:{ apply Permutation_vs_cons_inv' in H...
+    3:{ apply Permutation_vs_cons_inv' in H...
         cutCH Ha H0.
        rewrite H2...  }
     2:{ simpl in H0. putFirst H0. 
@@ -22,21 +22,15 @@ Context `{OLS: OLSig}.
         LL3copy F. 
         LL3exchangeL (M ++ [F] ++ O). }
       inversion Ha...
-        + LL3tensor.
-          putFirst Hb. 
-          cutCH H Hb.
-          putFirst Hb. 
-          cutCH H0 Hb.
         + LL3plus1.
           putFirst Hb. 
           cutCH H Hb.
         + LL3plus2.
           putFirst Hb. 
           cutCH H Hb.
-        + LL3bang.
+        + LL3with.
           putFirst Hb. 
           cutCH H Hb.
-        + rewrite <- H.
           putFirst Hb. 
           cutCH H0 Hb.
         + LL3bot.
@@ -44,8 +38,8 @@ Context `{OLS: OLSig}.
           cutCH H Hb.
         + LL3par.
           putFirst Hb. 
-          cutCH H Hb.
-        + LL3with.
+          cutCH H Hb.      
+        + LL3tensor.
           putFirst Hb. 
           cutCH H Hb.
           putFirst Hb. 
@@ -55,6 +49,16 @@ Context `{OLS: OLSig}.
           eapply @LL3weakeningN with (F:=F) in Hb...
           putFirst Hb. 
           cutCH H Hb.
+        + LL3bang.
+          putFirst Hb. 
+          cutCH H Hb.
+        + LL3exist t.
+          putFirst Hb. 
+          cutCH H1 Hb.
+        + LL3forall.
+          apply H0 in H1.
+          putFirst Hb. 
+          cutCH H1 Hb.
         + inversion H... 
           - putFirst Hb. cutCH H0 Hb.
             assert(LL3 |-- B; F :: M)...
@@ -64,16 +68,33 @@ Context `{OLS: OLSig}.
          - LL3copy F.
            putFirst Hb. 
            cutCH H0 Hb.
-        + LL3exist t.
-          putFirst Hb. 
-          cutCH H1 Hb.
-        + LL3forall.
-          apply H0 in H1.
-          putFirst Hb. 
-          cutCH H1 Hb.
+        + rewrite <- H.
+           putFirst Hb. 
+           cutCH H0 Hb.             
    * LL3exchangeL ( o:: M ++ N ++ O).
       rewrite <- app_comm_cons in Hb.
       inversion Hb...
+   +  rewrite app_comm_cons in H2.
+      cutCH Ha H2.
+      LL3plus1.  
+      rewrite Permutation_middle...
+   +  rewrite app_comm_cons in H2.
+      cutCH Ha H2.
+      LL3plus2.  
+      rewrite Permutation_middle...
+   + rewrite app_comm_cons in H3.
+     rewrite app_comm_cons in H4.
+     cutCH Ha H3.
+     cutCH Ha H4.
+     LL3with. 
+     LL3exchangeL (M ++ (F :: N) ++ O).
+     LL3exchangeL (M ++ (G :: N) ++ O).
+   + cutCH Ha H2.
+   + rewrite app_comm_cons in H2.
+     rewrite app_comm_cons in H2.
+     cutCH Ha H2.
+     LL3par. 
+     LL3exchangeL (M ++ (F :: G :: N) ++ O).
     + apply eq_then_Permutation in H0.
       rewrite Permutation_midle in H0.
       checkPermutationCases H0.
@@ -93,40 +114,8 @@ Context `{OLS: OLSig}.
       LL3tensor;try solvell3. 
       rewrite H2.
       LL3exchangeL (M ++ (G :: x0) ++ x1).
-   +  rewrite app_comm_cons in H2.
-      cutCH Ha H2.
-      LL3plus1.  
-      rewrite Permutation_middle...
-   +  rewrite app_comm_cons in H2.
-      cutCH Ha H2.
-      LL3plus2.  
-      rewrite Permutation_middle...
-   + assert(Permutation  (o :: N ++ ! Q ^ :: O)  (! Q ^ :: o :: N ++ O)) by perm.
-     rewrite H1 in H. clear H1.
-     apply Permutation_vs_cons_inv' in H...
-     cutCH Ha H0. 
-     LL3exchangeL (M++ (o :: N ++ O)).
-     rewrite H2...
-   + cutCH Ha H2.
-   + rewrite app_comm_cons in H2.
-     rewrite app_comm_cons in H2.
-     cutCH Ha H2.
-     LL3par. 
-     LL3exchangeL (M ++ (F :: G :: N) ++ O).
-   + rewrite app_comm_cons in H3.
-     rewrite app_comm_cons in H4.
-     cutCH Ha H3.
-     cutCH Ha H4.
-     LL3with. 
-     LL3exchangeL (M ++ (F :: N) ++ O).
-     LL3exchangeL (M ++ (G :: N) ++ O).
    + apply @LL3weakeningN with (F:=F) in Ha.
      rewrite perm_swap in Ha. cutCH Ha H2.
-   + simpl in H0.
-     do 2 rewrite app_comm_cons in H0...
-     cutCH Ha H0.
-     LL3copy F.
-     LL3exchangeL (M ++ (F :: o :: N) ++ O).
    + rewrite app_comm_cons in H5.
      cutCH Ha H5.
      LL3exist t.
@@ -136,6 +125,17 @@ Context `{OLS: OLSig}.
      rewrite app_comm_cons in H.
      cutCH Ha H.
      LL3exchangeL (M ++ (FX x :: N) ++ O).
+   + simpl in H0.
+     do 2 rewrite app_comm_cons in H0...
+     cutCH Ha H0.
+     LL3copy F.
+     LL3exchangeL (M ++ (F :: o :: N) ++ O).
+   + assert(Permutation  (o :: N ++ ! Q ^ :: O)  (! Q ^ :: o :: N ++ O)) by perm.
+     rewrite H1 in H. clear H1.
+     apply Permutation_vs_cons_inv' in H...
+     cutCH Ha H0. 
+     LL3exchangeL (M++ (o :: N ++ O)).
+     rewrite H2...     
 Qed.     
 
    End CutCElimination.

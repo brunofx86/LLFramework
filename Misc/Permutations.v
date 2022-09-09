@@ -368,5 +368,20 @@ Lemma Permutation_assoc_comm: forall (T:Type) (X Y Z : list T), Permutation  ((X
 Qed.
 
 
-
-  
+Lemma Permutation_vs_cons_inv'
+     : forall (A : Type) (l l1 : list A) (a : A),
+       Permutation l (a :: l1) ->
+       exists l' l'' : list A, l = l' ++ a :: l'' /\ Permutation l1 (l'++l'').
+  Proof with auto.
+  intros.
+  assert(Permutation l (a :: l1)) by auto.
+  apply Permutation_vs_cons_inv in H...
+  do 2 destruct H...
+  exists x, x0.
+  split;auto.
+  rewrite H in H0.
+  symmetry in H0.
+  rewrite  <- Permutation_middle in H0.
+  apply Permutation_cons_inv in H0...
+Qed.  
+ 

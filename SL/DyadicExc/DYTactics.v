@@ -158,7 +158,7 @@ Tactic Notation "cutLW" constr(P1) constr(P2) :=
    | _ => idtac "type of " P1 " is " tP1 end;sauto.
 
 Tactic Notation "cutCH" constr(P1) constr(P2) :=
-   let tP1 := type of P1 in
+   let tP1 := type of P1 in 
    let H' := fresh "HCUT" in
    match tP1 with
    | LL3N ?x (?CF::?BX) (?CX) => let tP2 := type of P2 in

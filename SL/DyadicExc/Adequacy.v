@@ -17,8 +17,8 @@ Proof with sauto.
     all: try match goal with
       | H: Permutation ?L _ |- LL3 |-- ?B; ?L => rewrite H;sauto
      end.
-    - LL3copy F.  
-    - LL3exist t. 
+    - LL3exist t.
+    - LL3copy F.        
  Qed.   
 
    Theorem LL3N_to_LL2 n B L : LL3N n B L -> LL2S B L.
@@ -31,19 +31,18 @@ Proof with sauto.
     LL2init A.
     LL2top M.
   + inversion H...
-    LL2tensor F G M N.
     LL2plus1 F G M.
     LL2plus2 F G M.
-    rewrite <- H1...
+    LL2with F G M.
     LL2bot M.
     LL2par F G M.
-    LL2with F G M.
+    LL2tensor F G M N.
     LL2store F M. 
-    LL2copy F.
     LL2exist t FX M.
     LL2forall FX M.
+    LL2copy F.
+    rewrite <- H1...    
   Qed.  
     
- 
 End LLAdequacy.
 
