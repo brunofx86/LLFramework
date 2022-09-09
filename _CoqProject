@@ -1,0 +1,48 @@
+-R . "LL"
+# Miscellaneous and Utilitities
+Misc/Utils.v
+Misc/Hybrid.v
+Misc/Permutations.v
+Misc/UtilsTactics.v
+
+# First-order Classical Linear Logic
+SL/Syntax.v
+
+# Monadic System
+SL/Monadic/Sequent.v
+SL/Monadic/TacticsPre.v
+SL/Monadic/StructuralRules.v
+
+# Dyadic System
+SL/Dyadic/Sequent.v
+SL/Dyadic/TacticsPre.v
+SL/Dyadic/StructuralRules.v
+SL/Dyadic/OSTactics.v
+SL/Dyadic/CutLElimination.v
+SL/Dyadic/CutCElimination.v
+SL/Dyadic/CutElimination.v
+
+# Dyadic System with Explicit Exchange
+SL/DyadicExc/Sequent.v
+SL/DyadicExc/TacticsPre.v
+SL/DyadicExc/StructuralRules.v
+SL/DyadicExc/DYTactics.v
+SL/DyadicExc/Adequacy.v
+SL/DyadicExc/CutLElimination.v
+SL/DyadicExc/CutCElimination.v
+SL/DyadicExc/CutElimination.v
+
+# Focused System
+SL/Focused/Syntax.v
+SL/Focused/Sequent.v
+SL/Focused/TacticsPre.v
+SL/Focused/StructuralRules.v
+#SL/Focused/Derivations.v
+SL/Focused/FLLTactics.v
+SL/Focused/FLLReasoning.v
+SL/Focused/InvNegativePhase.v
+SL/Focused/InvPositivePhase.v
+SL/Focused/CutElimination.v
+#SL/Focused/FLLTactics.v
+#SL/IdElimination.v
+#SL/Examples.v
