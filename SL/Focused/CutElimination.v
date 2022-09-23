@@ -64,15 +64,6 @@ Section CutElimination.
        seqN th i (B ++ [A]) M (DW P) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP [P]))   /\
       (S (complexity A) = complexity C ->
        seqN th i (B ++ [A]) M (UP L) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP L)). 
-
- Lemma Derivation1 D M F : 
- seq th D M (DW F) -> seq th D M (UP [F]).
- Proof with sauto;solveLL.
- intros.
- inversion H...
- all:LFocus.
-Qed.
- 
           
 Theorem Cut1  a b P L M N B : 
 CutH (complexity P) (a+b) -> 
@@ -164,7 +155,7 @@ Proof with sauto;solveLL.
               rewrite <- (app_nil_l [ ]).
               eapply @InvTensor...
               
-              apply Derivation1.
+              apply unRelease.
               HProof.
              
               assert(seqN th (S n0) B ((F0::x0) ++ [P]) (UP [ ]) ->
@@ -183,7 +174,7 @@ Proof with sauto;solveLL.
               LLPerm(G ⊗ F0::N0++(x0++N)).
                 rewrite <- (app_nil_l [ ]).
               eapply @InvTensor...
-                apply Derivation1.
+                apply unRelease.
               HProof.  
                  assert(seqN th n B (x0 ++ [P]) (UP [F0]) ->
                        seqN th b B N (UP [dual P]) ->
@@ -202,7 +193,7 @@ Proof with sauto;solveLL.
               LLPerm(F0⊗ G::M0++(x0++N)).
               rewrite <- (app_nil_l [ ]).
               eapply @InvTensor...
-              apply Derivation1.
+              apply unRelease.
               HProof.
               assert(seqN th (S n0) B ((G::x0) ++ [P]) (UP [ ]) ->
                        seqN th b B N (UP [dual P]) ->
@@ -219,7 +210,7 @@ Proof with sauto;solveLL.
               LLPerm(F0⊗ G::M0++(x0++N)).
               rewrite <- (app_nil_l [ ]).
               eapply @InvTensor...
-                apply Derivation1.
+                apply unRelease.
              HProof.   
               assert(seqN th n B (x0++ [P]) (UP [G ]) ->
                           seqN th b B N (UP [dual P]) ->
@@ -373,7 +364,7 @@ Proof with sauto;solveLL.
                LLPerm((F0 :: x) ++ N)... apply Cut...
                rewrite <- app_comm_cons.
                LFocus F0. HProof. 
-               apply Derivation1.
+               apply unRelease.
                HProof.  }
             { (* first *) 
                rewrite <- H6.
@@ -388,7 +379,7 @@ Proof with sauto;solveLL.
                 eapply CH...
                 apply Cut...
                 HProof.
-               apply Derivation1.
+               apply unRelease.
                 HProof.
               } }
           {  destruct(PositiveOrNegative G).
@@ -397,7 +388,7 @@ Proof with sauto;solveLL.
                LLPerm(M0++(x ++ N)).
                rewrite <- (app_nil_r []).
                eapply @InvTensorC with (F:=F0) (G:=G) (B:=B)...
-               apply Derivation1.
+               apply unRelease.
                 HProof.
                rewrite <- (app_nil_l [G]).
                apply UpExtension'...
@@ -416,7 +407,7 @@ Proof with sauto;solveLL.
                rewrite <- (app_nil_r []).
                
                eapply @InvTensorC with (F:=F0) (G:=G) (B:=B)...
-               apply Derivation1.
+               apply unRelease.
                 HProof.
                  assert(seqN th n B (x ++ [P]) (UP [G]) ->
                        seqN th b B N (UP [dual P]) ->
@@ -527,7 +518,7 @@ destruct(PositiveOrNegative F).
                LLPerm((F0 :: x) ++ N)... apply Cut...
                rewrite <- app_comm_cons.
                LFocus F0. HProof. 
-               apply Derivation1.
+               apply unRelease.
                HProof.  }
             { (* first *) 
                rewrite <- H6.
@@ -542,7 +533,7 @@ destruct(PositiveOrNegative F).
                 eapply CH...
                 apply Cut...
                 HProof.
-               apply Derivation1.
+               apply unRelease.
                 HProof.
               } }
           {  destruct(PositiveOrNegative G).
@@ -551,7 +542,7 @@ destruct(PositiveOrNegative F).
                LLPerm(M0++(x ++ N)).
                rewrite <- (app_nil_r []).
                eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
-               apply Derivation1.
+               apply unRelease.
                 HProof.
                rewrite <- (app_nil_l [G]).
                apply UpExtension'...
@@ -570,7 +561,7 @@ destruct(PositiveOrNegative F).
                rewrite <- (app_nil_r []).
                
                eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
-               apply Derivation1.
+               apply unRelease.
                 HProof.
                  assert(seqN th n B (x ++ [P]) (UP [G]) ->
                        seqN th b B N (UP [dual P]) ->
@@ -692,7 +683,7 @@ Proof with sauto;solveLL.
    apply InPermutation in H4...
    rewrite H4 in H5.
 
-   eapply AbsorptionC in H5.
+   eapply absorptionN in H5.
    HProof.
    solvePolarity. 
  Qed.

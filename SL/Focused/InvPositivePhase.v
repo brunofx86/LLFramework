@@ -14,133 +14,9 @@ Set Implicit Arguments.
 Section InvPosPhase.
   Context `{OLS: OLSig}.
   Variable th : oo -> Prop.
-  
-Theorem select' n : forall B M F L,
-       positiveLFormula F ->
-       seqN th (S n) B M (UP (F :: L)) ->
-       seqN th n B (F :: M) (UP L).
-   Proof with sauto;solveLL.
-  intros.
-  inversion H0;inversion H...
-Qed.
-    
- Lemma AbsorptionC : forall n Gamma Delta F X,
- seqN th n (F :: Gamma) ( F::Delta)  X ->
-      seqN th n (F :: Gamma) Delta  X.
-  Proof with sauto.
-  intro.
-    induction n using strongind ;intros.
-    * inversion H...
-      solveLL. 
-    * inversion H0;solveLL...
-      + apply PermutationInCons in H2 as H2'.
-        apply in_app_or in H2'.
-        destruct H2'.
-        { apply InPermutation in H1;
-          destruct H1.
-          rewrite H1 in H2;simpl in H2.
-          apply Permutation_cons_inv in H2.
-          FLLsplit x N .
-          apply H...
-          eapply exchangeLCN.
-          rewrite <- H1...
-          auto.
-      }
-      {
-        apply InPermutation in H1;
-        destruct H1.
-        rewrite H1 in H2;simpl in H2.
-        rewrite <- perm_takeit_2 in H2.
-        apply Permutation_cons_inv in H2.
-        FLLsplit M x.
-        eapply exchangeLCN in H4.
-        2: rewrite H1... 
-        auto. }
-    + apply H...   
-  + apply H in H4...
-      FLLexists t.
-      +  apply H... LLExact H3.  
-    + checkPermutationCases H3. 
-      CFocus F. 
-      inversion H1;inversion H2...
-      LLExact H4.
-      rewrite H3...
-      LFocus.
-      apply H... LLExact H4...
-    + inversion H3... 
-      { apply H in H4...
-        CFocus F0... }
-      { apply H in H4...
-        CFocus F0... }
-    + TFocus F0. 
-  Qed.
+      
 
-
- Lemma AbsorptionL : forall n Gamma Delta F X,
-   seqN th n (Gamma) ( F::Delta)  X ->
-      seqN th n (F:: Gamma) Delta  X.
-  Proof with sauto.
-  intros.
-  apply AbsorptionC...
-  apply weakeningN...
-  Qed.
   
-Lemma AbsorptionCSet : forall n C Gamma Delta X,
-  seqN th n (C++Gamma) (Delta++ C)  X ->
-      seqN th n (C ++ Gamma) Delta  X.
-  Proof with sauto.
-  induction C;simpl;intros...
-  apply AbsorptionC. 
-  LLPerm (C ++ Gamma ++ [a]).
-  eapply IHC.
-  LLExact H...
-  Qed. 
-  
-    Lemma AbsorptionCSet' : forall  C Gamma Delta X,
-  seq  th (C++Gamma) (Delta++ C)  X ->
-      seq  th (C ++ Gamma) Delta  X.
-  Proof with sauto.
-  intros.
-  apply seqtoSeqN in H...
-  apply AbsorptionCSet in H...
-  apply seqNtoSeq in H...
-  Qed. 
-  
- Lemma AbsorptionCSet_rev : forall C Gamma Delta X,
-  seq  th (Gamma++C) (Delta++C)  X ->
-      seq  th (Gamma++C) Delta  X.
-  Proof with sauto.
-  intros.
-  apply seqtoSeqN in H...
-  LLPermH H1 (C++Gamma).
-  eapply AbsorptionCSet in H...
-  apply seqNtoSeq in H...
-  LLPermH H1 (Gamma++C).
-  auto.
-  Qed.
-  
- Lemma AbsorptionLSet : forall n C Gamma Delta X,
-  seqN th n (Gamma) (Delta++ C)  X ->
-      seqN th n (C ++ Gamma) Delta  X.
-  Proof with sauto.
-  induction C;simpl;intros...
-  rewrite app_comm_cons.
-  apply AbsorptionL.
-  apply IHC.
-  
-  LLExact H...
-  Qed. 
- 
-  Lemma AbsorptionLSet' : forall C Gamma Delta X,
-  seq th (Gamma) (Delta++C)  X ->
-      seq th (C ++ Gamma) Delta  X.
-  Proof with sauto.
-  intros.
-  apply seqtoSeqN in H...
-  apply AbsorptionLSet in H...
-  apply seqNtoSeq in H...
-  Qed. 
-    
   Ltac solveList :=
     match goal with
       [ H : [] = ?M ++ [?F] |- _ ] =>
@@ -175,31 +51,27 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
                            end                      
     end.   
 
-  Section AbsorptionTheory.
+Section AbsorptionTheory.
 
-    Theorem AbsorptionPerp :  forall n B M A X , th (perp A) -> seqN th n B ((perp A) :: M) X -> seqN th n B M X.
-    Proof with solveLL.
-      induction n;intros ;inversion H0;subst;eauto;clear H0...
-      + (* tensor: A+ is in N or in M0 *)
-        checkPermutationCases H2. 
-        ++ (* A+  in H0 *)
-          FLLsplit x N. 
-          eapply IHn with (A:=A)...
+Theorem AbsorptionPerp :  forall n B M A X , th (perp A) -> seqN th n B ((perp A) :: M) X -> seqN th n B M X.
+Proof with solveLL.
+  induction n;intros ;inversion H0;subst;eauto;clear H0...
+  * checkPermutationCases H2. 
+     + FLLsplit x N. 
+         eapply IHn with (A:=A)...
           HProof.
-         ++ (* A+ in N *)
-           FLLsplit M0 x. 
-          eapply IHn with (A:=A)...
-          HProof.
-      + eapply IHn with (A:=A)...
-          HProof.
-      + (*dec1 *)
-         checkPermutationCases H3. 
-         TFocus (perp A).
+     + FLLsplit M0 x. 
+         eapply IHn with (A:=A)...
          HProof.
-         LFocus F x.
-          eapply IHn with (A:=A)...
-          HProof.
-    Qed.
+  * eapply IHn with (A:=A)...
+     HProof.
+  * checkPermutationCases H3. 
+     + TFocus (perp A).
+         HProof.
+     + LFocus F x.
+         eapply IHn with (A:=A)...
+         HProof.
+Qed.
    
    Theorem AbsorptionPerp2 :  forall n B M A L , th (perp A) -> seqN th n B M (UP (L++[perp A])) -> seqN th n B M (UP L).
     Proof with sauto;solveLL.
