@@ -1,0 +1,1631 @@
+(** Invertibility lemmas: Positive phase
+
+This file proves some invertibility lemmas showing that positive rules
+can be switched.
+ *)
+
+Require Export LL.Misc.Hybrid.
+Require Export LL.SL.FLL.Tactics.
+Require Export LL.SL.FLL.Reasoning.
+Require Export LL.SL.FLL.InvNegativePhase.
+
+Set Implicit Arguments.
+
+Section InvPosPhase.
+  Context `{OLS: OLSig}.
+  Variable th : oo -> Prop.
+      
+
+  
+  Ltac solveList :=
+    match goal with
+      [ H : [] = ?M ++ [?F] |- _ ] =>
+      symmetry in H; apply app_eq_nil in H;inversion H as [H' H''];inversion H''
+    | [ H :  ?M ++ [?F] = [ ] |- _ ] =>
+      apply app_eq_nil in H; inversion H as [H' H''];inversion H''
+    end.
+
+  Ltac seqPermutation := 
+    match goal with
+      [ H : Permutation ?M ?T ,
+            Hs : seq ?th ?B ?M ?Arrow |- _ ] =>
+      assert(seq th B T Arrow) by (refine(exchangeLC _ Hs); rewrite H; auto)
+    | [ H : Permutation ?T ?M ,
+            Hs : seq ?th ?B ?M ?Arrow |- _ ] =>
+      assert(seq th B T Arrow) by (refine(exchangeLC _ Hs); rewrite <- H; auto)  
+    end.
+
+  Ltac seqPerm H S := 
+    match type of H with
+      Permutation ?M ?T => match type of S with
+                             seq ?th ?B ?M ?Arrow => 
+                             assert(seq th B T Arrow); refine(exchangeLC _ S);rewrite H;auto
+                           | seqN ?th ?n ?B ?M ?Arrow => 
+                             assert(seqN th n B T Arrow); refine(exchangeLCN _ S);rewrite H;auto
+                           end
+    | Permutation ?T ?M => match type of S with
+                            seq ?th ?B ?M ?Arrow => 
+                             assert(seq th B T Arrow); refine(exchangeLC _ S);rewrite H;auto
+                           | seqN ?th ?n ?B ?M ?Arrow => 
+                             assert(seqN th n B T Arrow); refine(exchangeLCN _ S);rewrite H;auto
+                           end                      
+    end.   
+
+Section AbsorptionTheory.
+
+Theorem AbsorptionPerp :  forall n B M A X , th (perp A) -> seqN th n B ((perp A) :: M) X -> seqN th n B M X.
+Proof with solveLL.
+  induction n;intros ;inversion H0;subst;eauto;clear H0...
+  * checkPermutationCases H2. 
+     + FLLsplit x N. 
+         eapply IHn with (A:=A)...
+          HProof.
+     + FLLsplit M0 x. 
+         eapply IHn with (A:=A)...
+         HProof.
+  * eapply IHn with (A:=A)...
+     HProof.
+  * checkPermutationCases H3. 
+     + TFocus (perp A).
+         HProof.
+     + LFocus F x.
+         eapply IHn with (A:=A)...
+         HProof.
+Qed.
+   
+   Theorem AbsorptionPerp2 :  forall n B M A L , th (perp A) -> seqN th n B M (UP (L++[perp A])) -> seqN th n B M (UP L).
+    Proof with sauto;solveLL.
+      intro.
+      induction n;intros.
+      inversion H0... 
+      + apply ListConsApp in H5...
+      + inversion H0...
+        -  apply ListConsApp in H5...
+        - apply ListConsApp in H2...
+          apply IHn with (A:=A)...
+          apply IHn with (A:=A)...
+        -  apply ListConsApp in H2...
+        apply IHn with (A:=A)...
+        - apply ListConsApp in H2...
+        apply IHn with (A:=A)...
+        - apply ListConsApp in H2...
+        apply IHn with (A:=A)...
+        - apply ListConsApp in H2...
+          apply H6 in properX.
+          apply IHn with (A:=A)...
+    - apply ListConsApp in H2...
+          CleanContext.
+          eapply AbsorptionPerp with (A:=A)...
+          eapply HeightGeqLEx.
+          2:{ exact H6. }
+          perm. lia.
+          apply IHn with (A:=A)...
+        Qed.      
+    
+   Theorem AbsorptionPerp' :  forall B M A L , th (perp A) -> seq th B M (UP (L++[perp A])) -> seq th B M (UP L).
+    Proof with auto.
+   intros.
+   apply seqtoSeqN in H0.
+   destruct H0.
+   apply  AbsorptionPerp2 in H0...
+   apply seqNtoSeq in H0...
+   Qed.
+       
+    Lemma app_eq_unit_sym : forall (A : Type) (y : list A) (a b : A),
+        [a] = y ++ [b] -> y = [] /\ b = a.
+    Proof.
+       intros.
+       symmetry in H.
+      apply app_eq_unit in H.
+      destruct H. 
+      inversion H. inversion H1.
+      firstorder.
+      inversion H. inversion H1. Qed.
+   
+    Definition RUpTheory (n:nat) := forall B L  F  M , 
+        th F -> ~ IsPositiveAtom F -> ~ IsNegativeAtom F ->
+        seqN th n B M (UP (L ++ [F]))  -> seq th B M (UP L ).
+
+    Definition RDownTheory (n:nat) := forall B  F  M  H, 
+        positiveLFormula F -> ~ IsPositiveAtom F -> ~ IsNegativeAtom F -> th F -> 
+        seqN th n B (F::M) (DW H) -> seq th B M (DW H).
+
+    Definition RIndTheory (n:nat) := RUpTheory n /\ RDownTheory (n -1). 
+
+    Lemma RDownTheory0 : RDownTheory 0.
+    Proof with sauto.
+      unfold RDownTheory. intros B F M H FP FNP FNN TH HD.
+      inversion HD... 
+      solvePolarity.
+    Qed.
+
+    Lemma RUpTheory0 : RUpTheory 0.
+    Proof with subst;auto.
+      unfold RUpTheory. intros B L F M FT FNP FNN HD.
+      destruct L.
+      + inversion HD...
+        TFocus Top.
+      + inversion HD ...
+    Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RUpTheory *)
+    (* =============================================== *)   
+
+    Theorem InvTheoryUP: forall  n ,
+        (forall m : nat, m <= n -> RIndTheory m) -> RUpTheory (S n).
+    Proof with subst;auto;solvePolarity;solveLL.
+      intros n IH.
+      unfold RUpTheory.
+      intros B L1 F M1 FT FNA FNN HD1.
+      destruct L1;simpl in *.
+      + (* L1 is Empty *)
+        inversion HD1... 
+        ++
+          TFocus Top. 
+        ++ 
+          TFocus (F0 & G). 
+          apply seqNtoSeq in H4;auto.
+          apply seqNtoSeq in H5;auto. 
+        ++ 
+          apply seqNtoSeq in H3;auto. 
+        ++ 
+          TFocus (F0 ⅋ G). 
+          apply seqNtoSeq in H3;auto. 
+        ++ 
+          TFocus (? F0).
+          apply seqNtoSeq in H3;auto.
+  ++ 
+           TFocus (∀{ FX}) ...
+            generalize (H5 x);intros.
+            apply H in properX .
+            apply seqNtoSeq in properX;auto. 
+                
+        ++ 
+          assert(RIndTheory n) by ( apply IH;auto).
+          destruct H as [HUp  HDown].
+          inversion H5;subst ...
+        * checkPermutationCases H0.
+          **
+            TFocus F.
+            apply seqNtoSeq in H1;auto.
+            rewrite <- H6;auto.
+          **   
+            LFocus F0 x.
+            eapply HDown with (F:= F)...
+            HProof.
+        *
+          CFocus  F0. 
+          eapply HDown with (F:= F);auto.
+        *
+          TFocus F0 ...
+          eapply HDown with (F:= F);auto.
+         + (* L is not empty *)
+        inversion HD1;subst; try(
+                                 assert(RIndTheory n) by ( apply IH;auto);
+                                 destruct H as [HUp  HDown]; clear HDown) ...
+        all: eapply HUp with (F:=F);auto. 
+        generalize (H5 x properX);intros...
+    Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RDownTheory *)
+    (* =============================================== *)   
+
+    Theorem InvTheoryDW: forall  n ,
+        (forall m : nat, m <= n -> RIndTheory m) -> RDownTheory (n).
+    Proof with sauto;solvePolarity;solveLL.
+      intros n IH.
+      unfold RDownTheory.  intros B F M H FNA FNP FNN FT HD1.
+      inversion HD1;subst ...
+     +
+        assert(HRI: RIndTheory (S n0)) by (apply IH ; auto).
+        destruct HRI as [HUp  HDown] ...
+        apply HDown in H4 ...
+      + 
+        assert(HRI: RIndTheory (S n0)) by (apply IH ; auto).
+        destruct HRI as [HUp  HDown] ...
+        apply HDown in H4 ... 
+        
+      +
+        checkPermutationCases  H1.
+        ++
+          assert(HRI: RIndTheory (S n0)) by (apply IH;auto).
+          destruct HRI as [HUp  HDown] ...
+         
+          assert(seqN th n0 B (F::x) (DW F0)).
+          seqPerm H0 H2. 
+          FLLsplit x N.  
+          apply HDown in H...
+          HProof. 
+        ++
+          assert(HRI: RIndTheory (S n0)) by (apply IH;auto).
+          destruct HRI as [HUp  HDown] ...
+          assert(seqN th n0 B (F::x) (DW G)).
+          seqPerm H0 H6. 
+
+          apply HDown in H...
+
+         FLLsplit M0 x.   
+       HProof.
+      +
+        assert(HRI: RIndTheory (S n0)) by ( apply IH;auto).
+        destruct HRI as [HUp  HDown] ...
+        apply HDown in H6 ...
+        FLLexists t.
+      + eapply UpExtension in H5...
+        assert(HRI: RIndTheory x)  by (apply IH ;auto).
+        destruct HRI as [HUp  HDown] ...
+        apply HUp in H2 ...
+    Qed.
+
+    Theorem InvAuxTheory : forall n, RIndTheory n.
+    Proof.
+      intro n.
+      induction n using strongind.
+      + unfold RIndTheory.
+        split; [apply RUpTheory0 | apply RDownTheory0].
+      + unfold RIndTheory in *.
+        split;[|simpl; rewrite Nat.sub_0_r].
+        apply InvTheoryUP; assumption.
+        apply InvTheoryDW; assumption.
+    Qed.
+
+    (* =============================================== *)
+    (* MAIN INVERTIBILITY THEOREM *)
+    (* =============================================== *)   
+    Theorem AbsorptionTheory : forall B L F  M,   
+        th F -> ~ IsPositiveAtom F -> ~ IsNegativeAtom F  -> 
+        seq th B M (UP (L++[F])) -> seq th B M (UP L) .
+    Proof.
+      intros.
+      assert(HRn:  forall n, RUpTheory n) by (apply InvAuxTheory).
+      apply seqtoSeqN in H2;auto. 
+      destruct H2.
+      generalize (HRn x);intros.
+      eapply H3;eauto.
+    Qed.
+
+  End AbsorptionTheory.
+
+  Section AbsorptionClassic.
+
+    Definition RUp (n:nat) := forall  B L  F  M , 
+      In F B -> seqN th n B M  (UP (L ++ [F]))  -> seq th B M (UP L ).  
+
+    Definition RDown (n:nat) := forall B F  M  H, 
+        positiveLFormula F ->
+    In F B -> seqN th n B (F::M) (DW H) -> seq th B M (DW H).
+
+    Definition RInd (n:nat) := RUp n /\ RDown (n -1). 
+
+    Lemma RDown0 : RDown 0.
+    Proof with sauto;solveLL.
+      unfold RDown. intros B F M H FNA FB HD.
+      inversion HD...
+    Qed.
+
+    Lemma RUp0 : RUp 0.
+    Proof with subst;auto;solveLL.
+      unfold RUp. intros B L F M FB HD.
+      destruct L.
+      + inversion HD...
+        CFocus Top.
+      + inversion HD ...
+    Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RUP *)
+    (* =============================================== *)   
+
+    Theorem InvCopyUP: forall  n ,
+        (forall m : nat, m <= n -> RInd m) -> RUp (S n).
+    Proof with sauto;solvePolarity;solveLL.
+      intros n IH.
+      unfold RUp. intros B L1 F M FB HD.
+      destruct L1;simpl in *.
+      + (* L1 is Empty *)
+        inversion HD... 
+        ++
+        CFocus Top.
+        ++ 
+          CFocus (F0 & G). 
+          apply seqNtoSeq in H4;auto.
+          apply seqNtoSeq in H5;auto. 
+        ++ 
+          apply seqNtoSeq in H3;auto. 
+        ++
+        CFocus (F0 ⅋ G).
+        apply seqNtoSeq in H3;auto.
+        ++ 
+          CFocus (? F0). 
+          apply seqNtoSeq in H3;auto.
+     ++ 
+            CFocus (∀{ FX}).
+            solveLL. 
+            generalize (H5 x);intro.
+            apply H in properX.
+            apply seqNtoSeq in properX;auto. 
+               
+        ++ 
+          assert(RInd n) by ( apply IH;auto).
+          destruct H as [HUp  HDown].
+          inversion H5;subst ...
+        * 
+          checkPermutationCases H0. 
+          **
+            CFocus F.
+            inversion H0;inversion H...
+            HProof. 
+          **    
+            LFocus F0 x. 
+            eapply HDown with (F:= F) ;auto.
+            HProof.
+        *
+          CFocus F0.
+            eapply HDown with (F:= F) ;auto.
+        *
+          TFocus F0.
+            eapply HDown with (F:= F) ;auto.
+       + (* L is not empty *)
+        inversion HD;subst; try(
+                                 assert(RInd n) by ( apply IH;auto);
+                                 destruct H as [HUp  HDown]; clear HDown) ...
+        all: eapply HUp with (F:=F) ;auto.
+        intuition.   
+        generalize (H5 x properX);intros...
+    Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RDOWN *)
+    (* =============================================== *)   
+
+    Theorem InvCopyDW: forall  n ,
+        (forall m : nat, m <= n -> RInd m) -> RDown (n).
+    Proof with sauto;solvePolarity;solveLL.
+      intros n IH.
+      unfold RDown.  intros B F M H FNA FB HD.
+      inversion HD...
+       apply InPermutation in FB...
+  + 
+        assert(HRI: RInd (S n0)) by (apply IH ; auto).
+        destruct HRI as [HUp  HDown] ...
+        eapply HDown in H4 ... 
+        rewrite FB...
+      +
+        assert(HRI: RInd (S n0)) by (apply IH ; auto).
+        destruct HRI as [HUp  HDown] ...
+        eapply HDown in H4 ...
+          
+      + 
+        checkPermutationCases H1.
+        ++ 
+          assert(HRI: RInd (S n0)) by (apply IH;auto).
+          destruct HRI as [HUp  HDown] ...
+          assert(seqN th n0 B (F::x) (DW F0)).
+          HProof.
+          
+          eapply HDown in H...
+          FLLsplit x N.  
+          HProof.
+        ++
+          assert(HRI: RInd (S n0)) by (apply IH;auto).
+          destruct HRI as [HUp  HDown] ...
+          assert(seqN th n0 B (F::x) (DW G)).
+          HProof.
+          
+          eapply HDown in H...
+          FLLsplit M0 x.  
+          HProof.
+      +
+        assert(HRI: RInd (S n0)) by ( apply IH;auto).
+        destruct HRI as [HUp  HDown] ...
+        eapply HDown in H6 ...
+        FLLexists t.
+      + eapply UpExtension in H5...
+        assert(HRI: RInd x)  by (apply IH ;auto).
+        destruct HRI as [HUp  HDown] ...
+
+        eapply HUp in H2 ...
+    Qed.
+
+
+    Theorem InvAux : forall n, RInd n.
+    Proof.
+      intro n.
+      induction n using strongind.
+      + unfold RInd.
+        split; [apply RUp0 | apply RDown0].
+      + unfold RInd in *.
+        split;[|simpl;  rewrite Nat.sub_0_r].
+        apply InvCopyUP; assumption.
+        apply InvCopyDW; assumption.
+    Qed.
+
+    (* =============================================== *)
+    (* MAIN INVERTIBILITY THEOREM *)
+    (* =============================================== *)   
+    Theorem AbsorptionClassic : forall B L F  M,
+        In F B -> 
+        seq th B M (UP (L++[F])) ->
+        seq th B M (UP L).
+    Proof.
+      intros.
+      assert(HRn:  forall n, RUp n) by (apply InvAux).
+      apply seqtoSeqN in H0;auto. 
+      destruct H0.
+      generalize (HRn x);intros. eapply H1;eauto.
+    Qed.
+    
+   
+    Theorem AbsorptionClassic' : forall  B L F  M,
+      In F B ->
+      seq th B M (UP (L++[F])) ->
+      seq th B M (UP L ).
+    Proof.
+      intros.
+      assert(HRn:  forall n, RUp n) by (apply InvAux).
+      apply seqtoSeqN in H0;auto. 
+      destruct H0.
+      generalize (HRn x);intros. eapply H1;eauto.
+    Qed.
+    
+  Theorem AbsorptionClassicSet : forall B B' L C M,
+       Permutation B (C++B') -> 
+        seq th B M (UP (L ++ C)) -> seq th B M (UP L).
+    Proof with sauto.
+    intros.
+    revert dependent L.
+    revert dependent B.
+    revert dependent B'.
+    revert dependent M.
+    induction C;intros...
+    CleanContext... 
+    rewrite H.
+    rewrite <- app_comm_cons.
+    eapply AbsorptionClassic' with (F:=a)...
+    eapply IHC with (B':= a :: B')... 
+    rewrite app_assoc_reverse.
+    simpl.
+    LLExact H0.
+    Qed.
+    
+ 
+  End AbsorptionClassic. 
+
+  Section InvExists.
+
+
+    Definition RUpExists (n:nat) := forall B L M FX t, 
+      uniform_oo FX -> proper t -> 
+      seqN th n B M (UP (L ++ [FX t]))  -> seq th B (∃{ FX}:: M) (UP L).
+      
+    Definition RDownExists (n:nat) := forall B M H FX t, 
+        positiveFormula (FX t) -> uniform_oo FX -> proper t ->
+        seqN th n B (FX t::M) (DW H) -> seq th B (∃{ FX} :: M) (DW H).
+
+    Definition RIndExists (n:nat) := RUpExists n /\ RDownExists (n -1). 
+
+    Lemma RDownE0 : RDownExists 0.
+    Proof with sauto;solvePolarity;solveLL.
+    unfold RDownExists.
+     
+    intros B M H FX t FP Uni Ft HD.
+      inversion HD...
+      
+      rewrite <- H3 in FP.
+      inversion FP... 
+    Qed.
+
+    Lemma Remove_app_in' :
+      forall (F:oo) (L: list oo), Remove F (L ++ [F]) (L).
+      intros.
+      assert(Remove (F) (L ++ [F]) (L++[])).
+      eapply Remove_app_in with (F:=F) (L1:=L) (L2:=nil).
+      rewrite app_nil_r in H.
+      assumption.
+    Qed.
+
+
+
+    Lemma RUpE0 : RUpExists 0.
+    Proof with sauto;solvePolarity.
+      unfold RUpExists.
+      intros.
+      destruct L.
+      + inversion H1...
+        LFocus (∃{ FX}) M ...
+        FLLexists t.  
+          rewrite <- H6.
+          FLLrelease... 
+      + inversion H1...
+    Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RUP *)
+    (* =============================================== *)   
+    Theorem InvExUP: forall  n , (forall m : nat, m <= n -> RIndExists m) -> RUpExists (S n).
+    Proof with sauto;solvePolarity.
+      intros n IH.
+      unfold RUpExists.  intros B L1 M1 FX t  Hu Hp HD1.
+      destruct L1;simpl in *.
+      + (* L1 is Empty *)
+        inversion HD1... 
+        ++
+        LFocus (∃{ FX}) M1...
+        FLLexists t.  
+          rewrite <- H3.
+          FLLrelease...
+        ++ LFocus (∃{ FX}) M1...
+           FLLexists t.  
+           rewrite <- H0.
+           FLLrelease...
+           apply seqNtoSeq in H4;auto. 
+           apply seqNtoSeq in H5;auto.
+        ++ LFocus (∃{ FX}) M1...
+           FLLexists t.  
+           rewrite <- H0.
+           FLLrelease...
+           apply seqNtoSeq in H3;auto. 
+        ++ LFocus (∃{ FX}) M1...
+           FLLexists t.  
+           rewrite <- H0.
+           FLLrelease...
+           apply seqNtoSeq in H3;auto. 
+        ++ LFocus (∃{ FX}) M1...
+           FLLexists t.  
+           rewrite <- H0.
+           FLLrelease...
+           apply seqNtoSeq in H3;auto.
+         ++  LFocus... 
+            FLLexists t.
+            rewrite <- H0...
+            solveLL.
+            generalize(H5 x properX);intro.
+            apply seqNtoSeq in H;auto.
+           
+        ++ 
+          assert(RIndExists n) by ( apply IH;auto).
+          destruct H as [HUp  HDown].
+          inversion H5;subst ...
+        * 
+          checkPermutationCases H0.
+          LFocus...
+          FLLexists t.
+          HProof.  
+          destruct (NotAsynchronousPosAtoms H4).
+          
+          LFocus F ((∃{ FX})::x).
+          rewrite H0...
+          eapply HDown with (t:=t)...
+          HProof.
+          
+          LFocus...
+          FLLexists t.
+          FLLrelease...
+          FLLstore...
+          LFocus F (FX t::x )...
+          rewrite H0...
+          HProof.
+        *
+          destruct (NotAsynchronousPosAtoms H4).
+          2:{
+            LFocus... 
+            FLLexists t.
+           FLLrelease... 
+           HProof. }
+          eapply HDown in H1...
+          CFocus F.
+     *   destruct (NotAsynchronousPosAtoms H4).
+          2:{
+            LFocus... 
+            FLLexists t.
+           FLLrelease... 
+           HProof. }
+          eapply HDown in H1...
+          TFocus F.
+      +
+        (* L is not empty *)
+        inversion HD1;subst; try(
+                 assert(RIndExists n) by ( apply IH;auto);
+                 destruct H as [HUp  HDown]; clear HDown) ...
+        all:solveLL.
+        all: try eapply HUp with (t:=t);eauto.
+        rewrite perm_swap.
+          eapply HUp;eauto.
+  
+    Qed.
+
+
+    (* =============================================== *)
+    (* PROOF OF RDOWN *)
+    (* =============================================== *)   
+    Theorem InvExDW: forall  n , (forall m : nat, m <= n -> RIndExists m) -> RDownExists (n).
+    Proof with sauto;solvePolarity.
+      intros n IH.
+      unfold RDownExists.  
+      intros B M H FX t HP Hu Ht HD1.
+      inversion HD1;subst ...
+      + rewrite <- H3 in HP.
+        inversion HP.
+     +                   
+          assert(HRI: RIndExists (S n0)).
+          auto using le_n_S.
+          destruct HRI as [HUp  HDown] ...
+          apply HDown in H4...
+      +                   
+          assert(HRI: RIndExists (S n0)).
+          auto using le_n_S.
+          destruct HRI as [HUp  HDown] ...
+          apply HDown in H4...
+       
+      +
+        checkPermutationCases H1. 
+        ++ 
+          eapply exchangeLCN in H2.
+          2: rewrite H0...
+          assert(HRI: RIndExists (S n0)).
+          auto using le_n_S.
+          destruct HRI as [HUp  HDown] ...
+          apply HDown in H2 ...
+          FLLsplit (∃{ FX}::x ) N.
+          rewrite <- H1...
+          HProof.
+        ++ 
+          eapply exchangeLCN in H6.
+          2: rewrite H0...
+          assert(HRI: RIndExists (S n0)).
+          auto using le_n_S.
+          destruct HRI as [HUp  HDown] ...
+          apply HDown in H6 ...
+          FLLsplit M0 (∃{ FX}::x).
+          rewrite <- H1; perm.
+          HProof.
+      +
+        assert(HRI: RIndExists (S n0)).
+          auto using le_n_S.
+          destruct HRI as [HUp  HDown] ...
+          apply HDown in H6...
+          FLLexists t0.
+         
+      + eapply UpExtension in H5...
+        assert(HRI: RIndExists x) by auto.
+        destruct HRI as [HUp  HDown] ...
+
+        apply HUp in H2 ...
+     Qed.
+
+    Theorem InvExAux : forall n, RIndExists n.
+    Proof.
+      intro n.
+      induction n using strongind.
+      + unfold RIndExists.
+        split; [apply RUpE0 | apply RDownE0].
+      + unfold RIndExists in *.
+        split;[|simpl;  rewrite Nat.sub_0_r].
+        apply InvExUP; assumption.
+        apply InvExDW; assumption.
+    Qed.
+
+
+    (* =============================================== *)
+    (* MAIN INVERTIBILITY THEOREM *)
+    (* =============================================== *)   
+
+    Theorem InvEx : forall B L FX t  M, 
+        uniform_oo FX -> proper t -> 
+        seq th B M (UP (L++[FX t ])) -> seq th B (∃{ FX}::M) (UP L ).
+    Proof.
+      intros.
+      assert(HRn:  forall n, RUpExists n) by (apply InvExAux).
+      apply seqtoSeqN in H1.
+      destruct H1.
+      generalize (HRn x);intros.
+      apply H2 in H1;auto.
+    Qed.
+
+
+    Theorem InvExC : forall B L FX t  M, 
+       In (∃{ FX}) B ->
+        uniform_oo FX -> proper t -> 
+        seq th B M (UP (L ++ [FX t])) -> seq th B M (UP L).
+    Proof.
+      intros.
+      eapply @AbsorptionClassic;eauto.
+      apply UpExtension'.
+      constructor.
+      apply InvEx with (t:=t);auto.
+    Qed.  
+    
+    Theorem InvExT : forall B L FX t  M, 
+       th (∃{ FX}) ->
+        uniform_oo FX -> proper t -> 
+        seq th B M (UP (L ++ [FX t])) -> seq th B M (UP L).
+    Proof.
+      intros.
+      eapply @AbsorptionTheory;eauto.
+      1-2:intro;solvePolarity.
+      apply UpExtension'.
+      constructor.
+      apply InvEx with (t:=t);auto.
+    Qed.  
+    
+     
+  End InvExists.
+
+  Section InvOPlus.
+
+    Definition RUpPlus (n:nat) := forall B L M F G, 
+      seqN th n B M (UP (L ++ [F]))  -> seq th B (F ⊕ G::M) (UP L).
+
+    Definition RDownPlus (n:nat) := forall B M H F G, 
+        positiveFormula F ->
+        seqN th n B (F::M) (DW H) -> seq th B (F ⊕ G::M) (DW H).
+
+    Definition RIndPlus (n:nat) := RUpPlus n /\ RDownPlus (n -1). 
+
+    Lemma RDownP0 : RDownPlus 0.
+    Proof with sauto;solvePolarity;solveLL.
+      unfold RDownPlus.
+      intros B M H F G FP HD.
+      inversion HD;subst...
+    Qed.
+
+    Lemma RUpP0 : RUpPlus 0.
+    Proof with sauto;solvePolarity;solveLL.
+      unfold RUpPlus.
+      intros B L M F G HD.
+      destruct L.
+      + inversion HD;subst...
+        LFocus (Top ⊕ G) M...
+      + inversion HD...
+    Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RUP *)
+    (* =============================================== *)   
+
+    Theorem InvPlusUP: forall  n , (forall m : nat, m <= n -> RIndPlus m) -> RUpPlus (S n).
+    Proof with sauto;solvePolarity;solveLL.
+      intros n IH.
+      unfold RUpPlus.  intros B L1 M1 F G HD1.
+      destruct L1;simpl in *.
+      + (* L1 is Empty *)
+        inversion HD1;subst ...
+        ++
+          LFocus (Top ⊕ G).
+        ++ 
+          LFocus ((F0 & G0) ⊕ G). 
+          FLLleft.
+          apply seqNtoSeq in H4;auto.
+          apply seqNtoSeq in H5;auto.
+           
+        ++ 
+          LFocus (Bot ⊕ G). 
+          FLLleft.
+          apply seqNtoSeq in H3;auto.
+        ++
+          LFocus ((F0 ⅋ G0) ⊕ G). 
+          FLLleft.
+          apply seqNtoSeq in H3;auto.
+        ++
+          LFocus ((? F0) ⊕ G). 
+          FLLleft.
+          apply seqNtoSeq in H3;auto.
+          ++
+            LFocus...
+            FLLleft.
+            solveLL.
+            generalize (H5 x properX);intro.
+            apply seqNtoSeq in H;auto.
+         
+        ++ 
+          assert(RIndPlus n) by ( apply IH;auto).
+          destruct H as [HUp  HDown].
+          inversion H5;subst ...
+        *  
+          checkPermutationCases H0. 
+          LFocus...
+          FLLleft.
+          HProof.
+      
+          destruct (NotAsynchronousPosAtoms H4).
+          2:{
+            LFocus...
+            FLLleft.
+            FLLrelease.
+            FLLstore... 
+            LFocus F0 (F::x)...
+            rewrite H0...
+            HProof.
+          }
+          LFocus F0 ((F ⊕ G)::x).
+          rewrite H0...
+          eapply HDown... 
+          HProof.
+         * 
+          destruct (NotAsynchronousPosAtoms H4).
+          2:{
+            LFocus (F ⊕ G) M1...
+            FLLleft.
+            inversion H2...
+            HProof.
+          }
+          CFocus F0. 
+         * 
+          destruct (NotAsynchronousPosAtoms H4).
+          2:{
+            LFocus (F ⊕ G) M1...
+            FLLleft.
+            inversion H2...
+            HProof.
+          }
+          TFocus F0.
+       + (* L is not empty *)
+        inversion HD1;subst; try(
+                                 assert(RIndPlus n) by ( apply IH;auto);
+                                 destruct H as [HUp  HDown]; clear HDown)...
+                                  all:solveLL.
+       
+
+        all: try eapply HUp...
+        apply H5...
+            rewrite perm_swap...
+     
+    Qed.    
+
+    (* =============================================== *)
+    (* PROOF OF RDOWN *)
+    (* =============================================== *)   
+    Theorem InvPlusDW: forall  n , (forall m : nat, m <= n -> RIndPlus m) -> RDownPlus (n).
+    Proof with sauto;solvePolarity.
+      intros n IH.
+      unfold RDownPlus.  intros B M  H  F G HPosF HD1.
+      inversion HD1;subst ...
+      +
+       assert(HRI: RIndPlus (S n0)) by auto.
+       destruct HRI as [HUp  HDown] ...
+     + 
+       assert(HRI: RIndPlus (S n0)) by auto.
+       destruct HRI as [HUp  HDown] ...
+     + 
+       assert(HRI: RIndPlus (S n0)) by auto.
+       destruct HRI as [HUp  HDown] ...
+       
+       checkPermutationCases H1.
+       ++
+       FLLsplit ((F ⊕ G) ::x) N...
+       rewrite <- H1...  
+       apply HDown...
+       HProof.
+       HProof.
+       ++
+       FLLsplit M0 ((F ⊕ G) ::x)...
+       rewrite <- H1...  
+       HProof.
+       apply HDown...
+       HProof.
+       
+      +
+        assert(HRI: RIndPlus (S n0)) by auto.
+        destruct HRI as [HUp  HDown] ...
+        FLLexists t.
+     + 
+       apply UpExtension in H5...
+        assert(HRI: RIndPlus x)  by auto.
+        destruct HRI as [HUp  HDown] ...
+    Qed.
+
+
+    Theorem InvPlusAux : forall n, RIndPlus n.
+    Proof.
+      intro n.
+      induction n using strongind.
+      + unfold RIndPlus.
+        split; [apply RUpP0 | apply RDownP0].
+      + unfold RIndPlus in *.
+        split.
+        apply InvPlusUP; assumption.
+        simpl;  rewrite Nat.sub_0_r.
+        apply InvPlusDW; assumption.
+    Qed.
+
+    (* =============================================== *)
+    (* MAIN INVERTIBILITY THEOREM *)
+    (* =============================================== *)   
+    Theorem InvPlus : forall B L F G  M, 
+    seq th B M (UP (L++[F])) -> seq th B (F ⊕ G:: M) (UP L).
+    Proof.
+      intros.
+      assert(HRn:  forall n, RUpPlus n) by (apply InvPlusAux).
+      apply seqtoSeqN in H.
+      destruct H.
+      generalize (HRn x);intros.
+      eapply H0 in H;eauto.
+    Qed.
+
+   Theorem InvPlusC : forall B L F G M,
+       In (F ⊕ G) B ->
+        seq th B M (UP (L++[F])) -> seq th B M (UP L).
+    Proof.
+      intros.
+      eapply @AbsorptionClassic;eauto.
+      apply UpExtension'.
+      constructor. 
+      apply InvPlus ;auto.
+    Qed.  
+   
+      Theorem InvPlusT : forall B L F G M,
+       th (F ⊕ G) ->
+        seq th B M (UP (L++[F])) -> seq th B M (UP L).
+    Proof.
+      intros.
+      eapply @AbsorptionTheory;eauto.
+      1-2: intro;solvePolarity. 
+      apply UpExtension'.
+      constructor. 
+      apply InvPlus ;auto.
+    Qed.  
+     
+    
+    Lemma OPlusComm : forall B M F G X n,
+     seqN th n B (F ⊕ G::M) X -> seqN th n B (G ⊕ F::M) X.
+    Proof with sauto;solvePolarity;solveLL.
+      intros.
+      generalize dependent B.
+      generalize dependent M.
+      generalize dependent X.
+      generalize dependent n.
+      induction n using strongind;intros.
+      + 
+        inversion H...
+      + 
+        inversion H0...
+        ++ 
+          checkPermutationCases H2.
+          FLLsplit (G ⊕ F::x) N...
+          rewrite <- H5...
+          apply H... HProof.
+          
+          FLLsplit M0 (G ⊕ F::x)...
+          rewrite <- H5...
+          apply H... HProof.
+        ++
+          FLLexists t. 
+       
+        ++
+          assert (seqN th n B (F ⊕ G::(M ++ [F0])) (UP M0)).
+          LLExact H3.
+          eapply H in H1...
+          LLExact H1.
+        ++ 
+          checkPermutationCases H3. 
+          
+          LFocus...
+          apply OplusCommN.
+          HProof.
+         
+         
+          LFocus F0  (G ⊕ F::x)...
+          rewrite H3...
+          apply H ...
+          HProof.
+          ++
+       CFocus F0.
+          ++
+       TFocus F0.
+       
+       
+    Qed.
+
+    (* =============================================== *)
+    (* MAIN INVERTIBILITY THEOREM (FLIPPING F and G)   *)
+    (* =============================================== *)   
+    Theorem InvPlusComm: forall B L F G  M, 
+     seq th B M (UP (L++[G])) -> seq th B (F ⊕ G::M) (UP L).
+    Proof.
+      intros.
+      apply InvPlus with (G:=F)in H;auto.
+      apply seqtoSeqN in H.
+      destruct H.
+      apply OPlusComm in H.
+      apply seqNtoSeq with (n:=x) in H;auto.
+    Qed.
+
+    Theorem InvPlusCComm : forall  B L F G M, 
+       In (F ⊕ G) B ->
+        seq th B M (UP (L++[G])) -> seq th B M (UP L).
+    Proof.
+      intros.
+      eapply @AbsorptionClassic;eauto.
+      apply UpExtension'.
+      constructor. 
+      apply InvPlusComm ;auto.
+    Qed.  
+ 
+    Theorem InvPlusTComm : forall  B L F G M, 
+       th (F ⊕ G) ->
+        seq th B M (UP (L++[G])) -> seq th B M (UP L).
+    Proof.
+      intros.
+      eapply @AbsorptionTheory;eauto.
+      1-2:intro;solvePolarity.
+      apply UpExtension'.
+      constructor. 
+      apply InvPlusComm ;auto.
+    Qed.  
+    
+  End InvOPlus.
+
+  (* =============================================== *)
+  (** Invertibility of Tensor *)
+  (* =============================================== *)   
+  Section InvTensor.
+
+    Definition RUpTensor (nm:nat) := forall B L M L' M' F G n m, 
+      nm = n + m ->  (* isFormulaL L -> *)
+      seqN th n B M (UP (L ++ [F])) -> 
+      seqN th m B M' (UP (L' ++ [G]))  -> 
+        seq th B (F ⊗ G:: M ++ M') (UP (L ++ L')).
+
+    Definition RDownTensor (nm:nat) := forall B M M' H F G n m, 
+        nm = n + m -> positiveFormula F -> 
+        seqN th n B (F::M) (DW H) -> 
+        seqN th m B M' (UP [G]) -> 
+          seq th B (F ⊗ G :: M ++ M') (DW H).
+
+    Definition RIndTensor (n:nat) := RUpTensor n /\ RDownTensor (n -1). 
+
+    Lemma RDownT0 : RDownTensor 0.
+    Proof with sauto;solvePolarity;solveLL.
+      unfold RDownTensor. 
+      intros *. intros MN FP HD1 HD2.
+    
+      symmetry in MN. 
+      apply plus_is_O in MN.
+      destruct MN...
+
+      inversion HD1...
+     Qed.
+
+    Lemma RUpT0 : RUpTensor 0.
+    Proof with sauto;solvePolarity.
+      unfold RUpTensor. 
+      intros *.
+      intros MN HD1 HD2.
+      symmetry in MN. apply plus_is_O in MN.
+      destruct MN...
+      inversion HD1...
+      destruct L;destruct L';simpl in *.
+      +
+        inversion HD1...
+        inversion HD2...
+        LFocus (Top ⊗ Top) (M++M')... 
+        FLLsplit M M' . 
+      + 
+        inversion H3...
+        solveLL. 
+      + 
+        inversion H3 ...
+      + 
+        inversion H3 ...
+    Qed.
+    (* =============================================== *)
+    (* F ⊗ G COMMUTES *)
+    (* =============================================== *)
+    Lemma TensorComm : forall B M F G X n, seqN th n B (F⊗G::M) X -> seqN th n B (G⊗F::M) X.
+    Proof with sauto;solvePolarity;solveLL.
+      intros.
+      generalize dependent B.
+      generalize dependent M.
+      generalize dependent X.
+      generalize dependent n.
+      induction n using strongind;intros.
+      + 
+        inversion H...
+      + 
+        inversion H0...
+        ++ 
+          checkPermutationCases H2. 
+        * FLLsplit (G ⊗ F::x) N.
+          rewrite <- H5...
+          apply H... HProof. 
+        * FLLsplit M0 (G ⊗ F::x).
+          rewrite <- H5...
+          apply H... HProof. 
+       ++  
+            FLLexists t. 
+        ++ 
+            assert(seqN th n B (F ⊗ G::(M ++ [F0])) (UP M0)).
+            LLExact H3.
+            apply H in H1...
+            HProof.
+        ++ checkPermutationCases H3. 
+            2:{ 
+             LFocus F0 (G ⊗ F::x).
+             rewrite H3...
+              apply H...
+              HProof. }
+            LFocus.
+            apply TensorCommN.
+            HProof.
+          ++  
+            CFocus F0 ...
+         ++  
+            TFocus F0 ...
+        Qed.
+
+
+    Lemma TensorComm' : forall B M F G X , seq th B (F ⊗ G::M) X -> seq th B (G ⊗ F::M) X.
+    Proof.
+      intros.
+      apply seqtoSeqN in H.
+      destruct H.
+      apply TensorComm in H.
+      eapply seqNtoSeq in H;eauto.
+    Qed.
+
+
+    (* =============================================== *)
+    (* PROOF OF RUP *)
+    (* Cases when one of the lists is not empty *)
+    (* =============================================== *)
+    Lemma InvTensorConsNil (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m) B (L1 M1 : list oo)
+     (l : oo) (L2  M2 : list oo) (F  G : oo) (n'  m' : nat) : S nm = n' + m' -> 
+       isFormulaL L1 -> 
+       seqN th n' B M1 (UP (L1 ++ [F])) -> 
+       seqN th m' B M2 (UP (l :: L2 ++ [G])) -> 
+          seq th B (F ⊗ G :: M1 ++ M2) ( UP (L1 ++ l :: L2)).
+    Proof with sauto;solvePolarity;solveLL.
+      intros. 
+      inversion H2...
+      + apply EquivAuxTop...
+      + apply EquivAuxWith...
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia) ...
+        eapply HUp with(n:=n') (m:=n) (B:=B)...
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia) ...
+        eapply HUp with(n:=n') (m:=n) (B:=B)...
+      + apply EquivAuxBot...
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia) ...
+        eapply HUp with (n:=n') (m:=n) (B:=B)...
+      + apply EquivAuxPar...
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia) ...
+        eapply HUp with(n:=n') (m:=n) (B:=B)...
+      + apply EquivAuxQuest...
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia) ...
+        eapply HUp with (m:=n) ;auto.  
+        eapply weakeningGenN_rev;auto.
+      +
+        apply EquivAuxForAll;intros...
+        generalize (H9 t H3);intro.
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia).
+        eapply HUp with (m:=n)...
+   +
+        apply EquivAuxStore...
+        assert(HUp : RUpTensor(n' + n)) by (apply IH;lia) ...
+        LLPerm ( F ⊗ G :: M1 ++ (l::M2)).
+        eapply HUp with (m:=n)... 
+       Qed.
+
+Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m) B (L1 M1 : list oo)
+     (l : oo) (L2  M2 : list oo) (F  G : oo) (n'  m' : nat) : S nm = n' + m' -> 
+       L1 <> [] -> 
+       seqN th n' B M1 (UP (L1 ++ [F])) -> 
+       seqN th m' B M2 (UP (l :: L2 ++ [G])) -> 
+          seq th B (F ⊗ G :: M1 ++ M2 ) (UP (L1 ++ l :: L2)).
+    Proof with sauto;solvePolarity.
+      intros. 
+      inversion H1...
+      + apply ListConsApp in H7... 
+        rewrite <- app_comm_cons. 
+        solveLL.
+      + apply ListConsApp in H3...
+        assert(HUp : RUpTensor(n + m')) by (apply IH;lia) ...
+        
+        rewrite <- app_comm_cons.
+        solveLL.
+        do 2 rewrite app_comm_cons.
+        rewrite <- app_comm_cons.
+        eapply HUp with (m:=m')...
+        
+        do 2 rewrite app_comm_cons.
+        rewrite <- app_comm_cons.
+        eapply HUp with (m:=m')...
+        
+      
+      + apply ListConsApp in H3...
+         rewrite <- app_comm_cons. 
+        solveLL.
+        assert(HUp : RUpTensor(n + m')) by (apply IH;lia) ...
+        eapply HUp with (n:=n) (m:=m') (B:=B)... 
+      + apply ListConsApp in H3...
+        assert(HUp : RUpTensor(n + m')) by (apply IH;lia) ...
+        
+        rewrite <- app_comm_cons.
+        solveLL.
+        do 3 rewrite app_comm_cons.
+        rewrite <- app_comm_cons.
+        eapply HUp with (m:=m')...
+      + apply ListConsApp in H3...
+        assert(HUp : RUpTensor(n + m')) by (apply IH;lia) ...
+        rewrite <- app_comm_cons.
+        solveLL.
+        eapply @HUp...
+        eapply weakeningGenN_rev;auto.
+      + apply ListConsApp in H3...
+        assert(HUp : RUpTensor(n + m')) by (apply IH;lia) ...
+        rewrite <- app_comm_cons.
+        solveLL.
+        
+        repeat rewrite app_comm_cons.
+        rewrite <- app_comm_cons.
+        eapply HUp with (n:=n) (m:=m') (B:=B)...
+        apply H8...
+      + apply ListConsApp in H3...
+        assert(HUp : RUpTensor(n + m')) by (apply IH;lia) ...
+        
+        rewrite <- app_comm_cons.
+        solveLL.
+        do 2 rewrite app_comm_cons.
+        rewrite Permutation_cons_append.
+        repeat rewrite <- app_comm_cons.
+        eapply HUp with (n:=n) (m:=m') (B:=B)...
+        LLExact H8. 
+         
+    Qed.
+
+
+    (* ================================================ *)
+    (* PROOF OF RUP *)
+    (* Case when the 2 formulas are async. or pos. atoms*)
+    (* ================================================ *)
+    Lemma ITCaseAsyncAsync:
+      forall n m B M1 M2 F G, 
+    negativeFormula F -> 
+    negativeFormula G -> 
+     seqN th n B M1 (UP [F]) -> 
+     seqN th m B M2 (UP [G]) -> 
+       seq th B (F ⊗ G:: M1 ++ M2) (UP []).
+    Proof.
+      intros.
+      LFocus (F ⊗ G). 
+      all:FLLsplit M1 M2...
+      all: FLLrelease.
+      all:HProof.
+    Qed.  
+  
+    Lemma ITAsyncSync  :
+      forall nm n m B  M1 M2 F G,
+        negativeFormula F ->  positiveLFormula G ->         
+        (forall m : nat, m <= nm -> RIndTensor m) -> nm = n + m -> 
+       seqN th n B M1 (UP [F]) ->  
+       seqN th m B ( G::M2) (UP []) ->  
+          seq th B (F ⊗ G :: M1 ++ M2) ( UP []).
+    Proof with subst;auto;solvePolarity;solveLL.
+      intros. 
+      apply NotAsynchronousPosAtoms in H0; destruct H0 as [AG | AG].
+      2:{
+        (* G is a positive atom... then, FLLrelease works (Lemma  ITCaseAsyncAsync) *)
+        eapply ITCaseAsyncAsync with (n:=n) (m:=S m) (B:=B) ;eauto. } 
+      +
+        (* G cannot do FLLrelease *)
+        inversion H4...
+        ++ checkPermutationCases H5.
+        *   LFocus (F ⊗ G). 
+            FLLsplit M1 M2.
+            FLLrelease. all:HProof.
+        * 
+          LFocus F0 ((F ⊗ G) ::M1 ++ x)...
+          rewrite H5...
+          
+          assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto); destruct IH2 as [HUp HDw].
+          assert(Hn : n + S n0 -1 = n + n0) by lia;rewrite Hn in HDw;clear Hn.
+          apply TensorComm'.
+          rewrite (Permutation_app_comm M1).
+           eapply HDw with (m:= n) (n:= n0) (B:=B) ;try(lia)...
+           HProof. 
+    
+     ++ assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto);
+         destruct IH2 as [HUp HDw].
+         assert(Hn : n + S n0 -1 = n + n0) by lia;rewrite Hn in HDw;clear Hn.
+          CFocus F0.
+            apply TensorComm'.
+            rewrite (Permutation_app_comm M1).   
+            eapply HDw with (m:= n) (n:= n0) (B:=B);try(lia)...
+      ++ assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto);
+         destruct IH2 as [HUp HDw].
+         assert(Hn : n + S n0 -1 = n + n0) by lia;rewrite Hn in HDw;clear Hn.
+          TFocus F0.
+            apply TensorComm'.
+            rewrite (Permutation_app_comm M1).   
+            eapply HDw with (m:= n) (n:= n0) (B:=B);try(lia)...           
+Qed.
+
+
+    (* =============================================== *)
+    (* PROOF OF RUP *)
+    (* Case when both formulas are not Async *)
+    (* =============================================== *)
+Lemma ITSyncSync : forall nm n m  B M1 M2 F G, 
+    positiveLFormula F -> positiveLFormula G ->  
+    (forall m : nat, m <= nm -> RIndTensor m) -> 
+    S nm = S n + S m -> 
+      seqN th (S n) B M1 (UP [F]) -> 
+      seqN th (S m) B M2  (UP [G]) ->  
+      seq th B (F ⊗ G::M1 ++ M2) (UP []).
+ Proof with subst;auto;solvePolarity;solveLL.
+      intros * . 
+      intros AF AG IH Hnm HD1 HD2. 
+      apply NotAsynchronousPosAtoms in AF; destruct AF as [AF | AF];
+        apply NotAsynchronousPosAtoms in AG; destruct AG as [AG | AG].
+     4:{ 
+        eapply ITCaseAsyncAsync with (B:=B)...
+        exact HD1. exact HD2. }
+     3:{ (* F is a positive atom *)
+        inversion HD2...
+        eapply ITAsyncSync with (nm:=nm) (n:= S n) (m:= m) (B:=B) ... lia. }
+     2:{ (* G is a positive atom *)
+        inversion HD1...
+        apply TensorComm'.
+            rewrite (Permutation_app_comm M1). 
+        eapply ITAsyncSync with (nm:=nm) (n:= S m) (m:= n) (B:=B) ... lia. }
+     1:{ (* F nor G can do FLLrelease *)
+        inversion HD1...
+        inversion HD2...
+          
+        inversion H7;subst...
+        2:{
+        
+        CFocus F0. 
+        apply TensorComm'.
+            rewrite (Permutation_app_comm M1). 
+        
+          assert (IH' : RIndTensor ( (S n0) + S n )) by ( apply IH; lia).
+          destruct IH' as [HUp  HDw].
+          assert(Hn :  (S n0) + S n - 1 =  n0 + S n ) by lia;rewrite Hn in HDw;clear Hn.
+          eapply  HDw...
+        }
+        
+       checkPermutationCases H0.
+       2:{ LFocus F0 ((F ⊗ G) :: M1++x).
+           rewrite H0...
+          assert (IH' : RIndTensor (n0 + S (S n))) by ( apply IH; lia).
+          destruct IH' as [HUp  HDw].
+          assert(Hn : n0 + S (S n) - 1 = n0 + (S n)) by lia;rewrite Hn in HDw;clear Hn.
+         apply TensorComm'.
+            rewrite (Permutation_app_comm M1). 
+          eapply HDw... HProof. }
+        inversion H5;subst...
+        2:{
+        
+        CFocus F0. 
+        
+          assert (IH' : RIndTensor ( S (S (S n0)) + n1 )) by ( apply IH; lia).
+          destruct IH' as [HUp  HDw].
+           assert(Hn :  S (S (S n0)) + n1 - 1 =  n1 + (S (S n0)) ) by lia;rewrite Hn in HDw;clear Hn. 
+          eapply  HDw... }
+      
+       checkPermutationCases H2.
+       2:{ LFocus F0 ((F ⊗ G) :: x++M2).
+           rewrite H2...
+          assert (IH' : RIndTensor (S n0 + S (S n1))) by ( apply IH; lia).
+          destruct IH' as [HUp  HDw].
+          assert(Hn : S n0 + S (S n1) - 1 = n1 + S (S n0)) by lia;rewrite Hn in HDw;clear Hn.
+          eapply HDw...
+           HProof. }
+        -   
+       LFocus.
+       FLLsplit M1 M2...
+       all:HProof.
+       - 
+        TFocus F0. 
+          assert (IH' : RIndTensor (S (S n0) + S n1)) by ( apply IH; lia).
+          destruct IH' as [HUp  HDw].
+          assert(Hn : S (S n0) + S n1 - 1 = S (S n0) + n1) by lia;rewrite Hn in HDw;clear Hn.
+          eapply  HDw with (n:= n1) (m:= S (S n0))...
+         lia. 
+      -   
+        TFocus F0. 
+          assert (IH' : RIndTensor (S (S n0) + n)) by ( apply IH; try lia).
+          destruct IH' as [HUp  HDw].
+          assert(Hn : S (S n0) + n - 1 = (S n0) + n) by lia;rewrite Hn in HDw;clear Hn.
+          apply TensorComm'.
+            rewrite (Permutation_app_comm M1).  
+            
+          eapply  HDw with (n:=n0) (m:= S n)...
+          lia. }
+ Qed.   
+ 
+     (* =============================================== *)
+    (* PROOF OF RUP *)
+    (* =============================================== *)
+    Theorem InvTensorUP: forall  nm , 
+    (forall m : nat, m <= nm-> RIndTensor m) -> RUpTensor (S nm).
+    Proof with sauto;solvePolarity;solveLL.
+      intros nm IH.
+      unfold RUpTensor.
+      intros B L1  M1 L2 M2 F  G n' m' HNM HD1 HD2.
+      destruct L1;destruct L2;simpl in *.
+      + (* L1 and L2 are Empty *)   
+        inversion HD1;inversion HD2;subst;
+         
+          try(
+              match goal with
+              | [ |- seq th ?B (?F ⊗ ?G::?M1 ++ ?M2) (UP []) ]
+                => tryif (assert(HAFG : negativeFormula F /\ negativeFormula G) by (split;constructor;auto))
+                then
+                  eapply ITCaseAsyncAsync ;eauto
+                else idtac
+              end)...
+      
+      
+        eapply ITAsyncSync with  (nm := nm) (n:= n') (m:=n0) (B:=B) ;try lia...
+        eapply ITAsyncSync with  (nm := nm) (n:= S n) (m:=n0) (B:=B) ;try lia...
+        eapply ITAsyncSync with  (nm := nm) (n:= S n) (m:=n0) (B:=B) ;try lia...
+        eapply ITAsyncSync with  (nm := nm) (n:= S n) (m:=n0) (B:=B) ;try lia...
+        eapply ITAsyncSync with  (nm := nm) (n:= S n) (m:=n0) (B:=B) ;try lia...
+              eapply ITAsyncSync with  (nm := nm) (n:= S n) (m:=n0) (B:=B) ;try lia...
+   
+        apply TensorComm'.
+        rewrite (Permutation_app_comm M1).  
+
+        eapply ITAsyncSync with  (nm := nm) (n:= m') (m:=n) (B:=B);try lia...
+        
+        apply TensorComm'.
+        rewrite (Permutation_app_comm M1). 
+
+        eapply ITAsyncSync with  (nm := nm) (n:= S n0) (m:=n) (B:=B);try lia...
+       
+        apply TensorComm'.
+        rewrite (Permutation_app_comm M1). 
+
+        eapply ITAsyncSync with  (nm := nm) (n:= S n0) (m:=n) (B:=B);try lia...
+        apply TensorComm'.
+        rewrite (Permutation_app_comm M1). 
+
+        eapply ITAsyncSync with  (nm := nm) (n:= S n0) (m:=n) (B:=B);try lia...
+        apply TensorComm'.
+        rewrite (Permutation_app_comm M1). 
+
+        eapply ITAsyncSync with  (nm := nm) (n:= S n0) (m:=n) (B:=B);try lia...
+ 
+ apply TensorComm'.
+        rewrite (Permutation_app_comm M1). 
+        eapply ITAsyncSync with  (nm := nm) (n:= S n0) (m:=n) (B:=B);try lia...
+      
+        
+        (* both F and G are not asynchronous formulas *)
+        eapply  ITSyncSync with (nm := nm) (n:=n) (m:=n0) (B:=B) ...
+
+      + (* L1 is empty and L2 is not empty *)
+        eapply InvTensorConsNil with (nm:=nm) (n':=n') (m':=m') (B:=B)  (L1 := [])...
+        
+       + (* L1 is not empty and L2 is empty *)
+        sauto. 
+            apply TensorComm'.
+            rewrite (Permutation_app_comm M1). 
+        rewrite <- (app_nil_l (o::L1)).
+        eapply InvTensorConsNil with (nm:=nm) (n':=m') (m':=n') (B:=B);try lia...
+      +  (* L1 and L2 are not empty *)
+        apply InvTensorConsNil' with (nm:=nm) (n':=n') (m':=m') (L1 := o :: L1) (B:=B) ...
+        discriminate.
+   Qed.
+
+    (* =============================================== *)
+    (* PROOF OF RDOWN *)
+    (* =============================================== *)
+    Theorem InvTensorDW: forall  n , 
+    (forall m : nat, m <= n -> RIndTensor m) -> RDownTensor (n).
+    Proof with sauto;solvePolarity;solveLL.
+      intros n IH.
+      unfold RDownTensor.
+      intros *. intros Hnm HPosF HD1 HD2.
+      inversion HD1...
+      +
+        assert(HRI: RIndTensor (S m +n1)) by (apply IH ; lia).
+        destruct HRI as [HUp  HDown] ...
+        assert(Hn : S m + n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
+        FLLleft. 
+        eapply HDown  with (n:=n1) (m:=m)  (B:=B)  ... lia. 
+      +
+        assert(HRI: RIndTensor (S m +n1)) by (apply IH ; lia).
+        destruct HRI as [HUp  HDown] ...
+        assert(Hn : S m + n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
+        FLLright. 
+        eapply HDown  with (n:=n1) (m:=m)  (B:=B) ... lia. 
+      +
+      checkPermutationCases H1.
+        ++ 
+          assert(HRI: RIndTensor (S m + n1)).  apply IH. lia. 
+          destruct HRI as [HUp  HDown] ...
+          simpl in HDown.
+           CleanContext.
+          FLLsplit (F ⊗ G::x ++ M') N ...
+          rewrite <- H1... 
+          eapply HDown with (m:=m) (n:=n1) (B:=B)  ;try lia...
+          HProof.
+          HProof.
+        ++ 
+          assert(HRI: RIndTensor (S m + n1)).  apply IH. lia. 
+
+          destruct HRI as [HUp  HDown] ...
+          simpl in HDown.
+          rewrite Nat.sub_0_r in HDown.
+          FLLsplit M0 (F ⊗ G::x ++ M' ). 
+          rewrite <- H1... 
+          HProof.
+          eapply HDown with (m:=m) (n:=n1) (B:=B)  ;try lia...
+          HProof.
+      +   
+        assert(HRI: RIndTensor (m + S n1 )) by ( apply IH;lia).
+        destruct HRI as [HUp  HDown] ...
+        assert(Hn : m + S n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
+        FLLexists t. 
+                eapply HDown with (n:=n1) (m:=m) (B:=B) ...  
+        lia.
+     +
+        apply UpExtension in H5 ...
+        assert(HRI: RIndTensor (m + x)). apply IH. lia.
+        destruct HRI as [HUp  HDown]. clear HDown.
+        rewrite <- (app_nil_r [H]). 
+        eapply HUp with (n:= x )(m:= m) (B:=B) ...
+        lia.
+     Qed.
+
+    Theorem InvTensorAux : forall n, RIndTensor n.
+    Proof.
+      intro n.
+      induction n using strongind.
+      + unfold RIndTensor.
+        split; [apply RUpT0 | apply RDownT0].
+      + unfold RIndTensor in *.
+        split;[|simpl;  rewrite Nat.sub_0_r].
+        apply InvTensorUP; assumption.
+        apply InvTensorDW; assumption.
+    Qed.
+
+    (* =============================================== *)
+    (* MAIN INVERTIBILITY THEOREM *)
+    (* =============================================== *)
+
+    Theorem InvTensor : forall B L L' F G  M M',
+        seq th B M (UP (L++[F])) -> 
+        seq th B M' (UP (L'++[G])) -> 
+        seq th B (F ⊗ G :: M ++ M') (UP (L ++ L')) .
+    Proof with sauto;solvePolarity;solveLL.
+      intros.
+      assert(HRn:  forall n, RUpTensor n) by (apply InvTensorAux).
+      apply seqtoSeqN in H.
+      apply seqtoSeqN in H0...
+      generalize (HRn (x0 + x));intros.
+      eapply H1 with (B:=B) ...
+    Qed.
+
+    Theorem InvTensorC : forall B L L' F G M M', 
+       In (F ⊗ G) B ->
+        seq th B M (UP (L++[F])) -> 
+        seq th B M' (UP (L'++[G])) -> 
+        seq th B (M ++ M') (UP (L ++ L')).
+    Proof.
+      intros.
+      eapply @AbsorptionClassic;eauto.
+      apply UpExtension'. solvePolarity.
+      eapply InvTensor with (B:=B);auto.
+    Qed.  
+    
+Theorem InvTensorT : forall B L L' F G M M', 
+       th (F ⊗ G) ->
+        seq th B M (UP (L++[F])) -> 
+        seq th B M' (UP (L'++[G])) -> 
+        seq th B (M ++ M') (UP (L ++ L')).
+    Proof.
+      intros. 
+      eapply @AbsorptionTheory;eauto.
+      1-2:intro;solvePolarity.
+      apply UpExtension'. solvePolarity.
+      eapply InvTensor with (B:=B);auto.
+    Qed.  
+    
+  End InvTensor.
+End InvPosPhase.
+

@@ -6,51 +6,57 @@ Misc/Permutations.v
 Misc/UtilsTactics.v
 
 # First-order Classical Linear Logic
-SL/Syntax.v
+FOLL/Syntax.v
 
 # Monadic System
-SL/Monadic/Sequent.v
-SL/Monadic/TacticsPre.v
-SL/Monadic/StructuralRules.v
+FOLL/Monadic/Sequent.v
+FOLL/Monadic/PreTactics.v
+FOLL/Monadic/StructuralRules.v
 
 # Dyadic System
-SL/Dyadic/Sequent.v
-SL/Dyadic/TacticsPre.v
-SL/Dyadic/StructuralRules.v
-SL/Dyadic/OSTactics.v
-SL/Dyadic/CutLElimination.v
-SL/Dyadic/CutCElimination.v
-SL/Dyadic/CutElimination.v
+FOLL/Dyadic/Sequent.v
+FOLL/Dyadic/PreTactics.v
+FOLL/Dyadic/StructuralRules.v
+FOLL/Dyadic/Tactics.v
+FOLL/Dyadic/CutLElimination.v
+FOLL/Dyadic/CutCElimination.v
+FOLL/Dyadic/CutElimination.v
 
 # Dyadic System with Explicit Exchange
-SL/DyadicExc/Sequent.v
-SL/DyadicExc/TacticsPre.v
-SL/DyadicExc/StructuralRules.v
-SL/DyadicExc/DYTactics.v
-SL/DyadicExc/Adequacy.v
-SL/DyadicExc/CutLElimination.v
-SL/DyadicExc/CutCElimination.v
-SL/DyadicExc/CutElimination.v
+FOLL/DyadicExc/Sequent.v
+FOLL/DyadicExc/PreTactics.v
+FOLL/DyadicExc/StructuralRules.v
+FOLL/DyadicExc/Tactics.v
+FOLL/DyadicExc/Adequacy.v
+FOLL/DyadicExc/CutLElimination.v
+FOLL/DyadicExc/CutCElimination.v
+FOLL/DyadicExc/CutElimination.v
 
 # Focused System
-SL/Focused/Syntax.v
-SL/Focused/Sequent.v
-SL/Focused/TacticsPre.v
-SL/Focused/StructuralRules.v
-SL/Focused/Derivations.v
-SL/Focused/FLLTactics.v
-SL/Focused/FLLReasoning.v
-SL/Focused/InvNegativePhase.v
-SL/Focused/InvPositivePhase.v
-SL/Focused/CutElimination.v
-#SL/IdElimination.v
-#SL/Examples.v
+SL/FLL/Syntax.v
+SL/FLL/Sequent.v
+SL/FLL/PreTactics.v
+SL/FLL/StructuralRules.v
+SL/FLL/Derivations.v
+SL/FLL/Tactics.v
+SL/FLL/Reasoning.v
+SL/FLL/InvNegativePhase.v
+SL/FLL/InvPositivePhase.v
+#SL/FLL/CutElimination.v
+#SL/FLL/IdElimination.v
+#SL/FLL/Examples.v
 
-OL/Syntax.v
-OL/SyntaxResults.v
-#OL/Definitions.v
-#OL/TacticsPre.v
+SL/SELLF/Signature.v
+SL/SELLF/Syntax.v
+SL/SELLF/Locations.v
+
+#OL/Syntax.v
+#OL/SyntaxResults.v
 #OL/StructuralClauses.v
+#OL/Definitions.v
+#OL/Substructural/OLCut.v
+#OL/Classical/OLCut.v
+#OL/PreTactics.v
 #OL/Bipoles.v
 #OL/Substructural/Definitions.v
 #OL/Classical/OLCut.v
