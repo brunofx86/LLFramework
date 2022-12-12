@@ -187,7 +187,7 @@ Global Hint Resolve Complexity0
 Module LLNotations .
   Notation "'⊥'" := Bot.
   Notation "'⊤'" := Top.
-  Notation "'1'" := One.
+  Notation "'1" := One.
   Notation "'0'" := Zero.
   Notation "A ⊗ B" := (MAnd A B ) (at level 50) .
   Notation "A ⅋ B" := (MOr A B) (at level 50) .

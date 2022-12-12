@@ -36,8 +36,6 @@ Qed.
 
 End PositiveAtoms.
 
-Ltac OLSolve :=   solveFoldFALL1 IsPositiveAtomFormulaL.
-
 (** Some results regarding the length of formulas *)
 
 Section FormulaLength.
@@ -781,3 +779,4 @@ End OLSyntax.
 
 Global Hint Resolve uniform_at : core.
 
+Ltac OLSolve :=   solveFoldFALL1 IsPositiveAtomFormulaL.

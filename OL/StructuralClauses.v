@@ -1,6 +1,6 @@
 
 Require Export LL.OL.SyntaxResults.
-Require Import LL.SL.Focused.FLLReasoning.
+Require Import LL.SL.FLL.Reasoning.
 Export ListNotations.
 Export LLNotations.
 
@@ -15,11 +15,12 @@ Context `{OLS : OLSyntax}.
   (** Allowing contraction and weakening on the right side of the sequent *)
   Definition NEG F := (perp (up F)) ⊗ (? atom (up F)).
 
+
 Definition hasPos th:= (forall OO: uexp, isOLFormula OO -> th (POS OO)).
 Definition hasNeg th:= (forall OO: uexp, isOLFormula OO -> th (NEG OO)).
 
 
-Lemma PosF : forall (th : oo -> Prop) F D M, 
+Lemma PosF : forall (th : oo -> Prop) F D M , 
 isOLFormula F -> hasPos th ->
 seq th (D++[(atom (down F))] ) (M) (UP []) -> 
 seq th D ((atom (down F)) :: M) (UP []).

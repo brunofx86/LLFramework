@@ -6,7 +6,7 @@ proof of the cut-elimination theorem of Object Logics *)
 
 Require Export LL.OL.StructuralClauses.
 Require Import Coq.Init.Nat.
-Require Import LL.SL.Focused.CutElimination.
+Require Import LL.SL.FLL.CutElimination.
 Import LL.Misc.Permutations.
 Import Coq.Init.Datatypes.
 Export ListNotations.
@@ -59,7 +59,7 @@ Context `{OLR: OORules}.
 (** Building the bipoles of the rules out of the user definitions  *)
 Definition makeLRuleConstant (lab : constants) :=
     ( perp ( down  ( t_cons lab) )) ⊗ (rulesCte lab).(rc_leftBody) .
-
+   
 Definition makeRRuleConstant (lab : constants) :=
     ( perp ( up  ( t_cons lab))) ⊗ (rulesCte lab).(rc_rightBody) .
 
@@ -74,7 +74,7 @@ Definition makeLRuleBin (lab : connectives) :=
 
 Definition makeRRuleBin (lab : connectives) :=
     fun (F G :uexp) => (perp ( up  ( t_bin lab F G)) ) ⊗ (rulesBin lab).(rb_rightBody)  F G.
-
+    
 Definition makeLRuleQ (lab : quantifiers) :=
     fun FX => ( perp ( down  ( t_quant lab FX))) ⊗ (rulesQ lab).(rq_leftBody) FX.
 
@@ -284,6 +284,7 @@ Definition sideBinary (s:Side) :=
   | Right => (makeRRuleBin, rb_rightBody, up)
 end.
 
+
 Definition sideQuantifier (s:Side) :=
   match s with
   | Left => (makeLRuleQ, rq_leftBody, down)
@@ -321,7 +322,6 @@ Definition BiPoleBinary (lab: connectives) (s:Side) (t : BipoleEnum): Prop :=
     end
 end.
 
-
 Definition BiPoleQuantifier (lab: quantifiers) (s:Side) (t : BipoleEnum): Prop :=
   match (sideQuantifier s) with
   | (rule, body, pred) =>
@@ -340,12 +340,6 @@ Hint Unfold BiPoleCte BiPoleUnary BiPoleBinary BiPoleQuantifier : core .
 Definition RINIT (F:uexp) : oo := (perp (up  F) )  ⊗ (perp (down F) ) .
 Definition RCUT  (F:uexp) : oo := (atom (up  F) )  ⊗ (atom (down F) ).
 
-(*   (** Allowing contraction and weakening on the left side of the sequent *)
-  Definition POS F := ((perp (down F)) ⊗ ? atom (down F)).
-  (** Allowing contraction and weakening on the right side of the sequent *)
-  Definition NEG F := ((perp (up F)) ⊗ ? atom (up F)).
- *) 
-  
   Hint Unfold RINIT RCUT : core.
 
  (** The cut rule applied on object level terms of a given size  *)
@@ -390,8 +384,19 @@ Proof with solveLL.
   inversion Hn...
   generalize (LengthFormula H H0); intro. lia.
 Qed.
-  
-  
+
+Lemma CutBase n m F:   
+lengthUexp F n -> isOLFormula F ->
+seq (CutRuleN (max n m)) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
+Proof with sauto.
+  intros... 
+  TFocus (RCUT F).
+  inversion H1.
+  eapply ctn with (m:=n)...
+  FLLsplit [⌈ F ⌉^]  [⌊ F ⌋^]  .
+  all: solveLL.
+Qed. 
+
   (** CUT-Coherence bounded with the size of the cut *)
 
 Definition CutCoherenceCte (R: ruleCte) :=
@@ -445,7 +450,7 @@ Definition wellFormedUnary: Prop :=
 Definition wellFormedBinary: Prop :=
   forall Theory Gamma Delta (lab: connectives) (s:Side),
   exists (t : BipoleEnum),  BiPoleBinary Theory Gamma Delta lab s t.
-
+  
 (* We assume that quantifiers are encoded with one premise bipoles *)
 Definition wellFormedQuantifier: Prop :=
   forall Theory Gamma Delta (lab: quantifiers) (s:Side),
@@ -456,12 +461,12 @@ Definition wellFormedTheory  : Prop :=
   wellFormedUnary /\ 
   wellFormedBinary /\ 
   wellFormedQuantifier .
- 
+
 Definition wellTheory : Prop := CutCoherence  /\ wellFormedTheory.
 
 Hint Unfold CutCoherenceBin CutCoherenceQ  CutCoherence wellFormedCte wellFormedUnary wellFormedBinary wellFormedQuantifier wellTheory  : core .
   
-Record structrules := mk_srules {
+Record structrules := {
   pos : bool ;
   neg : bool  }.
 
@@ -472,17 +477,15 @@ Inductive OLTheory  P : oo -> Prop :=
   | ooth_strpos {f : pos P = true}: forall OO, isOLFormula OO -> OLTheory P (POS OO) 
   | ooth_strneg {f : neg P = true}: forall OO, isOLFormula OO -> OLTheory P (NEG OO) .
   
-Definition PN := (mk_srules true true).
-Definition PnN := (mk_srules true false).
-Definition nPnN := (mk_srules false false).
+  
+Definition PN := {| pos:= true ; neg:= true|}.
+Definition PnN :=  {| pos:= true ; neg:= false |}.
+Definition nPnN := {| pos:= false ; neg:= false|}.
   
   (** A theory including cuts of size [n] *)
 Inductive OLTheoryCut P (n:nat) : oo -> Prop :=
-  | oothc_theory : forall OO, buildTheory OO ->  OLTheoryCut P n OO
-  | oothc_init : forall OO, isOLFormula OO -> OLTheoryCut P n (RINIT OO) 
-  | oothc_cutn : forall OO, CutRuleN n OO -> OLTheoryCut P n OO
-  | oothc_strpos {f : pos P = true}: forall OO, isOLFormula OO -> OLTheoryCut P n (POS OO) 
-  | oothc_strneg {f : neg P = true}: forall OO,isOLFormula OO ->  OLTheoryCut P n (NEG OO) .
+  | oothc_theory : forall OO, OLTheory  P  OO ->  OLTheoryCut P n OO
+  | oothc_cutn : forall OO, CutRuleN n OO -> OLTheoryCut P n OO.
   
   
 Hint Constructors  OLTheoryCut OLTheory   : core.
@@ -504,11 +507,33 @@ Proof.
   inversion H;subst; solve[constructor;auto].
 Qed.
 
+
 Lemma TheoryEmb2 {P}: forall n F  , ((CutRuleN n) F) -> (OLTheoryCut P n) F.
 Proof.  
   intros.
   inversion H;subst.
   apply oothc_cutn;auto.
 Qed.  
-  
+
+Lemma TheoryEmb3 {P}: forall m n F , n<=m -> (OLTheoryCut P n) F -> (OLTheoryCut P m) F.
+Proof. 
+  intros.
+  inversion H0;subst; try solve[constructor;auto].
+  inversion H1;subst.
+  apply oothc_cutn;auto.
+  apply ctn with (m:=m0);auto.
+lia.
+Qed.
+
+
 End Bipoles.
+
+Global Hint Unfold makeLRuleConstant makeRRuleConstant makeLRuleUnary makeRRuleUnary makeLRuleBin makeRRuleBin makeLRuleQ makeRRuleQ : core.
+
+Global Hint Unfold BiPoleCte BiPoleUnary BiPoleBinary BiPoleQuantifier : core .
+
+Global Hint Unfold RINIT RCUT : core.
+Global Hint Constructors CutRuleN : core.
+Global Hint Unfold CutCoherenceBin CutCoherenceQ  CutCoherence wellFormedUnary wellFormedBinary wellFormedQuantifier wellTheory  : core .
+
+Global Hint Constructors  OLTheoryCut OLTheory : core.

@@ -5,7 +5,7 @@ This file defines the general requirements imposed on the syntax of OLs to prove
  *)
 
 Require Export LL.Misc.Hybrid.
-Require Export LL.SL.Focused.FLLTactics.
+Require Export LL.SL.FLL.Tactics.
 Export ListNotations.
 Export LLNotations.
 Set Implicit Arguments.
@@ -154,11 +154,19 @@ End OLSyntax.
 
 Global Hint Constructors isOLTerm isOLAtom isOLConstant isOLFormula : core.
 
-Global Hint Unfold LEncode REncode : core.
+Global Hint Constructors 
+lengthUexp
+IsPositiveAtomFormula : core.
 
-Notation "'⌈' A '⌉'" := ( (up A)) (at level 10) .
-Notation "'⌊' A '⌋'" := ( (down A)) (at level 10) .
+
+Global Hint Unfold LEncode REncode IsPositiveAtomFormulaL
+isOLFormulaL: core.
+
+Notation "⌈ A ⌉" := ( atom (up A)) (at level 10) .
+Notation "⌊ A ⌋" := ( atom (down A)) (at level 10) .
+Notation "⌈ A ⌉^" := ( perp (up A)) (at level 10) .
+Notation "⌊ A ⌋^" := ( perp (down A)) (at level 10) .
 
 Declare Scope encode.
-Notation "'⌊' L '⌋'" := (LEncode L) (at level 10) :encode.
-Notation "'⌈' L '⌉'" := (REncode L) (at level 10) :encode.
+Notation "⌜ L ⌝" := (REncode L) (at level 10).
+Notation "⌞ L ⌟" := (LEncode L) (at level 10).

@@ -1,5 +1,5 @@
 -R . "LL"
-# Miscellaneous and Utilitities
+# Miscellaneous and Utilities
 Misc/Utils.v
 Misc/Hybrid.v
 Misc/Permutations.v
@@ -42,19 +42,20 @@ SL/FLL/Tactics.v
 SL/FLL/Reasoning.v
 SL/FLL/InvNegativePhase.v
 SL/FLL/InvPositivePhase.v
-#SL/FLL/CutElimination.v
+SL/FLL/CutElimination.v
 #SL/FLL/IdElimination.v
 #SL/FLL/Examples.v
 
-SL/SELLF/Signature.v
-SL/SELLF/Syntax.v
-SL/SELLF/Locations.v
+#SL/SELLF/Signature.v
+#SL/SELLF/Syntax.v
+#SL/SELLF/Locations.v
 
-#OL/Syntax.v
-#OL/SyntaxResults.v
-#OL/StructuralClauses.v
-#OL/Definitions.v
-#OL/Substructural/OLCut.v
+OL/Syntax.v
+OL/SyntaxResults.v
+OL/StructuralClauses.v
+OL/Definitions.v
+OL/Substructural/OLCut.v
+OL/Substructural/MALL.v
 #OL/Classical/OLCut.v
 #OL/PreTactics.v
 #OL/Bipoles.v
