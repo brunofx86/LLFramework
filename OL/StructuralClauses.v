@@ -31,6 +31,18 @@ Proof with sauto.
   FLLsplit [(atom (down F))] M.
 Qed.    
 
+Lemma PosFN : forall n (th : oo -> Prop) F D M , 
+isOLFormula F -> hasPos th ->
+seqN th n (D++[(atom (down F))] ) (M) (UP []) -> 
+seqN th (S (S (S (S n)))) D ((atom (down F)) :: M) (UP []).
+Proof with sauto.
+  intros. 
+  TFocus (POS F ). 
+  inversion H1...
+  FLLsplit [(atom (down F))] M.
+Qed.    
+
+
 Lemma NegF : forall (th : oo -> Prop) F D M, 
 isOLFormula F -> hasNeg th ->
 seq th (D ++ [(atom (up F))]) M (UP []) -> 
@@ -41,6 +53,18 @@ Proof with sauto.
   inversion H1.
   FLLsplit [(atom (up F))] M.
 Qed. 
+
+Lemma NegFN : forall n (th : oo -> Prop) F D M , 
+isOLFormula F -> hasNeg th ->
+seqN th n (D++[(atom (up F))] ) (M) (UP []) -> 
+seqN th (S (S (S (S n)))) D ((atom (up F)) :: M) (UP []).
+Proof with sauto.
+  intros. 
+  TFocus (NEG F ). 
+  inversion H1...
+  FLLsplit [(atom (up F))] M.
+Qed.    
+
 
 Lemma PosSetP L : forall (th : oo -> Prop) D M, 
 isOLFormulaL L -> hasPos th ->
@@ -161,6 +185,19 @@ Proof with sauto.
   rewrite app_assoc_reverse...
   Qed.
 
+Lemma ContractionLinearPos: forall (th:oo->Prop) D M N,  
+hasPos th -> isOLFormulaL N ->
+seq th D (M++LEncode N++LEncode N) (UP []) ->
+seq th D (M++LEncode N) (UP []).
+Proof with sauto.
+  intros.
+  apply PosSetP...
+
+  apply AbsorptionCSet'.
+  apply AbsorptionLSet'.
+  rewrite app_assoc_reverse...
+  Qed.
+
 Lemma WeakeningLinear: forall (th:oo->Prop) D M N,  
 hasPos th -> hasNeg th -> 
 IsPositiveAtomFormulaL N -> 
@@ -182,6 +219,17 @@ Proof with sauto.
   apply NegSetP...
   apply PosSetP...
   rewrite app_assoc.
+  apply weakeningGen...
+Qed.
+
+Lemma WeakeningLinearPos: forall (th:oo->Prop) D M N,  
+hasPos th -> 
+isOLFormulaL N -> 
+seq th D M (UP []) ->
+seq th D (M++LEncode N) (UP []).
+Proof with sauto.
+  intros.
+  apply PosSetP...
   apply weakeningGen...
 Qed.
   

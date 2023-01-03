@@ -24,10 +24,10 @@ inductive Set, e.g.,
 
 Class OLSyntax := {
   OLType:Set;
-  constants : Set ; (* 0 ary connectives *)
-  uconnectives : Set ; (* unary connectives *)
-  connectives : Set ; (* binary connectives *)
-  quantifiers : Set (* quantifiers *)
+  cons : Set ; (* 0 ary connectives *)
+  ucon : Set ; (* unary connectives *)
+  bcon : Set ; (* binary connectives *)
+  qcon : Set (* quantifiers *)
 }.
 
 (** ** Definition of the OL Syntax  *)
@@ -43,12 +43,13 @@ Context `{OL: OLSyntax}.
   
 (** Syntax of the Object logic *)
 Inductive Econ: Set :=
-  | oo_cons : constants -> Econ
-  | oo_un : uconnectives -> Econ
-  | oo_bin : connectives -> Econ (* binary connectives *)
-  | oo_q : quantifiers -> Econ (* quantifiers *)
+  | oo_term : OLType -> Econ    (* Coercion --terms *)
   | oo_atom : nat -> Econ (* names for atoms *)
-  | oo_term : OLType -> Econ    (* Coercion --terms *).
+  | oo_cons : cons -> Econ
+  | oo_ucon : ucon -> Econ
+  | oo_bcon : bcon -> Econ (* binary connectives *)
+  | oo_qcon : qcon -> Econ (* quantifiers *)
+.
 
 (** Notation for Syntax *)
 Definition uexp : Set := expr Econ.
@@ -61,17 +62,17 @@ Definition t_term (t:OLType)   :=  (CON (oo_term  t)) .
 Definition t_atom (id:nat) (A:uexp)  := APP (CON (oo_atom  id)) A. 
 
 (** Constants *)
-Definition t_cons (lab :constants)  := CON (oo_cons lab) .
+Definition t_cons ct := CON (oo_cons ct) .
   
 (** Unary connectives *)
-Definition t_ucon (lab : uconnectives) := fun F => APP (CON (oo_un lab )) F .
+Definition t_ucon uc := fun F => APP (CON (oo_ucon uc)) F .
 
 (** Binnary connectives *)
-Definition t_bin (lab : connectives)   :=
-    fun M1 M2 => APP (APP (CON (oo_bin lab )) M1) M2.
+Definition t_bcon bc :=
+    fun F G => APP (APP (CON (oo_bcon bc)) F) G.
 (** Quantifiers *)
-Definition t_quant (lab : quantifiers)  :=
-    fun M => (APP (CON (oo_q lab)) (lambda M)).
+Definition t_qcon qc :=
+    fun F => (APP (CON (oo_qcon qc)) (lambda F)).
   
 (** *** Well-formedness conditions *)
 Inductive isOLTerm : uexp -> Prop :=
@@ -85,14 +86,12 @@ Inductive isOLConstant : uexp -> Prop :=
   .  
 Inductive isOLFormula : uexp -> Prop :=
   | isFAtom : forall t id , isOLTerm t -> isOLFormula (t_atom id t)
-  | isFCons : forall id , isOLConstant id -> isOLFormula id
-  | isFUn : forall (lab : uconnectives) F ,
-      isOLFormula F ->  isOLFormula ( t_ucon lab F)
-  | isFBin : forall (lab : connectives) F G,
-      isOLFormula F -> isOLFormula G -> isOLFormula ( t_bin lab F G)
-  | isFQ : forall lab (FX : uexp -> uexp),
+  | isFCons : forall id, isOLConstant id -> isOLFormula id
+  | isFUn : forall uc F, isOLFormula F ->  isOLFormula (t_ucon uc F)
+  | isFBin : forall bc F G, isOLFormula F -> isOLFormula G -> isOLFormula (t_bcon bc F G)
+  | isFQ : forall qc (FX : uexp -> uexp),
       uniform FX -> (forall (t:uexp), proper t -> isOLFormula (FX t)) ->
-      isOLFormula (t_quant lab FX) .
+      isOLFormula (t_qcon qc FX) .
  
 (** Well formendness conditions for lists of formulas and list of judgments *)
 
@@ -107,13 +106,13 @@ Inductive lengthUexp : uexp -> nat -> Prop :=
   | l_t_term : forall (t:OLType), lengthUexp (t_term t) 0
   | l_t_atomU : forall (id:nat) (A:uexp), lengthUexp (t_atom id A) 1
   | l_cons : forall id, lengthUexp (t_cons id) 1
-  | l_ucon : forall (lab:uconnectives) (M1:uexp) (n1:nat),
-      lengthUexp M1 n1 ->  lengthUexp (t_ucon lab M1) (S n1)
-  | l_tbin : forall (lab:connectives) (M1 M2:uexp) (n1 n2:nat),
+  | l_ucon : forall uc (M1:uexp) (n1:nat),
+      lengthUexp M1 n1 ->  lengthUexp (t_ucon uc M1) (S n1)
+  | l_tbin : forall bc (M1 M2:uexp) (n1 n2:nat),
       lengthUexp M1 n1 -> lengthUexp M2 n2 ->
-      lengthUexp (t_bin lab M1 M2) (S (n1 + n2))
-  | l_tall : forall (lab:quantifiers) (M:uexp -> uexp) (n:nat),
-      uniform M -> lengthUexp (M (Var 0%nat%nat)) n -> lengthUexp (t_quant lab M) (S n).
+      lengthUexp (t_bcon bc M1 M2) (S (n1 + n2))
+  | l_tall : forall qc (M:uexp -> uexp) (n:nat),
+      uniform M -> lengthUexp (M (Var 0%nat%nat)) n -> lengthUexp (t_qcon qc M) (S n).
 
 (** ** LL predicated needed in the encoding *)
 
@@ -142,13 +141,22 @@ Inductive IsPositiveAtomFormula : oo -> Prop :=
   | IsFPA_dw : forall A, isOLFormula A -> IsPositiveAtomFormula (atom (down (A)))
   | IsFPA_up : forall A, isOLFormula A -> IsPositiveAtomFormula (atom (up (A))).
 
+
+Inductive IsPositiveAtomBFormula : oo -> Prop :=
+  | IsFBPA_dw : forall A, isOLFormula A -> IsPositiveAtomBFormula (atom (down (A)))
+ | IsFBPA_up : forall A, isOLFormula A -> IsPositiveAtomBFormula  (atom (up (A))) 
+ | IsFBPA_up' : forall A, isOLFormula A -> IsPositiveAtomBFormula (Bang (atom (up (A)))).
+
 Definition IsPositiveAtomFormulaL L : Prop := Forall IsPositiveAtomFormula L.
+Definition IsPositiveAtomBFormulaL L : Prop := Forall IsPositiveAtomBFormula L.
 
 (** Embedding OL formulas in LL formulas *)
 Definition LEncode L:= 
         map (fun x =>atom (down x )) L.
 Definition REncode L:= 
         map (fun x => atom (up x )) L.
+Definition REncodeB L:= 
+        map (fun x => Bang (atom (up x ))) L.
 
 End OLSyntax.
 
@@ -156,10 +164,10 @@ Global Hint Constructors isOLTerm isOLAtom isOLConstant isOLFormula : core.
 
 Global Hint Constructors 
 lengthUexp
-IsPositiveAtomFormula : core.
+IsPositiveAtomFormula IsPositiveAtomBFormula : core.
 
 
-Global Hint Unfold LEncode REncode IsPositiveAtomFormulaL
+Global Hint Unfold LEncode REncode REncodeB IsPositiveAtomFormulaL IsPositiveAtomBFormulaL
 isOLFormulaL: core.
 
 Notation "⌈ A ⌉" := ( atom (up A)) (at level 10) .
@@ -170,3 +178,4 @@ Notation "⌊ A ⌋^" := ( perp (down A)) (at level 10) .
 Declare Scope encode.
 Notation "⌜ L ⌝" := (REncode L) (at level 10).
 Notation "⌞ L ⌟" := (LEncode L) (at level 10).
+Notation "!  ⌜ L ⌝" := (REncodeB L) (at level 10).
