@@ -196,7 +196,7 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
   Proof with sauto.
   induction C;simpl;intros...
   apply absorptionN. 
-  LLPerm (C ++ Gamma ++ [a]).
+  LLPerm (C ++ Gamma ++ [a]). 
   eapply IHC.
   LLExact H...
   Qed. 
@@ -274,6 +274,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
     split...  HProof.
  Qed.
 
+ 
   Lemma FocusingInitRuleU : forall h D A A' B,
       seqN th h B D (DW ((perp A) ⊗ (perp A') ))  -> 
       Permutation D ([atom A] ++ [atom A']) \/ 
@@ -315,6 +316,20 @@ Theorem FocusAtom: forall n Gamma Delta A,
     eexists n.
     split;eauto.
   Qed.
+
+  Theorem FocusingParPos :
+    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    seqN th n G D (DW (A ⅋ B)) ->
+      exists m , n =  S (S(S(S m)))  /\
+                 seqN th m G (B::A::D) (UP []).
+  Proof with sauto.
+    intros.
+    InvTriAll.
+    inversion H5;solvePolarity. 
+    inversion H8;solvePolarity. 
+    eexists n.
+    split;eauto.
+  Qed.
   
   Theorem FocusingPlus:
     forall n A B D G ,
@@ -333,7 +348,25 @@ Theorem FocusAtom: forall n Gamma Delta A,
     eexists n0.
     split;eauto.
   Qed.
-  
+
+  Theorem FocusingPlusPos:
+    forall n A B D G ,
+    seqN th n G D (DW ( Bang (atom A) ⊕ Bang (atom B))) ->
+     ( exists m , n = (S(S (S m)))  /\ D = [] /\
+                 (seqN th m G [atom A] (UP []) )) \/
+    ( exists m , n = (S(S (S m)))  /\  D = [] /\
+                 seqN th m G [atom B] (UP []) ).
+  Proof with sauto.
+    intros.
+    InvTriAll.
+    left.
+    eexists n0.
+    split;eauto.
+    right.
+    eexists n0.
+    split;eauto.
+  Qed.
+
   Theorem FocusingWith :
     forall n A B D G,
       seqN th n G D (DW ( (atom A) & (atom B))) ->
@@ -346,6 +379,23 @@ Theorem FocusAtom: forall n Gamma Delta A,
     eexists n0.
     split;eauto.
   Qed.
+
+
+  Theorem FocusingWithPos :
+    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+      seqN th n G D (DW ( A & B)) ->
+      exists m , n = S(S(S m))  /\
+                 ( (seqN th m G (A::D) (UP []) ) /\
+                   (seqN th m G (B::D) (UP []) )) .
+  Proof with sauto.
+    intros.
+    InvTriAll.
+    inversion H6;solvePolarity. 
+    inversion H9;solvePolarity. 
+    eexists n0.
+    split;eauto.
+  Qed.
+  
   
   Theorem FocusingTensor :
     forall n A B D G,
@@ -360,6 +410,20 @@ Theorem FocusAtom: forall n Gamma Delta A,
     eexists M.
     eexists N.
     split;eauto.
+   Qed. 
+
+  Theorem FocusingTensorPos :
+    forall n A B D G,
+      seqN th n G D (DW ( Bang (atom A) ⊗ (atom B))) ->
+       exists m , n = S(S(S m))  /\
+                  ( seqN th m G [atom A] (UP [])) /\
+                  ( seqN th m G (atom B::D) (UP [])).
+   Proof with sauto.
+    intros.
+    InvTriAll.
+    eexists n0.
+    split;eauto.
+split;eauto. rewrite H2...
    Qed. 
    
    Theorem FocusingClauseL : forall B D A F,
@@ -384,5 +448,6 @@ Theorem FocusAtom: forall n Gamma Delta A,
    rewrite <- (app_nil_l D).
    FLLsplit (nil (A:=oo)) D.
    Qed.  
+
 
 End FLLReasoning.

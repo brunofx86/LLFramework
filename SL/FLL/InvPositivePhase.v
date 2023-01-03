@@ -1601,6 +1601,16 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
       eapply H1 with (B:=B) ...
     Qed.
 
+    Theorem InvTensor' : forall B F G  M M',
+        seq th B M (UP [F]) -> 
+        seq th B M' (UP [G]) -> 
+        seq th B (F ⊗ G :: M ++ M') (UP []) .
+    Proof with sauto;solvePolarity;solveLL.
+      intros.
+      rewrite <- (app_nil_l []). 
+     apply InvTensor...
+    Qed.
+
     Theorem InvTensorC : forall B L L' F G M M', 
        In (F ⊗ G) B ->
         seq th B M (UP (L++[F])) -> 
@@ -1624,6 +1634,29 @@ Theorem InvTensorT : forall B L L' F G M M',
       1-2:intro;solvePolarity.
       apply UpExtension'. solvePolarity.
       eapply InvTensor with (B:=B);auto.
+    Qed.  
+
+
+    Theorem InvTensorC' : forall B  F G M M', 
+       In (F ⊗ G) B ->
+        seq th B M (UP [F]) -> 
+        seq th B M' (UP [G]) -> 
+        seq th B (M ++ M') (UP []).
+    Proof with sauto.
+      intros.
+      rewrite <- (app_nil_l []). 
+     apply InvTensorC with (F:=F) (G:=G)...
+    Qed.  
+    
+Theorem InvTensorT' : forall B F G M M', 
+       th (F ⊗ G) ->
+        seq th B M (UP [F]) -> 
+        seq th B M' (UP [G]) -> 
+        seq th B (M ++ M') (UP []).
+    Proof with sauto.
+      intros.
+      rewrite <- (app_nil_l []). 
+     apply InvTensorT with (F:=F) (G:=G)...
     Qed.  
     
   End InvTensor.
