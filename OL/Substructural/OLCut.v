@@ -8,7 +8,10 @@ cut-coherent if the encoding of the right and left rules of each
 connective are dual. *)
 
 Require Export LL.Misc.Hybrid.
-Require Export LL.OL.Definitions.
+Require Export LL.OL.StructuralClauses. 
+Require Export LL.OL.Requirement1.
+Require Export LL.OL.OLTheory.
+
 Require Import Coq.Init.Nat.
 Require Import LL.SL.FLL.CutElimination.
 Import LL.Misc.Permutations.
@@ -22,111 +25,111 @@ Section CutElimination .
   Context `{OLR: OORules}.
 
   (** As a general hypothesis, we assume that the Object logic is cut-coherent *)
-  Hypothesis LTWell : wellTheory.
-  
-  (** Extracting the needed facts given that all the OL constants are well-defined *)
-Ltac wellConstant HSeq :=
+  Hypothesis LTWell1 : wellFormedTheory.
+  Hypothesis LTCutCoherence: CutCoherence cutR1.
+   
+  Definition ctWellFormed := proj1 LTWell1.
+  Definition unWellFormed := proj1 (proj2 LTWell1).
+  Definition biWellFormed := proj1 (proj2 (proj2 LTWell1)).
+  Definition quWellFormed := proj2 (proj2 (proj2 LTWell1)).
+
+  Definition ctCutCo := proj1 LTCutCoherence.
+  Definition unCutCo := proj1 (proj2 LTCutCoherence).
+  Definition biCutCo := proj1 (proj2 (proj2 LTCutCoherence)).
+  Definition quCutCo := proj2 (proj2 (proj2 LTCutCoherence)).
+
+   (** Extracting the needed facts given that all the OL constants are well-defined *)
+   Ltac wellConstant HSeq :=
     let HS := type of HSeq in
     match HS with
     | seqN ?Rules ?n ?Gamma ?M (DW (?Side ?C)) =>
       let Side' :=
           match Side with 
-          makeRRuleConstant => Right
-           | makeLRuleConstant => Left end in
-      
-      match goal with
-        [  LTWell:wellTheory |- _ ] =>
+          makeRRuleC => Right
+           | makeLRuleC => Left end in
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
-        generalize ((proj1 (proj2 LTWell)) Rules Gamma M C Side' );intro LTWell';
+        generalize (ctWellFormed Rules Gamma M C Side' );intro LTWell';
         destruct LTWell' as [bpEnum  LTWell' ];
           destruct bpEnum;[ apply LTWell' in HSeq; contradiction (* fail case *)
-                          | generalize (LTWell' _ HSeq);intro;CleanContext (* axiom *)
-                          | generalize (LTWell' _ HSeq);intro;CleanContext] (* one premise *)
-      end
+                          | generalize (LTWell' _ HSeq);intro;clear LTWell' (* axiom *)
+                          | generalize (LTWell' _ HSeq);intro;clear LTWell'] (* one premise *)
     end.
- 
-  (** Extracting well-formed conditions for binary predicates *)
-  Ltac wellFormedBin HSeq :=
-    let HS := type of HSeq in
-    match HS with
-    | (seqN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F ?G))) =>
-      let Side' :=
-          match Side with makeRRuleBin => Right | makeLRuleBin => Left end in
-      match goal with
-        [  LTWell:wellTheory |- _ ] =>
-        let LTWell' := fresh "LTWell'" in
-        let bpEnum := fresh "bpEnum" in 
-        generalize ((proj1 (proj2 (proj2 (proj2 LTWell)))) Rules Gamma M C Side' );intro LTWell';
-        destruct LTWell' as [bpEnum  LTWell' ]; destruct bpEnum;generalize (LTWell' _ _ _ HSeq);intro;CleanContext
-      end
-    end.
-
-   Ltac wellFormedU HSeq  :=
+    
+   Ltac wellUnary HSeq  :=
     let HS := type of HSeq in
     match HS with
     | (seqN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
       let Side' :=
           match Side with 
-          makeRRuleUnary => Right 
-          | makeLRuleUnary => Left end in
-      match goal with
-        [  LTWell:wellTheory |- _ ] => 
+          makeRRuleU => Right 
+          | makeLRuleU => Left end in
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
-        generalize ((proj1 (proj2 (proj2 LTWell))) Rules Gamma M C Side' );intro LTWell';generalize (LTWell' _ _ HSeq);intro;CleanContext
-      end
+        generalize  (unWellFormed Rules Gamma M C Side' );
+        intro LTWell';generalize (LTWell' _ _ HSeq);intro;clear LTWell'
     end.
-     
-  Ltac wellFormedQ HSeq :=
+ 
+  (** Extracting well-formed conditions for binary predicates *)
+  Ltac wellBinary HSeq :=
+    let HS := type of HSeq in
+    match HS with
+    | (seqN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F ?G))) =>
+      let Side' :=
+          match Side with makeRRuleB => Right | makeLRuleB => Left end in
+        let LTWell' := fresh "LTWell'" in
+        let bpEnum := fresh "bpEnum" in 
+        generalize (biWellFormed Rules Gamma M C Side' );intro LTWell';
+        destruct LTWell' as [bpEnum  LTWell' ]; 
+        destruct bpEnum;generalize (LTWell' _ _ _ HSeq);intro;clear LTWell'
+    end.
+
+  Ltac wellQuantifier HSeq :=
     let HS := type of HSeq in
     match HS with
     | (seqN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
       let Side' :=
           match Side with makeRRuleQ => Right | makeLRuleQ => Left end in
-      
-      match goal with
-        [  LTWell:wellTheory |- _ ] =>
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
          let HUniform := fresh "HUniform" in
-        generalize ((proj2 (proj2 (proj2 (proj2 LTWell)))) Rules Gamma M C Side' F); intro LTWell';destruct LTWell' as [HUniform LTWell'];generalize (LTWell'  _ HSeq); intro;CleanContext; clear LTWell'
-      end
+        generalize  (quWellFormed Rules Gamma M C Side' F); intro LTWell';
+      destruct LTWell' as [HUniform LTWell'];generalize (LTWell'  _ HSeq); intro; clear LTWell'
     end.
-  
 
+ 
  (** This is the case when a constant is principal in both premises *)
   Theorem ConstantPrincipalCase :
     forall Gamma M N C,
-      (seq (OLTheory nPnN) Gamma M (DW (rc_leftBody (rulesCte C)))) ->
-      (seq (OLTheory nPnN) Gamma N (DW (rc_rightBody (rulesCte C)))) ->
+      (seq (OLTheory nPnN) Gamma M (DW (rc_lftBody (rulesC C)))) ->
+      (seq (OLTheory nPnN) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
       seq (OLTheory nPnN) Gamma (N ++ M) (UP []).
  Proof with sauto.     
     intros.
     apply seqtoSeqN in H... 
     apply seqtoSeqN in H0...
-    generalize( (proj1 (proj1 LTWell)) C);intro CutC.
+    generalize( ctCutCo C);intro CutC.
     unfold CutCoherenceCte in CutC.
     destruct CutC as [Hc CutC].
     apply EmptySubSet with (theory:= (OLTheory nPnN) ) in CutC.
     apply weakeningGen with (CC':= Gamma) in CutC .
     apply seqtoSeqN in CutC.   destruct CutC as [h CutC].
     rewrite app_nil_r in CutC.
-    assert(HCut1: seq (OLTheory nPnN) Gamma ([] ++ N)  ( UP [ (rc_leftBody (rulesCte C)) ^])).
-    eapply @GeneralCut with  (C:=  rc_rightBody (rulesCte C) ^);eauto. 
+    assert(HCut1: seq (OLTheory nPnN) Gamma ([] ++ N)  ( UP [ (rc_lftBody (rulesC C)) ^])).
+    eapply @GeneralCut with  (C:=  rc_rgtBody (rulesC C) ^);eauto. 
     rewrite <- ng_involutive;eauto.
     
     
     apply seqtoSeqN in HCut1.  destruct HCut1 as [h2 HCut1].
-    eapply @GeneralCut with  (C:= (rc_leftBody (rulesCte C)) ^); eauto. 
+    eapply @GeneralCut with  (C:= (rc_lftBody (rulesC C)) ^); eauto. 
     rewrite <- ng_involutive;eauto.
   Qed.
 
   (** This is the case when a unary connective is principal in both premises *)
   Theorem UConnectivePrincipalCase :
     forall Gamma M N C F n n',
-      (seq (OLTheory nPnN) Gamma M (DW (ru_leftBody (rulesUnary C) F))) ->
-      (seq (OLTheory nPnN) Gamma N (DW (ru_rightBody (rulesUnary C) F))) ->
+      (seq (OLTheory nPnN) Gamma M (DW (ru_lftBody (rulesU C) F))) ->
+      (seq (OLTheory nPnN) Gamma N (DW (ru_rgtBody (rulesU C) F))) ->
       (lengthUexp (t_ucon C F) n') ->
       isOLFormula (t_ucon C F) ->
       n' <= n ->
@@ -141,7 +144,7 @@ Ltac wellConstant HSeq :=
     destruct H as [h1 H].
     destruct H0 as [h2 H0].
 
-    generalize( (proj1 (proj2 ((proj1 LTWell)))) C);intro CutC.
+    generalize( unCutCo C);intro CutC.
     unfold CutCoherenceUnary in CutC.
     
     generalize (CutC F n1);intro Cut1. clear CutC.
@@ -152,23 +155,23 @@ Ltac wellConstant HSeq :=
     rewrite app_nil_r in Cut1.
     apply WeakTheoryN with (theory' := OLTheoryCut nPnN n) in H;auto using TheoryEmb1.
     apply WeakTheoryN with (theory' := OLTheoryCut nPnN n) in H0;auto using TheoryEmb1.
-    assert(Cut1': seq (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[(ru_leftBody (rulesUnary C) F) ^] )).
-    eapply @GeneralCut with(C := (ru_rightBody (rulesUnary C) F)  ^) ;eauto.
+    assert(Cut1': seq (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[(ru_lftBody (rulesU C) F) ^] )).
+    eapply @GeneralCut with(C := (ru_rgtBody (rulesU C) F)  ^) ;eauto.
     
     rewrite <- ng_involutive;eauto.
 
     apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
-    eapply @GeneralCut with (C:= (ru_leftBody (rulesUnary C) F) ^); eauto.
+    eapply @GeneralCut with (C:= (ru_lftBody (rulesU C) F) ^); eauto.
     rewrite <- ng_involutive;eauto.
   Qed.
   
   (** This is the case when a binary connective is principal in both premises *)
   Theorem BinConnectivePrincipalCase :
     forall Gamma M N C F G n n',
-      (seq (OLTheory nPnN) Gamma M (DW (rb_leftBody (rulesBin C) F G))) ->
-      (seq (OLTheory nPnN) Gamma N (DW (rb_rightBody (rulesBin C) F G))) ->
-      lengthUexp (t_bin C F G) n' ->
-      isOLFormula (t_bin C F G) ->
+      (seq (OLTheory nPnN) Gamma M (DW (rb_lftBody (rulesB C) F G))) ->
+      (seq (OLTheory nPnN) Gamma N (DW (rb_rgtBody (rulesB C) F G))) ->
+      lengthUexp (t_bcon C F G) n' ->
+      isOLFormula (t_bcon C F G) ->
       n' <= n ->
       seq (OLTheoryCut nPnN (pred n)) Gamma (N ++ M) (UP []).
   Proof with sauto.
@@ -180,7 +183,7 @@ Ltac wellConstant HSeq :=
     destruct H as [h1 H].
     destruct H0 as [h2 H0].
 
-    generalize ((proj1 (proj2 (proj2 (proj1 LTWell)))) C);intro CutC.
+    generalize (biCutCo C);intro CutC.
     unfold CutCoherenceBin in CutC.
     
     generalize (CutC F G n1 n2);intro Cut1. clear CutC.
@@ -192,22 +195,22 @@ Ltac wellConstant HSeq :=
     apply WeakTheoryN with (theory' := OLTheoryCut nPnN n) in H;auto using TheoryEmb1.
     apply WeakTheoryN with (theory' := OLTheoryCut nPnN n) in H0;auto using TheoryEmb1.
     
-    assert(Cut1': seq (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[ (rb_leftBody (rulesBin C) F G) ^] )).
-    eapply @GeneralCut with (C := (rb_rightBody (rulesBin C) F G) ^) ;eauto.
+    assert(Cut1': seq (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[ (rb_lftBody (rulesB C) F G) ^] )).
+    eapply @GeneralCut with (C := (rb_rgtBody (rulesB C) F G) ^) ;eauto.
     rewrite <- ng_involutive;eauto.
  
     apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
-    eapply @GeneralCut with (C:= (rb_leftBody (rulesBin C) F G) ^); eauto.     rewrite <- ng_involutive;eauto.
+    eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- ng_involutive;eauto.
   Qed.
 
   (** This is the case when a quantifier is principal in both premises *)
   Theorem QuantifierPrincipalCase :
     forall Gamma M N C FX FX0 n n',
-      (seq (OLTheory nPnN) Gamma M (DW (rq_leftBody (rulesQ C) FX0))) ->
-      (seq (OLTheory nPnN) Gamma N (DW (rq_rightBody (rulesQ C) FX))) ->
-      isOLFormula (t_quant C FX) ->
-      isOLFormula (t_quant C FX0) ->
-      lengthUexp (t_quant C FX) n' ->
+      (seq (OLTheory nPnN) Gamma M (DW (rq_lftBody (rulesQ C) FX0))) ->
+      (seq (OLTheory nPnN) Gamma N (DW (rq_rgtBody (rulesQ C) FX))) ->
+      isOLFormula (t_qcon C FX) ->
+      isOLFormula (t_qcon C FX0) ->
+      lengthUexp (t_qcon C FX) n' ->
       uniform FX -> uniform FX0 ->
       lbind 0%nat FX0 = lbind 0%nat FX ->
       n' <= n ->
@@ -224,7 +227,7 @@ Ltac wellConstant HSeq :=
     inversion H3...
     destruct n ;[ lia | simpl].
     assert (ext_eq FX M0). eapply lbindEq;eauto.
-    generalize ( ( proj2 ( proj2 ( proj2 (proj1 LTWell)))) C) ;intro CutC.
+    generalize ( quCutCo C) ;intro CutC.
     assert (Hsize: lengthUexp (FX (Var 0%nat)) n0).
     { rewrite H17...  apply proper_VAR.  }
     assert(HIs: (forall t : expr Econ, proper t -> isOLFormula (FX t))).
@@ -243,15 +246,15 @@ Ltac wellConstant HSeq :=
     destruct H0 as [h2 H0]. destruct Cut1 as [h3 Cut1].
     
 
-    assert(Cut1': seq (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[(rq_leftBody (rulesQ C) FX0) ^] )).
-    eapply @GeneralCut with  (C := (rq_rightBody (rulesQ C) FX) ^) ;eauto.
+    assert(Cut1': seq (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[(rq_lftBody (rulesQ C) FX0) ^] )).
+    eapply @GeneralCut with  (C := (rq_rgtBody (rulesQ C) FX) ^) ;eauto.
     rewrite <- ng_involutive;eauto.
     simpl in Cut1'.
     apply seqtoSeqN in Cut1'.
     destruct Cut1' as [h4 Cut1']. 
 
     
-    eapply @GeneralCut with (C := (rq_leftBody (rulesQ C) FX0) ^) ;eauto.
+    eapply @GeneralCut with (C := (rq_lftBody (rulesQ C) FX0) ^) ;eauto.
     rewrite <- ng_involutive;eauto.
   Qed.
 
@@ -289,7 +292,7 @@ Ltac cutOL P1 P2 :=
            | [ H: OOCut ?n' _, Hn: ?n' <= ?n  |- _ ] =>    assert(H': tP1 -> tP2 -> seq (OLTheoryCut nPnN (pred n)) B (M++N) (UP []));applyOOCut
            end
            | _ => idtac "type of " P2 " is " tP2 end
-   | _ => idtac "type of " P1 " is " tP1 end;sauto.
+   | _ => idtac "type of " P1 " is " tP1 end;sauto;try OLSolve.
    
 Ltac SubCases :=
 repeat 
@@ -308,40 +311,41 @@ match goal with
 | H: Permutation (_++_) ?M  |- context[?M] => rewrite <- H
 end
 .
+
+Ltac unformSeq :=
+repeat
+  match goal with 
+   |[ H: seqN _ ?n ?G ( (atom ( _ _ ) :: _) ++ _) (UP []) |- _] =>
+      try rewrite <- app_comm_cons in H       
+   | _ => idtac
+end.
+
+
  
 Ltac PermuteLeft :=    
   match goal with 
-     |[ Hr: seqN _ ?x (?G ++ ?Y1) (?X ++ _) (UP []),   
-        Hr': seqN _ ?x (?G ++ ?Y2) (?X ++ _) (UP []),             
-       Hl: seqN ?th ?n ?G ( (⌈ ?F ⌉) :: ?N) (UP []),
+     |[ Hr: seqN _ ?x ?G (?X ++ _) (UP []),   
+        Hr': seqN _ ?x ?G (?X ++ _) (UP []),             
+       Hl: seqN ?th ?n ?G ( (⌈ ?F ⌉) :: _) (UP []),
        Hp: Permutation ?X ((⌊ ?F ⌋) :: _) |- _] =>
-   assert(Hl': seqN th n G ( (⌈ F ⌉) :: N) (UP [])) by auto; 
-   apply weakeningGenN_rev with (CC':= Y1) in Hl;
-   apply weakeningGenN_rev with (CC':= Y2) in Hl';
-   rewrite Hp in Hr, Hr';
-    rewrite <- app_comm_cons in Hr, Hr'
-   |[ Hr: seqN _ ?x (?G ++ ?Y1) (?X ++ _) (UP []),   
-        Hr': seqN _ ?x (?G ++ ?Y2) (?X ++ _) (UP []),             
-       Hl: seqN ?th ?n ?G ( (⌈ ?F ⌉) :: ?N) (UP []),
-       Hp: Permutation ( (⌊ ?F ⌋) :: _) ?X |- _] =>
-   assert(Hl': seqN th n G ( (⌈ F ⌉) :: N) (UP [])) by auto; 
-   apply weakeningGenN_rev with (CC':= Y1) in Hl;
-   apply weakeningGenN_rev with (CC':= Y2) in Hl';
-   rewrite <- Hp in Hr, Hr';
-    rewrite <- app_comm_cons in Hr, Hr'    
-   |[ Hr: seqN _ ?x (?G ++ ?Y) (?X ++ _) (UP []),               
-       Hl: seqN _ ?n ?G ( (⌈ ?F ⌉) :: ?N) (UP []),
+   rewrite Hp in Hr, Hr'
+   |[ Hr: seqN _ ?x ?G (?X ++ _) (UP []),   
+        Hr': seqN _ ?x ?G (?X ++ _) (UP []),             
+       Hl: seqN ?th ?n ?G ( (⌊ ?F  ⌋) :: _) (UP []),
+       Hp: Permutation ?X ( (⌈ ?F ⌉) :: _)  |- _] =>
+   rewrite Hp in Hr, Hr'
+   |[ Hr: seqN _ ?x ?G (?X ++ _) (UP []),               
+       Hl: seqN _ ?n ?G ( (⌈ ?F ⌉) :: _) (UP []),
        Hp: Permutation ?X ((⌊ ?F ⌋) :: _) |- _] =>
-       apply weakeningGenN_rev with (CC':= Y) in Hl;
-       rewrite Hp in Hr;
-       rewrite <- app_comm_cons in Hr
-   |[ Hr: seqN _ ?x (?G ++ ?Y) (?X ++ _) (UP []),               
-       Hl: seqN _ ?n ?G ( (⌈ ?F ⌉) :: ?N) (UP []) |- _] =>
-       apply weakeningGenN_rev with (CC':= Y) in Hl;
-       rewrite <- app_comm_cons in Hr       
-
-       end.
+       rewrite Hp in Hr
+   |[ Hr: seqN _ ?x ?G (?X ++ _) (UP []),               
+       Hl: seqN _ ?n ?G ( (⌊ ?F ⌋) :: _) (UP []),
+       Hp: Permutation ?X ((⌈ ?F ⌉) :: _) |- _] =>
+       rewrite Hp in Hr
+   | _ => idtac
+       end;unformSeq.
        
+
 (** Unary Right is not principal on the left branch *)    
 Lemma UnaryRightNotPrincipalL n n' n0 n1 C FCut F Gamma M N: 
  n' <= n ->
@@ -352,29 +356,27 @@ isOLFormula (t_ucon C F) ->
 IsPositiveAtomFormulaL M ->
 IsPositiveAtomFormulaL N ->
 IsPositiveAtomFormulaL Gamma ->
-buildTheory (makeRRuleUnary C F) ->
+buildTheory (makeRRuleU C F) ->
 seqN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 seqN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
-     (DW (makeRRuleUnary C F)) ->
+     (DW (makeRRuleU C F)) ->
 seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-Proof with sauto.
+Proof with sauto; try OLSolve.
   intros.
-  wellFormedU H9.
+  wellUnary H9.
   * Cases H10.
      - PermuteLeft.
-        cutOL H8 H14.
-        1-2: OLSolve.
-        OLSolve.
+        cutOL H8 H12. 
+        OLSolve. 
         rewrite <- app_comm_cons.
-        apply H19...
+        apply H18...
         rewrite Permutation_assoc_comm...
      -  PermuteLeft.
-        cutOL H8 H15.
-        1-2: OLSolve.
-        TFocus (makeRRuleUnary C F).
+        cutOL H8 H14.
+        TFocus (makeRRuleU C F).
         inversion H10.
         FLLsplit (@nil oo) (M++N).
-        apply H19...
+        apply H18...
         rewrite Permutation_assoc_comm... 
 Qed.
 
@@ -389,29 +391,27 @@ isOLFormula (t_ucon C F) ->
 IsPositiveAtomFormulaL M ->
 IsPositiveAtomFormulaL N ->
 IsPositiveAtomFormulaL Gamma ->
-buildTheory (makeLRuleUnary C F) ->
+buildTheory (makeLRuleU C F) ->
 seqN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
-     (DW (makeLRuleUnary C F)) ->
+     (DW (makeLRuleU C F)) ->
 seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellFormedU H10.
+  wellUnary H10.
   * Cases H11.
      - PermuteLeft. 
-        cutOL H9 H15.
-        1-2: OLSolve.
+        cutOL H9 H13.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H20...
+        apply H19...
         rewrite Permutation_assoc_comm...
      - PermuteLeft. 
-        cutOL H9 H16.
-        1-2: OLSolve.
-        TFocus (makeLRuleUnary C F).
+        cutOL H9 H15.
+        TFocus (makeLRuleU C F).
         inversion H11.
         FLLsplit (@nil oo) (M++N).
-        apply H20...
+        apply H19...
         rewrite Permutation_assoc_comm...  
 Qed.        
 
@@ -421,226 +421,206 @@ Lemma BinaryRightNotPrincipalL n n' n0 n1 C FCut F G Gamma M N:
 OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
-isOLFormula (t_bin C F G) ->
+isOLFormula (t_bcon C F G) ->
 IsPositiveAtomFormulaL M ->
 IsPositiveAtomFormulaL N ->
 IsPositiveAtomFormulaL Gamma ->
-buildTheory (makeRRuleBin C F G) ->
+buildTheory (makeRRuleB C F G) ->
 seqN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
-     (DW (makeRRuleBin C F G)) ->
+     (DW (makeRRuleB C F G)) ->
 seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellFormedBin H9.
+  wellBinary H9.
   * Cases H10.
      - PermuteLeft. 
-        cutOL H8 H14.
-        1-2: OLSolve.
+        cutOL H8 H12.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H19...
+        apply H18...
         rewrite Permutation_assoc_comm...
      - PermuteLeft. 
-        cutOL H8 H15.
-        1-2: OLSolve.
-        TFocus (makeRRuleBin C F G).
+        cutOL H8 H14.
+        TFocus (makeRRuleB C F G).
         inversion H10.
         FLLsplit (@nil oo) (M++N). 
-        apply H19...
+        apply H18...
         rewrite Permutation_assoc_comm...
   * Cases H10.
      - PermuteLeft.
-       cutOL H8 H17.
-       1-2: OLSolve.
-       rewrite <- H21 in H20.
-       rewrite H20 in H4.
+       cutOL H8 H15.
+       rewrite <- H19 in H18.
+       rewrite H18 in H4.
        inversion H4...
        OLSolve.
        rewrite <- app_comm_cons.
         rewrite Permutation_assoc_comm...
-        apply H22...
+        apply H20...
         rewrite Permutation_assoc_comm...
-        apply seqNtoSeq in H18...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H18;auto using TheoryEmb1.
+        apply seqNtoSeq in H16...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H16;auto using TheoryEmb1.
     -  PermuteLeft.
-        cutOL H8 H18.
-        1-2: OLSolve.
-       rewrite <- H21 in H20.
-       rewrite H20 in H4.
+        cutOL H8 H16.
+       rewrite <- H19 in H18.
+       rewrite H18 in H4.
        inversion H4...
        OLSolve.
           rewrite <- app_comm_cons.
         rewrite app_assoc_reverse. 
-        apply H22...
-        apply seqNtoSeq in H17...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
+        apply H20...
+        apply seqNtoSeq in H15...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H15;auto using TheoryEmb1.
         rewrite Permutation_assoc_comm...
     -  PermuteLeft.  
-        cutOL H8 H18.
-        1-2: OLSolve.
-       rewrite <- H21 in H4.
+        cutOL H8 H16.
+       rewrite <- H19 in H4.
        OLSolve.
         
         rewrite app_assoc_reverse.
-        TFocus (makeRRuleBin C F G).
+        TFocus (makeRRuleB C F G).
         inversion H10.
-        FLLsplit (@nil oo) ((x7 ++ N )++ x0). 
-        apply H23...
+        FLLsplit (@nil oo) ((x5 ++ N )++ x0). 
+        apply H21...
          rewrite Permutation_assoc_comm...
-    apply seqNtoSeq in H19...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H19;auto using TheoryEmb1.
+    apply seqNtoSeq in H17...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
      -  PermuteLeft.  
-        cutOL H8 H19.
-        1-2: OLSolve.
-       rewrite <- H21 in H4.
+        cutOL H8 H17.
+       rewrite <- H19 in H4.
        OLSolve.
-        TFocus (makeRRuleBin C F G).
+        TFocus (makeRRuleB C F G).
         inversion H10.
-        FLLsplit (@nil oo) (x++(x7 ++ N )). 
-        apply H23...
-          apply seqNtoSeq in H18...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H18;auto using TheoryEmb1.       
+        FLLsplit (@nil oo) (x++(x5 ++ N )). 
+        apply H21...
+          apply seqNtoSeq in H16...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H16;auto using TheoryEmb1.       
         
          rewrite Permutation_assoc_comm...
 * Cases H10.
      - PermuteLeft.
-       cutOL H8 H17.
-       1-2: OLSolve.
-       rewrite H20 in H4.
+       cutOL H8 H15.
+       rewrite H18 in H4.
         OLSolve.
-        cutOL Hl' H18.
-       1-2: OLSolve.
-       rewrite H20 in H4.
+        cutOL H8 H16.
+       rewrite H18 in H4.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H22...
+        apply H20...
         rewrite Permutation_assoc_comm...
         rewrite Permutation_assoc_comm...
       - PermuteLeft.
-        cutOL H8 H18.
-        1-2: OLSolve.
-        cutOL Hl' H19.
-        1-2: OLSolve.
-        TFocus (makeRRuleBin C F G).
+        cutOL H8 H16.
+        cutOL H8 H15.
+        TFocus (makeRRuleB C F G).
         inversion H10.
         FLLsplit (@nil oo) (M ++ N). 
-        apply H23...
+        apply H20...
         rewrite Permutation_assoc_comm...
         rewrite Permutation_assoc_comm...
 Qed.    
 
 (** Unary Left is not principal on the left branch *)  
 Lemma BinaryLeftNotPrincipalL n n' n0 n1 C FCut F G Gamma M N: 
-FCut <> t_bin C F G ->
+FCut <> t_bcon C F G ->
  n' <= n ->
 OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
-isOLFormula (t_bin C F G) ->
+isOLFormula (t_bcon C F G) ->
 IsPositiveAtomFormulaL M ->
 IsPositiveAtomFormulaL N ->
 IsPositiveAtomFormulaL Gamma ->
-buildTheory (makeLRuleBin C F G) ->
+buildTheory (makeLRuleB C F G) ->
 seqN (OLTheory nPnN) (S n0) Gamma ((⌈ FCut ⌉) :: N) (UP []) ->
 seqN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
-     (DW (makeLRuleBin C F G)) ->
+     (DW (makeLRuleB C F G)) ->
 seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellFormedBin H10.
+  wellBinary H10.
   * Cases H11.
      - PermuteLeft.  
-        cutOL H9 H15.
-        1-2: OLSolve.
-        rewrite H18 in H5.
+        cutOL H9 H13.
+        rewrite H17 in H5.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H20...
+        apply H19...
         rewrite Permutation_assoc_comm...
      - PermuteLeft.  
-        cutOL H9 H16.
-        1-2: OLSolve.
-        TFocus (makeLRuleBin C F G).
+        cutOL H9 H15.
+        TFocus (makeLRuleB C F G).
         inversion H11.
         FLLsplit (@nil oo) (M++N).
-        apply H20...
+        apply H19...
         rewrite Permutation_assoc_comm...
   * Cases H11.
      - PermuteLeft.  
-        cutOL H9 H18.
-        1-2: OLSolve.
-        rewrite <- H22 in H21.
-        rewrite H21 in H5.
+        cutOL H9 H16.
+        rewrite <- H20 in H19.
+        rewrite H19 in H5.
         inversion H5...
         OLSolve.
         rewrite <- app_comm_cons.
         rewrite Permutation_assoc_comm...
-        apply H23...
+        apply H21...
         rewrite Permutation_assoc_comm...
-        apply seqNtoSeq in H19...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H19;auto using TheoryEmb1.
+        apply seqNtoSeq in H17...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
      - PermuteLeft. 
-        cutOL H9 H19.
-        1-2: OLSolve.
-        rewrite <- H22 in H21.
-        rewrite H21 in H5.
+        cutOL H9 H17.
+        rewrite <- H20 in H19.
+        rewrite H19 in H5.
         inversion H5...
         OLSolve.
         rewrite <- app_comm_cons.
         rewrite app_assoc_reverse. 
-        apply H23...
-        apply seqNtoSeq in H18...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H18;auto using TheoryEmb1.
+        apply H21...
+        apply seqNtoSeq in H16...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H16;auto using TheoryEmb1.
         rewrite Permutation_assoc_comm...
      - PermuteLeft.
-       cutOL H9 H19.
-       1-2: OLSolve.
-       rewrite <- H22 in H5.
+       cutOL H9 H17.
+       rewrite <- H20 in H5.
        OLSolve.
        rewrite Permutation_assoc_comm...
-       TFocus  (makeLRuleBin C F G).
+       TFocus  (makeLRuleB C F G).
        inversion H11.
-       FLLsplit (@nil oo) ((x7 ++ N) ++ x0).
-       apply H24...
+       FLLsplit (@nil oo) ((x5 ++ N) ++ x0).
+       apply H22...
        rewrite Permutation_assoc_comm...
-       apply seqNtoSeq in H20...
-       apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H20;auto using TheoryEmb1.
+       apply seqNtoSeq in H18...
+       apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H18;auto using TheoryEmb1.
      - PermuteLeft.  
-        cutOL H9 H20.
-        1-2: OLSolve.
-        rewrite <- H22 in H5.
+        cutOL H9 H18.
+        rewrite <- H20 in H5.
         OLSolve.
         rewrite app_assoc_reverse.
-         TFocus  (makeLRuleBin C F G).
+         TFocus  (makeLRuleB C F G).
        inversion H11.
-       FLLsplit (@nil oo) (x++(x7 ++ N)).
-        apply H24...
-        apply seqNtoSeq in H19...
-        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H19;auto using TheoryEmb1.
+       FLLsplit (@nil oo) (x++(x5 ++ N)).
+        apply H22...
+        apply seqNtoSeq in H17...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
          rewrite Permutation_assoc_comm...
   * Cases H11.
      - PermuteLeft.  
-        cutOL H9 H18.
-        1-2: OLSolve.
-        rewrite H21 in H5.
+        cutOL H9 H16.
+        rewrite H19 in H5.
         OLSolve.
-        cutOL Hl' H19.
-        1-2: OLSolve.
-        rewrite H21 in H5.
+        cutOL H9 H17.
+        rewrite H19 in H5.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H23...
+        apply H21...
         1-2: rewrite Permutation_assoc_comm...
      - PermuteLeft.  
-        cutOL H9 H19.
-        1-2: OLSolve.
-        cutOL Hl' H20.
-        1-2: OLSolve.
-         TFocus  (makeLRuleBin C F G).
+        cutOL H9 H16.
+        cutOL H9 H17.
+         TFocus  (makeLRuleB C F G).
        inversion H11.
        FLLsplit (@nil oo) (M++N).      
-        apply H24...
+        apply H21...
         1-2: rewrite Permutation_assoc_comm... 
  Qed.     
 
@@ -650,7 +630,7 @@ Proof with sauto.
 OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
-isOLFormula (t_quant C FX) ->
+isOLFormula (t_qcon C FX) ->
 IsPositiveAtomFormulaL M ->
 IsPositiveAtomFormulaL N ->
 IsPositiveAtomFormulaL Gamma ->
@@ -661,34 +641,32 @@ seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
 seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellFormedQ H9.
+  wellQuantifier H9.
   * Cases H10.
      - PermuteLeft.  
-        cutOL H8 H14.
-        1-2: OLSolve.
-        rewrite H17 in H4.
+        cutOL H8 H12.
+        rewrite H16 in H4.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H19...
+        apply H18...
         rewrite Permutation_assoc_comm...
      - PermuteLeft.  
-        cutOL H8 H15.
-        1-2: OLSolve.
+        cutOL H8 H14.
         TFocus (makeRRuleQ C FX).
         inversion H10.
         FLLsplit (@nil oo) (M++N).
-        apply H19...
+        apply H18...
         rewrite Permutation_assoc_comm...
 Qed.
 
  (** Quantifier Left is not principal on the left branch *) 
  Lemma QuantifierLeftNotPrincipalL n n' n0 n1 C FCut FX Gamma M N: 
- FCut <> t_quant C FX -> 
+ FCut <> t_qcon C FX -> 
  n' <= n ->
 OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
-isOLFormula (t_quant C FX) ->
+isOLFormula (t_qcon C FX) ->
 IsPositiveAtomFormulaL M ->
 IsPositiveAtomFormulaL N ->
 IsPositiveAtomFormulaL Gamma ->
@@ -699,23 +677,21 @@ seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
 seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellFormedQ H10.
+  wellQuantifier H10.
   * Cases H11.
      - PermuteLeft.  
-        cutOL H9 H15.
-        1-2: OLSolve.
-        rewrite H18 in H5.
+        cutOL H9 H13.
+        rewrite H17 in H5.
         OLSolve.
         rewrite <- app_comm_cons.
-        apply H20...
+        apply H19...
         rewrite Permutation_assoc_comm...
      - PermuteLeft.  
-        cutOL H9 H16.
-        1-2: OLSolve.
+        cutOL H9 H15.
         TFocus (makeLRuleQ C FX).
         inversion H11.
         FLLsplit (@nil oo) (M++N).
-        apply H20...
+        apply H19...
         rewrite Permutation_assoc_comm... 
  Qed.       
         
@@ -724,13 +700,13 @@ Ltac permuteUnary :=
 match goal with
 | [H: ?n' <= ?n,
    Hl: seqN _ _ _ (_ :: ?N) (UP []) ,
-   Hr : seqN _ _ _ (_ :: ?M) (DW (makeRRuleUnary _ _))
+   Hr : seqN _ _ _ (_ :: ?M) (DW (makeRRuleU _ _))
   |-  seq _ _ (?M ++ ?N) (UP []) ] =>
    refine (UnaryRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
       
 | [H: ?n' <= ?n,
    Hl: seqN _ _ _ (_ :: ?N) (UP []) ,
-   Hr : seqN _ _ _ (_ :: ?M) (DW (makeLRuleUnary _ _))
+   Hr : seqN _ _ _ (_ :: ?M) (DW (makeLRuleU _ _))
   |-  seq _ _ (?M ++ ?N) (UP []) ] =>
 refine (UnaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
@@ -742,12 +718,12 @@ Ltac permuteBinary :=
 match goal with
 | [H: ?n' <= ?n,
    Hl: seqN _ _ _ (_ :: ?N) (UP []) ,
-   Hr : seqN _ _ _ (_ :: ?M) (DW (makeRRuleBin _ _ _))
+   Hr : seqN _ _ _ (_ :: ?M) (DW (makeRRuleB _ _ _))
   |-  seq _ _ (?M ++ ?N) (UP []) ] =>
    refine (BinaryRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
 | [H: ?n' <= ?n,
    Hl: seqN _ _ _ (_ :: ?N) (UP []) ,
-   Hr : seqN _ _ _ (_ :: ?M) (DW (makeLRuleBin _ _ _))
+   Hr : seqN _ _ _ (_ :: ?M) (DW (makeLRuleB _ _ _))
   |-  seq _ _ (?M ++ ?N) (UP []) ] =>
 refine (BinaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
@@ -789,10 +765,10 @@ Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:
   IsPositiveAtomFormulaL Gamma ->
   seqN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
   seqN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
-  seqN (OLTheory nPnN) n0 Gamma ((⌈ FCut ⌉) :: N) (DW (makeRRuleConstant C)) ->
+  seqN (OLTheory nPnN) n0 Gamma ((⌈ FCut ⌉) :: N) (DW (makeRRuleC C)) ->
   seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M) (DW F0) ->
   OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleConstant C) ->
+  buildTheory (makeRRuleC C) ->
   buildTheory F0 ->
   seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
@@ -809,19 +785,17 @@ Proof with sauto.
                rewrite <- app_comm_cons...
                Cases H0. 
                PermuteLeft.
-               cutOL Hseq1 H6.
-               1-2: OLSolve.
+               cutOL Hseq1 H4.
                OLSolve.
                rewrite <- app_comm_cons...
-               apply H11...
-               LLPerm ((x4 ++ x) ++ N)...
+               apply H10...
+               LLPerm ((x3 ++ x) ++ N)...
                PermuteLeft.
-               cutOL Hseq1 H7.
-               1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
+               cutOL Hseq1 H6.
+               TFocus (makeRRuleC C0).
                inversion H0.
                FLLsplit (@nil oo) (M++N).
-               apply H11...
+               apply H10...
                LLPerm ( (M ++ x) ++ N)...
            -- wellConstant Hseq2'.   
                Cases H0.
@@ -833,25 +807,23 @@ Proof with sauto.
                refine (ConstantPrincipalCase _ H5 H2).
             
                Cases H0. 
-              rewrite <- H10 in H7.
+              rewrite <- H9 in H6.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
 
-               refine (ConstantPrincipalCase _ H7 H2).
+               refine (ConstantPrincipalCase _ H6 H2).
                PermuteLeft.
-               cutOL Hseq1 H6.
-               1-2: OLSolve.
+               cutOL Hseq1 H4.
                OLSolve.
                rewrite <- app_comm_cons...
-               apply H11...
-               LLPerm ((x4 ++ x) ++ N)...
+               apply H10...
+               LLPerm ((x3 ++ x) ++ N)...
                PermuteLeft.
-               cutOL Hseq1 H7.
-               1-2: OLSolve.
-               TFocus (makeLRuleConstant C0).
+               cutOL Hseq1 H6.
+               TFocus (makeLRuleC C0).
                inversion H0.
                FLLsplit (@nil oo) (M++N).
-               apply H11...
+               apply H10...
                LLPerm ( (M ++ x) ++ N)...
            -- permuteUnary.
            -- permuteUnary.
@@ -862,76 +834,67 @@ Proof with sauto.
 (** 1.2 ONE PREMISSE *)        
   * Cases H.
      2:{
-       rewrite H in H3.
-        apply weakeningGenN_rev with (CC':= x0) in Hseq2.
-          rewrite <- app_comm_cons in H3.
-         cutOL H3 Hseq2.
-         1-2: OLSolve.
+       PermuteLeft.
+         cutOL H1 Hseq2.
          OLSolve.
-         LLPerm ((⌈ t_cons C ⌉) ::(M++ x4))...
-         apply H8...
+         LLPerm ((⌈ t_cons C ⌉) ::(M++ x3))...
+         apply H7...
          rewrite app_assoc_reverse... }
-     2:{  apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-               rewrite <- app_comm_cons in H4. 
-               cutOL H4 Hseq2.
-               1-2: OLSolve.
-               TFocus (makeRRuleConstant C).
+     2:{  PermuteLeft.
+               cutOL H3 Hseq2.
+               TFocus (makeRRuleC C).
                inversion H.
                FLLsplit (@nil oo) (M++N).
-               apply H8...
+               apply H7...
                rewrite app_assoc_reverse... }
 
          inversion Hth'...
          - wellConstant Hseq2'.
-           -- Cases H1. 
+           -- Cases H2. 
                rewrite <- app_comm_cons...
-           -- Cases H1. 
+           -- Cases H2. 
                rewrite <- app_comm_cons...
                PermuteLeft.
-               cutOL Hseq1 H11.
-               1-2: OLSolve.
+               cutOL Hseq1 H8.
                OLSolve.
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
                PermuteLeft.
-               cutOL Hseq1 H12.
-               1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
-               inversion H1.
+               cutOL Hseq1 H10.
+               TFocus (makeRRuleC C0).
+               inversion H2.
                FLLsplit (@nil oo) (M++N).
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
          - wellConstant Hseq2'.
-           -- Cases H1. 
-               rewrite <- H12 in H10.
-               rewrite <- H7 in H4.
+           -- Cases H2. 
+               rewrite <- H11 in H9.
+               rewrite <- H6 in H3.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
 
-               refine (ConstantPrincipalCase _ H10 H4).
+               refine (ConstantPrincipalCase _ H9 H3).
                
                rewrite <- app_comm_cons...
-           -- Cases H1. 
-               rewrite <- H15 in H12.
-               rewrite <- H7 in H4.
+           -- Cases H2. 
+               rewrite <- H13 in H10.
+               rewrite <- H6 in H3.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
-               refine (ConstantPrincipalCase _ H12 H4).
+               refine (ConstantPrincipalCase _ H10 H3).
                
                rewrite <- app_comm_cons...
                PermuteLeft.
-               cutOL Hseq1 H11.
-               1-2: OLSolve.
+               cutOL Hseq1 H8.
                OLSolve.
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
                PermuteLeft.
-               cutOL Hseq1 H12.
-               1-2: OLSolve.
-               TFocus (makeLRuleConstant C0).
-               inversion H1.
+               cutOL Hseq1 H10.
+               TFocus (makeLRuleC C0).
+               inversion H2.
                FLLsplit (@nil oo) (M++N).
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
          - permuteUnary.
          - permuteUnary.
@@ -952,106 +915,88 @@ Lemma UnaryRIGHT n n' n0 n1  C F FCut M N Gamma F0:
   IsPositiveAtomFormulaL Gamma ->
   seqN (OLTheory nPnN) (S n0) Gamma  ( (⌈ FCut ⌉) ::N) (UP []) ->
   seqN (OLTheory nPnN) (S n1)  Gamma ( (⌊ FCut ⌋) ::M) (UP []) ->
-  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleUnary C F)) ->
+  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleU C F)) ->
   seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M) (DW F0) ->
   OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleUnary C F) ->
+  buildTheory (makeRRuleU C F) ->
   buildTheory F0 ->
   seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellFormedU Hseq1'.
+  wellUnary Hseq1'.
   * Cases H.
-     2:{ apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-           rewrite H in H3.
-         rewrite <- app_comm_cons in H3 . 
-         cutOL H3 Hseq2.
-         1-2: OLSolve.
+     2:{  PermuteLeft.
+         cutOL H1 Hseq2.
          OLSolve.
-         LLPerm ((⌈ t_ucon C F ⌉) ::(M++ x4))...
-         apply H8...
+         LLPerm ((⌈ t_ucon C F ⌉) ::(M++ x3))...
+         apply H7...
          rewrite app_assoc_reverse... }
-     2:{  apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-               rewrite <- app_comm_cons in H4. 
-               cutOL H4 Hseq2.
-               1-2: OLSolve.
-               TFocus (makeRRuleUnary C F).
+     2:{ PermuteLeft. 
+        cutOL H3 Hseq2.
+               TFocus (makeRRuleU C F).
                inversion H.
                FLLsplit (@nil oo) (M++N).
-               apply H8...
+               apply H7...
                rewrite app_assoc_reverse... }
          inversion Hth'...
          - wellConstant Hseq2'.
-           -- Cases H1. 
+           -- Cases H2. 
                rewrite <- app_comm_cons...
-           -- Cases H1. 
+           -- Cases H2. 
                rewrite <- app_comm_cons...
                PermuteLeft.
-               cutOL Hseq1 H11.
-               1-2: OLSolve.
+               cutOL Hseq1 H8.
                OLSolve.
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
                PermuteLeft.
-               cutOL Hseq1 H12.
-               1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
-               inversion H1.
+               cutOL Hseq1 H10.
+               TFocus (makeRRuleC C0).
+               inversion H2.
                FLLsplit (@nil oo) (M++N).
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
          - wellConstant Hseq2'.
-           -- Cases H1. 
+           -- Cases H2. 
               rewrite <- app_comm_cons...
-           -- Cases H1. 
-              apply weakeningGenN_rev with (CC':= x5) in Hseq1. 
-              rewrite H1 in H11.
-              rewrite <- app_comm_cons in H11.
-              cutOL Hseq1 H11.
-               1-2: OLSolve.
-               rewrite H14 in PosM.
+           -- Cases H2. 
+              PermuteLeft. 
+              cutOL Hseq1 H8.
+               rewrite H12 in PosM.
                OLSolve.
                rewrite <- app_comm_cons ...
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
-              
-              apply weakeningGenN_rev with (CC':= x5) in Hseq1. 
-              rewrite <- app_comm_cons in H12.
-              cutOL Hseq1 H12.
-               1-2: OLSolve.
-                 TFocus (makeLRuleConstant C0).
-                 inversion H1.
+              PermuteLeft.
+              cutOL Hseq1 H10.
+                 TFocus (makeLRuleC C0).
+                 inversion H2.
              FLLsplit (@nil oo) (M++N).
-               apply H16...  
+               apply H14...  
                rewrite Permutation_assoc_comm... 
          - permuteUnary.
-         - wellFormedU Hseq2'.
-            Cases H1. 
+         - wellUnary Hseq2'.
+            Cases H2. 
             
-            rewrite <- H7 in H4. 
-            rewrite <- H15 in H12. 
+            rewrite <- H6 in H3. 
+            rewrite <- H13 in H10. 
             rewrite Permutation_app_comm.
-            refine(UConnectivePrincipalCase _ H4 _ _ HL')...
-                          apply weakeningGenN_rev with (CC':= x5) in Hseq1. 
-              rewrite H1 in H11.
-              rewrite <- app_comm_cons in H11.
-              cutOL Hseq1 H11.
-               1-2: OLSolve.
-               rewrite H14 in PosM.
+            refine(UConnectivePrincipalCase _ H3 _ _ HL')...
+             PermuteLeft. 
+              cutOL Hseq1 H8.
+               rewrite H12 in PosM.
                OLSolve.
                rewrite <- app_comm_cons ...
-               apply H16...
+               apply H14...
                rewrite Permutation_assoc_comm...
               
-              apply weakeningGenN_rev with (CC':= x5) in Hseq1. 
-              rewrite <- app_comm_cons in H12.
-              cutOL Hseq1 H12.
-               1-2: OLSolve.
-                 TFocus (makeLRuleUnary C0 F1).
-                 inversion H1.
+PermuteLeft.
+              cutOL Hseq1 H10.
+                 TFocus (makeLRuleU C0 F1).
+                 inversion H2.
              FLLsplit (@nil oo) (M++N).
-               apply H16...  
+               apply H14...  
                rewrite Permutation_assoc_comm... 
          - permuteBinary.
          - permuteBinary.
@@ -1065,7 +1010,7 @@ let tH := type of H in
 
 Lemma BinaryRIGHT n n' n0 n1  C F G FCut M N Gamma F0:
   n' <= n ->
-  isOLFormula (t_bin C F G) ->
+  isOLFormula (t_bcon C F G) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
   IsPositiveAtomFormulaL M ->
@@ -1073,16 +1018,17 @@ Lemma BinaryRIGHT n n' n0 n1  C F G FCut M N Gamma F0:
   IsPositiveAtomFormulaL Gamma ->
   seqN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
   seqN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
-  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleBin C F G)) ->
+  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleB C F G)) ->
   seqN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) ::M) (DW F0) ->
   OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleBin C F G) ->
+  buildTheory (makeRRuleB C F G) ->
   buildTheory F0 ->
   seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
+Admitted.
+(*   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellFormedBin Hseq1'.
+  wellBinary Hseq1'.
   * Cases H. 
      2:{ apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
          rewrite H in H3.
@@ -1090,14 +1036,14 @@ Proof with sauto.
          cutOL H3 Hseq2.
          1-2: OLSolve.
          OLSolve.
-         LLPerm ( (⌈ t_bin C F G ⌉) ::(M++ x4))...
+         LLPerm ( (⌈ t_bcon C F G ⌉) ::(M++ x4))...
          apply H8...
          rewrite app_assoc_reverse... }
    2:{ apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
          rewrite <- app_comm_cons in H4. 
          cutOL H4 Hseq2.
          1-2: OLSolve.
-        TFocus (makeRRuleBin C F G).
+        TFocus (makeRRuleB C F G).
                inversion H.
                FLLsplit (@nil oo) (M++N).
                apply H8...
@@ -1117,7 +1063,7 @@ Proof with sauto.
                PermuteLeft.
                cutOL Hseq1 H12.
                1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
+               TFocus (makeRRuleC C0).
                inversion H1.
                FLLsplit (@nil oo) (M++N).
                apply H16...
@@ -1141,7 +1087,7 @@ Proof with sauto.
               rewrite <- app_comm_cons in H12.
               cutOL Hseq1 H12.
                1-2: OLSolve.
-                 TFocus (makeLRuleConstant C0).
+                 TFocus (makeLRuleC C0).
                  inversion H1.
              FLLsplit (@nil oo) (M++N).
                apply H16...  
@@ -1149,7 +1095,7 @@ Proof with sauto.
          - permuteUnary.
          - permuteUnary.
          - permuteBinary.
-         - wellFormedBin Hseq2'.
+         - wellBinary Hseq2'.
            { Cases H1. 
             
             rewrite <- H7 in H4. 
@@ -1171,7 +1117,7 @@ Proof with sauto.
               rewrite <- app_comm_cons in H12.
               cutOL Hseq1 H12.
                1-2: OLSolve.
-                 TFocus (makeLRuleBin C0 F1 G0).
+                 TFocus (makeLRuleB C0 F1 G0).
                  inversion H1.
              FLLsplit (@nil oo) (M++N).
                apply H16...  
@@ -1191,7 +1137,7 @@ Proof with sauto.
              rewrite H17 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: (x13 ++ N) ++ x5).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x13 ++ N) ++ x5).
               apply H19...
               rewrite Permutation_assoc_comm...
                
@@ -1205,7 +1151,7 @@ Proof with sauto.
              rewrite H17 in PosM.
              inversion PosM...
              OLSolve.  
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: x4++(x13 ++ N)).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: x4++(x13 ++ N)).
               apply H19...
               apply seqNtoSeq in H14...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1216,7 +1162,7 @@ Proof with sauto.
                1-2: OLSolve.
                rewrite <- H18 in PosM.
                OLSolve.
-                TFocus (makeLRuleBin C0 F1 G0).
+                TFocus (makeLRuleB C0 F1 G0).
                  inversion H1.
              FLLsplit (@nil oo) ( ((x12 ++ N) ++ x5)).
                apply H20...  
@@ -1228,7 +1174,7 @@ Proof with sauto.
                1-2: OLSolve.
                rewrite <- H18 in PosM.
                OLSolve.
-                TFocus (makeLRuleBin C0 F1 G0).
+                TFocus (makeLRuleB C0 F1 G0).
                  inversion H1.
              FLLsplit (@nil oo) (x4++(x12 ++ N) ).
                apply H20...
@@ -1251,7 +1197,7 @@ Proof with sauto.
             cutOL Hl' H15.
                1-2: OLSolve.
             OLSolve.
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: (x11 ++ N) ).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x11 ++ N) ).
               apply H19...
             1-2:  rewrite Permutation_assoc_comm...
  
@@ -1260,7 +1206,7 @@ Proof with sauto.
                1-2: OLSolve.
              cutOL Hl' H16.
                1-2: OLSolve.
-             TFocus (makeLRuleBin C0 F1 G0).
+             TFocus (makeLRuleB C0 F1 G0).
                  inversion H1.
              FLLsplit (@nil oo) (M ++ N).
                apply H20...
@@ -1278,7 +1224,7 @@ Proof with sauto.
              rewrite H9 in PosN.
              inversion PosN...
              OLSolve.  
-         LLPerm ( (⌈ t_bin C F G ⌉) ::(M++ x8)++x0)...
+         LLPerm ( (⌈ t_bcon C F G ⌉) ::(M++ x8)++x0)...
          apply H11...
          rewrite app_assoc_reverse... 
           apply seqNtoSeq in H7...
@@ -1292,7 +1238,7 @@ Proof with sauto.
              rewrite H9 in PosN.
              inversion PosN...
              OLSolve.  
-        LLPerm ( (⌈ t_bin C F G ⌉) ::x++(M++ x8))...
+        LLPerm ( (⌈ t_bcon C F G ⌉) ::x++(M++ x8))...
          apply H11...
            apply seqNtoSeq in H6...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1305,7 +1251,7 @@ Proof with sauto.
          1-2: OLSolve.
          rewrite <- H10 in PosN.
          OLSolve.
-         TFocus (makeRRuleBin C F G).
+         TFocus (makeRRuleB C F G).
                inversion H.
                FLLsplit (@nil oo) ((M ++ x7)++x0).
          apply H12...
@@ -1319,7 +1265,7 @@ Proof with sauto.
          1-2: OLSolve.
          rewrite <- H10 in PosN.
          OLSolve.
-         TFocus (makeRRuleBin C F G).
+         TFocus (makeRRuleB C F G).
                inversion H.
                FLLsplit (@nil oo) (x++(M ++ x7)).
          apply H12...
@@ -1341,7 +1287,7 @@ Proof with sauto.
                PermuteLeft.
                cutOL Hseq1 H15.
                1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
+               TFocus (makeRRuleC C0).
                inversion H5.
                FLLsplit (@nil oo) (M++N).
                apply H19...
@@ -1365,7 +1311,7 @@ Proof with sauto.
               rewrite <- app_comm_cons in H15.
               cutOL Hseq1 H15.
                1-2: OLSolve.
-                 TFocus (makeLRuleConstant C0).
+                 TFocus (makeLRuleC C0).
                  inversion H5.
              FLLsplit (@nil oo) (M++N).
                apply H19...  
@@ -1373,7 +1319,7 @@ Proof with sauto.
          - permuteUnary.
          - permuteUnary.
          - permuteBinary.
-         - wellFormedBin Hseq2'.
+         - wellBinary Hseq2'.
            { Cases H5. 
             
             rewrite <- H10 in H4. 
@@ -1395,7 +1341,7 @@ Proof with sauto.
               rewrite <- app_comm_cons in H15.
               cutOL Hseq1 H15.
                1-2: OLSolve.
-                 TFocus (makeLRuleBin C0 F1 G0).
+                 TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) (M++N).
                apply H19...  
@@ -1415,7 +1361,7 @@ Proof with sauto.
              rewrite H20 in PosM.
              inversion PosM...
              OLSolve.     
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: (x16 ++ N) ++ x8).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x16 ++ N) ++ x8).
               apply H22...
               rewrite Permutation_assoc_comm...
                
@@ -1429,7 +1375,7 @@ Proof with sauto.
              rewrite H20 in PosM.
              inversion PosM...
              OLSolve.  
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: x7++(x16 ++ N)).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: x7++(x16 ++ N)).
               apply H22...
               apply seqNtoSeq in H17...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1440,7 +1386,7 @@ Proof with sauto.
                1-2: OLSolve.
                rewrite <- H21 in PosM.
                OLSolve.
-                TFocus (makeLRuleBin C0 F1 G0).
+                TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) ( ((x15 ++ N) ++ x8)).
                apply H23...  
@@ -1452,7 +1398,7 @@ Proof with sauto.
                1-2: OLSolve.
                rewrite <- H21 in PosM.
                OLSolve.
-                TFocus (makeLRuleBin C0 F1 G0).
+                TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) (x7++(x15 ++ N) ).
                apply H23...
@@ -1475,7 +1421,7 @@ Proof with sauto.
             cutOL Hl' H18.
                1-2: OLSolve.
             OLSolve.
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: (x14 ++ N) ).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x14 ++ N) ).
               apply H22...
             1-2:  rewrite Permutation_assoc_comm...
  
@@ -1484,7 +1430,7 @@ Proof with sauto.
                1-2: OLSolve.
              cutOL Hl' H19.
                1-2: OLSolve.
-             TFocus (makeLRuleBin C0 F1 G0).
+             TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) (M ++ N).
                apply H23...
@@ -1512,7 +1458,7 @@ Proof with sauto.
          rewrite H9 in PosN.
          OLSolve.
          
-         LLPerm ((⌈ t_bin C F G ⌉) ::M++ x6)...
+         LLPerm ((⌈ t_bcon C F G ⌉) ::M++ x6)...
          apply H11...
          1-2: rewrite app_assoc_reverse... 
           }
@@ -1530,7 +1476,7 @@ Proof with sauto.
          rewrite <- app_comm_cons in H8. 
          cutOL H8 Hseq0.
          1-2: OLSolve.
-         TFocus (makeRRuleBin C F G).
+         TFocus (makeRRuleB C F G).
                inversion H.
                FLLsplit (@nil oo) (M ++N).
          apply H12...
@@ -1550,7 +1496,7 @@ Proof with sauto.
                PermuteLeft.
                cutOL Hseq1 H15.
                1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
+               TFocus (makeRRuleC C0).
                inversion H5.
                FLLsplit (@nil oo) (M++N).
                apply H19...
@@ -1571,7 +1517,7 @@ Proof with sauto.
               PermuteLeft.
               cutOL Hseq1 H15.
                1-2: OLSolve.
-                 TFocus (makeLRuleConstant C0).
+                 TFocus (makeLRuleC C0).
                  inversion H5.
              FLLsplit (@nil oo) (M++N).
                apply H19...  
@@ -1579,7 +1525,7 @@ Proof with sauto.
          - permuteUnary.
          - permuteUnary.
          - permuteBinary.
-         - wellFormedBin Hseq2'.
+         - wellBinary Hseq2'.
            { Cases H5. 
             
             rewrite <- H10 in H4. 
@@ -1599,7 +1545,7 @@ Proof with sauto.
               PermuteLeft.
               cutOL Hseq1 H15.
                1-2: OLSolve.
-                 TFocus (makeLRuleBin C0 F1 G0).
+                 TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) (M++N).
                apply H19...  
@@ -1619,7 +1565,7 @@ Proof with sauto.
              rewrite H20 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: (x15 ++ N) ++ x7).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x15 ++ N) ++ x7).
               apply H22...
               rewrite Permutation_assoc_comm...
                
@@ -1633,7 +1579,7 @@ Proof with sauto.
              rewrite H20 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bin C0 F1 G0 ⌋) :: x6++(x15 ++ N)).
+            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: x6++(x15 ++ N)).
               apply H22...
               apply seqNtoSeq in H17...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1644,7 +1590,7 @@ Proof with sauto.
                1-2: OLSolve.
                rewrite <- H21 in PosM.
                OLSolve.
-                TFocus (makeLRuleBin C0 F1 G0).
+                TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) ( ((x14 ++ N) ++ x7)).
                apply H23...  
@@ -1656,7 +1602,7 @@ Proof with sauto.
                1-2: OLSolve.
                rewrite <- H21 in PosM.
                OLSolve.
-                TFocus (makeLRuleBin C0 F1 G0).
+                TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) (x6++(x14 ++ N) ).
                apply H23...
@@ -1679,7 +1625,7 @@ Proof with sauto.
             cutOL Hl' H18.
                1-2: OLSolve.
             OLSolve.
-            LLPerm ((⌊ t_bin C0 F1 G0 ⌋) :: (x13 ++ N) ).
+            LLPerm ((⌊ t_bcon C0 F1 G0 ⌋) :: (x13 ++ N) ).
               apply H22...
             1-2:  rewrite Permutation_assoc_comm...
  
@@ -1688,7 +1634,7 @@ Proof with sauto.
                1-2: OLSolve.
              cutOL Hl' H19.
                1-2: OLSolve.
-             TFocus (makeLRuleBin C0 F1 G0).
+             TFocus (makeLRuleB C0 F1 G0).
                  inversion H5.
              FLLsplit (@nil oo) (M ++ N).
                apply H23...
@@ -1698,9 +1644,11 @@ Proof with sauto.
          - permuteQuantifier.         
   Qed.                        
    
+ *)
+
 Lemma QuantifierRIGHT n n' n0 n1  C FX FCut M N Gamma F0:
   n' <= n ->
-  isOLFormula (t_quant C FX) ->
+  isOLFormula (t_qcon C FX) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
   IsPositiveAtomFormulaL M ->
@@ -1717,95 +1665,84 @@ Lemma QuantifierRIGHT n n' n0 n1  C FX FCut M N Gamma F0:
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellFormedQ Hseq1'.
+  wellQuantifier Hseq1'.
   Cases H. 
-  2:{ apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite H in H3.
-         rewrite <- app_comm_cons in H3 . 
-         cutOL H3 Hseq2.
-         1-2: OLSolve.
+  2:{ PermuteLeft. 
+         cutOL H1 Hseq2.
          OLSolve.
-         LLPerm ( (⌈ t_quant C FX ⌉) ::(M++ x4))...
-         apply H8...
+         LLPerm ( (⌈ t_qcon C FX ⌉) ::(M++ x3))...
+         apply H7...
          rewrite app_assoc_reverse... }
-  2:{ apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-          rewrite <- app_comm_cons in H4 . 
-         cutOL H4 Hseq2.
-         1-2: OLSolve.
+  2:{ PermuteLeft. 
+         cutOL H3 Hseq2.
          TFocus (makeRRuleQ C FX).
          inversion H.
          FLLsplit (@nil oo) (M++N).
-         apply H8...
+         apply H7...
          rewrite app_assoc_reverse... }         
     inversion Hth'... 
            -- wellConstant Hseq2'.   
-               Cases H1.
+               Cases H2.
                rewrite <- app_comm_cons...
-               Cases H1. 
+               Cases H2. 
                PermuteLeft.
-               cutOL Hseq1 H11.
-               1-2: OLSolve.
+               cutOL Hseq1 H8.
                OLSolve.
                rewrite <- app_comm_cons...
-               apply H16...
-               LLPerm ((x9 ++ x4) ++ N)...
+               apply H14...
+               LLPerm ((x7 ++ x3) ++ N)...
                PermuteLeft.
-               cutOL Hseq1 H12.
-               1-2: OLSolve.
-               TFocus (makeRRuleConstant C0).
-               inversion H1.
+               cutOL Hseq1 H10.
+               TFocus (makeRRuleC C0).
+               inversion H2.
                FLLsplit (@nil oo) (M++N).
-               apply H16...
-               LLPerm ( (M ++ x4) ++ N)...
+               apply H14...
+               LLPerm ( (M ++ x3) ++ N)...
            -- wellConstant Hseq2'.   
-               Cases H1.
+               Cases H2.
                rewrite <- app_comm_cons...
-               Cases H1. 
+               Cases H2. 
                PermuteLeft.
-               cutOL Hseq1 H11.
-               1-2: OLSolve.
+               cutOL Hseq1 H8.
                OLSolve.
                rewrite <- app_comm_cons...
-               apply H16...
-               LLPerm ((x9 ++ x4) ++ N)...
+               apply H14...
+               LLPerm ((x7 ++ x3) ++ N)...
                PermuteLeft.
-               cutOL Hseq1 H12.
-               1-2: OLSolve.
-               TFocus (makeLRuleConstant C0).
-               inversion H1.
+               cutOL Hseq1 H10.
+               TFocus (makeLRuleC C0).
+               inversion H2.
                FLLsplit (@nil oo) (M++N).
-               apply H16...
-               LLPerm ( (M ++ x4) ++ N)...
+               apply H14...
+               LLPerm ( (M ++ x3) ++ N)...
            -- permuteUnary.
            -- permuteUnary.
            -- permuteBinary.
            -- permuteBinary.
            -- permuteQuantifier.           
-           -- wellFormedQ Hseq2'.
-               destruct H1...
-               checkPermutationCases H1.
-               inversion H14...
-               rewrite <- H7 in H4.
-               rewrite <- H15 in H12.
+           -- wellQuantifier Hseq2'.
+               destruct H2...
+               checkPermutationCases H2.
+               inversion H12...
+               rewrite <- H6 in H3.
+               rewrite <- H13 in H10.
                rewrite Permutation_app_comm.
-               refine (QuantifierPrincipalCase H12 H4 _ _ _ _ _ _ HL')...   
+               refine (QuantifierPrincipalCase H10 H3 _ _ _ _ _ _ HL')...   
                PermuteLeft.
-               cutOL Hseq1 H11.
-               1-2: OLSolve.
+               cutOL Hseq1 H8.
                OLSolve.
-               rewrite H14.
-               LLPerm ( (⌊t_quant C0 FX0 ⌋) :: x9++ N).
-               apply H16...
-               LLPerm ((x9 ++ x4) ++ N)...
+               rewrite H12.
+               LLPerm ( (⌊t_qcon C0 FX0 ⌋) :: x7++ N).
+               apply H14...
+               LLPerm ((x7 ++ x3) ++ N)...
                
                PermuteLeft.
-               cutOL Hseq1 H12.
-               1-2: OLSolve.
+               cutOL Hseq1 H10.
               TFocus (makeLRuleQ C0 FX0).
-               inversion H1.
+               inversion H2.
                FLLsplit (@nil oo) (M++N).
-               apply H16...
-               LLPerm ((M ++ x4) ++ N)...
+               apply H14...
+               LLPerm ((M ++ x3) ++ N)...
      Qed.         
              
 Definition ConnectiveLeft connective rule := forall n n' n0 n1  FCut M N Gamma,
@@ -1833,9 +1770,9 @@ Lemma ConstantLEFT n n' n0 n1  C FCut M N Gamma:
   IsPositiveAtomFormulaL N ->
   IsPositiveAtomFormulaL Gamma ->
   seqN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
-  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleConstant C)) ->
+  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleC C)) ->
   OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleConstant C) ->
+  buildTheory (makeLRuleC C) ->
   seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
@@ -1844,23 +1781,18 @@ Proof with sauto.
   * Cases H. 
      + LLPerm ( (⌊ t_cons C ⌋) :: x0++M)...
   * Cases H. 
-     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite H in H3.
-         rewrite <- app_comm_cons in H3. 
-         cutOL H3 Hseq2.
-         1-2: OLSolve.
+     + PermuteLeft.  
+         cutOL H1 Hseq2.
          OLSolve.
-         LLPerm ( (⌊ t_cons C ⌋) ::(M++ x4)).
-         apply H8...
-         LLPerm(M ++ x4 ++ x)...
-    +  apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite <- app_comm_cons in H4.  
-         cutOL H4 Hseq2.
-         1-2: OLSolve.
-         TFocus (makeLRuleConstant C).
+         LLPerm ( (⌊ t_cons C ⌋) ::(M++ x3)).
+         apply H7...
+         LLPerm(M ++ x3 ++ x)...
+    + PermuteLeft.   
+         cutOL H3 Hseq2.
+         TFocus (makeLRuleC C).
          inversion H.
          FLLsplit (@nil oo) (M++N).
-         apply H8... 
+         apply H7... 
          LLPerm(M ++ N ++ x)...
 Qed.                  
          
@@ -1873,67 +1805,63 @@ Qed.
   IsPositiveAtomFormulaL N ->
   IsPositiveAtomFormulaL Gamma ->
   seqN (OLTheory nPnN) (S n1) Gamma  ( (⌊ FCut ⌋) :: M) (UP []) ->
-  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleUnary C F)) ->
+  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleU C F)) ->
   OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleUnary C F) ->
+  buildTheory (makeLRuleU C F) ->
   seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellFormedU Hseq1'.
+  wellUnary Hseq1'.
   * Cases H. 
-     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite H in H3. 
-         rewrite <- app_comm_cons in H3. 
-         cutOL H3 Hseq2.
-         1-2: OLSolve.
+     + PermuteLeft.  
+         cutOL H1 Hseq2.
          OLSolve.
-         LLPerm ( (⌊ t_ucon C F ⌋) ::(M++ x4)).
-         apply H8...
-         LLPerm(M ++ x4 ++ x)...
-     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite <- app_comm_cons in H4. 
-         cutOL H4 Hseq2.
-         1-2: OLSolve.
-         TFocus (makeLRuleUnary C F).
+         LLPerm ( (⌊ t_ucon C F ⌋) ::(M++ x3)).
+         apply H7...
+         LLPerm(M ++ x3 ++ x)...
+     + PermuteLeft.  
+         cutOL H3 Hseq2.
+         TFocus (makeLRuleU C F).
          inversion H.
          FLLsplit (@nil oo) (M++N).
-         apply H8... 
+         apply H7... 
          LLPerm(M ++ N ++ x)...
 Qed.       
 
  Lemma BinaryLEFT n n' n0 n1 C F G FCut M N Gamma:
   n' <= n ->
-  isOLFormula (t_bin C F G) ->
+  isOLFormula (t_bcon C F G) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
   IsPositiveAtomFormulaL M ->
   IsPositiveAtomFormulaL N ->
   IsPositiveAtomFormulaL Gamma ->
   seqN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
-  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleBin C F G)) ->
+  seqN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleB C F G)) ->
   OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleBin C F G) ->
+  buildTheory (makeLRuleB C F G) ->
   seq (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellFormedBin Hseq1'.
+  wellBinary Hseq1'.
   * Cases H. 
-     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
+Admitted.
+ (*     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
          rewrite H in H3. 
          rewrite <- app_comm_cons in H3. 
          cutOL H3 Hseq2.
          1-2: OLSolve.
          OLSolve.
-         LLPerm ( (⌊t_bin C F G ⌋) ::(M++ x4)).
+         LLPerm ( (⌊t_bcon C F G ⌋) ::(M++ x4)).
          apply H8...
          LLPerm(M ++ x4 ++ x)...
      + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
          rewrite <- app_comm_cons in H4. 
          cutOL H4 Hseq2.
          1-2: OLSolve.
-         TFocus (makeLRuleBin C F G).
+         TFocus (makeLRuleB C F G).
          inversion H.
          FLLsplit (@nil oo) (M++N).
          apply H8... 
@@ -1949,7 +1877,7 @@ Proof with sauto.
          rewrite H9 in PosN.
          inversion PosN...
          OLSolve.
-         LLPerm ((⌊ t_bin C F G ⌋) :: (M++x8) ++ x0).
+         LLPerm ((⌊ t_bcon C F G ⌋) :: (M++x8) ++ x0).
          apply H11...
          rewrite app_assoc_reverse...
          apply seqNtoSeq in H7...
@@ -1964,7 +1892,7 @@ Proof with sauto.
          rewrite H9 in PosN.
          inversion PosN...
          OLSolve.
-         LLPerm ( (⌊ t_bin C F G ⌋) :: x++(M++x8)).
+         LLPerm ( (⌊ t_bcon C F G ⌋) :: x++(M++x8)).
          apply H11...
          apply seqNtoSeq in H6...
          apply WeakTheory with (theory := OLTheory nPnN )... 
@@ -1978,7 +1906,7 @@ Proof with sauto.
          1-2: OLSolve.
          rewrite  <- H10 in PosN.
          OLSolve.
-         TFocus  (makeLRuleBin C F G).
+         TFocus  (makeLRuleB C F G).
          inversion H.
          FLLsplit (@nil oo) ((M ++ x7) ++ x0).
          apply H12...
@@ -1993,7 +1921,7 @@ Proof with sauto.
          1-2: OLSolve.
          rewrite  <- H10 in PosN.
          OLSolve.
-         TFocus  (makeLRuleBin C F G).
+         TFocus  (makeLRuleB C F G).
          inversion H.
          FLLsplit (@nil oo) (x++(M ++ x7)).
          apply H12...
@@ -2015,7 +1943,7 @@ Proof with sauto.
          1-2: OLSolve.
          rewrite H9 in PosN.
          OLSolve.
-         LLPerm ( (⌊ t_bin C F G ⌋) :: M++x6).
+         LLPerm ( (⌊ t_bcon C F G ⌋) :: M++x6).
          apply H11...
          1-2: rewrite app_assoc_reverse...
      + doubleH Hseq2.
@@ -2028,16 +1956,17 @@ Proof with sauto.
          1-2: OLSolve.
          cutOL H8 Hseq0.
          1-2: OLSolve.
-         TFocus (makeLRuleBin C F G). 
+         TFocus (makeLRuleB C F G). 
          inversion H.
          FLLsplit (@nil oo) (M++N).
          apply H12...
          1-2: rewrite app_assoc_reverse... 
 Qed.         
-         
- Lemma QuantifierLEFT n n' n0 n1 C FX FCut M N Gamma:
+  *)        
+ 
+Lemma QuantifierLEFT n n' n0 n1 C FX FCut M N Gamma:
   n' <= n ->
-  isOLFormula (t_quant C FX) ->
+  isOLFormula (t_qcon C FX) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
   IsPositiveAtomFormulaL M ->
@@ -2051,25 +1980,20 @@ Qed.
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellFormedQ Hseq1'.
+  wellQuantifier Hseq1'.
   * Cases H. 
-     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite H in H3. 
-         rewrite <- app_comm_cons in H3. 
-         cutOL H3 Hseq2.
-         1-2: OLSolve.
+     + PermuteLeft.  
+         cutOL H1 Hseq2.
          OLSolve.
-         LLPerm ( (⌊ t_quant C FX ⌋) ::(M++ x4)).
-         apply H8...
-         LLPerm(M ++ x4 ++ x)...
-     + apply weakeningGenN_rev with (CC':= x0) in Hseq2. 
-         rewrite <- app_comm_cons in H4. 
-         cutOL H4 Hseq2.
-         1-2: OLSolve.
+         LLPerm ( (⌊ t_qcon C FX ⌋) ::(M++ x3)).
+         apply H7...
+         LLPerm(M ++ x3 ++ x)...
+     + PermuteLeft.  
+         cutOL H3 Hseq2.
          TFocus (makeLRuleQ C FX).
          inversion H.
          FLLsplit (@nil oo) (M++N).
-         apply H8... 
+         apply H7... 
          LLPerm(M ++ N ++ x)...
 Qed.
  
@@ -2099,15 +2023,20 @@ Qed.
     induction h using lt_wf_ind; intros. 
 
     inversion Hseq1...
-    cut(False);intros...
-    refine (onlyAtomsLinear _ H0 H1)...
-    cut(False);intros...
-    refine (onlyAtomsClassical _ H0 H1)...
+   
+cut(False);intros...
+       refine (onlyAtomsLinear _ H0 H1)...
 
-    inversion Hseq2...
-    cut(False);intros...
-    refine (onlyAtomsLinear _ H3 H4)...
-    cut(False);intros...
+  cut(False);intros...
+       refine (onlyAtomsClassical _ H0 H1)...
+
+   inversion Hseq2...
+
+   
+cut(False);intros...
+       refine (onlyAtomsLinear _ H3 H4)... 
+
+  cut(False);intros...
     refine (onlyAtomsClassical _ H3 H4)...
     
     assert(OOCut n' (S n0 + S n1)).
@@ -2120,6 +2049,10 @@ Qed.
     rename n1 into h2.
    (* Now we proceed by cases on the last rule applied on both derivations *)
     inversion H1 ;inversion H4...
+   all: try match goal with
+    | H: neg nPnN |- _ => inversion H 
+    | H: pos nPnN |- _ => inversion H 
+    end.
     * inversion H...
        - refine(ConstantRIGHT 
                            HL' 
@@ -2214,7 +2147,7 @@ Qed.
   induction n ; induction h using lt_wf_ind; intros *;intros isFB isFN Hh.
     * eapply seqNtoSeq;eauto.
     * inversion Hh...
-       cut(False);intros...
+      cut(False);intros...
        refine (onlyAtomsLinear _ H0 H1)...
        cut(False);intros...
        refine (onlyAtomsClassical _ H0 H1)...
@@ -2226,153 +2159,147 @@ Qed.
          Cases H6.
          apply H10...
          Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
-         TFocus (makeRRuleConstant C).
+         TFocus (makeRRuleC C).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)...
       + (* constant *)
          wellConstant H2.
          Cases H6.
          apply H10...
          Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
-         TFocus (makeLRuleConstant C).
+         TFocus (makeLRuleC C).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)...
       + (* unary *)
-         wellFormedU H2.
+         wellUnary H2.
          Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
-         TFocus (makeRRuleUnary C F0).
+         TFocus (makeRRuleU C F0).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)...
       + (* unary *)
-         wellFormedU H2.
+         wellUnary H2.
          Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
-         TFocus (makeLRuleUnary C F0).
+         TFocus (makeLRuleU C F0).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)...
       + (* binary *)
-         wellFormedBin H2.
+         wellBinary H2.
          { Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
-         TFocus (makeRRuleBin C F0 G).
+         TFocus (makeRRuleB C F0 G).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)... }
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)... }
          { Cases H6.
-         apply H18...
-         refine (H _ _ _ _ _ _ H13)...
+         apply H16...
+         refine (H _ _ _ _ _ _ H11)...
          OLSolve.
-         rewrite H12 in isFN.
+         rewrite H10 in isFN.
          inversion isFN...
-         refine (H _ _ _ _ _ _ H14)...
-         rewrite H12 in isFN.
+         refine (H _ _ _ _ _ _ H12)...
+         rewrite H10 in isFN.
          inversion isFN...
-         TFocus (makeRRuleBin C F0 G).
+         TFocus (makeRRuleB C F0 G).
          FLLsplit (@nil oo) N.
-         rewrite H11.
-         apply H19...
-         refine (H _ _ _ _ _ _ H14)... 
-         rewrite H11 in isFN.
+         rewrite H8.
+         apply H17...
+         refine (H _ _ _ _ _ _ H12)... 
+         rewrite H8 in isFN.
          inversion isFN...
-         refine (H _ _ _ _ _ _ H15)... 
-         rewrite H11 in isFN.
+         refine (H _ _ _ _ _ _ H13)... 
+         rewrite H8 in isFN.
          inversion isFN... }
          { Cases H6.
-         apply H18...
-         refine (H _ _ _ _ _ _ H13)...
+         apply H16...
+         refine (H _ _ _ _ _ _ H11)...
          OLSolve.
-         rewrite H12 in isFN.
+         rewrite H10 in isFN.
          inversion isFN...
-         refine (H _ _ _ _ _ _ H14)...
-         TFocus (makeRRuleBin C F0 G).
+         refine (H _ _ _ _ _ _ H12)...
+         TFocus (makeRRuleB C F0 G).
          FLLsplit (@nil oo) N.
-         rewrite H11.
-         apply H19...
-         refine (H _ _ _ _ _ _ H14)... 
-         rewrite H11 in isFN...
-         refine (H _ _ _ _ _ _ H15)... 
-         rewrite H11 in isFN...  } 
+         apply H16...
+         refine (H _ _ _ _ _ _ H11)... 
+         refine (H _ _ _ _ _ _ H12)...  } 
       + (* binary *)
-         wellFormedBin H2.
+         wellBinary H2.
          { Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
-         TFocus (makeLRuleBin C F0 G).
+         TFocus (makeLRuleB C F0 G).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)... }
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)... }
          { Cases H6.
-         apply H18...
-         refine (H _ _ _ _ _ _ H13)...
-         OLSolve.
-         rewrite H12 in isFN.
+         apply H16...
+         refine (H _ _ _ _ _ _ H11)...
+         rewrite H10 in isFN.
          inversion isFN...
-         refine (H _ _ _ _ _ _ H14)...
-         rewrite H12 in isFN.
+         refine (H _ _ _ _ _ _ H12)...
+         rewrite H10 in isFN.
          inversion isFN...
-         TFocus (makeLRuleBin C F0 G).
+         TFocus (makeLRuleB C F0 G).
          FLLsplit (@nil oo) N.
-         rewrite H11.
-         apply H19...
-         refine (H _ _ _ _ _ _ H14)... 
-         rewrite H11 in isFN.
+         rewrite H8.
+         apply H17...
+         refine (H _ _ _ _ _ _ H12)... 
+         rewrite H8 in isFN.
          inversion isFN...
-         refine (H _ _ _ _ _ _ H15)... 
-         rewrite H11 in isFN.
+         refine (H _ _ _ _ _ _ H13)... 
+         rewrite H8 in isFN.
          inversion isFN... }
          { Cases H6.
-         apply H18...
-         refine (H _ _ _ _ _ _ H13)...
-         OLSolve.
-         rewrite H12 in isFN.
+         apply H16...
+         refine (H _ _ _ _ _ _ H11)...
+         rewrite H10 in isFN.
          inversion isFN...
-         refine (H _ _ _ _ _ _ H14)...
-         TFocus (makeLRuleBin C F0 G).
+         refine (H _ _ _ _ _ _ H12)...
+         rewrite H10 in isFN.
+         inversion isFN...
+         TFocus (makeLRuleB C F0 G).
          FLLsplit (@nil oo) N.
-         rewrite H11.
-         apply H19...
-         refine (H _ _ _ _ _ _ H14)... 
-         rewrite H11 in isFN...
-         refine (H _ _ _ _ _ _ H15)... 
-         rewrite H11 in isFN...  } 
+         apply H16...
+         refine (H _ _ _ _ _ _ H11)... 
+         refine (H _ _ _ _ _ _ H12)...  } 
       + (* quantifier *)
-         wellFormedQ H2.
+         wellQuantifier H2.
          Cases H6.
-         apply H15...
-         refine (H _ _ _ _ _ _ H10)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
          TFocus (makeRRuleQ C FX).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)...
-      + (* quantifier *)
-         wellFormedQ H2.
-         Cases H6.
-         apply H15...
+         apply H14...
          refine (H _ _ _ _ _ _ H10)...
+      + (* quantifier *)
+         wellQuantifier H2.
+         Cases H6.
+         apply H14...
+         refine (H _ _ _ _ _ _ H8)...
          OLSolve.
          TFocus (makeLRuleQ C FX).
          FLLsplit (@nil oo) N.
-         apply H15...
-         refine (H _ _ _ _ _ _ H11)...
+         apply H14...
+         refine (H _ _ _ _ _ _ H10)...
       + (* init *)
          apply FocusingInitRuleU in H2...
          rewrite H5.
@@ -2384,8 +2311,10 @@ Qed.
          FLLsplit (@nil oo) [ (⌊ OO ⌋)].
          TFocus (RINIT OO).
          FLLsplit.
+      + inversion f.
+     + inversion f. 
       + (* cut *)
-         inversion H3...
+          inversion H3... 2:{ firstorder. }
          inversion H2...
          2:{ inversion H8. }
          invTri H13.
@@ -2409,13 +2338,13 @@ Qed.
          rewrite Permutation_app_comm.
          apply seqtoSeqN in H16...
          apply seqtoSeqN in H14...
-         refine(OLCutElimStep _ _ _ _ H14 H16 H5 _)...  
-         apply seqtoSeqN in H0...
-         apply IHn in H0...
-         apply WeakTheory with (theory' := OLTheory nPnN) in H0;auto;try apply  OOTheryCut0.
-Qed.   
-  
-  (** Cut-elimination theorem for Object Logics satisfying cut-]
+         refine(OLCutElimStep _ _ _ _ H14 H16 H5 _)...
+        simpl in H0...
+       apply seqtoSeqN in H0...
+        apply IHn in H0...
+        apply WeakTheory with (theory' := OLTheory nPnN) in H0;auto;try apply  OOTheryCut0.
+Qed.
+         (** Cut-elimination theorem for Object Logics satisfying cut-]
   coherence *)
   Theorem OLCutElimination :
     forall n h  B N ,

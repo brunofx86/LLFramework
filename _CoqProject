@@ -55,8 +55,12 @@ OL/SyntaxResults.v
 OL/StructuralClauses.v
 OL/Bipoles.v
 OL/CutCoherence.v
-OL/Requirement.v
+OL/Requirement1.v
+OL/Requirement2.v
 OL/OLTheory.v
+
+OL/Substructural/OLCut.v
+OL/Intuitionistic/OLCutBang.v
 
 #OL/Substructural/OLCut.v
 #OL/Substructural/OLCutBang.v
