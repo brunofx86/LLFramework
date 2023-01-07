@@ -7,6 +7,7 @@ generated when the system is used. In particular those related
 Require Export LL.Misc.Utils.
 Require Export LL.SL.FLL.Sequent.
 Require Import LL.Misc.Permutations.
+Require Import LL.Misc.UtilsForall.
 
 Export ListNotations.
 Export LLNotations.

@@ -1,87 +1,14 @@
 Require Export SL.SELLF.Syntax.
 Require Export SL.SELLF.Signature.
+Require Import LL.Misc.UtilsForall.
 
-Section SubExpSets.
-  Context `{SI : Signature}.
-  Context `{OLS : OLSig}.
- 
- Definition SetX  (x:  subexp -> bool) (b:bool) (K : list TypedFormula):= Forall (fun k => x (fst k) = b) K.
- 
- Definition LtX  i (K : list TypedFormula) := Forall (fun k => lt i (fst k)) K.
-  
- Global Instance perm_SetX A b :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
-             (SetX A b).
-    Proof.
-      unfold Proper; unfold respectful; unfold Basics.impl .
-      intros.
-      unfold SetX.
-      rewrite <- H;auto.
-    Qed.
-
-Global Instance perm_LtX a :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
-             (LtX a).
-    Proof.
-      unfold Proper; unfold respectful; unfold Basics.impl .
-      intros.
-      unfold LtX.
-      rewrite <- H;auto.
-    Qed.
-
-
-   Fixpoint getU  (l : list TypedFormula) :=
-  match l with
-  | [] => []
-  | (x,F) :: l0 => if u x then (x,F) :: (getU l0) else getU l0
-  end.
-  
- Fixpoint getL (l : list TypedFormula) :=
-  match l with
-  | [] => []
-  | (x,F) :: l0 => if u x then getL l0 else (x,F) :: (getL l0) 
-  end.
-   
-End SubExpSets.
-
- Global Hint Unfold SetX LtX first second: core.  
-
- 
-Tactic Notation "srewrite" constr(H) := autounfold;
- let Hs := type of H in 
- match Hs with
-| Permutation _ _ => try rewrite H
-                     
-end.
-
-Tactic Notation "srewrite_reverse" constr(H) := autounfold;
- let Hs := type of H in 
- match Hs with
-| Permutation _ _ => symmetry in H;try rewrite H
-                     
-end.
-
-
-Tactic Notation "srewrite" constr(H1) "in" constr(H2) := 
-autounfold in H2;
- let Hs := type of H1 in 
- match Hs with
-| Permutation _ _ => try rewrite H1 in H2
-                     
-end.
-
-Tactic Notation "srewrite_reverse" constr(H1) "in" constr(H2) := 
-autounfold in H2;
- let Hs := type of H1 in 
- match Hs with
-| Permutation _ _ => symmetry in H1; try rewrite H1 in H2
-                     
-end.
-
- Ltac simplSignature1 := 
+Ltac simplSignature := 
   repeat 
     multimatch goal with
   (* Basic simplifcation *)
+  | [  |- context[fst (_,_)] ] => simpl
+  | [ H: context[fst (_,_)]  |- _ ] => simpl in H
+ 
   | [  |- context[_ []] ] => simpl
   | [ H: context[_ []]  |- _ ] => simpl in H
  
@@ -102,34 +29,211 @@ end.
   end.
 
  
- Ltac solveSignature1 := try
+  Ltac solveSignature :=
   match goal with
-  | [ H: UnbSignature |- u ?i = true ] => apply allU 
- 
-  | [ |- lt ?i ?i] => apply @PreOrder_Reflexive; exact lt_pre
- 
-   | [H: SetX ?a ?b (?F::?K) |- ?a (fst ?F) = ?b] => inversion H;subst;auto
-   | [H: SetX ?a ?b ((?s, _)::?K) |- ?a ?s = ?b] => inversion H;subst;auto
+   | [H: _ ?a ?b (?F::?K) |- ?a (fst ?F) = ?b] => inversion H;subst;auto
+   | [H: _ ?a ?b ((?s, _)::?K) |- ?a ?s = ?b] => inversion H;subst;auto
   
    | [H: _ ?i (?F::?K) |- lt ?i (fst ?F) ] => inversion H;subst;intuition
    | [H: _ ?i ((?s, _)::?K) |- lt ?i ?s ] => inversion H;subst;intuition
+  end.
    
+   
+  
+ Ltac solveLocation :=simplSignature; try solve [solveSignature]; autounfold in *;solveForall.
+ 
+Section SubExpSets.
+
+  Context `{SI : SigSELL}.
+  Context `{OLS : OLSig}.
+
+        
+ Definition SetU (K : list TypedFormula):= 
+        Forall (fun k => u (fst k) = true) K.
+  
+   Definition SetL (K : list TypedFormula):= 
+        Forall (fun k => u (fst k) = false) K.
+            
+ Definition LtX i (K : list TypedFormula) := Forall (fun k => lt i (fst k)) K.
+
+ Fixpoint getLtX  (a: subexp) (L: list TypedFormula) :=
+  match L with
+  | [] => []
+  | (x,F) :: l0 => if lt_dec a x then (x,F) :: (getLtX a l0) else getLtX a l0
   end.
   
- Ltac solveLocation :=simplSignature1; try solve [solveSignature1]; autounfold in *;solveForall.
+ Fixpoint getU  (L: list TypedFormula) :=
+  match L with
+  | [] => []
+  | (x,F) :: l0 => if u x then (x,F) :: (getU l0) else getU l0
+  end.
  
-
+  Fixpoint getL  (L: list TypedFormula) :=
+  match L with
+  | [] => []
+  | (x,F) :: l0 => if u x then (getL l0) else (x,F) :: getL l0
+  end.
+  
+(*    Lemma filter_In : forall x l, In x (first (getU l)) <-> In x (first l) /\ sub x = true.   
+Proof. 
+      intros *. 
+      induction l; intros. 
+      - simpl; tauto.
+      - destruct a. destruct (subDec s). 
+         all: simpl; rewrite e;simpl.
+         all: intuition congruence.
+    Qed. *)
+   
+      
 Section Properties.
-  Context `{SI : Signature}.
-  Context `{OLS : OLSig}.
-       
-  Lemma locSetK1 sub a b F: sub a = b -> SetX sub b [(a, F)].
+  Hint Unfold LtX getLtX SetU SetL:core.
+  
+    
+  Lemma USetU (SE: USigSELL) K: SetU K.
   Proof with solveLocation.
-  constructor... 
+  induction K...
+  Qed.
+  
+  
+  
+  Lemma SetUFirst a F: u a = true -> SetU [(a, F)].
+  Proof with solveLocation.
+  auto.
+  Qed.
+  
+  Lemma SetLFirst a F: u a = false -> SetL [(a, F)].
+  Proof with solveLocation.
+  auto.
+  Qed.
+  
+  
+  Lemma LtXRefl a F: LtX a [(a, F)].
+  Proof with solveLocation.
+  simpl... 
+  reflexivity.
+  Qed.
+ 
+  
+  Lemma LtXTrans i a K : LtX i K -> lt a i -> LtX a K.
+  Proof with solveLocation.
+  induction K;simpl;intros...
+  inversion H;subst.
+  transitivity i;auto.
+  inversion H;subst.
+  apply IHK...
+  Qed.
+  
+Lemma SETXLTEmpty i K: 
+       SetL K -> LtX i K -> u i = true -> K=[].
+  Proof with solveLocation.
+  destruct K;intros...
+  destruct t as [p F].
+  inversion H0;subst.
+  assert(u p = true).
+  { eapply uClosure.  
+     exact H1. simpl in H4... }
+     inversion H...
+  sauto.
+  Qed.
+  
+  
+    Lemma SETXClosure i K  : 
+       u i = true -> LtX i K -> SetU K. 
+  Proof with solveLocation.
+  intros.
+  induction K;intros...
+  inversion H0;subst.
+  eapply uClosure.
+  exact H. exact H3.
+  apply IHK...
+  Qed.
+  
+ 
+ Lemma SETUIn a K: SetU K -> In a K -> u (fst a) = true.
+  Proof with sauto.
+  intros.
+  eapply @ForallIn with (F:=a) in H...
+  Qed.
+ 
+ Lemma SETLIn a K: SetL K -> In a K -> u (fst a) = false.
+  Proof with sauto.
+  intros.
+  eapply @ForallIn with (F:=a) in H...
+  Qed.
+ 
+  Lemma SETXempty K : SetU K -> SetL K -> K=[].
+   Proof with sauto.
+  destruct K;intros...
+  destruct t as [p F].
+  inversion H...
+  inversion H0...
+  Qed.
+  
+   Lemma SETUNotIn a F K : u a = true -> SetL K -> In (a, F) K -> False.
+  Proof with sauto.
+  induction K;intros...
+  destruct a0.
+  inversion H1...
+  inversion H0...
+  apply IHK...
+  inversion H0... 
+  Qed.
+   
+   Lemma SETLNotIn a F K : u a = false -> SetU K -> In (a, F) K -> False.
+  Proof with sauto.
+  induction K;intros...
+  destruct a0.
+  inversion H1...
+  inversion H0...
+  apply IHK...
+  inversion H0... 
+  Qed.
+   
+   
+  Lemma SETUDec K :  {SetU K} + {~ SetU K}.
+  Proof with sauto.
+  apply Forall_dec; intros.
+  destruct (uDec (fst x))... 
   Qed.
 
-  
-   Lemma SetU_then_empty K : SetX u true K -> getL K =[].
+  Lemma SETLDec K :  {SetL K} + {~ SetL K}.
+  Proof with sauto.
+  apply Forall_dec; intros.
+  destruct (uDec (fst x))...
+  right. intro...
+  Qed.
+ 
+   Global Instance perm_SetU :
+      Proper (@Permutation TypedFormula ==>  Basics.impl)
+             (SetU ).
+    Proof.
+      unfold Proper; unfold respectful; unfold Basics.impl .
+      intros.
+      unfold SetU.
+      rewrite <- H;auto.
+    Qed.
+    
+ Global Instance perm_SetL :
+      Proper (@Permutation TypedFormula ==>  Basics.impl)
+             (SetL ).
+    Proof.
+      unfold Proper; unfold respectful; unfold Basics.impl .
+      intros.
+      unfold SetL.
+      rewrite <- H;auto.
+    Qed.
+
+Global Instance perm_LtX a :
+      Proper (@Permutation TypedFormula  ==>  Basics.impl)
+             (LtX a).
+    Proof.
+      unfold Proper; unfold respectful; unfold Basics.impl .
+      intros.
+      unfold LtX.
+      rewrite <- H;auto.
+    Qed. 
+   
+Lemma SetU_then_empty K : SetU K -> getL K =[].
    Proof with sauto.
   induction K;intros...
   destruct a as [p F].
@@ -138,90 +242,25 @@ Section Properties.
   Qed. 
   
     
-   Lemma SetL_then_empty K : SetX u false K -> getU K =[].
+   Lemma SetL_then_empty K : SetL  K -> getU K =[].
    Proof with sauto.
   induction K;intros...
   destruct a as [p F].
   inversion H...
   simpl. rewrite H2...
-  Qed. 
-
-     
-   Lemma SetKRef a F: LtX a [(a, F)].
-  Proof with sauto.
-  apply Forall_cons... 
-  apply @PreOrder_Reflexive.
-  exact lt_pre.
   Qed.
-
-   Lemma SetKTrans i a K : LtX i K -> lt a i -> LtX a K.
-  Proof with sauto.
-  induction K;simpl;intros...
-  inversion H...
-  apply Forall_cons... 
-  apply @PreOrder_Transitive with (R:=lt) (y:=i);auto.
-  exact lt_pre.
-  apply IHK...
-  Qed.
-
-  Global Instance trans_SetK :
+  
+ Global Instance trans_SetK :
        Proper (lt ==> @Permutation TypedFormula ==> Basics.flip Basics.impl)
              (LtX ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.flip; unfold Basics.impl .
       intros;subst.
       rewrite H0.
-      eapply (SetKTrans _ _ _ H1);auto. 
+      eapply (LtXTrans _ _ _ H1);auto. 
     Qed.
   
-  Lemma SetUL_then_empty' i K : SetX u false K -> LtX i K -> u i = true -> K=[].
-  Proof with sauto.
-  destruct K;intros...
-  destruct t as [p F].
-  inversion H...
-  assert(u p = true).
-  {
-  eapply uClosure.
-  exact H1. inversion H0...  }
-  sauto.
-  Qed.
-  
-  
-    Lemma SetTKClosure i sub K  : (forall x y : subexp,
-       sub x = true -> lt x y -> sub y = true) -> sub i = true -> LtX i K -> SetX sub true K. 
-  Proof with sauto.
-  intros.
-  induction K;intros... 
-  inversion H1...
-  apply Forall_cons...
-  eapply H. 
-  exact H0. exact H4.
-  apply IHK...
-  Qed.
-  
-(*   Check SetTKClosure _ u _ uClosure . *)
-  Lemma SetUKClosure i K  : u i = true -> LtX i K -> SetX u true K. 
-  Proof with sauto.
-  intros.
-  apply SetTKClosure with (i:=i)...
-  exact uClosure.
-  Qed.
-
- Lemma SetK4In sub a K: SetX sub true K -> In a K -> sub (fst a) = true.
-  Proof with sauto.
-  intros.
-  eapply @ForallIn with (F:=a) in H...
-  Qed.
  
- 
-  Lemma SetKK4_then_empty sub K : SetX sub true K -> SetX sub false K -> K=[].
-   Proof with sauto.
-  destruct K;intros...
-  destruct t as [p F].
-  inversion H...
-  inversion H0...
-  Qed. 
-  
   Theorem cxtDestruct K: Permutation K (getU K++getL K).
  Proof with subst;auto.
  induction K;auto.
@@ -246,20 +285,55 @@ Section Properties.
  Theorem cxtDestruct' K: exists K1 K2, Permutation K (getU K++getL K1 ++ getL K2) /\ Permutation (getL K) (getL K1 ++ getL K2).
  Proof with sauto.
  induction K...
- exists [].
- exists [].
+ exists [], [].
  simpl;auto.
  destruct a as [a F].
  destruct (uDec a); simpl;
  rewrite e;simpl.
- exists x. exists x0.
+ exists x, x0.
  constructor;auto.
- exists ((a,F)::x).
-  exists x0.
+ exists ((a,F)::x), x0.
   simpl; rewrite e;simpl.
   constructor;auto.
  apply Permutation_cons_app;auto.
  Qed.
+
+  Theorem cxtDestructLtX i K: SetU K -> exists K', Permutation K (getLtX i K++getU K').
+ Proof with sauto.
+ induction K;intros...
+ * exists nil...
+ * destruct a as [a F].
+    simpl in *.
+    destruct (lt_dec i a)...
+    inversion H...
+    apply IHK in H3...
+    exists x...
+    rewrite <- app_comm_cons.
+    rewrite <- H3...
+    inversion H...
+    apply IHK in H3...
+    exists ((a,F)::x)...
+    rewrite Permutation_app_comm.
+    simpl...
+    rewrite <- app_comm_cons.
+    rewrite Permutation_app_comm.
+    rewrite <- H3...
+    Qed.
+        
+ Lemma getLtXPerm a K1 K2 : Permutation K1 K2 -> Permutation (getLtX a K1) (getLtX a K2).
+Proof with subst;auto.
+ revert dependent K2.
+ revert dependent K1.
+ induction 1;intros. 
+ * simpl...
+ * destruct x as [x F];simpl.
+   destruct (lt_dec a x)... 
+ * destruct x as [x F];
+   destruct y as [y G];simpl.
+   destruct (lt_dec a x);
+   destruct (lt_dec a y)...   
+   apply perm_swap.
+ * eapply (Permutation_trans IHPermutation1 IHPermutation2). Qed.
  
  Lemma getUPerm K1 K2 : Permutation K1 K2 -> Permutation (getU K1) (getU K2).
 Proof with subst;auto.
@@ -295,6 +369,15 @@ Proof with subst;auto.
    apply perm_swap.
  * eapply (Permutation_trans IHPermutation1 IHPermutation2). Qed.
 
+  Global Instance getLtX_morph a:
+      Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
+             (getLtX a ).
+    Proof.
+    unfold Proper; unfold respectful.
+    intros. 
+    apply getLtXPerm;auto.
+    Qed. 
+    
   Global Instance getU_morph :
       Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
              (getU ).
@@ -311,8 +394,19 @@ Proof with subst;auto.
     unfold Proper; unfold respectful.
     intros. 
     apply getLPerm;auto.
-    Qed. 
-    
+    Qed.
+     
+      Lemma getLtX_fixpoint a K : getLtX a (getLtX a K) =  getLtX a K.
+  Proof.
+  induction K;auto.
+  destruct a0;simpl;auto.
+  destruct (lt_dec a s).
+  simpl... 
+  destruct (lt_dec a s).
+  rewrite IHK; auto.
+  contradiction.
+  rewrite IHK; auto.
+ Qed.
      
   Lemma getU_fixpoint K : getU(getU K) =  getU K.
   Proof.
@@ -360,19 +454,28 @@ Proof with subst;auto.
   rewrite IHK1; auto.
    Qed.
  
+   Lemma getLtXApp a K1 K2 : getLtX a (K1 ++ K2) =  getLtX a  K1 ++ getLtX a  K2.
+  Proof.
+    induction K1;auto.
+  destruct a0;simpl;auto.
+  destruct (lt_dec a s).
+  simpl. 
+  rewrite IHK1;auto.
+  rewrite IHK1;auto.
+   Qed.
  
  Lemma getUApp' K1 K2 : Permutation (getU (K1 ++ K2)) (getU K1 ++ getU K2).
   Proof.
   rewrite getUApp;auto.
   Qed. 
  
- Lemma uIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
+ Lemma uIngetU i F K :  u i = true -> In (i, F) K -> In (i, F) (getU K).
  Proof with sauto.
   intros.
   rewrite cxtDestruct in H0.
   apply in_app_or in H0.
   destruct H0;auto.
-  induction B...
+  induction K...
   destruct a.
   destruct(uDec s); simpl in *.
   rewrite e in *...  firstorder. 
@@ -394,13 +497,13 @@ Proof with subst;auto.
   rewrite getLApp;auto.
   Qed. 
 
-Lemma lIngetL i F B :  u i = false -> In (i, F) B -> In (i, F) (getL B).
+Lemma lIngetL i F K :  u i = false -> In (i, F) K -> In (i, F) (getL K).
  Proof with sauto.
   intros.
   rewrite cxtDestruct in H0.
   apply in_app_or in H0.
   destruct H0;auto.
-  induction B...
+  induction K...
   destruct a.
   destruct(uDec s); simpl in *;
   rewrite e in *...
@@ -408,13 +511,13 @@ Lemma lIngetL i F B :  u i = false -> In (i, F) B -> In (i, F) (getL B).
   firstorder.
  Qed.
 
-Lemma lIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
+Lemma lIngetU i F K :  u i = true -> In (i, F) K -> In (i, F) (getU K).
  Proof with sauto.
   intros.
   rewrite cxtDestruct in H0.
   apply in_app_or in H0.
   destruct H0;auto.
-  induction B...
+  induction K...
   destruct a.
   destruct(uDec s); simpl in *;
   rewrite e in *...
@@ -424,7 +527,7 @@ Lemma lIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
  Qed.
 
 
-  Theorem getUtoSetU K: SetX u true (getU K).
+  Theorem getUtoSetU K: SetU (getU K).
  Proof with subst;auto.
  induction K...  
  apply Forall_nil.
@@ -434,7 +537,7 @@ Lemma lIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
  rewrite e...
  Qed.
  
-   Theorem getLtoSetU K: SetX u true (getL K) -> getL K =[].
+   Theorem getLtoSetU K: SetU (getL K) -> getL K =[].
  Proof with sauto.
  induction K;intros. 
  * auto.
@@ -445,17 +548,15 @@ Lemma lIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
  Qed.
  
  
- Lemma getUPerm_SetU K X : Permutation (getU K) X -> SetX u true X.
+ Lemma getUPerm_SetU K X : Permutation (getU K) X -> SetU X.
   Proof.
   intros.
   symmetry in H.
-  srewrite  H.
+  rewrite  H.
   apply getUtoSetU.
  Qed. 
  
-
- 
-  Theorem getLtoSetL K: SetX u false (getL K).
+  Theorem getLtoSetL K: SetL (getL K).
  Proof with subst;auto.
  induction K...
  apply Forall_nil.
@@ -466,15 +567,15 @@ Lemma lIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
  rewrite e...
  Qed.
  
-  Lemma getLPerm_SetL K X : Permutation (getL K) X -> SetX u false X.
+  Lemma getLPerm_SetL K X : Permutation (getL K) X -> SetL X.
   Proof.
   intros.
   symmetry in H.
-  srewrite H.
+  rewrite H.
   apply getLtoSetL.
  Qed. 
  
-  Theorem setUtoGetU K: SetX u true K -> getU K = K.
+  Theorem setUtoGetU K: SetU K -> getU K = K.
  Proof with subst;auto.
  induction K; intros...
  destruct a as [a F].
@@ -484,7 +585,22 @@ Lemma lIngetU i F B :  u i = true -> In (i, F) B -> In (i, F) (getU B).
  rewrite H3...
  Qed.
 
-  Theorem setLtoGetL K: SetX u false K -> getL K = K.
+  Theorem getUtoSetU' K:  getU K = K -> SetU K.
+ Proof with sauto.
+ induction K; intros...
+ destruct a as [a F].
+ simpl in H.
+ destruct (uDec a)...
+ apply Forall_cons...
+ apply IHK...
+ inversion H...
+  rewrite H1...
+  assert(SetU (getU K)) by apply getUtoSetU.
+  rewrite H in H0.
+  inversion H0...
+ Qed.
+ 
+  Theorem setLtoGetL K: SetL K -> getL K = K.
  Proof with subst;auto.
 
  induction K; intros...
@@ -506,8 +622,8 @@ Proof with sauto.
  rewrite setUtoGetU...
  Qed.
  
- Theorem Unb_Lin_Disj' K: exists K1 K2, SetX u true K1 /\ SetX u false K2 /\ Permutation K (K1++K2).
- Proof with subst;solveLocation;auto .
+ Theorem Unb_Lin_Disj' K: exists K1 K2, SetU K1 /\ SetL K2 /\ Permutation K (K1++K2).
+ Proof with sauto .
  induction K;auto.
  do 2 eexists [];simpl...
  destruct IHK.
@@ -517,47 +633,286 @@ Proof with sauto.
  destruct (uDec a).
  eexists ((a,F)::x).
  eexists x0.
- split... 
+ split...
+ rewrite H3...
+  
  eexists x.
  eexists ((a,F)::x0).
- split... 
- split...  
- rewrite H3... apply Permutation_middle.
+ split...
+ rewrite H3... 
+  Qed.
+ 
+ Lemma getUS F t D L: getU D = (t, F)::L -> u t = true.
+ Proof with sauto.
+ induction D;intros...
+ destruct a.
+ destruct (uDec s).
+ inversion H...
+ inversion H1...
+ inversion H...
  Qed.
  
-  Lemma SetUDec sub K :  {SetX sub true K} + {~ SetX sub true K}.
+ Lemma ltConv a b K: lt a b -> exists K', Permutation (getLtX a K) (getLtX b K ++ K').
   Proof with sauto.
-    induction K;simpl;auto.
-    destruct IHK.
-    - destruct a as [p F]... 
-      destruct (subDec sub p). 
-      left.  apply Forall_cons...
-      right. intro.
-      inversion H...
-    - destruct a as [p F]. 
-      destruct (subDec sub p).
-      right. intro. inversion H... 
-      right. intro.
-      inversion H... 
+  revert dependent a. 
+  revert dependent b. 
+  revert dependent K. 
+  
+  induction K;intros...
+  exists nil...
+  destruct a.
+  simpl...
+  destruct (lt_dec b s)...
+  destruct (lt_dec a0 s)...
+  -
+  apply IHK in H...
+  exists x.
+  rewrite H...
+  - assert(lt a0 s).
+     transitivity b;auto.
+     contradiction.
+ -
+   destruct (lt_dec a0 s)...
+   apply IHK in H...
+   
+   exists ((s, o) ::x).
+  rewrite  H...
+  Qed.
+
+ Lemma ltConv' a b K: lt a b -> LtX b (getL K) -> exists K', Permutation (getLtX a K) (getLtX b K ++ getU K').
+  Proof with sauto.
+  revert dependent a. 
+  revert dependent b. 
+  revert dependent K. 
+  
+  induction K;intros...
+  exists nil...
+  destruct a.
+  destruct (uDec s).
+  * simpl in *...
+  destruct (lt_dec b s)...
+  destruct (lt_dec a0 s)...
+  -
+  apply IHK in H...
+  exists x.
+  rewrite H...
+  - assert(lt a0 s).
+     transitivity b;auto.
+     contradiction.
+ -
+   destruct (lt_dec a0 s)...
+   apply IHK in H...
+   simpl in H0.
+   exists ((s, o) ::x).
+  rewrite  H...
+  simpl...
+  *
+  simpl in *...
+  destruct (lt_dec b s)...
+  destruct (lt_dec a0 s)...
+  -
+  apply IHK in H...
+  exists x.
+  rewrite H...
+  inversion H0...
+  - assert(lt a0 s).
+     transitivity b;auto.
+     contradiction.
+ -
+   destruct (lt_dec a0 s)...
+   inversion H0...
+   inversion H0...
+ Qed.  
+  
+  Lemma linearEmpty K : getL K = [] -> getL K = [] /\ Permutation (getU K) K /\ SetU K.
+  Proof with sauto.
+  intros. split;auto.
+  revert dependent K. 
+  induction K;intros...
+  2:{
+   destruct a as [p F].
+  destruct (uDec p).
+  simpl in H. rewrite e in H.
+  apply Forall_cons...
+  apply IHK...
+  simpl in H. rewrite e in H.
+  apply Forall_cons... }
+  
+  destruct a as [p F].
+  destruct (uDec p).
+  - simpl. rewrite e.
+    simpl in H.
+    rewrite e in H.
+    apply IHK in H... 
+  - simpl. rewrite e.
+    simpl in H.
+    rewrite e in H.
+    inversion H...
+Qed.
+   
+   Lemma bangUnb i K : u i = true -> LtX i (getL K) -> K = getU K.
+   Proof with sauto.
+  induction K;intros...
+  destruct a as [p F].
+  simpl in H0.
+  destruct (uDec p)...
+  simpl...
+  rewrite IHK...
+  rewrite getU_fixpoint...
+  inversion H0... 
+  assert(u p = true).
+  eauto.
+  sauto.
+Qed.
+
+
+Lemma unboundedEmpty K : getU K = [] -> getU K = [] /\ Permutation (getL K) K /\ SetL K.
+  Proof with sauto.
+  intros. split;auto.
+  revert dependent K. 
+  induction K;intros...
+   2:{
+   destruct a as [p F].
+  destruct (uDec p).
+  simpl in H. rewrite e in H.
+  apply Forall_cons...
+  simpl in H. rewrite e in H.
+  apply Forall_cons... 
+  apply IHK...
+  }
+ 
+  destruct a as [p F].
+  destruct (uDec p).
+  - simpl. rewrite e.
+    simpl in H.
+    rewrite e in H.
+    inversion H...
+  - simpl. rewrite e.
+    simpl in H.
+    rewrite e in H.
+     apply IHK in H... 
  Qed.
  
+  Lemma SetK4Destruct  K : SetU K -> SetU (getU K) /\ SetU (getL K).
+  Proof with sauto.
+  intros.
+  rewrite cxtDestruct in H;split;
+  apply Forall_app in H...
+  Qed.
+
+  Lemma SetK4DestructL  K : SetL K -> SetL (getU K) /\ SetL (getL K).
+  Proof with sauto.
+  intros.
+  rewrite cxtDestruct in H;split;
+  apply Forall_app in H...
+  Qed.
  
+ Lemma InContext1 F CD C D:
+  Permutation (getU CD) (getU C) ->
+  Permutation (getU CD) (getU D) ->
+  Permutation (getL CD) (getL C ++ getL D) ->
+  In F C ->  In F CD.
+  Proof with sauto.
+  intros.
+  rewrite cxtDestruct.
+  rewrite H.
+  rewrite H1.
+  rewrite app_assoc.
+  rewrite <- cxtDestruct.
+  apply in_or_app;auto.
+  Qed.
+
+ Lemma InSecond1 F CD C D:
+  Permutation (getU CD) (getU C) ->
+  Permutation (getU CD) (getU D) ->
+  Permutation (getL CD) (getL C ++ getL D) ->
+  In F (second C) ->  In F (second CD).
+  Proof with sauto.
+  intros.
+  unfold second.
+  rewrite cxtDestruct.
+  rewrite H.
+  rewrite H1.
+  rewrite app_assoc.
+  rewrite <- cxtDestruct.
+  rewrite map_app.
+  apply in_or_app;auto.
+  Qed.
+  
+  
+  
+ Lemma InContext2 F CD C D:
+  Permutation (getU CD) (getU C) ->
+  Permutation (getU CD) (getU D) ->
+  Permutation (getL CD) (getL C ++ getL D) ->
+  In F D ->  In F CD.
+  Proof with sauto.
+  intros.
+  rewrite cxtDestruct.
+  rewrite H0.
+  rewrite H1.
+  rewrite Permutation_midle_app.
+  rewrite <- cxtDestruct.
+  apply in_or_app;auto.
+  Qed.
+  
+  Lemma InSecond2 F CD C D:
+  Permutation (getU CD) (getU C) ->
+  Permutation (getU CD) (getU D) ->
+  Permutation (getL CD) (getL C ++ getL D) ->
+  In F (second D) ->  In F (second CD).
+  Proof with sauto.
+  intros.
+  unfold second.
+  rewrite cxtDestruct.
+  rewrite H0.
+  rewrite H1.
+  rewrite Permutation_midle_app.
+  rewrite <- cxtDestruct.
+  rewrite map_app.
+  apply in_or_app;auto.
+  Qed.  
  
-  Lemma isFormulaL_getU B :  
-      isFormulaL (second B) -> isFormulaL  (second (getU B)). 
+   Lemma simplUnb CD C D:          
+  Permutation (getU CD) (getU D) ->
+  Permutation (getL CD) (getL C ++ getL D) ->
+  SetU C -> Permutation CD D.
+  Proof.   
+  intros.
+  rewrite (SetU_then_empty _ H1) in H0.
+  rewrite (cxtDestruct CD).
+  rewrite H0.
+  rewrite H.
+  simpl. 
+  rewrite <- cxtDestruct;auto.
+  Qed.
+  
+  Lemma simplUnb' CD C D:          
+  Permutation (getU CD) (getU C) ->
+  Permutation (getL CD) (getL C ++ getL D) ->
+  SetU D -> Permutation CD C.
+  Proof.   
+  intros.
+  rewrite (SetU_then_empty _ H1) in H0.
+  rewrite (cxtDestruct CD).
+  rewrite H.
+  rewrite H0;sauto.
+  rewrite <- cxtDestruct;auto.
+  Qed.
+ 
+  Lemma isFormulaL_getU K :  
+      isFormulaL (second K) -> isFormulaL  (second (getU K)). 
   Proof.
-    induction B;intros;sauto. 
+    induction K;intros;sauto. 
     destruct a as [a F]. 
     destruct(uDec a);simpl;sauto.
     - 
       simpl in *.
       inversion H;sauto.
-      rewrite e.
       apply Forall_cons;sauto.
     -
       simpl in *.
       inversion H;sauto.
-      rewrite e;sauto...
   Qed.    
     
     Lemma isFormulaL_getL  B :  
@@ -567,10 +922,8 @@ Proof with sauto.
     destruct a as [a F]. 
     destruct(uDec a);simpl;sauto.
     - simpl in *.
-    rewrite e.
       inversion H;sauto.
    -  simpl in *.
-   rewrite e.
       inversion H;sauto.
       apply Forall_cons;sauto.
   Qed.
@@ -608,140 +961,8 @@ Proof with sauto.
     Qed.
     
  
- Lemma getUS F t D L: getU D = (t, F)::L -> u t = true.
- Proof with sauto.
- induction D;intros...
- destruct a.
- destruct (uDec s).
- inversion H...
- rewrite e in H1... 
- inversion H1...
- inversion H...
- rewrite e in H1... 
- Qed.
+  
  
-
-  Lemma linearEmpty K : getL K = [] -> getL K = [] /\ Permutation (getU K) K /\ SetX u true K.
-  Proof with auto.
-  intros. split;auto.
-  revert dependent K. 
-  induction K;intros...
-  destruct a as [p F].
-  destruct (uDec p).
-  - simpl. rewrite e.
-    simpl in H.
-    rewrite e in H.
-    apply IHK in H. 
-    split;sauto. 
-  - simpl. rewrite e.
-    simpl in H.
-    rewrite e in H.
-    inversion H...
-Qed.
-
-Lemma unboundedEmpty K : getU K = [] -> getU K = [] /\ Permutation (getL K) K /\ SetX u false K.
-  Proof with auto.
-  intros. split;auto.
-  revert dependent K. 
-  induction K;intros...
-  destruct a as [p F].
-  destruct (uDec p).
-  - simpl. rewrite e.
-    simpl in H.
-    rewrite e in H.
-    inversion H...
-  - simpl. rewrite e.
-    simpl in H.
-    rewrite e in H.
-     apply IHK in H. 
-    split;sauto. 
- Qed.
- 
-  Lemma SetK4Destruct sub b K : SetX sub b K -> SetX sub b (getU K) /\ SetX sub b (getL K).
-  Proof with sauto.
-  intros.
-  rewrite cxtDestruct in H;split;
-  apply Forall_app in H...
-  Qed.
-  
-   Lemma linearInUnb a A K : u a = false -> SetX u true K -> In (a, A) K -> False.
-  Proof with sauto.
-  induction K;intros...
-  destruct a0.
-  inversion H1...
-  inversion H0...
-  apply IHK...
-  inversion H0... 
-  Qed. 
-  
-  
- Lemma InContext1 F BD B D:
-  Permutation (getU BD) (getU B) ->
-  Permutation (getU BD) (getU D) ->
-  Permutation (getL BD) (getL B ++ getL D) ->
-  In F B ->  In F BD.
-  Proof with sauto.
-  intros.
-  rewrite cxtDestruct.
-  rewrite H.
-  rewrite H1.
-  rewrite app_assoc.
-  rewrite <- cxtDestruct.
-  apply in_or_app;auto.
-  Qed.
-
- Lemma InSecond1 F BD B D:
-  Permutation (getU BD) (getU B) ->
-  Permutation (getU BD) (getU D) ->
-  Permutation (getL BD) (getL B ++ getL D) ->
-  In F (second B) ->  In F (second BD).
-  Proof with sauto.
-  intros.
-  unfold second.
-  rewrite cxtDestruct.
-  rewrite H.
-  rewrite H1.
-  rewrite app_assoc.
-  rewrite <- cxtDestruct.
-  rewrite map_app.
-  apply in_or_app;auto.
-  Qed.
-  
-  
-  
- Lemma InContext2 F BD B D:
-  Permutation (getU BD) (getU B) ->
-  Permutation (getU BD) (getU D) ->
-  Permutation (getL BD) (getL B ++ getL D) ->
-  In F D ->  In F BD.
-  Proof with sauto.
-  intros.
-  rewrite cxtDestruct.
-  rewrite H0.
-  rewrite H1.
-  rewrite Permutation_midle_app.
-  rewrite <- cxtDestruct.
-  apply in_or_app;auto.
-  Qed.
-  
-  Lemma InSecond2 F BD B D:
-  Permutation (getU BD) (getU B) ->
-  Permutation (getU BD) (getU D) ->
-  Permutation (getL BD) (getL B ++ getL D) ->
-  In F (second D) ->  In F (second BD).
-  Proof with sauto.
-  intros.
-  unfold second.
-  rewrite cxtDestruct.
-  rewrite H0.
-  rewrite H1.
-  rewrite Permutation_midle_app.
-  rewrite <- cxtDestruct.
-  rewrite map_app.
-  apply in_or_app;auto.
-  Qed.  
- 
-
   Lemma isFormulaSecond1  BD X Y B Z U:
   isFormulaL  (second (X++getU BD++Y)) -> 
   Permutation (X++getU BD++Y) (Z++B++U) ->
@@ -750,7 +971,9 @@ Lemma unboundedEmpty K : getU K = [] -> getU K = [] /\ Permutation (getL K) K /\
    intros.
    assert(isFormulaL  (second (Z ++ B ++ U))).
    symmetry in H0.
-   srewrite H0...
+   autounfold.
+   unfold second.
+   rewrite H0...
    rewrite !secondApp in H1.
    apply Forall_app in H1...
    apply Forall_app in H3...
@@ -764,14 +987,14 @@ Lemma unboundedEmpty K : getU K = [] -> getU K = [] /\ Permutation (getL K) K /\
    intros.
    assert(isFormulaL  (second (Z ++ B ++ U))).
    symmetry in H0.
-   srewrite H0...
+   autounfold.
+   unfold second.
+   rewrite H0...
    rewrite !secondApp in H1.
    apply Forall_app in H1...
    apply Forall_app in H3...
  Qed.
  
-
-
   Lemma isFormulaSecondSplit1  BD X Y B D:
   isFormulaL  (second (BD++X++Y)) -> 
   Permutation (getU BD++X) (getU B) ->
@@ -813,64 +1036,127 @@ Lemma unboundedEmpty K : getU K = [] -> getU K = [] /\ Permutation (getL K) K /\
   rewrite H1...
   Qed.
  
+ End Properties.
  
-  Lemma simplUnb BD B D:          
-  Permutation (getU BD) (getU D) ->
-  Permutation (getL BD) (getL B ++ getL D) ->
-  SetX u true B -> Permutation BD D.
-  Proof.   
-  intros.
-  rewrite (SetU_then_empty _ H1) in H0.
-  rewrite (cxtDestruct BD).
-  rewrite H0.
-  rewrite H.
-  simpl. 
-  rewrite <- cxtDestruct;auto.
-  Qed.
-  
-  Lemma simplUnb' BD B D:          
-  Permutation (getU BD) (getU B) ->
-  Permutation (getL BD) (getL B ++ getL D) ->
-  SetX u true D -> Permutation BD B.
-  Proof.   
-  intros.
-  rewrite (SetU_then_empty _ H1) in H0.
-  rewrite (cxtDestruct BD).
-  rewrite H.
-  rewrite H0;sauto.
-  rewrite <- cxtDestruct;auto.
-  Qed.
-  
- Definition SetU K := SetX  u true K. 
- Definition SetL K := SetX  u false K.
+  End SubExpSets.
 
-End Properties.
+ Global Hint Resolve USetU getUtoSetU: core.
 
- Global Hint Unfold SetU SetL:core. 
-
-Global Hint Resolve SetUKClosure   getUtoSetU getLtoSetL: core.
-
+(* Global Hint Resolve LtXRefl: core. *)
 
 Global Hint Extern 1 (LtX ?a ?K) =>
   match goal with
-  | H: LtX ?i ?K,  H1: lt ?a ?i |- _ =>  apply (SetKTrans _ _ _ H H1)
+  | H: LtX ?i ?K,  H1: lt ?a ?i |- _ =>  apply (LtXTrans _ _ _ H H1)
   end : core.
-
-Global Hint Resolve linearInUnb: core.
-
+  
+  
 Ltac solveLT :=  
 try
  match goal with
-   | [H: _ ?i (?F::?K) |- lt ?i (fst ?F) ] => inversion H;subst;intuition
-   | [H: _ ?i ((?s, _)::?K) |- lt ?i ?s ] => inversion H;subst;intuition
-   | [H: _ ?i (_::?K) |- LtX ?i ?K ] => inversion H;subst;intuition
-   
-   
+   | [ |- lt ?x ?x ] => reflexivity
+   | [H: lt ?x ?y, H2: lt ?y ?z |- lt ?x ?z ] => transitivity y;auto
    | [H: lt ?x ?y, H2: LtX ?y ?K |- LtX ?x ?K ] => rewrite H;auto
    | [H: Permutation ?K ?K', H2: LtX ?x ?K' |- LtX ?x ?K ] => rewrite H;auto
     | [H: Permutation ?K ?K', H2: LtX ?x ?K |- LtX ?x ?K' ] => rewrite <- H;auto  
  
   end;auto.
+  
+(*   Lemma asasa (OLS : OLSig)  (SI : SigSELL) x y K: lt y x -> lt x K -> lt y K. *)
+  
+  
+  
+(* Forall_nil: Forall P []
+Forall_inv: Forall P (a :: l) -> P a
+ForallIn: Forall f L -> In F L -> f F
+Forall_inv_tail: Forall P (a :: l) -> Forall P l
+Forall_cons: P x -> Forall P l -> Forall P (x :: l)
+Forall_forall: Forall P l <-> (forall x : A, In x l -> P x)
+
+PermuteMap: Forall f L -> Permutation L L' -> Forall f L'
+
+Forall_impl:
+  (forall a : A, P a -> Q a) ->
+  forall l : list A, Forall P l -> Forall Q l
+
+Permutation_Forall:
+  forall [A : Type] [P : A -> Prop],
+  Proper (Permutation (A:=A) ==> Basics.impl) (Forall P)
+
+Forall_elt: Forall P (l1 ++ a :: l2) -> P a
+
+ForallInP: Forall f L -> Permutation L (F :: L') -> f F
+
+Forall_cons_iff: Forall P (a :: l) <-> P a /\ Forall P l
+Forall_and: Forall P l -> Forall Q l -> Forall (fun x : A => P x /\ Q x) l
+
+Forall_dec:
+  (forall x : A, {P x} + {~ P x}) ->
+  forall l : list A, {Forall P l} + {~ Forall P l}
+
+Forall_and_inv:
+  Forall (fun x : A => P x /\ Q x) l ->
+  Forall P l /\ Forall Q l
+
+exists_Forall:
+  (exists k : A, Forall (P k) l) ->
+  Forall (fun x : B => exists k : A, P k x) l
+
+Forall_map:
+  Forall P (map f l) <-> Forall (fun x : A => P (f x)) l
+
+Forall_app:
+  Forall P (l1 ++ l2) <-> Forall P l1 /\ Forall P l2
+
+Forall_flat_map:
+Forall P (flat_map f ls) <->
+ Forall (fun d : A => Forall P (f d)) ls
+
+map_ext_Forall:
+  forall [A B : Type] (f g : A -> B) [l : list A],
+  Forall (fun x : A => f x = g x) l -> map f l = map g l
+
+Forall_rect:
+  forall [A : Type] [P : A -> Prop] (Q : list A -> Type),
+  Q [] ->
+  (forall (b : A) (l : list A), P b -> Q (b :: l)) ->
+  forall l : list A, Forall P l -> Q l
+
+getUtoSetU getLtoSetL
+uIngetU lIngetL lIngetU *)
+
+  
+  Section Locations.
+  Context `{SI : SigSELL}.
+  Context `{OLS : OLSig}.
+  
+   Lemma asasa i K : u  i = true -> LtX i (getL K) -> K = getU K.
+   Proof with sauto.
+  induction K;intros...
+  destruct a as [p F].
+  simpl in H0.
+  destruct (uDec p)...
+  simpl...
+  rewrite IHK...
+  rewrite getU_fixpoint...
+  inversion H0... 
+  assert(u p = true).
+  eauto.
+  sauto.
+Qed.
+
+  End Locations.
+  
+Global Hint Resolve getUtoSetU : ExBase.
+Global Hint Unfold  SetU SetL getU getL: core.
+
+(* 
+ Global Hint Unfold SetU SetL:core. 
+Global Hint Resolve  USetU: core.
+Global Hint Resolve SetUKClosure   getUtoSetU getLtoSetL: core. *)
+
+(* Global Hint Resolve linearInUnb: core.
+ *)
+
 
 Ltac solveSE :=  
 try
@@ -892,28 +1178,28 @@ try
   multimatch goal with
 
  
-  | [H: SetU ?K, H1: SetL ?K |- _  ] =>  assert(K=[]) by apply (SetKK4_then_empty _ _ H H1);clear H H1 
+  | [H: SetU ?K, H1: SetL ?K |- _  ] =>  assert(K=[]) by apply (SETXempty _ _ H H1);clear H H1 
  
-  | [H: SetL ?K, H0: LtX ?i ?K, H1:  u ?i = true |- _  ] =>  assert(K=[]) by apply (SetUL_then_empty' _ _ H H0 H1);clear H 
+  | [H: SetL ?K, H0: LtX ?i ?K, H1:  u ?i = true |- _  ] =>  assert(K=[]) by apply (SETXLTEmpty _ _ H H0 H1);clear H 
 
-  | [  |- context[getL(getU _)] ] => rewrite getLgetU 
-  | [ H: context[getL(getU _)] |- _  ] => rewrite getLgetU in H
-  | [  |- context[getU(getL _)] ] => rewrite getUgetL 
-  | [ H: context[getU(getL _)] |- _  ] => rewrite getUgetL in H
+  | [  |- context[getL(getU _)] ] => setoid_rewrite getLgetU 
+  | [ H: context[getL(getU _)] |- _  ] => setoid_rewrite getLgetU in H
+  | [  |- context[getU(getL _)] ] => setoid_rewrite getUgetL 
+  | [ H: context[getU(getL _)] |- _  ] => setoid_rewrite getUgetL in H
  
-  | [ H: SetU ?K |- context[getL ?K] ] => rewrite (SetU_then_empty _ H)
-  | [ H1: SetU ?K, H2: context[getL ?K] |- _ ] => rewrite (SetU_then_empty _ H1) in H2
+  | [ H: SetU ?K |- context[getL ?K] ] => setoid_rewrite (SetU_then_empty _ H)
+  | [ H1: SetU ?K, H2: context[getL ?K] |- _ ] => setoid_rewrite (SetU_then_empty _ H1) in H2
 
-  | [ H: SetL ?K |- context[getU ?K] ] => rewrite (SetL_then_empty _ H)
-  | [ H1: SetL ?K, H2: context[getU ?K] |- _ ] => rewrite (SetL_then_empty _ H1) in H2
+  | [ H: SetL ?K |- context[getU ?K] ] => setoid_rewrite (SetL_then_empty _ H)
+  | [ H1: SetL ?K, H2: context[getU ?K] |- _ ] => setoid_rewrite (SetL_then_empty _ H1) in H2
   
    
- | [ H: SetU (getL ?K)  |- context[getL ?K] ] => rewrite (getLtoSetU _ H)
-  | [H0: SetU (getL ?K), H: context[getL ?K] |- _  ] => rewrite (getLtoSetU _ H0) in H
+ | [ H: SetU (getL ?K)  |- context[getL ?K] ] => setoid_rewrite (getLtoSetU _ H)
+  | [H0: SetU (getL ?K), H: context[getL ?K] |- _  ] => setoid_rewrite (getLtoSetU _ H0) in H
 
- | [H: SetU (getL ?K) |- context[getL ?K]  ] => rewrite (getLtoSetU _ H)
+ | [H: SetU (getL ?K) |- context[getL ?K]  ] => setoid_rewrite (getLtoSetU _ H)
  
-  | [H: SetU (getL ?K), H1: context[getL ?K] |- _  ] => rewrite (getLtoSetU _ H) in H1
+  | [H: SetU (getL ?K), H1: context[getL ?K] |- _  ] => setoid_rewrite (getLtoSetU _ H) in H1
 end.
 
 
@@ -921,17 +1207,17 @@ Ltac simplFix :=
  repeat    
   multimatch goal with
 
- | [  |- context[getU (getU _)] ] => rewrite getU_fixpoint
- | [H:  context[getU (getU _)]  |- _ ]  => rewrite getU_fixpoint in H
+ | [  |- context[getU (getU _)] ] => setoid_rewrite getU_fixpoint
+ | [H:  context[getU (getU _)]  |- _ ]  => setoid_rewrite getU_fixpoint in H
 
- | [  |- context[getL (getL _)] ] => rewrite getL_fixpoint
- | [H:  context[getL (getL _)]  |- _ ]  => rewrite getL_fixpoint in H
+ | [  |- context[getL (getL _)] ] => setoid_rewrite getL_fixpoint
+ | [H:  context[getL (getL _)]  |- _ ]  => setoid_rewrite getL_fixpoint in H
 
- | [H: SetU ?K  |- context[getU ?K] ] => rewrite (setUtoGetU _ H)
- | [H: SetU ?K, H1: context[getU ?K]  |- _ ]  => rewrite (setUtoGetU _ H) in H1
+ | [H: SetU ?K  |- context[getU ?K] ] => setoid_rewrite (setUtoGetU _ H)
+ | [H: SetU ?K, H1: context[getU ?K]  |- _ ]  => setoid_rewrite (setUtoGetU _ H) in H1
 
- | [H: SetL ?K  |- context[getL ?K] ] => rewrite (setLtoGetL _ H)
- | [H: SetL ?K, H1: context[getL ?K]  |- _ ]  => rewrite (setLtoGetL _ H) in H1
+ | [H: SetL ?K  |- context[getL ?K] ] => setoid_rewrite (setLtoGetL _ H)
+ | [H: SetL ?K, H1: context[getL ?K]  |- _ ]  => setoid_rewrite (setLtoGetL _ H) in H1
 
 end.
 
@@ -945,20 +1231,20 @@ Ltac simplCtx :=
  | [  |- context[getL(_++_)] ] => setoid_rewrite getLApp
  | [ H: context[getU(_++_)] |- _ ] => setoid_rewrite getUApp in H
  | [ H: context[getL(_++_)] |- _ ] => setoid_rewrite getLApp in H
-  | [  |- context[(second (getU ?K++getL ?K))] ] => rewrite <- cxtDestructSecond
- | [ H:context[(second (getU ?K++getL ?K))] |- _ ] => rewrite <- cxtDestructSecond in H 
+  | [  |- context[(second (getU ?K++getL ?K))] ] => setoid_rewrite <- cxtDestructSecond
+ | [ H:context[(second (getU ?K++getL ?K))] |- _ ] => setoid_rewrite <- cxtDestructSecond in H 
 end. 
 
  
-Ltac solveSignature2 :=
+(* Ltac solveSignature2 :=
  match goal with
-  | [ H: SetX ?s ?b ?K |- SetX ?s ?b (getU ?K)] => apply SetK4Destruct in H;sauto
-  | [ H: SetX ?s ?b ?K |- SetX ?s ?b (getL ?K)] => apply SetK4Destruct in H;sauto
+  | [ H: SetU ?K |- SetU (getU ?K)] => apply SetK4Destruct in H;sauto
+  | [ H: SetL ?K |- SetL (getL ?K)] => apply SetK4Destruct in H;sauto
 
-| [ H: SetX ?s ?b ?K, H2: Permutation (getU ?K) (?K2 ++ _) |- SetX ?s ?b ?K2] => 
+| [ H: SetU ?K, H2: Permutation (getU ?K) (?K2 ++ _) |- SetU ?K2] => 
    let H' := fresh "H" in
           apply SetK4Destruct in H; destruct H as [H H'];rewrite H2 in H;solveSignature2
- | [ H: SetX ?s ?b ?K, H2: Permutation (getU ?K) (_ ++ ?K2) |- SetX ?s ?b ?K2] => 
+ | [ H: SETX ?s ?b ?K, H2: Permutation (getU ?K) (_ ++ ?K2) |- SETX ?s ?b ?K2] => 
    let H' := fresh "H" in
           apply SetK4Destruct in H; destruct H as [H H'];rewrite H2 in H;solveSignature2
 
@@ -968,4 +1254,36 @@ Ltac solveSignature2 :=
  | [ H1: u ?i = false, H2: In (?i, ?F) ?B  |- In (?i, ?F) (getL ?B) ] => apply lIngetL;auto
 
 end.
+ *)   
+   
  
+Tactic Notation "srewrite" constr(H) := autounfold;
+ let Hs := type of H in 
+ match Hs with
+| Permutation _ _ => try rewrite H
+                     
+end.
+
+Tactic Notation "srewrite_reverse" constr(H) := autounfold;
+ let Hs := type of H in 
+ match Hs with
+| Permutation _ _ => symmetry in H;try rewrite H
+                     
+end.
+
+
+Tactic Notation "srewrite" constr(H1) "in" constr(H2) := 
+autounfold in H2;
+ let Hs := type of H1 in 
+ match Hs with
+| Permutation _ _ => try rewrite H1 in H2
+                     
+end.
+
+Tactic Notation "srewrite_reverse" constr(H1) "in" constr(H2) := 
+autounfold in H2;
+ let Hs := type of H1 in 
+ match Hs with
+| Permutation _ _ => symmetry in H1; try rewrite H1 in H2
+                     
+end.

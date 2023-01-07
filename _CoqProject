@@ -1,9 +1,11 @@
 -R . "LL"
 # Miscellaneous and Utilities
+Misc/Database.v
 Misc/Utils.v
 Misc/Hybrid.v
 Misc/Permutations.v
 Misc/UtilsTactics.v
+Misc/UtilsForall.v
 
 # First-order Classical Linear Logic
 FOLL/Syntax.v
@@ -46,31 +48,24 @@ SL/FLL/CutElimination.v
 #SL/FLL/IdElimination.v
 #SL/FLL/Examples.v
 
-#SL/SELLF/Signature.v
-#SL/SELLF/Syntax.v
-#SL/SELLF/Locations.v
+SL/SELLF/Signature.v
+SL/SELLF/Syntax.v
+SL/SELLF/Locations.v
+SL/SELLF/Sequent.v
+SL/SELLF/PreTactics.v
+SL/SELLF/StructuralRules.v
+SL/SELLF/Tactics.v
+SL/SELLF/InvNegativePhase.v
+SL/SELLF/InvPositivePhase.v
 
-OL/Syntax.v
-OL/SyntaxResults.v
-OL/StructuralClauses.v
-OL/Bipoles.v
-OL/CutCoherence.v
-OL/Requirement1.v
-OL/Requirement2.v
-OL/OLTheory.v
-
-OL/Substructural/OLCut.v
-OL/Intuitionistic/OLCutBang.v
+#OL/Syntax.v
+#OL/SyntaxResults.v
+#OL/StructuralClauses.v
+#OL/Bipoles.v
+#OL/CutCoherence.v
+#OL/Requirement1.v
+#OL/Requirement2.v
+#OL/OLTheory.v
 
 #OL/Substructural/OLCut.v
-#OL/Substructural/OLCutBang.v
-#OL/Substructural/MALL.v
-#OL/Intuitionistic/OLCut.v
 #OL/Intuitionistic/OLCutBang.v
-#OL/Classical/OLCut.v
-#OL/PreTactics.v
-#OL/Bipoles.v
-#OL/Substructural/Definitions.v
-#OL/Classical/OLCut.v
-
-#OL/OLCut.v

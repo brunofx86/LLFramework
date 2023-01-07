@@ -35,32 +35,48 @@ repeat
  | [ H: In ?F (_++?F::_)|- _ ] => clear H
  end.
 
-Ltac simplifier :=
-repeat
+Ltac simpl_goal :=
+auto;
   match goal with
- | [ H: context[_++nil] |- _ ] => rewrite app_nil_r in H
- | [ H: context[nil++_] |- _ ] => rewrite app_nil_l in H
- | [  |- context[_++nil] ] => rewrite app_nil_r
- | [  |- context[nil++_] ] => rewrite app_nil_l
-
- | [ H: context[_ - 0] |- _ ] => rewrite Nat.sub_0_r in H
- | [ H: context[S _ - 1] |- _ ] => simpl in H;rewrite Nat.sub_0_r in H 
- | [ H: context[fst (_, _)] |- _ ] => simpl in H
- | [ H: context[snd (_, _)] |- _ ] => simpl in H
- | [  |- context[_ - 0] ] => rewrite Nat.sub_0_r
- | [  |- context[S _ - 1] ] => simpl;rewrite Nat.sub_0_r
- | [  |- context[fst (_, _)] ] => simpl
- | [  |- context[snd (_, _)] ] => simpl
+  | H : _ /\ _ |- _ => decompose [and or] H; clear H; simpl_goal
+  | H : _ \/ _ |- _ => decompose [and or] H ; clear H; simpl_goal 
+  | H : @ex _ _ |- _ => destruct H as [? H]; simpl_goal
+  |  |- _ /\ _ => split; simpl_goal
+  | |- _ => idtac  
+  end.
+  
+ Ltac simplifier :=
+subst;simpl_goal;
+  match goal with
+ | [ H: map ?f ?B = [_] |- _ ] => apply map_eq_cons in H;simplifier
+ | [ H: map ?f ?B = [ ] |- _ ] => apply map_eq_nil in H;simplifier
  
- | [H : exists x, _ |- _ ] => destruct H as [? H]
- | [H : _ /\ _ |- _ ] => decompose [and or] H;clear H
- | [H : _ \/ _ |- _ ] => decompose [and or] H;clear H
- | [ |- _ /\ _ ] => split
-(*  | H1 : forall x, ?X x -> ?Y, H2: ?X _ |- _ => 
-      specialize (H1 _ H2) 
- *)end;auto.
+ | [ H: context[_++nil] |- _ ] => rewrite app_nil_r in H;simplifier
+ | [ H: context[nil++_] |- _ ] => rewrite app_nil_l in H;simplifier
+ | [  |- context[_++nil] ] => rewrite app_nil_r;simplifier
+ | [  |- context[nil++_] ] => rewrite app_nil_l;simplifier
 
-                     
+ | [ H: context[_ - 0] |- _ ] => rewrite Nat.sub_0_r in H;simplifier
+ | [ H: context[S _ - 1] |- _ ] => simpl in H;rewrite Nat.sub_0_r in H;simplifier 
+ | [ H: context[fst (_, _)] |- _ ] => simpl in H;simplifier
+ | [ H: context[snd (_, _)] |- _ ] => simpl in H;simplifier
+ | [  |- context[_ - 0] ] => rewrite Nat.sub_0_r;simplifier
+ | [  |- context[S _ - 1] ] => simpl;rewrite Nat.sub_0_r;simplifier
+ | [  |- context[fst (_, _)] ] => simpl;simplifier
+ | [  |- context[snd (_, _)] ] => simpl;simplifier
+ 
+   | [ H1: ?f ?a = true, H2: context[?f ?a] |- _ ] => rewrite H1 in H2;simplifier
+  | [ H1: ?f ?a = false, H2: context[?f ?a] |- _ ] => rewrite H1 in H2;simplifier
+                   
+  | [ H: ?f ?a = true |- context[?f ?a]  ] => rewrite H;simplifier
+  | [ H: ?f ?a = false |- context[?f ?a]  ] => rewrite H;simplifier
+ 
+   | [ H1: ?f = [], H2: context[?f] |- _ ] => rewrite H1 in H2;simplifier                 
+  | [ H: ?f = [] |- context[?f]  ] => rewrite H;simplifier 
+   | |- _ => idtac   
+end;auto.
+
+                    
 Ltac strivial := 
 try
   match goal with
@@ -143,136 +159,6 @@ Ltac find_eqn :=
    |- _ ⇒ rewrite (H1 X H2) in x
   end.
  *) 
- 
-
-  (** ** Aditional results on Forall/map *)
-Section ForAllMap. 
-  
-Lemma ForallIn :  forall {A : Type} {F : A} {L : list A} (f : A -> Prop), 
-      Forall f L -> In F L -> f F. 
-  Proof.
-    intros.
-    generalize (Forall_forall f L );intro.
-    destruct H1.
-    apply H1 with (x:= F) in H ;auto.
-  Qed.
-  
-Lemma ForallInP : forall {A : Type} {F : A} {L L': list A} (f : A -> Prop), 
-      Forall f L -> Permutation L (F::L') -> f F. 
-  Proof.
-    intros.
-    eapply @ForallIn with (F:=F) in H;auto.
-    rewrite H0.
-    simpl;sauto.
-  Qed.
-  
-  
-  
-End ForAllMap .
-  
-  
-Ltac solveForall :=  
-try
-  match goal with
-   | [  |- Forall _ nil] => apply Forall_nil
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M ?N |- Forall ?f ?N  ] => rewrite <- H2; auto
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?N ?M |- Forall ?f ?N  ] => rewrite H2; auto
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?N++?L) |- Forall ?f ?N  ] => rewrite H2 in H1; simpl in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?N++?L) ?M |- Forall ?f ?N  ] => rewrite <- H2 in H1; simpl in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?N++?L) |- Forall ?f ?L  ] => rewrite H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?N++?L) ?M |- Forall ?f ?L  ] => rewrite <- H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?F::?L) |- ?f ?F  ] => rewrite H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?F::?L) ?M |- ?f ?F  ] => rewrite <- H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?F::?L) |- Forall ?f ?L  ] => rewrite H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?F::?L) ?M |- Forall ?f ?L  ] => rewrite <- H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?N++?F::?L) |- ?f ?F  ] => rewrite H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?N++?F::?L) ?M |- ?f ?F  ] => rewrite <- H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?N++?F::?L) |- Forall ?f [?F]  ] => rewrite H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?N++?F::?L) ?M |- Forall ?f [?F]  ] => rewrite <- H2 in H1; solveForall
- 
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?N++(_ ?F _)::?L) |- ?f ?F  ] => rewrite H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation ?M (?N++(_ _ ?F)::?L) |- ?f ?F  ] => rewrite H2 in H1; solveForall
-  
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?N++(_ ?F _)::?L) ?M |- ?f ?F  ] => rewrite <- H2 in H1; solveForall
-   | [ H1 : Forall ?f ?M, H2 : Permutation (?N++(_ _ ?F)::?L) ?M |- ?f ?F  ] => rewrite <- H2 in H1; solveForall
-   
-
-   | [ H : Forall ?f (?F :: ?M) |- ?f ?F ] => eapply @Forall_inv with (l:=M) (a:=F);auto
-   | [ H : Forall ?f ((_ ?F _) :: ?M) |- ?f ?F ] => eapply @Forall_inv with (l:=M) (a:=F);auto
-   | [ H : Forall ?f ((_ _ ?F) :: ?M) |- ?f ?F ] => eapply @Forall_inv with (l:=M) (a:=F);auto
-  
-   | [ H : Forall ?f (?F :: ?M) |- Forall ?f ?M ] => apply Forall_inv_tail in H;auto 
-   | [ H1 : Forall ?f ?M, H2 : Forall ?f ?N |- Forall ?f (?M++?N) ] => apply Forall_app;split;auto 
-   | [ H: Forall ?f (?M++?N) |-  Forall ?f ?M  /\ Forall ?f ?N ] => apply Forall_app;auto 
-   | [ H: Forall ?f (?M++?N) |-  Forall ?f ?M ] => apply Forall_app in H; destruct H;auto
-   | [ H: Forall ?f (?M++?N) |-  Forall ?f ?N ] => apply Forall_app in H; destruct H;auto 
-   | [ H: Forall ?f (?M++?N++?L) |-  Forall ?f ?L ] => rewrite app_assoc in H;solveForall
-   | [ H: Forall ?f (?M++?N++?L) |-  Forall ?f ?N ] => rewrite Permutation_app_swap_app in H;solveForall
-   | [ H: Forall ?f (?M++?F::?L) |-  ?f ?F ] => apply Forall_elt in H;auto
-   | [ H: Forall ?f (?M++?F::?L) |-  Forall ?f [?F] ] => apply Forall_elt in H;auto
-   | [ H: Forall ?f (?M++?F::?L) |-  Forall ?f ?L ] => rewrite Permutation_cons_append in H;solveForall
-
-  
-   | H: Forall ?f ?M  |- Forall ?f (_ :: ?M) => apply Forall_cons; auto  
-   | H: Forall ?f ?M  |- Forall ?f (?M++[_]) => apply Forall_app;split;auto 
-   | [ |- Forall ?f (?M++_) ] => apply Forall_app;split;solveForall
-   |  |- Forall ?f (_ :: ?M) => apply Forall_cons; solveForall 
-   
-    end;auto.
-    
-
-(* Definition plusT L := map (fun x => 2+x) L.
-
-Lemma asas M N: plusT (M++N) = plusT M ++ plusT N.
-rewrite map_app. *)
-
-
-  
-
- Ltac solveFoldFALL1 isP :=  
-try
-  match goal with
-   | [  |- ?isPL nil] => autounfold 
-   | [H: ?isPL (?K1++?K2++_) |- ?isPL (?K1++?K2)] => autounfold; rewrite app_assoc in H;autounfold in H
-   | [H: ?isPL (?K1++_++?K2) |- ?isPL (?K1++?K2)] => autounfold; autounfold in H;rewrite Permutation_app_rot in H
-
-
-   | [ H : ?isPL (?F :: ?M) |- isP ?F ] => autounfold in H
-   | [ H : ?isPL (?F :: ?M) |- ?isPL ?M ] => autounfold;autounfold in H 
-   | [ H1 : ?isPL ?M, H2 : ?isPL ?N |- ?isPL (?M++?N) ] => autounfold;autounfold in H1;autounfold in H2 
-   | [ H: ?isPL (?M++?N) |-  ?isPL ?M  /\ ?isPL ?N ] => autounfold;autounfold in H
-   | [ H: ?isPL (?M++?N) |-  ?isPL ?M ] => autounfold;autounfold in H
-   | [ H: ?isPL (?M++?N) |-  ?isPL ?N ] => autounfold;autounfold in H 
-   | [ H: ?isPL (?M++?N++?L) |-  ?isPL ?L ] => autounfold;autounfold in H
-   | [ H: ?isPL (?M++?N++?L) |-  ?isPL ?N ] => autounfold;autounfold in H
-   | [ H: ?isPL (?M++?F::?L) |-  isP ?F ] => autounfold in H
-   | [ H: ?isPL (?M++?F::?L) |-  ?isPL [?F] ] => autounfold;autounfold in H
-   | [ H: ?isPL (?M++?F::?L) |-  ?isPL ?L ] => autounfold;autounfold in H
-
-  
-   | H: ?isPL ?M  |- ?isPL (_ :: ?M) => autounfold;autounfold in H
-   | H: ?isPL ?M  |- ?isPL (?M++_) => autounfold;autounfold in H 
-   | H: ?isPL ?M  |- ?isPL (_++?M) => autounfold;autounfold in H 
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M ?N |- ?isPL ?N  ] => autounfold;autounfold in H1 
-   | [ H1 : ?isPL ?M, H2 : Permutation ?N ?M |- ?isPL ?N  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M (?N++?L) |- ?isPL ?N  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation (?N++?L) ?M |- ?isPL ?N  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M (?N++?L) |- ?isPL ?L  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation (?N++?L) ?M |- ?isPL ?L  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M (?F::?L) |- isP ?F  ] => autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation (?F::?L) ?M |- isP ?F  ] => autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M (?F::?L) |- ?isPL ?L  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation (?F::?L) ?M |- ?isPL ?L  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M (?N++?F::?L) |- isP ?F  ] => autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation (?N++?F::?L) ?M |- isP ?F  ] => autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation ?M (?N++?F::?L) |- ?isPL [?F]  ] => autounfold;autounfold in H1
-   | [ H1 : ?isPL ?M, H2 : Permutation (?N++?F::?L) ?M |- ?isPL [?F]  ] => autounfold;autounfold in H1
-
-   | [ |- ?isPL (?M++_) ] => autounfold
-   |  |- ?isPL (_ :: ?M) => autounfold 
-   
-    end;solveForall.
-  
         
 Ltac checkPermutationCases H := simpl in H;
  let Hs := type of H in 

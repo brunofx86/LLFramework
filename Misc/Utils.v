@@ -19,7 +19,6 @@ Require Export Coq.Arith.Arith.
 Require Export Coq.Init.Nat.
 Require Import Lia.
 
-
 Export ListNotations.
 
 Set Implicit Arguments.
@@ -27,6 +26,31 @@ Set Implicit Arguments.
 Lemma NatComp : forall x y, x >= y + 1 -> S x - y - 2 = x - y - 1.
 Proof with subst;auto. lia.
 Qed.  
+
+Section ForAllMap. 
+  
+Lemma ForallIn :  forall {A : Type} {F : A} {L : list A} (f : A -> Prop), 
+      Forall f L -> In F L -> f F. 
+  Proof.
+    intros.
+    generalize (Forall_forall f L );intro.
+    destruct H1.
+    apply H1 with (x:= F) in H ;auto.
+  Qed.
+  
+Lemma ForallInP : forall {A : Type} {F : A} {L L': list A} (f : A -> Prop), 
+      Forall f L -> Permutation L (F::L') -> f F. 
+  Proof.
+    intros.
+    eapply @ForallIn with (F:=F) in H;auto.
+    rewrite H0.
+    simpl;auto.
+  Qed.
+  
+  
+  
+End ForAllMap .
+  
   
 (** ** Operations on lists/multisets *)
 Section MultisetOperations.

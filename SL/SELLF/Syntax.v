@@ -28,7 +28,7 @@ Class OLSig :=
 Section LLSyntax.
  
   Context `{OLS: OLSig}.
-  Context `{SI: Signature}.
+  Context `{SI: SigSELL}.
   
   (** Connectives of the logic *)
   Inductive oo : Set :=
