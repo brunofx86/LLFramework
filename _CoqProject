@@ -7,7 +7,8 @@ Misc/Permutations.v
 Misc/UtilsTactics.v
 Misc/UtilsForall.v
 
-# First-order Classical Linear Logic
+# ===== First-order classical linear logic ===== # 
+
 FOLL/Syntax.v
 
 # Monadic System
@@ -34,6 +35,8 @@ FOLL/DyadicExc/CutLElimination.v
 FOLL/DyadicExc/CutCElimination.v
 FOLL/DyadicExc/CutElimination.v
 
+# ===== Specification Logics ===== #
+
 # Focused System
 SL/FLL/Syntax.v
 SL/FLL/Sequent.v
@@ -48,6 +51,7 @@ SL/FLL/CutElimination.v
 #SL/FLL/IdElimination.v
 #SL/FLL/Examples.v
 
+# Linear Logic with Subexponentials
 SL/SELLF/Signature.v
 SL/SELLF/Syntax.v
 SL/SELLF/Locations.v
@@ -57,6 +61,22 @@ SL/SELLF/StructuralRules.v
 SL/SELLF/Tactics.v
 SL/SELLF/InvNegativePhase.v
 SL/SELLF/InvPositivePhase.v
+#SL/SELLF/CutElimination.v
+
+# Linear Logic with multi-modalities
+SL/MMLL/Signature.v
+SL/MMLL/Syntax.v
+SL/MMLL/Locations.v
+SL/MMLL/Sequent.v
+SL/MMLL/PreTactics.v
+SL/MMLL/StructuralRules.v
+SL/MMLL/Tactics.v
+SL/MMLL/InvNegativePhase.v
+SL/MMLL/InvPositivePhase.v
+#SL/MMLL/CutElimination.v
+#SL/MMLL/Reasoning.v
+
+# ===== Object Logics ===== #
 
 #OL/Syntax.v
 #OL/SyntaxResults.v
