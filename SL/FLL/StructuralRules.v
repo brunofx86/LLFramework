@@ -15,25 +15,6 @@ Section FLLBasicTheory.
   Context `{OLS: OLSig}.
   Variable th th': oo -> Prop.
 
-(** Adequacy relating the system with and without inductive meassures *)
-  
-Section Adequacy.
-
-
- 
-Theorem seqNtoSeq : forall n Gamma Delta X , 
-seqN th n Gamma Delta X -> seq  th Gamma Delta X.
-Proof.
-  induction n using strongind;intros;eauto.
-  * inversion H;subst;eauto.
-  * inversion H0;subst;eauto.
-Qed.
-
-Axiom seqtoSeqN : forall Gamma Delta X ,
-   seq th Gamma Delta X -> exists n, seqN th n Gamma Delta X.
-
-End Adequacy.
-
 Section StructuralPropertiesN.
 
 (**  Exchange Rule: Classical Context *)
@@ -47,8 +28,6 @@ Proof with sauto;solveLL.
   * inversion H1... 
      eauto using Permutation_in.
      all: eauto using Permutation_in.
-     eapply H with (CC:=CC++[F])...
-     rewrite H0...
 Qed.
 
 (** Exchange Rule: Linear Context *)
@@ -71,6 +50,7 @@ Proof with sauto;solveLL.
   * inversion H...
   * inversion H0...
      all: eauto.
+     refine (exchangeCCN (perm_swap F0  F CC) _)... 
      CFocus F0. 
 Qed.    
   
@@ -84,8 +64,8 @@ Proof with CleanContext;solveLL.
   * inversion H0...
      inversion H2...
      all:eauto.
-     rewrite <- app_comm_cons in H3.
-     apply H in H3...
+     pose proof (exchangeCCN (perm_swap F  F0 CC) H3)... 
+     apply H in H2...
      inversion H4...
      all:eauto.
 Qed.
@@ -120,10 +100,10 @@ Proof with sauto;solveLL.
          eapply exchangeLCN in H4.
          2: rewrite H1... 
          auto. } 
-    + apply H... 
-        eapply exchangeLCN.
-        2: exact H3.
-        perm.
+    + refine (exchangeCCN (perm_swap F0 F Gamma) _)...  apply H...
+       refine (exchangeCCN (perm_swap F F0 Gamma) _)...
+    +  apply H...
+       refine (exchangeLCN (perm_swap F F0 Delta) _)...
     + checkPermutationCases H3. 
         CFocus F. 
         inversion H1;inversion H2...
@@ -157,6 +137,25 @@ Proof with sauto;solveLL.
  
 End StructuralPropertiesN.
 
+(** Adequacy relating the system with and without inductive meassures *)
+  
+Section Adequacy.
+
+
+ 
+Theorem seqNtoSeq : forall n Gamma Delta X , 
+seqN th n Gamma Delta X -> seq  th Gamma Delta X.
+Proof.
+  induction n using strongind;intros;eauto.
+  * inversion H;subst;eauto.
+  * inversion H0;subst;eauto.
+    pose proof (exchangeCCN (Permutation_cons_append Gamma F) H2);eauto... 
+Qed.
+
+Axiom seqtoSeqN : forall Gamma Delta X ,
+   seq th Gamma Delta X -> exists n, seqN th n Gamma Delta X.
+
+End Adequacy.
 Section StructuralProperties.
 
 (**  Exchange Rule: Classical Context *)
@@ -167,8 +166,8 @@ Proof with solveLL.
   intros Hp Hseq.
   generalize dependent CC'.
   induction Hseq;intros;eauto using Permutation_in...
-  eapply IHHseq... 
-  rewrite Hp...
+ eapply IHHseq...
+ rewrite Hp...
 Qed.
 
 (** Exchange Rule: Linear Context *)
@@ -201,15 +200,15 @@ Proof with sauto;solveLL.
   dependent induction H...
   all: eauto.
   * inversion H... 
-  * rewrite <- app_comm_cons in IHseq.
+  * rewrite <- app_comm_cons in IHseq. 
      eapply IHseq...
   * inversion H0...
      all: eauto. 
 Qed.
 
 Lemma absorption : forall Gamma Delta F X,
- seq th (F::Gamma) (F::Delta)  X ->
-      seq th  (F::Gamma) Delta  X.
+ seq th (Gamma++[F]) (F::Delta)  X ->
+      seq th  (Gamma++[F]) Delta  X.
 Proof with sauto;solveLL.
  Abort.
 
@@ -362,6 +361,8 @@ Proof with sauto.
      apply seqNtoSeq in H4...    
      eapply H with (m:=n)...
      rewrite <- H3...
+ + apply H in H3... solveLL. 
+     rewrite <- Permutation_cons_append...
    + rewrite perm_swap in H4...
      FLLstore.
      rewrite perm_swap...

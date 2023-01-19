@@ -47,309 +47,327 @@ Section CutElimination.
     Definition CutW (w: nat) :=  
     forall i j C A P M N L B, 
     complexity C < w ->
-      (seqN th i B (M ++ [C]) (UP L) -> seqN th j B N (UP [dual C]) -> seq th B (M ++ N) (UP L)) /\
+      (seqN th i B (C::M) (UP L) -> seqN th j B N (UP [dual C]) -> seq th B (M ++ N) (UP L)) /\
       (seqN th i B M (UP (C :: L)) -> seqN th j B N (DW (dual C)) -> seq th B (M ++ N) (UP L)) /\
        (S (complexity A) = complexity C ->
-       seqN th i (B ++ [A]) M (DW P) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP [P]))  /\
+       seqN th i (A::B) M (DW P) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP [P]))  /\
       (S (complexity A) = complexity C ->
-       seqN th i (B ++ [A]) M (UP L) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP L)). 
+       seqN th i (A::B) M (UP L) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP L)). 
     
   Definition CutH (w h: nat) :=  
     forall i j C A P M N L B, 
     i + j < h ->
     complexity C = w ->
-      (seqN th i B (M ++ [C]) (UP L) -> seqN th j B N (UP [dual C]) -> seq th B (M ++ N) (UP L)) /\
+      (seqN th i B (C::M) (UP L) -> seqN th j B N (UP [dual C]) -> seq th B (M ++ N) (UP L)) /\
       (seqN th i B M (UP (C :: L)) -> seqN th j B N (DW (dual C)) -> seq th B (M ++ N) (UP L)) /\
       (S (complexity A) = complexity C ->
-       seqN th i (B ++ [A]) M (DW P) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP [P]))   /\
+       seqN th i (A::B) M (DW P) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP [P]))   /\
       (S (complexity A) = complexity C ->
-       seqN th i (B ++ [A]) M (UP L) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP L)). 
+       seqN th i (A::B) M (UP L) -> seqN th j B [] (DW (! (dual A))) -> seq th B M (UP L)). 
           
+Ltac applyCutH := 
+  match goal with
+  | [ H: CutH _ _ |- 
+         seqN ?th ?x _ _ _ -> 
+         seqN ?th ?y _ _ _ -> 
+         seq ?th _ _ _ ] => eapply H
+  | _ => idtac end;sauto.
+  
+Ltac applyCutW := 
+  match goal with
+  | [ H: CutW _ |- 
+         seqN ?th ?x _ _ _ -> 
+         seqN ?th ?y _ _ _ -> 
+         seq ?th _ _ _ ] => eapply H
+  | _ => idtac end;sauto.
+
+Ltac cut1H P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 ?B (?FC::?M) (UP ?L) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B ?N (UP [dual ?FC]) =>  
+                      assert(H': tP1 -> tP2 -> seq th B (M++N) (UP L));applyCutH
+           | _ => idtac "type of " P2 " is " tP2 end
+end.
+
+Ltac cut2H P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 ?B ?M (UP (?FC::?L)) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B ?N (DW (dual ?FC)) =>  
+                      assert(H': tP1 -> tP2 -> seq th B (M++N) (UP L));applyCutH
+           | _ => idtac "type of " P2 " is " tP2 end
+end.
+
+Ltac cut3H P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 (?FC::?B) ?M (DW ?P) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> seq th B M (UP [P]));applyCutH
+           | _ => idtac "type of " P2 " is " tP2 end
+end.
+
+Ltac cut4H P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 (?FC::?B) ?M (UP ?L) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> seq th B M (UP L));applyCutH
+           | _ => idtac "type of " P2 " is " tP2 end
+   | _ => idtac "type of " P1 " is " tP1 end;sauto.
+
+Ltac cut1W P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 ?B (?FC::?M) (UP ?L) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B ?N (UP [dual ?FC]) =>  
+                      assert(H': tP1 -> tP2 -> seq th B (M++N) (UP L));applyCutW
+           | _ => idtac "type of " P2 " is " tP2 end
+end.
+
+Ltac cut2W P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 ?B ?M (UP (?FC::?L)) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B ?N (DW (dual ?FC)) =>  
+                      assert(H': tP1 -> tP2 -> seq th B (M++N) (UP L));applyCutW
+           | _ => idtac "type of " P2 " is " tP2 end
+end.
+
+Ltac cut3W P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 (?FC::?B) ?M (DW ?P) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> seq th B M (UP [P]));applyCutW
+           | _ => idtac "type of " P2 " is " tP2 end
+end.
+
+Ltac cut4W P1 P2 :=
+   let tP1 := type of P1 in
+   let tP2 := type of P2 in
+   let H' := fresh "OLCut" in
+   match tP1 with
+   | seqN ?th ?h1 (?FC::?B) ?M (UP ?L) => 
+          match tP2 with 
+          | seqN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> seq th B M (UP L));applyCutW
+           | _ => idtac "type of " P2 " is " tP2 end
+   | _ => idtac "type of " P1 " is " tP1 end;sauto.
+
 Theorem Cut1  a b P L M N B : 
 CutH (complexity P) (a+b) -> 
-  seqN th a B (M ++ [P]) (UP L) ->
+  seqN th a B (P::M) (UP L) ->
   seqN th b B N (UP [P ^]) ->
   seq th B (M ++ N) (UP L ).
 Proof with sauto;solveLL.  
  intros CH Ha Hb.
  inversion Ha...
- * assert(seqN th n B (M ++ [P]) (UP (F  :: M0)) ->
-          seqN th b B N (UP [dual P]) ->
-            seq th B (M ++ N) (UP (F :: M0))) as CutF.
-           eapply CH...
-                    
-           apply CutF...             
-
- * assert(seqN th n B (M ++ [P]) (UP (G  :: M0)) ->
-          seqN th b B N (UP [dual P]) ->
-            seq th B (M ++ N) (UP (G :: M0))) as CutG.
-           eapply CH...
-                    
-           apply CutG...           
- 
- * assert(seqN th n B (M ++ [P]) (UP M0) ->
-          seqN th b B N (UP [dual P]) ->
-            seq th B (M ++ N) (UP M0)) as Cut.
-           eapply CH...
-                    
-           apply Cut...
- * assert(seqN th n B (M ++ [P]) (UP (F :: G :: M0)) ->
-          seqN th b B N (UP [dual P]) ->
-            seq th B (M ++ N) (UP (F :: G :: M0))) as Cut.
-           eapply CH...
-                    
-           apply Cut...                                       
-  
-
- * assert(seqN th n (B ++ [(F)]) (M ++ [P]) (UP M0) ->
-            seqN th b (B ++ [(F)]) N (UP [dual P]) ->
-              seq th (B ++ [(F)]) (M ++ N) (UP M0)) as Cut.
-           eapply CH...
-           apply Cut...
-           apply weakeningGenN_rev...
-  *  assert(seqN th n B (M ++ [P]) (UP (FX x :: M0)) ->
-           seqN th b B N (UP [dual P]) ->
-             seq th B (M ++ N) (UP (FX x :: M0))) as Cut.
-           eapply CH...
-              
-           apply H4 in properX...
-
- * assert(seqN th n B ((M ++ [F]) ++ [P]) (UP M0) ->
-          seqN th b B N (UP [dual P]) ->
-            seq th B ((M ++ [F]) ++ N) (UP M0)) as Cut.
-           eapply CH...
-                    
-           LLPerm((M ++ [F]) ++ N).
-           apply Cut...
-           LLExact H4.
- 
- 
+ * cut1H H0 Hb. 
+ * cut1H H4 Hb. 
+ * cut1H H3 Hb.
+ * cut1H H3 Hb. 
+ * apply weakeningN with (F:=F) in Hb.
+    LLPerm (F::B). 
+    cut1H H3 Hb.
+ * apply H4 in properX...
+    cut1H properX Hb.
+ * rewrite perm_swap in H4. cut1H H4 Hb. 
  * checkPermutationCases H1.
-   2:{ inversion H1...
-       rewrite H2.
-       assert(seqN th b B N (UP [dual P]) ->
-              seqN th n B L' (DW (dual (dual P))) ->
-                seq th B (N++L') (UP [])) as Cut.
-       eapply CH...
-       rewrite <- ng_involutive in Cut...
-       LLPerm(N ++ L')... }
-       
+    -  rewrite H3 in H5. 
+       rewrite (ng_involutive P) in H5...
+       LLPerm(N ++ M).
+       cut2H Hb H5. 
+    - rewrite H2 in H5. clear H2.
        inversion H5...
-            1:{ 
-              inversion Hb...
-              HProof. }
-               
-            3:{ rewrite H3 in H2.
-              checkPermutationCases H2.
-              - 
-              destruct(PositiveOrNegative F0).
-              { (* first *) 
-              assert(seqN th (S n0) B ((F0::x0)++[P]) (UP [])).
-              LFocus F0 (x0++[P])...
-              HProof. 
-              rewrite H1.
-              rewrite <- app_comm_cons.
-              apply TensorComm'.
-              rewrite <- H6.
-              LLPerm(G ⊗ F0::N0++(x0++N)).
-              rewrite <- (app_nil_l [ ]).
-              eapply @InvTensor...
-              
-              apply unRelease.
-              HProof.
-             
-              assert(seqN th (S n0) B ((F0::x0) ++ [P]) (UP [ ]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B ((F0::x0) ++ N) (UP [ ])) as Cut.
-                eapply CH... 
-                rewrite <- (app_nil_l [F0]).
-               apply UpExtension'...
-               }
-             { (* second *) 
-              inversion H4;CleanContext...
-              rewrite H1.
-              rewrite <- app_comm_cons.
-              apply TensorComm'.
-              rewrite <- H6.
-              LLPerm(G ⊗ F0::N0++(x0++N)).
-                rewrite <- (app_nil_l [ ]).
-              eapply @InvTensor...
-                apply unRelease.
-              HProof.  
-                 assert(seqN th n B (x0 ++ [P]) (UP [F0]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x0 ++ N) (UP [F0])) as Cut.
-                eapply CH... 
-                apply Cut...
-                HProof. } 
-             - 
-              destruct(PositiveOrNegative G).
-              { (* first *) 
-              assert(seqN th (S n0) B ((G::x0)++[P]) (UP [])).
-              LFocus G (x0++[P])...
-              rewrite <- H2...
-              rewrite H1.
-              rewrite <- H6.
-              LLPerm(F0⊗ G::M0++(x0++N)).
-              rewrite <- (app_nil_l [ ]).
-              eapply @InvTensor...
-              apply unRelease.
-              HProof.
-              assert(seqN th (S n0) B ((G::x0) ++ [P]) (UP [ ]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B ((G::x0) ++ N) (UP [ ])) as Cut.
-                eapply CH...
-                  rewrite <- (app_nil_l [G]).
-               
-               apply UpExtension'...
-             }
-             { (* second *) 
-              inversion H9;CleanContext...
-              rewrite H1.
-              rewrite <- H6.
-              LLPerm(F0⊗ G::M0++(x0++N)).
-              rewrite <- (app_nil_l [ ]).
-              eapply @InvTensor...
-                apply unRelease.
-             HProof.   
-              assert(seqN th n B (x0++ [P]) (UP [G ]) ->
-                          seqN th b B N (UP [dual P]) ->
-                         seq th B (x0 ++ N) (UP [G])) as Cut.
-                 eapply CH... 
-                
-                apply Cut... HProof.  }   
-                }
-    -   destruct(PositiveOrNegative F0).   
+       + inversion Hb...
+           HProof. 
+       +  destruct(PositiveOrNegative F0).   
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
-                 FLLstore. 
-                assert( seqN th (S n0) B ((F0::x) ++ [P]) (UP [ ]) ->
+                 FLLstore.
+                assert( seqN th (S n0) B (P::(F0::x)) (UP [ ]) ->
                        seqN th b B N (UP [dual P]) ->
                          seq th B ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
-                 rewrite <- app_comm_cons...
-                 LFocus F0. HProof.
-              }
-             {   inversion H7;CleanContext...  
+                LFocus F0 (P::x). 
+             
+ }
+
+             {   inversion H6;CleanContext...  
                  rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
-                assert(seqN th n B (x ++ [P]) (UP [F0]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [F0])) as Cut.
-                eapply CH...
-               apply Cut... HProof.  
-               } 
-  -    destruct(PositiveOrNegative G).   
+                 cut1H H9 Hb. 
+               }
+ 
+  +    destruct(PositiveOrNegative G).   
        {         rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
                  FLLstore. 
-                
-                assert(seqN th (S n0) B ((G::x) ++ [P]) (UP [ ]) ->
+                assert(seqN th (S n0) B (P::(G::x)) (UP [ ]) ->
                        seqN th b B N (UP [dual P]) ->
                          seq th B ((G::x ) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
-                 rewrite <- app_comm_cons...
-                 LFocus G. HProof. }
-             {   inversion H7;CleanContext...  
+                 LFocus G (P::x).  }
+
+             {   inversion H6;CleanContext...  
                  rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
-                assert(seqN th n B (x ++ [P]) (UP [G]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [G])) as Cut.
-                eapply CH...
-               apply Cut... HProof.  
+                 cut1H H9 Hb.   
                }
-   -   destruct(PositiveOrNegative (FX t)).   
++           checkPermutationCases H2.
+    {  
+              destruct(PositiveOrNegative F0).
+              * (* first *) 
+              assert(seqN th (S n0) B (P::(F0::x0)) (UP [])).
+              LFocus F0 (P::x0)...
+              HProof. 
+              rewrite H1.
+
+              rewrite <- app_comm_cons.
+              apply TensorComm'.
+              rewrite <- H4.
+              LLPerm(G ⊗ F0::N0++(x0++N)).
+              rewrite <- (app_nil_l [ ]).
+              eapply @InvTensor...
+              
+              apply unRelease.
+              HProof.
+              cut1H H6 Hb. 
+             * (* second *) 
+              
+inversion H3;CleanContext...
+              rewrite H1.
+              rewrite <- app_comm_cons.
+              apply TensorComm'.
+              rewrite <- H4.
+              LLPerm(G ⊗ F0::N0++(x0++N)).
+                rewrite <- (app_nil_l [ ]).
+              eapply @InvTensor...
+                apply unRelease.
+              HProof.
+                 rewrite H2 in H12.
+                 cut1H H12 Hb. }
+{ 
+              destruct(PositiveOrNegative G).
+              * (* first *) 
+              assert(seqN th (S n0) B (P::(G::x0)) (UP [])).
+              LFocus G (P::x0)...
+              rewrite <- H2...
+              rewrite H1.
+              rewrite <- H4.
+              LLPerm(F0⊗ G::M0++(x0++N)).
+              rewrite <- (app_nil_l [ ]).
+              eapply @InvTensor...
+              apply unRelease.
+              HProof.
+              cut1H H6 Hb. 
+            * (* second *) 
+              inversion H8;CleanContext...
+              rewrite H1.
+              rewrite <- H4.
+              LLPerm(F0⊗ G::M0++(x0++N)).
+              rewrite <- (app_nil_l [ ]).
+              eapply @InvTensor...
+                apply unRelease.
+             HProof.
+                 rewrite H2 in H12.
+                 cut1H H12 Hb.   }   
+               
+   +   destruct(PositiveOrNegative (FX t)).   
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
                  FLLstore. 
-                 assert( seqN th (S n0) B ((FX t::x) ++ [P]) (UP [ ]) ->
+                 assert( seqN th (S n0) B (P::(FX t::x) ) (UP [ ]) ->
                        seqN th b B N (UP [dual P]) ->
                          seq th B ((FX t::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
-                 rewrite <- app_comm_cons...
-                 LFocus (FX t). HProof. }
-             {   inversion H9;subst;auto;
+                 LFocus (FX t) (P::x).  }
+             {   inversion H8;subst;auto;
                try match goal with 
                [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end. 
                  rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
-                assert(seqN th n B (x ++ [P]) (UP [FX t]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [FX t])) as Cut.
-                eapply CH...
-               apply Cut... HProof. }
-       -  apply PositiveNotNegative in H0. contradiction. 
+                 cut1H H11 Hb.  }
+       +  apply PositiveNotNegative in H0. contradiction. 
            
 *  destruct(PositiveOrNegative F).
-   2:{ inversion H5;CleanContext... apply @AbsorptionClassic' with (F:=F)...
-        assert(seqN th n0 B (M ++ [P]) (UP [F]) ->
-                seqN th b B N (UP [dual P]) ->
-                  seq th B (M ++ N) (UP [F])) as Cut.
-       eapply CH... 
-       apply Cut... } 
-       inversion H5...
-       -  apply @AbsorptionClassic' with  (F:=perp A)...
+
+
+- inversion H5...
+       +  apply @AbsorptionClassic' with  (F:=perp A)...
           inversion Hb...
           HProof.
-  -  destruct(PositiveOrNegative F0).   
+  +  destruct(PositiveOrNegative F0).   
      {  eapply @InvPlusC with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
-        assert(seqN th (S n0) B ((F0::M) ++ [P]) (UP [ ]) ->
+        assert(seqN th (S n0) B (P::(F0::M) ) (UP [ ]) ->
                   seqN th b B N (UP [dual P]) ->
                     seq th B ((F0::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (F0::M) ++ N)...
                apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus F0. }
+               LFocus F0 (P::M). }
                 
      {  inversion H7;CleanContext...               
         eapply @InvPlusC with (F:=F0) (G:=G) ...
-        assert( seqN th n B (M ++ [P]) (UP [F0]) ->
-                seqN th b B N (UP [dual P]) ->
-                 seq th B (M ++ N) (UP [F0])) as Cut.
-                eapply CH...
-                apply Cut... }
-  -  destruct(PositiveOrNegative G).   
+                 cut1H H10 Hb. 
+}
+  +  destruct(PositiveOrNegative G).   
      {  eapply @InvPlusCComm with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
-        assert(seqN th (S n0) B ((G::M) ++ [P]) (UP [ ]) ->
+        assert(seqN th (S n0) B (P::(G::M) ) (UP [ ]) ->
                   seqN th b B N (UP [dual P]) ->
                     seq th B ((G::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (G::M) ++ N)...
                apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus G.  }
+               LFocus G (P::M).  }
                 
      {  inversion H7;CleanContext...               
         eapply @InvPlusCComm with (F:=F0) (G:=G)...
-        assert( seqN th n B (M ++ [P]) (UP [G]) ->
-                seqN th b B N (UP [dual P]) ->
-                 seq th B (M ++ N) (UP [G])) as Cut.
-                eapply CH...
-                apply Cut... }
+                 cut1H H10 Hb.  }
 
-          
-       - checkPermutationCases H3.
+      + checkPermutationCases H3.
           {  destruct(PositiveOrNegative F0).
-             { (* first *) 
+             * (* first *) 
                rewrite <- H6.
                LLPerm((x ++ N) ++ N0).
                rewrite <- (app_nil_r []).
@@ -357,33 +375,29 @@ Proof with sauto;solveLL.
                rewrite <- (app_nil_l [F0]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) B ((F0::x) ++ [P]) (UP [ ]) ->
+                 assert(seqN th (S n0) B (P::(F0::x)) (UP [ ]) ->
                        seqN th b B N (UP [dual P]) ->
                          seq th B ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((F0 :: x) ++ N)... apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus F0. HProof. 
+               LFocus F0 (P::x). HProof. 
                apply unRelease.
-               HProof.  }
-            { (* first *) 
+               HProof.  
+*
                rewrite <- H6.
                inversion H4;CleanContext...
                LLPerm((x++N)++N0).
                rewrite <- (app_nil_r []).
                
                eapply @InvTensorC with (F:=F0) (G:=G) (B:=B)...
-                 assert(seqN th n B (x ++ [P]) (UP [F0]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [F0])) as Cut.
-                eapply CH...
-                apply Cut...
-                HProof.
+                 rewrite  H3 in H13.
+                 cut1H H13 Hb. 
+
                apply unRelease.
                 HProof.
-              } }
+              } 
           {  destruct(PositiveOrNegative G).
-             { (* first *) 
+             * (* first *) 
                rewrite <- H6.
                LLPerm(M0++(x ++ N)).
                rewrite <- (app_nil_r []).
@@ -392,16 +406,13 @@ Proof with sauto;solveLL.
                 HProof.
                rewrite <- (app_nil_l [G]).
                apply UpExtension'...
-                 assert(seqN th (S n0) B ((G::x) ++ [P]) (UP [ ]) ->
+                 assert(seqN th (S n0) B (P::(G::x)) (UP [ ]) ->
                        seqN th b B N (UP [dual P]) ->
                          seq th B ((G::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((G :: x) ++ N)... apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus G.  HProof.
-            }
-            { (* first *) 
-               rewrite <- H6.
+               LFocus G (P::x).  HProof.
+            *   rewrite <- H6.
                inversion H9;CleanContext...
                LLPerm(M0++(x ++ N)).
                rewrite <- (app_nil_r []).
@@ -409,190 +420,156 @@ Proof with sauto;solveLL.
                eapply @InvTensorC with (F:=F0) (G:=G) (B:=B)...
                apply unRelease.
                 HProof.
-                 assert(seqN th n B (x ++ [P]) (UP [G]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [G])) as Cut.
-                eapply CH...
-                apply Cut...  HProof.
-               } }
-  -  destruct(PositiveOrNegative (FX t)).   
-     {  eapply @InvExC with  (t:=t) (FX:=FX)...
+                 rewrite H3 in H13.
+                 cut1H H13 Hb. 
+               }
+  +  destruct(PositiveOrNegative (FX t)).   
+     { eapply @InvExC with  (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
-        assert(seqN th (S n0) B ((FX t::M) ++ [P]) (UP [ ]) ->
+        assert(seqN th (S n0) B (P::(FX t::M)) (UP [ ]) ->
                   seqN th b B N (UP [dual P]) ->
                     seq th B ((FX t::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
         LLPerm((FX t :: M) ++ N)...
         apply Cut... 
-        rewrite <- app_comm_cons.
-        LFocus (FX t).  }
+        LFocus (FX t) (P::M).  }
      {  inversion H9;subst;auto;
                try match goal with 
                [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end.             
         eapply @InvExC with (t:=t) (FX:=FX)...
-        assert( seqN th n B (M ++ [P]) (UP [FX t]) ->
-                seqN th b B N (UP [dual P]) ->
-                 seq th B (M ++ N) (UP [FX t])) as Cut.
-                eapply CH...
-                apply Cut... }
-    -  apply PositiveNotNegative in H. contradiction. 
-              
+                 cut1H H12 Hb. 
+}
+    +  apply PositiveNotNegative in H. contradiction. 
+ -  inversion H5;CleanContext... apply @AbsorptionClassic' with (F:=F)...
+        cut1H H8 Hb. 
 *
 destruct(PositiveOrNegative F).
-    2:{ inversion H5;CleanContext...
+
+   - inversion H5...
+    +   eapply @AbsorptionPerp' with (A:=A)...
+        inversion Hb...
+        HProof.
+  + destruct(PositiveOrNegative F0).   
+     {  eapply @InvPlusT with (F:=F0) (G:=G)...
+        rewrite <- (app_nil_l [F0]).
+        apply UpExtension'...
+        assert(seqN th (S n0) B (P::(F0::M)) (UP [ ]) ->
+                  seqN th b B N (UP [dual P]) ->
+                    seq th B ((F0::M) ++ N) (UP [ ])) as Cut.
+                eapply CH... 
+               LLPerm( (F0::M) ++ N)...
+               apply Cut...
+               LFocus F0 (P::M). }
+                
+     {  inversion H7;CleanContext...               
+        eapply @InvPlusT with (F:=F0) (G:=G) ...
+                 cut1H H10 Hb. 
+}
+  +  destruct(PositiveOrNegative G).   
+     {  eapply @InvPlusTComm with (F:=F0) (G:=G)...
+        rewrite <- (app_nil_l [G]).
+        apply UpExtension'...
+        assert(seqN th (S n0) B (P::(G::M)) (UP [ ]) ->
+                  seqN th b B N (UP [dual P]) ->
+                    seq th B ((G::M) ++ N) (UP [ ])) as Cut.
+                eapply CH... 
+               LLPerm( (G::M) ++ N)...
+               apply Cut...
+               LFocus G (P::M).  }
+                
+     {  inversion H7;CleanContext...               
+        eapply @InvPlusTComm with (F:=F0) (G:=G)...
+                 cut1H H10 Hb. 
+ }
+
+       + checkPermutationCases H3.
+          {  destruct(PositiveOrNegative F0).
+             * (* first *) 
+               rewrite <- H6.
+               LLPerm((x ++ N) ++ N0).
+               rewrite <- (app_nil_r []).
+               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
+               rewrite <- (app_nil_l [F0]).
+               apply UpExtension'...
+                
+                 assert(seqN th (S n0) B (P::(F0::x)) (UP [ ]) ->
+                       seqN th b B N (UP [dual P]) ->
+                         seq th B ((F0::x) ++ N) (UP [ ])) as Cut.
+                eapply CH...
+               LLPerm((F0 :: x) ++ N)... apply Cut...
+               LFocus F0 (P::x). HProof. 
+               apply unRelease.
+               HProof. 
+(* first *) 
+*               rewrite <- H6.
+               inversion H4;CleanContext...
+               LLPerm((x++N)++N0).
+               rewrite <- (app_nil_r []).
+               
+               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
+                 rewrite  H3 in H13.
+                 cut1H H13 Hb. 
+
+               apply unRelease.
+                HProof. }
+          {  destruct(PositiveOrNegative G).
+             * (* first *) 
+               rewrite <- H6.
+               LLPerm(M0++(x ++ N)).
+               rewrite <- (app_nil_r []).
+               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
+               apply unRelease.
+                HProof.
+               rewrite <- (app_nil_l [G]).
+               apply UpExtension'...
+                 assert(seqN th (S n0) B (P::(G::x)) (UP [ ]) ->
+                       seqN th b B N (UP [dual P]) ->
+                         seq th B ((G::x) ++ N) (UP [ ])) as Cut.
+                eapply CH...
+               LLPerm((G :: x) ++ N)... apply Cut...
+               LFocus G (P::x).  HProof.
+            * (* first *) 
+               rewrite <- H6.
+               inversion H9;CleanContext...
+               LLPerm(M0++(x ++ N)).
+               rewrite <- (app_nil_r []).
+               
+               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
+               apply unRelease.
+                HProof.
+                 rewrite H3 in H13.
+                 cut1H H13 Hb. 
+
+               } 
+  +  destruct(PositiveOrNegative (FX t)).   
+     {  eapply @InvExT with  (t:=t) (FX:=FX)...
+        rewrite <- (app_nil_l [FX t]).
+        apply UpExtension'...
+        assert(seqN th (S n0) B (P::(FX t::M)) (UP [ ]) ->
+                  seqN th b B N (UP [dual P]) ->
+                    seq th B ((FX t::M) ++ N) (UP [ ])) as Cut.
+                eapply CH...
+       apply Cut...
+       LFocus (FX t) (P::M). }
+          {  inversion H9;subst;auto;
+               try match goal with 
+               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+                end.             
+        eapply @InvExT with (t:=t) (FX:=FX)...
+                 cut1H H12 Hb. 
+}
+                
+  +  apply PositiveNotNegative in H. contradiction. 
+- inversion H5;CleanContext...
         destruct (NegativeAtomDec F).
         
         assert(False). 
         inversion H;subst;solvePolarity... 
         contradiction.
         apply @AbsorptionTheory with (F:=F)...
-        assert(seqN th n0 B (M ++ [P]) (UP [F]) ->
-                  seqN th b B N (UP [dual P]) ->
-                    seq th B (M ++ N) (UP [F])) as Cut.
-                         
-                eapply CH...
-                 
-                apply Cut... }
-    inversion H5...
-    -   eapply @AbsorptionPerp' with (A:=A)...
-        inversion Hb...
-        HProof.
-  -  destruct(PositiveOrNegative F0).   
-     {  eapply @InvPlusT with (F:=F0) (G:=G)...
-        rewrite <- (app_nil_l [F0]).
-        apply UpExtension'...
-        assert(seqN th (S n0) B ((F0::M) ++ [P]) (UP [ ]) ->
-                  seqN th b B N (UP [dual P]) ->
-                    seq th B ((F0::M) ++ N) (UP [ ])) as Cut.
-                eapply CH... 
-               LLPerm( (F0::M) ++ N)...
-               apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus F0. }
-                
-     {  inversion H7;CleanContext...               
-        eapply @InvPlusT with (F:=F0) (G:=G) ...
-        assert( seqN th n B (M ++ [P]) (UP [F0]) ->
-                seqN th b B N (UP [dual P]) ->
-                 seq th B (M ++ N) (UP [F0])) as Cut.
-                eapply CH...
-                apply Cut... }
-  -  destruct(PositiveOrNegative G).   
-     {  eapply @InvPlusTComm with (F:=F0) (G:=G)...
-        rewrite <- (app_nil_l [G]).
-        apply UpExtension'...
-        assert(seqN th (S n0) B ((G::M) ++ [P]) (UP [ ]) ->
-                  seqN th b B N (UP [dual P]) ->
-                    seq th B ((G::M) ++ N) (UP [ ])) as Cut.
-                eapply CH... 
-               LLPerm( (G::M) ++ N)...
-               apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus G.  }
-                
-     {  inversion H7;CleanContext...               
-        eapply @InvPlusTComm with (F:=F0) (G:=G)...
-        assert( seqN th n B (M ++ [P]) (UP [G]) ->
-                seqN th b B N (UP [dual P]) ->
-                 seq th B (M ++ N) (UP [G])) as Cut.
-                eapply CH...
-                apply Cut... }
-
-        
-          - checkPermutationCases H3.
-          {  destruct(PositiveOrNegative F0).
-             { (* first *) 
-               rewrite <- H6.
-               LLPerm((x ++ N) ++ N0).
-               rewrite <- (app_nil_r []).
-               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
-               rewrite <- (app_nil_l [F0]).
-               apply UpExtension'...
-                
-                 assert(seqN th (S n0) B ((F0::x) ++ [P]) (UP [ ]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B ((F0::x) ++ N) (UP [ ])) as Cut.
-                eapply CH...
-               LLPerm((F0 :: x) ++ N)... apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus F0. HProof. 
-               apply unRelease.
-               HProof.  }
-            { (* first *) 
-               rewrite <- H6.
-               inversion H4;CleanContext...
-               LLPerm((x++N)++N0).
-               rewrite <- (app_nil_r []).
-               
-               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
-                 assert(seqN th n B (x ++ [P]) (UP [F0]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [F0])) as Cut.
-                eapply CH...
-                apply Cut...
-                HProof.
-               apply unRelease.
-                HProof.
-              } }
-          {  destruct(PositiveOrNegative G).
-             { (* first *) 
-               rewrite <- H6.
-               LLPerm(M0++(x ++ N)).
-               rewrite <- (app_nil_r []).
-               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
-               apply unRelease.
-                HProof.
-               rewrite <- (app_nil_l [G]).
-               apply UpExtension'...
-                 assert(seqN th (S n0) B ((G::x) ++ [P]) (UP [ ]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B ((G::x) ++ N) (UP [ ])) as Cut.
-                eapply CH...
-               LLPerm((G :: x) ++ N)... apply Cut...
-               rewrite <- app_comm_cons.
-               LFocus G.  HProof.
-            }
-            { (* first *) 
-               rewrite <- H6.
-               inversion H9;CleanContext...
-               LLPerm(M0++(x ++ N)).
-               rewrite <- (app_nil_r []).
-               
-               eapply @InvTensorT with (F:=F0) (G:=G) (B:=B)...
-               apply unRelease.
-                HProof.
-                 assert(seqN th n B (x ++ [P]) (UP [G]) ->
-                       seqN th b B N (UP [dual P]) ->
-                         seq th B (x ++ N) (UP [G])) as Cut.
-                eapply CH...
-                apply Cut...  HProof.
-               } }
-  -  destruct(PositiveOrNegative (FX t)).   
-     {  eapply @InvExT with  (t:=t) (FX:=FX)...
-        rewrite <- (app_nil_l [FX t]).
-        apply UpExtension'...
-        assert(seqN th (S n0) B ((FX t::M) ++ [P]) (UP [ ]) ->
-                  seqN th b B N (UP [dual P]) ->
-                    seq th B ((FX t::M) ++ N) (UP [ ])) as Cut.
-                eapply CH...
-       rewrite app_comm_cons...
-       apply Cut...
-       rewrite <- app_comm_cons...
-       LFocus (FX t). }
-          {  inversion H9;subst;auto;
-               try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
-                end.             
-        eapply @InvExT with (t:=t) (FX:=FX)...
-        assert( seqN th n B (M ++ [P]) (UP [FX t]) ->
-                seqN th b B N (UP [dual P]) ->
-                 seq th B (M ++ N) (UP [FX t])) as Cut.
-                eapply CH...
-                apply Cut... }
-                
-  -  apply PositiveNotNegative in H. contradiction. 
+                 cut1H H8 Hb. 
 
   Qed.         
   
@@ -607,52 +584,31 @@ Proof with sauto;solveLL.
  * inversion Hb...
    CleanContext.
  * inversion Hb; CleanContext...
-   assert( seqN th n B M (UP (F :: L)) -> 
-          seqN th n0 B N (DW (F ^)) -> 
-             seq th B (M ++ N) (UP L)) as HcutF.
-    eapply CW...
-     simpl...
-    apply  HcutF ... 
-  assert( seqN th n B M (UP (G :: L)) -> 
-          seqN th n0 B N (DW (G ^)) -> 
-             seq th B (M ++ N) (UP L)) as HcutG.
-    eapply CW...
-     simpl...
-    apply  HcutG...
-
+   cut2W H4 H3.
+   simpl...
+   cut2W H5 H3.
+   simpl...
  * inversion Hb; CleanContext...
     HProof.
  * inversion Hb; CleanContext...
-   assert( seqN th n B M (UP (F :: G :: L)) -> 
-          seqN th n0 B M0 (DW (F ^)) -> 
-             seq th B (M ++ M0) (UP (G :: L))) as HcutF.
-    eapply CW...
+    cut2W H3 H6.
     simpl...
-    apply HcutF in H6;auto.
-    
+   apply OLCut in H6;auto.
     apply seqtoSeqN in H6.
     destruct H6.
-    
-    assert( seqN th x B (M ++ M0) (UP (G :: L)) -> 
-           seqN th n0 B N0 (DW (G ^)) -> 
-              seq th B ((M ++ M0) ++ N0) (UP L)) as HcutG.
-      eapply CW...
-      simpl...
-      rewrite H1.
-      LLPerm((M ++ M0) ++ N0)...
+    cut2W H H7.
+    simpl...
+    rewrite H1.
+    LLPerm((M ++ M0) ++ N0)...
  * assert(N=[]).
    inversion Hb;solvePolarity...
    subst.
-    assert( seqN th n (B ++ [F]) M  (UP L) -> 
-           seqN th b B [] (DW (! F ^)) -> 
-             seq th B M  (UP L)) as UCCut.
-    eapply CH... 
-    rewrite app_nil_r...
+   simpl in Hb.
+   cut4H H3 Hb.
   * inversion Hb;CleanContext...
-   assert( seqN th n B M (UP (FX t :: L)) -> 
-           seqN th n0 B N (DW ((FX t) ^)) -> 
-              seq th B (M++N) (UP L)) as HCut.
-   eapply CW...
+     pose proof (H5 _ H1).
+    cut2W H H7. 
+
    simpl...
     remember (VAR con 0%nat).
             assert(proper e).
@@ -660,9 +616,7 @@ Proof with sauto;solveLL.
             constructor.
             subst.
             erewrite ComplexityUniformEq...
-            
-            apply HCut... 
-    
+          
  *  apply NotAsynchronousPosAtoms in H4...
    assert(negativeFormula (P ^)).
    apply PositiveDualNegative in H...
@@ -670,13 +624,7 @@ Proof with sauto;solveLL.
      inversion Hb;subst; try match goal with
        [ H: _= dual ?C , H2: negativeFormula (dual ?C) |- _ ] => rewrite <- H in H2
      end;CleanContext.
-  
-    assert( seqN th n B (M ++ [P]) (UP L) -> 
-            seqN th n0 B N (UP [dual P]) -> 
-             seq th B (M ++ N) (UP L)) as ULCut.
-   eapply CH... 
-   apply ULCut...
-   LLExact H5.
+    cut1H H5 H7.
    inversion H...
    inversion Hb...
    HProof.
@@ -691,7 +639,7 @@ Proof with sauto;solveLL.
  Theorem Cut3 a b P Q F L B:
     CutH (complexity P) (a+b) -> CutW  (complexity P) ->
     S (complexity Q) = complexity P ->
-    seqN th a (B ++ [Q]) L (DW F) -> 
+    seqN th a (Q::B) L (DW F) -> 
     seqN th b B [] (DW (! Q ^)) ->   
     seq th B L (UP [F]).
   Proof with sauto;solveLL.
@@ -699,137 +647,64 @@ Proof with sauto;solveLL.
     inversion Ha...
     * apply InPermutation in H3... 
       checkPermutationCases H3.
-      { solveLL. LFocus (perp A). 
-        solveLL. rewrite H0... } 
-      { inversion H0...
-        simpl in Hb.
+      - simpl in Hb.
         inversion Hb;solvePolarity...
         inversion H3...
-        HProof. } 
-      *   assert(seqN th n (B ++ [Q]) L (DW F0) ->
-             seqN th b B [] (DW (! Q ^)) ->
-             seq th B  L (UP [F0])).
-        eapply HC...
+        HProof.
+     -  LFocus (perp A). 
+        solveLL. rewrite H1...  
+      * cut3H H3 Hb. 
         apply InvPlus...
-    *   assert(seqN th n (B ++ [Q]) L (DW G) ->
-             seqN th b B [] (DW (! Q ^)) ->
-             seq th B  L (UP [G])).
-        eapply HC...
+      * cut3H H3 Hb. 
         apply InvPlusComm...
-   *  assert(CutF: seqN th n (B ++ [Q]) M (DW F0) ->
-             seqN th b B [] (DW (! Q ^)) ->
-             seq th B M (UP [F0])).
-        eapply HC... 
-        
-      assert(CutG: seqN th n (B ++ [Q]) N (DW G) ->
-             seqN th b B [] (DW (! Q ^)) ->
-             seq th B  N (UP [G])).
-        eapply HC... 
-      rewrite H0.
-      rewrite <- (app_nil_l []).  
-        eapply @InvTensor with (B:=B)...
-    *   assert(
-              seqN th n (B ++ [Q]) [] (UP [F0]) ->
-             seqN th b B [] (DW (!  Q ^)) -> 
-               seq th B [] (UP [F0])).
-                                       
-        eapply HC...
-        solveLL.
+      * cut3H H1 Hb. 
+         cut3H H5 Hb.
+         rewrite H0.
+        eapply @InvTensor' with (B:=B)...
+     *  cut4H H3 Hb.
         LFocus.
-   *    
-   assert(Hc:
-              seqN th n (B ++ [Q]) L (DW (FX t)) ->
-             seqN th b B [] (DW (! Q ^)) -> 
-               seq th B L (UP [FX t])).
-                                       
-        eapply HC... 
-        apply Hc in H5...
+   *    cut3H H5 Hb.
         eapply InvEx with (t:=t)...
-       *   assert(Hc:
-              seqN th n (B ++ [Q]) L (UP [F]) ->
-             seqN th b B [] (DW (!  Q ^)) -> 
-               seq th B L (UP [F])).
-                                       
-        eapply HC...
-        apply Hc... 
+       * cut4H H4 Hb. 
   Qed. 
 
 Theorem Cut4  a b P Q L M B  : 
 CutH (complexity P) (a+b) -> CutW (complexity P) ->    S (complexity Q) = complexity P ->
-  seqN th a (B++[Q]) M (UP L) ->
+  seqN th a (Q::B) M (UP L) ->
   seqN th b B [] (DW (! Q ^)) ->
   seq th B M (UP L).
 Proof with sauto;solveLL.  
   intros CH CW Hc Ha Hb.
   inversion Ha...  
-  --  assert( seqN th n (B++[Q]) M (UP (F :: M0)) ->
-              seqN th b B [] (DW (! Q ^)) -> seq th B M (UP (F :: M0))) as Cut.
-              eapply CH... 
-              apply Cut... 
-  --  assert( seqN th n (B++[Q]) M (UP (G :: M0)) ->
-              seqN th b B [] (DW (! Q ^)) -> seq th B M (UP (G ::M0))) as Cut.
-              eapply CH... 
-              apply Cut... 
-  --  assert( seqN th n (B++[Q]) M (UP M0) ->
-              seqN th b B [] (DW (! Q ^)) -> seq th B M (UP M0)) as Cut.
-              eapply CH...
-              apply Cut... 
-  --  assert( seqN th n (B++[Q]) M (UP (F :: G :: M0)) ->
-              seqN th b B [] (DW (! Q ^)) -> seq th B M (UP (F :: G ::M0))) as Cut.
-              eapply CH...  
-              apply Cut...
-
-  --  assert( seqN th n ((B ++ [F]) ++ [Q]) M (UP M0) ->
-              seqN th b (B ++ [F]) [] (DW (! Q ^)) -> seq th (B ++ [F]) M (UP M0)) as Cut.
-              eapply CH... 
-              LLPerm(B  ++ [F])...
-              apply Cut...
-              LLExact H3.
-              apply weakeningGenN_rev...
-  --  assert( seqN th n (B++[Q]) M (UP (FX x ::  M0)) ->
-              seqN th b B [] (DW (! Q ^)) -> seq th B M (UP (FX x :: M0))) as Cut.
-              eapply CH... 
-              apply Cut...  
---  assert( seqN th n (B++[Q]) (F::M)  (UP M0) ->
-              seqN th b B [] (DW (! Q ^)) -> seq th B (F::M) (UP M0)) as Cut.
-              eapply CH... 
-              apply Cut...
-  --
-   destruct (PositiveOrNegative F).
-     assert( seqN th n (B++[Q]) L' (DW F) ->
-             seqN th b B [] (DW (! Q ^)) -> seq th B L' (UP [F])) as Cut.
-     eapply CH...
-     assert( seq th B L' (UP [F])).
-     apply Cut...
-     inversion H2;subst;try solve [inversion H].
+  * cut4H H0 Hb.
+  * cut4H H4 Hb.
+  * cut4H H3 Hb.
+  * cut4H H3 Hb.
+  * LLPermH H3 (Q::F::B). 
+     apply weakeningN with (F:=F) in Hb.     
+     cut4H H3 Hb.
+     LLPerm (F::B)...
+  * apply H4 in properX. cut4H properX Hb.
+  * cut4H H4 Hb.
+  * destruct (PositiveOrNegative F).
+     cut3H H5 Hb. 
+     assert( seq th B L' (UP [F]))...
+     inversion H0;subst;try solve [inversion H].
      rewrite <- H1.
        HProof. 
      inversion H5;CleanContext...
      rewrite <- H1.
      LFocus...
-     assert( seqN th n0 (B++[Q]) L' (UP [F]) ->
-             seqN th b B [] (DW (! Q ^)) -> seq th B L' (UP [F])) as Cut.
-     eapply CH...
-     apply Cut...
-  --  apply in_app_or in H1...
-      +   assert( seqN th n (B++[Q]) M (DW F) ->
-          seqN th b B [] (DW (! Q ^)) -> seq th B M (UP [F])) as Cut.
-          eapply CH...
-          eapply @AbsorptionClassic with  (F:=F)...
-      + inversion H...
-        assert( seqN th n (B ++ [F]) M (DW F) ->
-          seqN th b B [] (DW  (! F ^)) -> seq th B M (UP [F])) as Cut.
-          eapply CH... 
-          assert(Hs: seq th B M (UP [F]))...
-          clear Cut.
-          
+     cut4H H8 Hb. 
+  *  inversion H1...
+      + cut3H H5 Hb. 
+         assert(Hs: seq th B M (UP [F]))...
           apply seqtoSeqN in Hs.
           destruct Hs as [x Hs].
           inversion Hb...
             destruct(PositiveOrNegative F).
             assert(negativeFormula (F ^)).
             apply PositiveDualNegative...
-             
             assert( seqN th x B M  (UP [F]) -> 
                     seqN th (S n0) B [] (DW (F ^)) ->
                       seq th B (M++[])  (UP [ ])) as Cut.
@@ -844,34 +719,31 @@ Proof with sauto;solveLL.
             rewrite <- ng_involutive in Cut.
             CleanContext.
             solvePolarity.
-     -- assert(seqN th n (B ++ [Q]) M (DW F) ->
-                    seqN th b B [] (DW (! Q ^)) -> 
-                     seq th B M (UP [F])) as Cut.
-            eapply CH... 
-           assert(Hs:seq th B M (UP [F])).
-           apply Cut... 
+    + eapply @AbsorptionClassic with  (F:=F)...
+          cut3H H5 Hb. 
+  
+     * cut3H H5 Hb. 
+        assert(Hs:seq th B M (UP [F]))...
              destruct (NegativeAtomDec F).
               2:{  eapply @AbsorptionTheory with (F:=F)... }
              inversion H...
              eapply @AbsorptionPerp' with (A:=A)...
- 
-
   Qed.
   
  
   Theorem CutElimination i j C A B L M N P: 
-      (seqN th i B (M ++ [C]) (UP L) -> 
+      (seqN th i B (C::M) (UP L) -> 
       seqN th j B N (UP [dual C]) -> 
       seq th B (M ++ N) (UP L)) /\
       (seqN th i B M (UP (C :: L)) -> 
       seqN th j B N (DW (dual C)) -> 
       seq th B (M ++ N) (UP L)) /\
        (S (complexity A) = complexity C ->
-       seqN th i (B ++ [A]) M (DW P) -> 
+       seqN th i (A::B) M (DW P) -> 
        seqN th j B [] (DW (! (dual A))) -> 
        seq th B M (UP [P]))  /\
       (S (complexity A) = complexity C ->
-       seqN th i (B ++ [A]) M (UP L) -> 
+       seqN th i (A::B) M (UP L) -> 
        seqN th j B [] (DW (! (dual A))) -> 
        seq th B M (UP L)).
   Proof with sauto;solvePolarity;solveLL.
@@ -912,7 +784,7 @@ Proof with sauto;solveLL.
         split;[intros | 
         split;intros]].
          *
-         refine (Cut1 _ _ _ H H0).
+         refine (Cut1 _   H H0).
          eauto.
           unfold CutElimination.CutH; intros.
           eauto.

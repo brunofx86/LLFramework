@@ -47,14 +47,14 @@ Fixpoint blt_nat (n m : nat) {struct n} : bool :=
   end.
 
 Definition ble_nat : nat -> nat -> bool :=
-  fun n m => ((blt_nat n m) || (beq_nat n m)).
+  fun n m => ((blt_nat n m) || (Nat.eqb n m)).
 
-Lemma max_le_l : forall (n m:nat), n <= (max n m).
+Lemma max_le_l : forall (n m:nat), n <= (Nat.max n m).
 Proof.
   lia.
 Qed.
 
-Lemma max_le_r : forall (n m:nat), m <= (max n m).
+Lemma max_le_r : forall (n m:nat), m <= (Nat.max n m).
 Proof.
   lia.
 Qed.
@@ -326,10 +326,11 @@ rewrite (H (VAR 0) (proper_VAR 0)).
 generalize (size_positive (g (VAR 0))); intro H0.
 assert (0 < size (g (VAR 0))).
 auto with arith.
-generalize (plus_lt_compat_l 0 (size (g (VAR 0))) (size (f (VAR 0))) H1);
+generalize (proj1 (Nat.add_lt_mono_l  0 (size (g (VAR 0))) (size (f (VAR 0))) ) H1);
   intro H2.
-rewrite plus_0_r in H2; auto.
+rewrite Nat.add_0_r in H2; auto.
 Qed.
+
 
 Lemma rank_APP2 : forall f g e : expr -> expr,
   (ext_eq e (fun x => (APP (f x) (g x)))) -> (rank g) < (rank e).
@@ -339,9 +340,9 @@ rewrite (H' (VAR 0) (proper_VAR 0)).
 generalize (size_positive (f (VAR 0))); intro H.
 assert (0 < size (f (VAR 0))).
 auto with arith.
-generalize (plus_lt_compat_r 0 (size (f (VAR 0))) (size (g (VAR 0))) H0);
+generalize (proj1 (Nat.add_lt_mono_r 0 (size (f (VAR 0))) (size (g (VAR 0)))) H0);
   intro H1.
-rewrite plus_0_l in H1; auto.
+rewrite Nat.add_0_l in H1; auto.
 Qed.
 
 Lemma rank_ABS : forall e' e: expr -> expr,
@@ -353,8 +354,8 @@ rewrite (H' (VAR 0) (proper_VAR 0)).
 generalize (size_positive (e' (VAR 0))); intro H.
 assert (0 < 1).
 auto with arith.
-generalize (plus_lt_compat_l 0 1 (size (e' (VAR 0))) H0); intro H1.
-rewrite plus_0_r in H1; auto.
+generalize (proj1 (Nat.add_lt_mono_l 0 1 (size (e' (VAR 0)))) H0); intro H1.
+rewrite Nat.add_0_r in H1; auto.
 Qed.
 
 Lemma lbnd_total :
@@ -629,7 +630,7 @@ match e with
   CON c => 0
 | VAR v => (S v)
 | BND i => 0
-| APP e1 e2 => max (newvar e1) (newvar e2)
+| APP e1 e2 => Nat.max (newvar e1) (newvar e2)
 | ABS e' => newvar e'
 end.
 
@@ -645,13 +646,13 @@ end.
 Fixpoint nvC (l:list expr) {struct l} : var
   := match l with
        nil => 0
-     | (a::l') => max (newvar a) (nvC l')
+     | (a::l') => Nat.max (newvar a) (nvC l')
      end.
 
 Fixpoint nvS (s:subst_ty) : (var) :=
   match s with
   | nil => 0
-  | (n,e)::tl => max (max (S n) (newvar e)) (nvS tl)
+  | (n,e)::tl => Nat.max (Nat.max (S n) (newvar e)) (nvS tl)
   end.
 
 Fixpoint fv_subst_cxt (m:var) (e:expr) (l:list expr) : list expr :=
@@ -1240,7 +1241,7 @@ Proof.
   - rewrite <- H1;auto.
   - rewrite <- H1;simpl;auto.
     assert (h:i=i); auto.
-    rewrite <- beq_nat_true_iff in h. rewrite -> h; auto.
+    rewrite <- Nat.eqb_eq in h. rewrite -> h; auto.
   - rewrite <- H1;auto.
   - unfold abst in Ha. rewrite <- H1;auto. destruct Ha as [e'' [H3 H4]].
     inversion H4;subst;
@@ -1248,7 +1249,7 @@ Proof.
            specialize H3 with (1:=(proper_VAR 0)); specialize H1 with (1:=(proper_VAR 0));
            rewrite <- H3 in H1; inversion H1).
     assert (h:i<>j0); try lia.
-    rewrite <- beq_nat_false_iff in h. simpl. rewrite -> h; auto.
+    rewrite <- Nat.eqb_neq in h. simpl. rewrite -> h; auto.
   - simpl. rewrite <- H1; auto. f_equal.
     + apply H with (size (f (VAR 0)));auto.
       * rewrite <- H1.
@@ -1298,7 +1299,7 @@ Proof.
   induction a; intros; auto.
   - simpl in H.  assert (H0:false = (Nat.eqb m v)).
     { apply not_eq_false_beq; auto.
-      { apply beq_nat_eq; auto. }
+      { intros. eapply Nat.eqb_eq ; auto. }
       { lia. }}
     simpl. rewrite <- H0; auto.
   - simpl. simpl in H.
@@ -1327,8 +1328,8 @@ Lemma new_fv_subst_cxt : forall (l:list expr) (m:var) (e:expr),
     (nvC l) <= m -> fv_subst_cxt m e l = l.
 Proof.
   induction l; auto. simpl. intros m e H.
-  generalize (le_max_r (newvar a) (nvC l)); intro H0.
-  generalize (le_max_l (newvar a) (nvC l)); intro H1.
+  generalize (Nat.le_max_r (newvar a) (nvC l)); intro H0.
+  generalize (Nat.le_max_l (newvar a) (nvC l)); intro H1.
   f_equal.
   - apply fv_subst_id; lia.
   - apply IHl; lia.
@@ -1688,13 +1689,13 @@ intro f; destruct 1; try (autorewrite with lbind_rw; discriminate 1).
 auto.
 rewrite lbind_id; rewrite lbind_BND; inversion 1.
 subst.
-generalize (lt_irrefl j); intro H1; elim H1; auto.
+generalize (Nat.lt_irrefl j); intro H1; elim H1; auto.
 intro f; destruct 1; try (autorewrite with lbind_rw; discriminate 1).
 autorewrite with lbind_rw; intro H; rewrite H; auto.
 intro f; destruct 1; try (autorewrite with lbind_rw; discriminate 1).
 rewrite lbind_id; rewrite lbind_BND; inversion 1.
 subst.
-generalize (lt_irrefl i); intro H1; elim H1; auto.
+generalize (Nat.lt_irrefl i); intro H1; elim H1; auto.
 rewrite lbind_BND; rewrite lbind_BND; inversion 1; auto.
 intro f0; destruct 1; try (autorewrite with lbind_rw; discriminate 1).
 autorewrite with lbind_rw; inversion 1.
@@ -1763,8 +1764,8 @@ apply lbnd_VAR.
 apply abst_VAR.
 intros k h.
 subst.
-assert (S k > j); try lia.
-generalize (gt_S k j H0); intros [h | h].
+assert (j <= k); try lia.
+generalize (proj1 (Nat.lt_eq_cases j k) H0); intros [h | h].
 exists (fun x:expr con => (BND con j)); split.
 apply lbnd_BND; auto.
 apply abst_BND; auto.

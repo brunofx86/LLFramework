@@ -41,7 +41,7 @@ Section FLLSequent.
                                         S n |-F- B ; MN ; DW (MAnd F G)
  (* exponentials *)
   | tri_quest : forall B L M F n,
-      n |-F- B++[F] ; L ; UP M -> S n  |-F- B ; L ; UP ((Quest F) :: M)
+      n |-F- F::B ; L ; UP M -> S n  |-F- B ; L ; UP ((Quest F) :: M)
   | tri_bang : forall B F n,
       n |-F- B ; [] ; UP [F] -> S n  |-F- B ; [] ; DW (Bang F) 
  (* quantifiers *)

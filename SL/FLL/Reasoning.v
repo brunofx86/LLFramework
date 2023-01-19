@@ -299,8 +299,8 @@ Theorem FocusAtom: forall n Gamma Delta A,
    intros.
    InvTriAll.
    left.
-  exists n0. exists N...
-  right.
+  exists n0. exists N... 
+  HProof. right.
   exists n0... 
   HProof.
  Qed.
