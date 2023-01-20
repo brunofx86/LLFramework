@@ -83,6 +83,129 @@ Ltac solveUniform :=
     | [|- level _ _ ] => constructor
     end.
 
+Ltac clearPolarity :=
+ repeat
+ match goal with
+ | [H: negativeFormula Top  |- _] => clear H
+ | [H: negativeFormula Bot  |- _] => clear H
+ | [H: negativeFormula (MOr _ _)  |- _] => clear H
+ | [H: negativeFormula (atom _)  |- _] => clear H
+ | [H: negativeFormula (All _)  |- _] => clear H
+ | [H: negativeFormula (AAnd _ _)  |- _] => clear H
+ | [H: negativeFormula (Quest _)  |- _] => clear H
+ 
+ | [H: positiveFormula (perp _)  |- _] => clear H
+ | [H: positiveFormula Zero  |- _] => clear H
+ | [H: positiveFormula One  |- _] => clear H
+ | [H: positiveFormula (MAnd _ _)  |- _] => clear H
+ | [H: positiveFormula (Some _)  |- _] => clear H
+ | [H: positiveFormula (AOr _ _)  |- _] => clear H
+ | [H: positiveFormula (Bang _ )  |- _] => clear H 
+
+ | [H: positiveLFormula (atom _)  |- _] => clear H
+ | [H: positiveLFormula (perp _)  |- _] => clear H
+ | [H: positiveLFormula Zero  |- _] => clear H
+ | [H: positiveLFormula One  |- _] => clear H
+ | [H: positiveLFormula (MAnd _ _)  |- _] => clear H
+ | [H: positiveLFormula (Some _)  |- _] => clear H
+ | [H: positiveLFormula (AOr _ _)  |- _] => clear H
+ | [H: positiveLFormula (Bang _ )  |- _] => clear H 
+
+ | [H : ~ IsPositiveAtom (perp _ ) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom (MOr _ _ ) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom (MAnd _ _) |- _ ] => clear H   
+ | [H : ~ IsPositiveAtom (AAnd _ _ ) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom (AOr _ _) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom (Bang _ ) |- _ ] => clear H    
+ | [H : ~ IsPositiveAtom (Quest _ ) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom (All _ ) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom (Some _ ) |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom Top |- _ ] => clear H    
+ | [H : ~ IsPositiveAtom Bot |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom One |- _ ] => clear H 
+ | [H : ~ IsPositiveAtom Zero |- _ ] => clear H  
+ end.
+      
+(** Proving goals about polarity *)
+
+Ltac solvePolarity :=
+  sauto;
+  let H := fresh "H" in
+    match goal with
+    | [|- ~ negativeFormula _] => intro H; solvePolarity 
+    | [|- ~ positiveFormula _] => intro H; solvePolarity
+    | [|- ~ positiveLFormula _] => intro H; solvePolarity
+    | [|- ~ IsPositiveAtom _ ] => intro H; solvePolarity
+    | [|- ~ IsNegativeAtom _ ] => intro H; solvePolarity
+    
+    | [H: negativeFormula ?F  |- _] =>
+      match F with
+      | perp _ => inversion H      
+      | MAnd _ _ => inversion H
+      | AOr _ _ => inversion H
+      | Some _ => inversion H
+      | Bang _ => inversion H
+      | Zero => inversion H
+      | One => inversion H
+      end
+    | [H : positiveFormula ?F |- _ ] =>
+      match F with
+      | atom _ => inversion H
+      | AAnd _ _ => inversion H
+      | MOr _ _ => inversion H      
+      | All _ => inversion H
+      | Quest _ => inversion H
+      | Bot => inversion H
+      | Top => inversion H
+      end
+    | [H : positiveLFormula ?F |- _ ] =>
+      match F with
+      | AAnd _ _ => inversion H
+      | MOr _ _ => inversion H
+      | All _ => inversion H
+      | Quest _ => inversion H
+      | Bot => inversion H
+      | Top => inversion H
+    end
+    | [H : IsPositiveAtom ?F |- _ ] =>
+      match F with
+      | MAnd _ _ => inversion H
+      | AAnd _ _ => inversion H
+      | MOr _ _ => inversion H
+      | AOr _ _ => inversion H
+      | Bang _ => inversion H
+      | Quest _ => inversion H
+      | perp _ => inversion H
+      | Some _ => inversion H
+      | All _ => inversion H
+      | Zero => inversion H
+      | One => inversion H
+      | Bot => inversion H
+      | Top => inversion H
+      end
+    | [H : IsNegativeAtom ?F |- _ ] =>
+      match F with
+      | MAnd _ _ => inversion H
+      | AAnd _ _ => inversion H
+      | MOr _ _ => inversion H
+      | AOr _ _ => inversion H
+      | Bang _ => inversion H
+      | Quest _ => inversion H
+      | atom _ => inversion H
+      | Some _ => inversion H
+      | All _ => inversion H
+      | Zero => inversion H
+      | One => inversion H
+      | Bot => inversion H
+      | Top => inversion H
+      end
+    | [H : ~ IsPositiveAtom _ |- _ ] => try solve[contradict H;auto]
+    | [H : ~ positiveLFormula _ |- _ ] => try solve[contradict H;auto]
+    | [H : ~ positiveFormula _ |- _ ] => try solve[contradict H;auto]
+     | [H : ~ negativeFormula _ |- _ ] => try solve[contradict H;auto] 
+    | _  => idtac
+    end;auto.
+ 
    
 Ltac cleanF :=
  repeat

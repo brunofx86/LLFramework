@@ -81,13 +81,14 @@ Section InvNPhase .
     
     destruct a; simpl in *; invTri' H0;solveLL;
       repeat rewrite app_comm_cons.
-   all:   try solve [
-            match goal with
+   all: try solve[  match goal with
             |  [ |- seq _ _ _ (UP (?M ++ (AAnd _ _) :: _)) ] =>
                eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM;solveF;FLLInversionAll;auto
             end] .
-    eapply H with (M:= o x:: M) (m:= complexityL (o x:: M));simpl in *; inversion HeqSizeM;solveF;FLLInversionAll;auto.
-    generalize (ComplexityUniformEq H6 properX (proper_VAR con 0%nat));intro...
+     assert (Hvar : proper (VAR con 0%nat)) by constructor.
+    generalize (ComplexityUniformEq H6 properX Hvar);intro...
+ apply H with (M:= o x:: M) (m:= complexityL (o x:: M));simpl in *...
+    FLLInversionAll;auto. inversion H8.
   Qed.
   
   
@@ -170,7 +171,10 @@ Section InvNPhase .
          inversion HeqSizeM;simpl;try lia.       
          generalize (ComplexityUniformEq H6 properX (proper_VAR con 0%nat));intro...  rewrite <- app_comm_cons...
       -- eapply H0 with (m:= complexityL M)...
-         inversion HeqSizeM;try lia. 
+         inversion HeqSizeM;try lia.
+      -- eapply H0 with (m:= complexityL M)...
+         inversion HeqSizeM;try lia.
+ 
   Qed.
   
   
@@ -301,6 +305,8 @@ Section InvNPhase .
     
     generalize (H2 _ H8);intros Hs. invTri' Hs...
     apply H14 in H3...
+    inversion H13.
+
   Qed.
   
 
@@ -361,16 +367,7 @@ Section InvNPhase .
            inversion H0;subst;try(simpl in Heqw; inversion Heqw; subst;simpl;try(lia)).
            +++  (* top *)
              LLTop.
-           +++ (* bottom *)
-             eapply IH with (L' :=L') in H7;auto.
-             inversion H;subst;auto.
-           +++ (* par *)
-             eapply IH with (L' := F::G::L') in H7;auto.
-             inversion H;subst.
-             inversion H5;subst.
-             SLSolve.
-             simpl. lia.
-           +++ (* with *)
+          +++ (* with *)
              eapply IH with (m:= complexityL (F::L)) (L:= F ::L) (L' := F :: L') in H8;auto.
              eapply IH with (m:= complexityL (G::L)) (L := G :: L) (L' := G :: L') in H9;auto.
              simpl. lia.
@@ -382,13 +379,17 @@ Section InvNPhase .
              inversion H5;subst.
              change (F :: L') with ([F] ++ L').
              apply Forall_app;auto.           
-           +++  (* quest *)
-             eapply IH with (m:= complexityL L) (L' :=L') in H7;auto.
-             lia.
+           +++ (* bottom *)
+             eapply IH with (L' :=L') in H7;auto.
              inversion H;subst;auto.
-           +++  (* store *)
-             eapply IH with (m:= complexityL L) (L' :=L') in H9;auto.
-             assert (complexity l' > 0) by (apply Complexity0).
+           +++ (* par *)
+             eapply IH with (L' := F::G::L') in H7;auto.
+             inversion H;subst.
+             inversion H5;subst.
+             SLSolve.
+             simpl. lia.
+            +++  (* quest *)
+             eapply IH with (m:= complexityL L) (L' :=L') in H7;auto.
              lia.
              inversion H;subst;auto.
            +++ (* forall *)
@@ -404,7 +405,12 @@ Section InvNPhase .
              change (FX x  :: L') with ([FX x ] ++ L').
              apply Forall_app;auto.
              
-        ++
+        +++  (* store *)
+             eapply IH with (m:= complexityL L) (L' :=L') in H9;auto.
+             assert (complexity l' > 0) by (apply Complexity0).
+             lia.
+             inversion H;subst;auto.
+           ++
           destruct Heq as [L1 [L2 [L1' [L2' Heq]]]].
           destruct Heq as [Heq [Heq1 Heq2]];subst.
           
@@ -415,7 +421,45 @@ Section InvNPhase .
             rewrite app_comm_cons in H.
             autounfold in H.
             autounfold.
+            solveForall.
+  +++ (* with *)
+            eapply IH with (m:= complexityL (F :: L1 ++ l' :: L2))
+                           (L:=F :: L1 ++ l' :: L2)
+                           (L' := [l'] ++ L1' ++ [F ] ++ L2') in H7;auto .
+            eapply IH with (m:= complexityL (G :: L1 ++ l' :: L2))
+                           (L:=G :: L1 ++ l' :: L2)
+                           (L' := [l'] ++ L1' ++ [G ] ++ L2') in H8;auto .
+            
+            apply EquivAuxWith with (M := l' :: L1'); simpl;auto.
+            inversion Heqw. simpl. lia.
+              inversion H;subst;auto.
+              rewrite app_comm_cons in H. 
+                autounfold in H.
+            autounfold.
             solveForall.  
+          
+            apply Forall_app in H5;auto.
+            inversion H5;subst;auto.
+            inversion H3;subst;auto.
+            inversion H10...
+            
+            rewrite Permutation_midle. rewrite Heq2. perm.
+            inversion Heqw. simpl. lia.
+              inversion H;subst;auto.
+              rewrite app_comm_cons in H.
+                autounfold in H.
+            autounfold.
+            solveForall.  
+          
+            apply Forall_app in H5;auto.
+            inversion H5;subst;auto.
+            inversion H3;subst;auto.
+            inversion H10...
+            simpl.
+            
+            rewrite Permutation_midle. rewrite Heq2. perm.
+            
+          
           +++ (* bottom *)
             eapply IH with (m:= complexityL (L1 ++ l' :: L2))(L:=L1 ++ l' :: L2) (L' := [l'] ++ L1' ++ L2') in H6 .
             simpl in H6. 
@@ -458,43 +502,6 @@ Section InvNPhase .
             auto.
 
 
-          +++ (* with *)
-            eapply IH with (m:= complexityL (F :: L1 ++ l' :: L2))
-                           (L:=F :: L1 ++ l' :: L2)
-                           (L' := [l'] ++ L1' ++ [F ] ++ L2') in H7;auto .
-            eapply IH with (m:= complexityL (G :: L1 ++ l' :: L2))
-                           (L:=G :: L1 ++ l' :: L2)
-                           (L' := [l'] ++ L1' ++ [G ] ++ L2') in H8;auto .
-            
-            apply EquivAuxWith with (M := l' :: L1'); simpl;auto.
-            inversion Heqw. simpl. lia.
-              inversion H;subst;auto.
-              rewrite app_comm_cons in H. 
-                autounfold in H.
-            autounfold.
-            solveForall.  
-          
-            apply Forall_app in H5;auto.
-            inversion H5;subst;auto.
-            inversion H3;subst;auto.
-            inversion H10...
-            
-            rewrite Permutation_midle. rewrite Heq2. perm.
-            inversion Heqw. simpl. lia.
-              inversion H;subst;auto.
-              rewrite app_comm_cons in H.
-                autounfold in H.
-            autounfold.
-            solveForall.  
-          
-            apply Forall_app in H5;auto.
-            inversion H5;subst;auto.
-            inversion H3;subst;auto.
-            inversion H10...
-            simpl.
-            
-            rewrite Permutation_midle. rewrite Heq2. perm.
-            
           +++ (* quest *)
             eapply IH with (m:= complexityL (L1 ++ l' :: L2))(L:=L1 ++ l' :: L2) (L' := [l'] ++ L1' ++ L2') in H6;auto .
             apply seqtoSeqN in H6. destruct H6.   
@@ -509,22 +516,7 @@ Section InvNPhase .
             solveForall.  
           
             rewrite Permutation_midle. rewrite Heq2. perm.
-
-          +++ (* copy *)
-            eapply IH with (m:= complexityL(L1 ++ l' :: L2))(L:=L1 ++ l' :: L2) (L' := [l'] ++ L1' ++ L2') in H8;auto .
-
-            eapply EquivAuxStore with (M:=l' :: L1');eauto.
-            rewrite Permutation_app_comm;eauto. 
-            inversion Heqw.
-            assert (complexity l > 0) by (apply Complexity0).
-            lia.
-              inversion H;subst;auto.
-              rewrite app_comm_cons in H.
-                autounfold in H.
-            autounfold.
-            solveForall.  
-            rewrite Permutation_midle. rewrite Heq2. perm.
-          +++ (* forall *)
++++ (* forall *)
             
             
             assert(forall x, proper x -> |-- B; M; UP ((l' :: L1' ) ++ [FX x] ++ L2')).
@@ -562,6 +554,21 @@ Section InvNPhase .
                 autounfold in H.
             autounfold.
             solveForall.  
+          
+          +++ (* copy *)
+            eapply IH with (m:= complexityL(L1 ++ l' :: L2))(L:=L1 ++ l' :: L2) (L' := [l'] ++ L1' ++ L2') in H8;auto .
+
+            eapply EquivAuxStore with (M:=l' :: L1');eauto.
+            rewrite Permutation_app_comm;eauto. 
+            inversion Heqw.
+            assert (complexity l > 0) by (apply Complexity0).
+            lia.
+              inversion H;subst;auto.
+              rewrite app_comm_cons in H.
+                autounfold in H.
+            autounfold.
+            solveForall.  
+            rewrite Permutation_midle. rewrite Heq2. perm.
           
   Qed.
 
@@ -618,6 +625,16 @@ Section InvNPhase .
       ++ (* top *)
         exists 0%nat. 
         firstorder;[lia | eapply tri_top ].
+      ++ (* with *)
+        apply IH with (m:= complexity  F0 + complexityL  L) in H6;try lia;auto.
+        apply IH with (m:= complexity  G + complexityL L) in H7;try lia;auto.
+        destruct H6 as [n'  [IHn IHd]].
+        destruct H7 as [m'  [IHn' IHd']].
+        simpl.
+        exists (S (S n0)).
+        firstorder; eapply tri_with;auto.
+        eapply HeightGeq with (n:=n');try firstorder.  
+       eapply HeightGeq with (n:=m');try firstorder.  
       ++ (* bot *)
         apply IH with (m:= complexityL L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
@@ -629,32 +646,12 @@ Section InvNPhase .
         exists (S n').
         firstorder ;[lia | eapply tri_par;auto ].
         simpl. lia.
-      ++ (* with *)
-        apply IH with (m:= complexity  F0 + complexityL  L) in H6;try lia;auto.
-        apply IH with (m:= complexity  G + complexityL L) in H7;try lia;auto.
-        destruct H6 as [n'  [IHn IHd]].
-        destruct H7 as [m'  [IHn' IHd']].
-        simpl.
-        exists (S (S n0)).
-        firstorder; eapply tri_with;auto.
-        eapply HeightGeq with (n:=n');try firstorder.  
-       eapply HeightGeq with (n:=m');try firstorder.  
       ++  (* quest *)
         apply IH with (m:= complexityL  L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
         firstorder ;[lia | eapply tri_quest;auto ]. 
         lia.
-      ++ (* Store *)
-        assert(exists m0 : nat, m0 <= S n0 /\ m0 |--- B; M ++ [o]; UP (L ++ [F])).
-        apply IH with (m:= complexityL L);auto.
-        assert (complexity o > 0) by (apply Complexity0);lia.
-        eapply exchangeLCN;[|exact H7].
-        perm.
-        
-        destruct H1 as [n'  [IHn IHd]].
-        exists (S n').
-        firstorder ;[lia | eapply tri_store;[auto | LLExact IHd] ].
      ++  (* FORALL *)
         assert(forall x, proper x -> exists m, m <= S n0 /\  m |--- B; M; UP ((FX x :: L)  ++ [F])).
         intros.
@@ -676,6 +673,16 @@ Section InvNPhase .
         destruct H3 as [n H3].
         destruct H3 as [H3 H3'].
         eapply @HeightGeq with (n:=n);try firstorder.
+      ++ (* Store *)
+        assert(exists m0 : nat, m0 <= S n0 /\ m0 |--- B; M ++ [o]; UP (L ++ [F])).
+        apply IH with (m:= complexityL L);auto.
+        assert (complexity o > 0) by (apply Complexity0);lia.
+        eapply exchangeLCN;[|exact H7].
+        perm.
+        
+        destruct H1 as [n'  [IHn IHd]].
+        exists (S n').
+        firstorder ;[lia | eapply tri_store;[auto | LLExact IHd] ].
        
   Qed.
   

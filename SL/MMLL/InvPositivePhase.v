@@ -1682,7 +1682,7 @@ Section AbsorptionLinear.
       intros *. intros MN FP P1 P2 P3 HD1 HD2.
     
       symmetry in MN. 
-      apply plus_is_O in MN.
+      apply Nat.eq_add_0 in MN.
       destruct MN...
 
       inversion HD1...
@@ -1693,7 +1693,7 @@ Section AbsorptionLinear.
       unfold RUpTensor. 
       intros *.
       intros MN  P1 P2 P3 HD1 HD2.
-      symmetry in MN. apply plus_is_O in MN.
+      symmetry in MN. apply Nat.eq_add_0 in MN.
       destruct MN...
       inversion HD1...
       destruct L;destruct L';simpl in *.
