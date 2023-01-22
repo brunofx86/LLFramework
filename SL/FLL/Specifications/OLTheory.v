@@ -3,15 +3,16 @@
 (** This file contains some useful definitions and tactics for the
 proof of the cut-elimination theorem of Object Logics *)
 
-Require Export LL.OL.CutCoherence.
+Require Import LL.OL.SyntaxResults.
+Require Export LL.SL.FLL.Specifications.CutCoherence.
 Set Implicit Arguments.
 
 Section OLTheory.
 Context `{OLR: OORules}.
 
 Inductive buildTheory  : oo ->  Prop :=
-  | bcteR : forall C, isOLFormula (t_cons C) -> buildTheory (makeRRuleC C)
-  | bcteL : forall C, isOLFormula (t_cons C) -> buildTheory (makeLRuleC C) 
+  | bcteR : forall C, isOLFormula (t_ccon C) -> buildTheory (makeRRuleC C)
+  | bcteL : forall C, isOLFormula (t_ccon C) -> buildTheory (makeLRuleC C) 
   | buconnR : forall C F, isOLFormula ( t_ucon C F) -> buildTheory  (makeRRuleU C F)
   | buconnL : forall C F, isOLFormula ( t_ucon C F) -> buildTheory  (makeLRuleU C F)
   | bconnR : forall C F G, isOLFormula ( t_bcon C F G) -> buildTheory  (makeRRuleB C F G)

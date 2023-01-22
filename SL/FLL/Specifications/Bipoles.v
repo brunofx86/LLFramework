@@ -1,4 +1,4 @@
-Require Export LL.OL.StructuralClauses.
+Require Export SL.FLL.Specifications.StructuralClauses.
 
 Set Implicit Arguments. 
 
@@ -31,7 +31,7 @@ Record ruleQ := {
 (** We assume an external definition mapping each
     connective/quantifier with a left and right rule *) 
 Class OORules := {
-  rulesC : cons -> ruleC ;
+  rulesC : ccon -> ruleC ;
   rulesU : ucon -> ruleU;
   rulesB : bcon -> ruleB;
   rulesQ : qcon -> ruleQ }.
@@ -44,10 +44,10 @@ Context `{OLR: OORules}.
   
 (** Building the bipoles of the rules out of the user definitions  *)
 Definition makeLRuleC c :=
-    ( perp ( down  ( t_cons c) )) ⊗ (rulesC c).(rc_lftBody) .
+    ( perp ( down  ( t_ccon c) )) ⊗ (rulesC c).(rc_lftBody) .
    
 Definition makeRRuleC c :=
-    ( perp ( up  ( t_cons c))) ⊗ (rulesC c).(rc_rgtBody) .
+    ( perp ( up  ( t_ccon c))) ⊗ (rulesC c).(rc_rgtBody) .
 
 Definition makeLRuleU uc :=
     fun (F:uexp) => (perp ( down  ( t_ucon uc F)) ) ⊗ (rulesU uc).(ru_lftBody)  F .

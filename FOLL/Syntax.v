@@ -11,27 +11,6 @@ Require Import Coq.Logic.FinFun.
 Export ListNotations.
 Set Implicit Arguments.
 
-(** ** External definitions for the Object Logic (OL)
-The class [OLSig] specifies the external definitions for terms and
-atomic propositions of the object logic. The syntax is parametric on:
-
- - [atm] : type for atomic propositions (judgments at the Object Logic level)
- - [con] : type for syntactic constructors at the OL level
- - [uniform_atm] : predicate ruling out exotic terms at the OL level
- *)
-
-Class OLSig :=
-  {
-    (* Signature for atoms (judgments at the OL level) *)
-    atm:Set; 
-    (* Type for constants (constructors for OL syntax) *)
-    con:Set; 
-    (* predicate ruling out exotic terms for atoms *)
-    uniform_atm : (expr con -> atm) -> Prop
-  }.
-
-
-
 Section LLSyntax.
   Context `{OLS: OLSig}.
   

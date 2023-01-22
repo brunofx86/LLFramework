@@ -18,10 +18,41 @@ Require Export Coq.Sorting.Permutation.
 Require Export Coq.Arith.Arith.
 Require Export Coq.Init.Nat.
 Require Import Lia.
+Require Export  LL.Misc.Hybrid.
 
 Export ListNotations.
 
 Set Implicit Arguments.
+
+(** ** External definitions for the Object Logic (OL)
+The class [OLSig] specifies the external definitions for terms and
+atomic propositions of the object logic. The syntax is parametric on:
+
+ - [atm] : type for atomic propositions (judgments at the Object Logic level)
+ - [con] : type for syntactic constructors at the OL level
+ - [uniform_atm] : predicate ruling out exotic terms at the OL level
+ *)
+
+Class OLSig :=
+  {
+    (* Signature for atoms (judgments at the OL level) *)
+    atm:Set; 
+    (* Type for constants (constructors for OL syntax) *)
+    con:Set; 
+    (* predicate ruling out exotic terms for atoms *)
+    uniform_atm : (expr con -> atm) -> Prop
+  }.
+
+Ltac solveUniform :=
+  auto;
+  repeat 
+    match goal with
+    | [|- uniform _ ] => eauto 10  using uniform_id, uniform_con, uniform_app, proper_uniform, abstr_lambda
+    | [|- uniform_atm _ ] => constructor
+    | [|- proper _ ] => constructor
+    | [|- level _ _ ] => constructor
+    end.
+
 
 Lemma NatComp : forall x y, x >= y + 1 -> S x - y - 2 = x - y - 1.
 Proof with subst;auto. lia.
@@ -550,11 +581,11 @@ End StrongIndPrinciple.
 (** ** Aditional results on Arithmentic *)
 Section Arithmentic.
 
-  Lemma MaxPlus : forall a b, (max a b <= plus a  b).
+  Lemma MaxPlus : forall a b, (Nat.max a b <= plus a  b).
     intros;lia.
   Qed.
   
-  Lemma MaxPlus' : forall a b c, (plus a b <= c -> max a b <= c).
+  Lemma MaxPlus' : forall a b c, (plus a b <= c -> Nat.max a b <= c).
     intros;lia.
   Qed.
   

@@ -1,5 +1,5 @@
 
-Require Export LL.OL.SyntaxResults.
+Require Export LL.SL.FLL.Specifications.OL2FLLResults.
 Require Import LL.SL.FLL.Reasoning.
 Export ListNotations.
 Export LLNotations.
@@ -22,8 +22,8 @@ Definition hasNeg th:= (forall OO: uexp, isOLFormula OO -> th (NEG OO)).
 
 Lemma PosF : forall (th : oo -> Prop) F D M , 
 isOLFormula F -> hasPos th ->
-seq th (D++[(atom (down F))] ) (M) (UP []) -> 
-seq th D ((atom (down F)) :: M) (UP []).
+flls th (D++[(atom (down F))] ) (M) (UP []) -> 
+flls th D ((atom (down F)) :: M) (UP []).
 Proof with sauto.
   intros. 
   TFocus (POS F ). 
@@ -33,8 +33,8 @@ Qed.
 
 Lemma PosFN : forall n (th : oo -> Prop) F D M , 
 isOLFormula F -> hasPos th ->
-seqN th n (D++[(atom (down F))] ) (M) (UP []) -> 
-seqN th (S (S (S (S n)))) D ((atom (down F)) :: M) (UP []).
+flln th n ((atom (down F))::D ) (M) (UP []) -> 
+flln th (S (S (S (S n)))) D ((atom (down F)) :: M) (UP []).
 Proof with sauto.
   intros. 
   TFocus (POS F ). 
@@ -45,8 +45,8 @@ Qed.
 
 Lemma NegF : forall (th : oo -> Prop) F D M, 
 isOLFormula F -> hasNeg th ->
-seq th (D ++ [(atom (up F))]) M (UP []) -> 
-seq th D ((atom (up F)) :: M) (UP []).
+flls th (D ++ [(atom (up F))]) M (UP []) -> 
+flls th D ((atom (up F)) :: M) (UP []).
 Proof with sauto.
   intros. 
   TFocus (NEG F ).
@@ -56,8 +56,8 @@ Qed.
 
 Lemma NegFN : forall n (th : oo -> Prop) F D M , 
 isOLFormula F -> hasNeg th ->
-seqN th n (D++[(atom (up F))] ) (M) (UP []) -> 
-seqN th (S (S (S (S n)))) D ((atom (up F)) :: M) (UP []).
+flln th n ((atom (up F))::D ) (M) (UP []) -> 
+flln th (S (S (S (S n)))) D ((atom (up F)) :: M) (UP []).
 Proof with sauto.
   intros. 
   TFocus (NEG F ). 
@@ -68,8 +68,8 @@ Qed.
 
 Lemma PosSetP L : forall (th : oo -> Prop) D M, 
 isOLFormulaL L -> hasPos th ->
-seq th (LEncode L++D ) M (UP []) -> 
-seq th D (M++LEncode L) (UP []).
+flls th (LEncode L++D ) M (UP []) -> 
+flls th D (M++LEncode L) (UP []).
 Proof with sauto.
   induction L;intros...
   simpl in *...
@@ -86,8 +86,8 @@ Qed.
 
 Lemma NegSetP L : forall (th : oo -> Prop) D M, 
 isOLFormulaL L -> hasNeg th ->
-seq th ((REncode L)++D ) M (UP []) -> 
-seq th D (M++REncode L) (UP []).
+flls th ((REncode L)++D ) M (UP []) -> 
+flls th D (M++REncode L) (UP []).
 Proof with sauto.
   induction L;intros...
   simpl in *...
@@ -106,8 +106,8 @@ Theorem PosNegSetT : forall (th:oo->Prop) D L1 L2,
 isOLFormulaL L1 -> isOLFormulaL L2 ->
 hasNeg th ->
 hasPos th ->
-seq th (D ++  (LEncode L1) ++ (REncode L2)) [] (UP []) ->
-seq th D (LEncode L1++REncode L2) (UP []).
+flls th (D ++  (LEncode L1) ++ (REncode L2)) [] (UP []) ->
+flls th D (LEncode L1++REncode L2) (UP []).
 Proof with sauto.
   intros.
   apply NegSetP...
@@ -119,8 +119,8 @@ Qed.
 Lemma PosNegSetT' : forall (th:oo->Prop) D L1 L2,  
 hasNeg th -> hasPos th ->
 IsPositiveAtomFormulaL L1 -> IsPositiveAtomFormulaL L2 ->
-seq th (L1++L2 ++D) [] (UP []) ->
-seq th D (L1++L2) (UP []).
+flls th (L1++L2 ++D) [] (UP []) ->
+flls th D (L1++L2) (UP []).
 Proof with sauto.
   intros.
   assert(IsPositiveAtomFormulaL L1) by auto.
@@ -160,8 +160,8 @@ Qed.
 Lemma ContractionLinear: forall (th:oo->Prop) D M N,  
 hasPos th -> hasNeg th -> 
 IsPositiveAtomFormulaL N -> 
-seq th D (M++N++N) (UP []) ->
-seq th D (M++N) (UP []).
+flls th D (M++N++N) (UP []) ->
+flls th D (M++N) (UP []).
 Proof with sauto.
   intros.
   assert(IsPositiveAtomFormulaL N) by auto.
@@ -187,8 +187,8 @@ Proof with sauto.
 
 Lemma ContractionLinearPos: forall (th:oo->Prop) D M N,  
 hasPos th -> isOLFormulaL N ->
-seq th D (M++LEncode N++LEncode N) (UP []) ->
-seq th D (M++LEncode N) (UP []).
+flls th D (M++LEncode N++LEncode N) (UP []) ->
+flls th D (M++LEncode N) (UP []).
 Proof with sauto.
   intros.
   apply PosSetP...
@@ -201,8 +201,8 @@ Proof with sauto.
 Lemma WeakeningLinear: forall (th:oo->Prop) D M N,  
 hasPos th -> hasNeg th -> 
 IsPositiveAtomFormulaL N -> 
-seq th D M (UP []) ->
-seq th D (M++N) (UP []).
+flls th D M (UP []) ->
+flls th D (M++N) (UP []).
 Proof with sauto.
   intros.
   assert(IsPositiveAtomFormulaL N) by auto.
@@ -225,8 +225,8 @@ Qed.
 Lemma WeakeningLinearPos: forall (th:oo->Prop) D M N,  
 hasPos th -> 
 isOLFormulaL N -> 
-seq th D M (UP []) ->
-seq th D (M++LEncode N) (UP []).
+flls th D M (UP []) ->
+flls th D (M++LEncode N) (UP []).
 Proof with sauto.
   intros.
   apply PosSetP...
@@ -236,8 +236,8 @@ Qed.
 Lemma LinearToClassic: forall (th:oo->Prop) D L,  
 hasPos th -> hasNeg th -> 
 IsPositiveAtomFormulaL L -> 
-seq th (L++D) [] (UP []) ->
-seq th D (L) (UP []).
+flls th (L++D) [] (UP []) ->
+flls th D (L) (UP []).
 Proof with sauto.
   intros.
   assert(IsPositiveAtomFormulaL L) by auto.
@@ -263,16 +263,16 @@ End OLPOSNEG.
 
 Tactic Notation "PosNeg" := 
   match goal with
-     | [ |- seq _ _  ((atom (up _)) :: _) _ ] =>  eapply NegF;auto
-     | [ |- seq _ _  ((atom (down _)) :: _) _ ] =>  eapply PosF;auto
+     | [ |- flls _ _  ((atom (up _)) :: _) _ ] =>  eapply NegF;auto
+     | [ |- flls _ _  ((atom (down _)) :: _) _ ] =>  eapply PosF;auto
 end.
 
 Tactic Notation "PosNegAll"  := 
   match goal with
-     | [ |- seq _ _ _ _ ] =>  eapply LinearToClassic;auto
+     | [ |- flls _ _ _ _ ] =>  eapply LinearToClassic;auto
 end.
 
 Tactic Notation "PosNegAllE" := 
   match goal with
-     | [ |- seq _ _ _ _ ] =>  eapply PosNegSetT ;auto
+     | [ |- flls _ _ _ _ ] =>  eapply PosNegSetT ;auto
 end.

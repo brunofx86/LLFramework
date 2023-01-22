@@ -13,7 +13,7 @@ Export ListNotations.
 Export LLNotations.
 Set Implicit Arguments.
 
-Ltac solveUniform :=
+(* Ltac solveUniform :=
   auto;
   repeat 
     match goal with
@@ -23,7 +23,7 @@ Ltac solveUniform :=
     | [|- proper _ ] => constructor
     | [|- level _ _ ] => constructor
     end.
-
+ *)
 (** Cleaning irrelevant hypothesis *)
 
 Ltac clearPolarity :=
@@ -154,134 +154,134 @@ Ltac solvePolarity :=
 (** Axioms *)
 
 Tactic Notation "FLLinit1"  := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_init1';auto
-  | [|- seqN _ _ _ _ _] => apply tri_init1;auto
+  | [ |- flls _ _ _ _ ] =>  apply tri_init1';auto
+  | [|- flln _ _ _ _ _] => apply tri_init1;auto
   end.
 
 Tactic Notation "FLLinit2" := match goal with
-  | [ |- seq _ _ _ _ ] =>  eapply @tri_init2';sauto
-  | [|- seqN _ _ _ _ _] => eapply @tri_init2;sauto
+  | [ |- flls _ _ _ _ ] =>  eapply @tri_init2';sauto
+  | [|- flln _ _ _ _ _] => eapply @tri_init2;sauto
   end.
 
 Tactic Notation "FLLone"  := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_one'
-  | [|- seqN _ _ _ _ _] => apply tri_one
+  | [ |- flls _ _ _ _ ] =>  apply tri_one'
+  | [|- flln _ _ _ _ _] => apply tri_one
   end.
 
 Tactic Notation "FLLtop"  := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_top'
-  | [|- seqN _ _ _ _ _] => apply tri_top
+  | [ |- flls _ _ _ _ ] =>  apply tri_top'
+  | [|- flln _ _ _ _ _] => apply tri_top
   end.
 
 (** Additives *)
  
 Tactic Notation "FLLleft" := match goal with
-  | [ |- seq _ _ _ _ ] =>   apply tri_plus1';sauto
-  | [|- seqN _ _ _ _ _] =>  apply tri_plus1;sauto
+  | [ |- flls _ _ _ _ ] =>   apply tri_plus1';sauto
+  | [|- flln _ _ _ _ _] =>  apply tri_plus1;sauto
   end.
 
 Tactic Notation "FLLright" := match goal with
-  | [ |- seq _ _ _ _ ] =>   apply tri_plus2';sauto
-  | [|- seqN _ _ _ _ _] =>  apply tri_plus2;sauto
+  | [ |- flls _ _ _ _ ] =>   apply tri_plus2';sauto
+  | [|- flln _ _ _ _ _] =>  apply tri_plus2;sauto
   end.         
 
 Tactic Notation "FLLwith" := match goal with
-    | [ |- seq _ _ _ _ ] =>  eapply @tri_with';sauto
-    | [|- seqN _ _ _ _ _] => eapply @tri_with;sauto
+    | [ |- flls _ _ _ _ ] =>  eapply @tri_with';sauto
+    | [|- flln _ _ _ _ _] => eapply @tri_with;sauto
 end. 
   
 (** Multiplicatives *)
 
 Tactic Notation "FLLbot"  := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_bot';sauto
-  | [|- seqN _ _ _ _ _] => apply tri_bot;sauto
+  | [ |- flls _ _ _ _ ] =>  apply tri_bot';sauto
+  | [|- flln _ _ _ _ _] => apply tri_bot;sauto
   end.
   
 Tactic Notation "FLLpar" := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_par';sauto
-  | [|- seqN _ _ _ _ _] => apply tri_par;sauto
+  | [ |- flls _ _ _ _ ] =>  apply tri_par';sauto
+  | [|- flln _ _ _ _ _] => apply tri_par;sauto
   end.
 
 Tactic Notation "FLLsplit"  := match goal with
-    | [ |- seq _ _ [] _ ] =>  eapply @tri_tensor' with (M:=nil) (N:=nil);sauto
-    | [|- seqN _ _ _ [] _] => eapply @tri_tensor with (M:=nil) (N:=nil);sauto
+    | [ |- flls _ _ [] _ ] =>  eapply @tri_tensor' with (M:=nil) (N:=nil);sauto
+    | [|- flln _ _ _ [] _] => eapply @tri_tensor with (M:=nil) (N:=nil);sauto
 end.
 
 Tactic Notation "FLLsplit"  constr(Ctx1) constr(Ctx2) := match goal with
-    | [ |- seq _ _ _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2);sauto
-    | [|- seqN _ _ _ _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2);sauto
+    | [ |- flls _ _ _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2);sauto
+    | [|- flln _ _ _ _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2);sauto
 end.
  
 (** Exponentials *)
 
 Tactic Notation "FLLstorec" := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_quest';sauto
-  | [|- seqN _ _ _ _ _] => apply tri_quest;sauto
+  | [ |- flls _ _ _ _ ] =>  apply tri_quest';sauto
+  | [|- flln _ _ _ _ _] => apply tri_quest;sauto
   end.              
 
 Tactic Notation "FLLbang"  := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_bang';sauto
-  | [|- seqN _ _ _ _ _] => apply tri_bang;sauto
+  | [ |- flls _ _ _ _ ] =>  apply tri_bang';sauto
+  | [|- flln _ _ _ _ _] => apply tri_bang;sauto
   end.
                           
 (** Quantifiers *)
   
 Tactic Notation "FLLexists" constr(tt) :=  match goal with
-  | [ |- seq _ _ _ _ ] => eapply @tri_ex' with (t:=tt);try solveUniform;sauto
-  | [|- seqN _ _ _ _ _] => eapply @tri_ex with (t:=tt);try solveUniform;sauto
+  | [ |- flls _ _ _ _ ] => eapply @tri_ex' with (t:=tt);try solveUniform;sauto
+  | [|- flln _ _ _ _ _] => eapply @tri_ex with (t:=tt);try solveUniform;sauto
   end.
 
 Tactic Notation "FLLforall" := match goal with
-  | [ |- seq _ _ _ _ ] => eapply @tri_fx'; intros;sauto
-  | [|- seqN _ _ _ _ _] => eapply @tri_fx; intros;sauto
+  | [ |- flls _ _ _ _ ] => eapply @tri_fx'; intros;sauto
+  | [|- flln _ _ _ _ _] => eapply @tri_fx; intros;sauto
   end.
   
 (** Reaction Rules *) 
 
 Tactic Notation "FLLrelease" := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_rel';[solvePolarity | auto]
-  | [|- seqN _ _ _ _ _] => apply tri_rel;[solvePolarity | auto]
+  | [ |- flls _ _ _ _ ] =>  apply tri_rel';[solvePolarity | auto]
+  | [|- flln _ _ _ _ _] => apply tri_rel;[solvePolarity | auto]
   end.
   
 Tactic Notation "FLLstore" := match goal with
-  | [ |- seq _ _ _ _ ] =>  apply tri_store';[solvePolarity | auto]
-  | [|- seqN _ _ _ _ _] => apply tri_store;[solvePolarity | auto]
+  | [ |- flls _ _ _ _ ] =>  apply tri_store';[solvePolarity | auto]
+  | [|- flln _ _ _ _ _] => apply tri_store;[solvePolarity | auto]
   end.
     
 (** Decision Rules *)  
 
 (* Focusing on a linear formula *)
 Tactic Notation "LFocus" := match goal with
-    | [ |- seq _ _ (?P::?PL) _ ] =>  eapply @tri_dec1' with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
-    | [|- seqN _ _ _ (?P::?PL) _] => eapply @tri_dec1 with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
+    | [ |- flls _ _ (?P::?PL) _ ] =>  eapply @tri_dec1' with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
+    | [|- flln _ _ _ (?P::?PL) _] => eapply @tri_dec1 with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
 end.
                               
 Tactic Notation "LFocus"  constr(R) := match goal with
-    | [ |- seq _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R);[solvePolarity | sauto | sauto ]
-    | [|- seqN _ _ _ _ _] => eapply @tri_dec1 with (F:= R);[solvePolarity | sauto | sauto]
+    | [ |- flls _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R);[solvePolarity | sauto | sauto ]
+    | [|- flln _ _ _ _ _] => eapply @tri_dec1 with (F:= R);[solvePolarity | sauto | sauto]
 end.
 
 
 Tactic Notation "LFocus"  constr(R) constr(T) := match goal with
-    | [ |- seq _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R) (L':=T);[solvePolarity | sauto | sauto ]
-    | [|- seqN _ _ _ _ _] => eapply @tri_dec1 with (F:= R) (L':=T);[solvePolarity | sauto | sauto]
+    | [ |- flls _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R) (L':=T);[solvePolarity | sauto | sauto ]
+    | [|- flln _ _ _ _ _] => eapply @tri_dec1 with (F:= R) (L':=T);[solvePolarity | sauto | sauto]
 end.
 
 (* Focusing on a classical formula *)
 Tactic Notation "CFocus" := match goal with
-    | [ |- seq _ (?P::_) _ _ ] =>  eapply @tri_dec2' with (F:= P);[solvePolarity | sauto | sauto]
-    | [|- seqN _ _ (?P::_) _ _] => eapply @tri_dec2 with (F:= P);[solvePolarity | sauto | sauto ]
+    | [ |- flls _ (?P::_) _ _ ] =>  eapply @tri_dec2' with (F:= P);[solvePolarity | sauto | sauto]
+    | [|- flln _ _ (?P::_) _ _] => eapply @tri_dec2 with (F:= P);[solvePolarity | sauto | sauto ]
 end.
                                                                              
 Tactic Notation "CFocus"  constr(S) := match goal with
-    | [ |- seq _ _ _ _ ] =>  eapply @tri_dec2' with (F:= S);[solvePolarity | sauto | sauto]
-    | [|- seqN _ _ _ _ _] => eapply @tri_dec2 with (F:= S);[solvePolarity | sauto | sauto]
+    | [ |- flls _ _ _ _ ] =>  eapply @tri_dec2' with (F:= S);[solvePolarity | sauto | sauto]
+    | [|- flln _ _ _ _ _] => eapply @tri_dec2 with (F:= S);[solvePolarity | sauto | sauto]
 end.
 
 (* Focusing on a theory *)
 Tactic Notation "TFocus"  constr(S) := match goal with
-    | [ |- seq _ _ _ _ ] =>  eapply @tri_dec3' with (F:= S);[solvePolarity | sauto | sauto]
-    | [|- seqN _ _ _ _ _] => eapply @tri_dec3 with (F:= S);[solvePolarity | sauto | sauto]
+    | [ |- flls _ _ _ _ ] =>  eapply @tri_dec3' with (F:= S);[solvePolarity | sauto | sauto]
+    | [|- flln _ _ _ _ _] => eapply @tri_dec3 with (F:= S);[solvePolarity | sauto | sauto]
 end.
                                                     
 (** This tactic applies as many positive/negative rules as
@@ -290,43 +290,43 @@ end.
 
 Ltac solveAxiom :=
  match goal with 
-  | [ |- seqN _ _ _ [atom ?A] (DW (perp ?A))] => FLLinit1
-  | [ |- seqN _ _ _ [perp ?A; atom ?A] (UP [])] => LFocus;FLLinit1
-  | [ |- seqN _ _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];FLLinit1
+  | [ |- flln _ _ _ [atom ?A] (DW (perp ?A))] => FLLinit1
+  | [ |- flln _ _ _ [perp ?A; atom ?A] (UP [])] => LFocus;FLLinit1
+  | [ |- flln _ _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];FLLinit1
 
-  | [ |- seqN _ _ _ [] (DW (perp ?A))] => FLLinit2
-  | [ |- seqN _ _ (atom ?A::_) [perp ?A] (UP [])] =>  LFocus;FLLinit2
-  | [ |- seqN _ _ (perp ?A::atom ?A::_) [] (UP [])] =>  CFocus;FLLinit2
-  | [ |- seqN _ _ (perp ?A::_) [atom ?A] (UP [])] =>  CFocus;FLLinit1
+  | [ |- flln _ _ _ [] (DW (perp ?A))] => FLLinit2
+  | [ |- flln _ _ (atom ?A::_) [perp ?A] (UP [])] =>  LFocus;FLLinit2
+  | [ |- flln _ _ (perp ?A::atom ?A::_) [] (UP [])] =>  CFocus;FLLinit2
+  | [ |- flln _ _ (perp ?A::_) [atom ?A] (UP [])] =>  CFocus;FLLinit1
 
-  | [ |- seqN _ _ _ [] (DW (One))] => FLLone       
-  | [ |- seqN _ _ _ [One] (UP [])] => LFocus;FLLone
-  | [ |- seqN _ _ (One::_) [] (UP [])] => CFocus;FLLone
+  | [ |- flln _ _ _ [] (DW (One))] => FLLone       
+  | [ |- flln _ _ _ [One] (UP [])] => LFocus;FLLone
+  | [ |- flln _ _ (One::_) [] (UP [])] => CFocus;FLLone
   
-  | [ |- seqN _ _ _ _ (UP [Top])] => FLLtop       
-  | [ |- seqN _ _ (Top::_) _ (UP [])] => CFocus;FLLrelease;FLLtop  
+  | [ |- flln _ _ _ _ (UP [Top])] => FLLtop       
+  | [ |- flln _ _ (Top::_) _ (UP [])] => CFocus;FLLrelease;FLLtop  
   
   | _ => idtac   
 end. 
   
  Ltac solveAxiom' :=
  match goal with 
-  | [ |- seq  _ _ [atom ?A] (DW (perp ?A))] => FLLinit1
-  | [ |- seq  _ _ [perp ?A; atom ?A] (UP [])] => LFocus;FLLinit1
-  | [ |- seq _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];FLLinit1
+  | [ |- flls  _ _ [atom ?A] (DW (perp ?A))] => FLLinit1
+  | [ |- flls  _ _ [perp ?A; atom ?A] (UP [])] => LFocus;FLLinit1
+  | [ |- flls _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];FLLinit1
 
 
-  | [ |- seq _ _ [] (DW (perp ?A))] => FLLinit2
-  | [ |- seq _ (atom ?A::_) [perp ?A] (UP [])] =>  LFocus;FLLinit2
-  | [ |- seq _ (perp ?A::atom ?A::_) [] (UP [])] =>  CFocus;FLLinit2
-  | [ |- seq _ (perp ?A::_) [atom ?A] (UP [])] =>  CFocus;FLLinit1
+  | [ |- flls _ _ [] (DW (perp ?A))] => FLLinit2
+  | [ |- flls _ (atom ?A::_) [perp ?A] (UP [])] =>  LFocus;FLLinit2
+  | [ |- flls _ (perp ?A::atom ?A::_) [] (UP [])] =>  CFocus;FLLinit2
+  | [ |- flls _ (perp ?A::_) [atom ?A] (UP [])] =>  CFocus;FLLinit1
   
-  | [ |- seq _ _ [] (DW (One))] => FLLone       
-  | [ |- seq _ _ [One] (UP [])] => LFocus;FLLone
-  | [ |- seq _ (One::_) [] (UP [])] => CFocus;FLLone
+  | [ |- flls _ _ [] (DW (One))] => FLLone       
+  | [ |- flls _ _ [One] (UP [])] => LFocus;FLLone
+  | [ |- flls _ (One::_) [] (UP [])] => CFocus;FLLone
   
-  | [ |- seq _ _ _ (UP [Top])] => FLLtop       
-  | [ |- seq _ (Top::_) _ (UP [])] => CFocus;FLLrelease;FLLtop  
+  | [ |- flls _ _ _ (UP [Top])] => FLLtop       
+  | [ |- flls _ (Top::_) _ (UP [])] => CFocus;FLLrelease;FLLtop  
   
   | _ => idtac   
 end. 
@@ -335,8 +335,8 @@ Ltac reasoningLL :=
 solveAxiom;
  match goal with 
   (* Change of polarity *)
-  | [H:  negativeFormula ?F |- seqN _ _ _ _ (DW  ?F)] => FLLrelease;reasoningLL
-  | [|- seqN _ _ _ _ (DW ?F)] =>
+  | [H:  negativeFormula ?F |- flln _ _ _ _ (DW  ?F)] => FLLrelease;reasoningLL
+  | [|- flln _ _ _ _ (DW ?F)] =>
       match F with
       | Bot => FLLrelease ;reasoningLL
       | One => FLLone
@@ -357,9 +357,9 @@ solveAxiom;
       end
   
     (* Negative Phase *)
-  | [ H: positiveLFormula ?F |- seqN _ _ _ _ (UP (?F:: _ ))] => FLLstore;auto;reasoningLL
+  | [ H: positiveLFormula ?F |- flln _ _ _ _ (UP (?F:: _ ))] => FLLstore;auto;reasoningLL
   
-  | [|- seqN _ _ _ _ (UP (?F::_))] =>
+  | [|- flln _ _ _ _ (UP (?F::_))] =>
       match F with
       | Bot => FLLbot ;reasoningLL
       | One => FLLstore;reasoningLL
@@ -388,8 +388,8 @@ Ltac reasoningLL' :=
 solveAxiom';
  match goal with
   (* Change of polarity *)
-  | [H:  negativeFormula ?F |- seq _ _ _ (DW  ?F)] => FLLrelease;reasoningLL'
-  | [|- seq _ _ _ (DW ?F)] =>
+  | [H:  negativeFormula ?F |- flls _ _ _ (DW  ?F)] => FLLrelease;reasoningLL'
+  | [|- flls _ _ _ (DW ?F)] =>
       match F with
       | Bot => FLLrelease ;reasoningLL'
       | One => FLLone
@@ -410,9 +410,9 @@ solveAxiom';
       end
   
     (* Negative Phase *)
-  | [ H: positiveLFormula ?F |- seq _ _ _ (UP (?F:: _ ))] => FLLstore;auto;reasoningLL'
+  | [ H: positiveLFormula ?F |- flls _ _ _ (UP (?F:: _ ))] => FLLstore;auto;reasoningLL'
   
-  | [|- seq _ _ _ (UP (?F::_))] =>
+  | [|- flls _ _ _ (UP (?F::_))] =>
       match F with
       | Bot => FLLbot;reasoningLL'
       | One => FLLstore;reasoningLL'
@@ -439,23 +439,23 @@ end.
  
 Ltac solveLL :=
    match goal with
-  | [H: seq _ _ _ (DW Zero) |- _ ] => inversion H;solvePolarity
-  | [H: seqN _ _ _ _ (DW Zero) |- _ ] => inversion H;solvePolarity          
-  | [H: seqN _ 0 _ _ (UP _) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (MAnd _ _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (AOr _ _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (MOr _ _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (AAnd _ _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (Quest _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (Bang _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (Some _)) |- _ ] => inversion H
-  | [H: seqN _ 0 _ _ (DW (All _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW (atom _)) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW Top) |- _ ] => inversion H 
-  | [H: seqN _ 0 _ _ (DW Bot) |- _ ] => inversion H 
+  | [H: flls _ _ _ (DW Zero) |- _ ] => inversion H;solvePolarity
+  | [H: flln _ _ _ _ (DW Zero) |- _ ] => inversion H;solvePolarity          
+  | [H: flln _ 0 _ _ (UP _) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (MAnd _ _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (AOr _ _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (MOr _ _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (AAnd _ _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (Quest _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (Bang _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (Some _)) |- _ ] => inversion H
+  | [H: flln _ 0 _ _ (DW (All _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW (atom _)) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW Top) |- _ ] => inversion H 
+  | [H: flln _ 0 _ _ (DW Bot) |- _ ] => inversion H 
   
-   | [ |- seq _ _ _ _ ] =>  reasoningLL'
-   | [|- seqN _ _ _ _ _] => reasoningLL
+   | [ |- flls _ _ _ _ ] =>  reasoningLL'
+   | [|- flln _ _ _ _ _] => reasoningLL
    | _ => idtac
 
    end;auto.

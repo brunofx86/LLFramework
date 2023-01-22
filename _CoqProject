@@ -35,6 +35,11 @@ FOLL/DyadicExc/CutLElimination.v
 FOLL/DyadicExc/CutCElimination.v
 FOLL/DyadicExc/CutElimination.v
 
+# ===== Object Logics ===== #
+
+OL/Syntax.v
+OL/SyntaxResults.v
+
 # ===== Specification Logics ===== #
 
 # Focused System
@@ -48,6 +53,20 @@ SL/FLL/Reasoning.v
 SL/FLL/InvNegativePhase.v
 SL/FLL/InvPositivePhase.v
 SL/FLL/CutElimination.v
+
+# Focused System as Framework
+
+SL/FLL/Specifications/OL2FLL.v
+SL/FLL/Specifications/OL2FLLResults.v
+SL/FLL/Specifications/StructuralClauses.v
+SL/FLL/Specifications/Bipoles.v
+SL/FLL/Specifications/CutCoherence.v
+SL/FLL/Specifications/Requirement1.v
+SL/FLL/Specifications/Requirement2.v
+SL/FLL/Specifications/OLTheory.v
+SL/FLL/Specifications/Substructural/OLCut.v
+SL/FLL/Specifications/Intuitionistic/OLCut.v
+
 #SL/FLL/IdElimination.v
 #SL/FLL/Examples.v
 
@@ -73,19 +92,4 @@ SL/MMLL/StructuralRules.v
 SL/MMLL/Tactics.v
 SL/MMLL/InvNegativePhase.v
 SL/MMLL/InvPositivePhase.v
-#SL/MMLL/CutElimination.v
-#SL/MMLL/Reasoning.v
-
-# ===== Object Logics ===== #
-
-#OL/Syntax.v
-#OL/SyntaxResults.v
-#OL/StructuralClauses.v
-#OL/Bipoles.v
-#OL/CutCoherence.v
-#OL/Requirement1.v
-#OL/Requirement2.v
-#OL/OLTheory.v
-
-#OL/Substructural/OLCut.v
-#OL/Intuitionistic/OLCutBang.v
+SL/MMLL/CutEliminationUnb.v
