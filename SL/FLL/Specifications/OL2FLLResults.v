@@ -16,7 +16,21 @@ Proof with subst;auto.
   intros.
   inversion H...  
 Qed.  
+
+Lemma  OLFormula2PosUPFormulaL A: isOLFormula A ->IsPositiveAtomFormulaL [atom (up A)]. 
+Proof with subst;auto. 
+  intros.
+  constructor...
+Qed.  
   
+Lemma  OLFormula2PosDWFormulaL A: isOLFormula A ->IsPositiveAtomFormulaL [atom (down A)]. 
+Proof with subst;auto. 
+  intros.
+  constructor...
+Qed.  
+
+
+
 Global Instance perm_IsPositiveAtomFormulaL  :
       Proper (@Permutation oo ==> Basics.impl)
              (IsPositiveAtomFormulaL ).

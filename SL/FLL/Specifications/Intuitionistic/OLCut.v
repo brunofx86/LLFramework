@@ -548,7 +548,7 @@ Definition ctWellFormed2 := proj1 LTWell2.
   Ltac wellConstant2 HSeq :=
     let HS := type of HSeq in
     match HS with
-    | flln ?Rules ?n ?Gamma (atom (up ?H)::?N) (DW (makeLRuleC ?C)) =>
+    | flln ?Rules ?n ?Gamma (atom (up ?H)::LEncode ?N) (DW (makeLRuleC ?C)) =>
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
         generalize (ctWellFormed2 Rules Gamma N H C);intro LTWell';

@@ -329,7 +329,7 @@ Definition wellFormedC' :Prop :=
 
 Definition wellFormedCI :Prop :=
   forall Theory Gamma Delta F (lab: ccon),
-  exists (t: BipoleEnumCte), BiPoleCI Theory Gamma Delta F lab t.
+  exists (t: BipoleEnumCte), BiPoleCI Theory Gamma (LEncode Delta) F lab t.
     
 Definition wellFormedU': Prop :=
   forall Theory Gamma Delta (lab: ucon) (s:Side),
