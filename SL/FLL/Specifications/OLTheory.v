@@ -109,7 +109,17 @@ Proof with sauto.
 lia.
 Qed.
 
+Lemma weakOLTheory n m B L X P: flln (OLTheory P) m B L X -> flls (OLTheoryCut P n) B L X.
+Proof.
+   intros.
+   apply WeakTheory with (theory := OLTheory P). auto using TheoryEmb1.
+   HProof.
+Qed.
+
+
+
 End OLTheory.
 
+Global Hint Resolve weakOLTheory: core.
 Global Hint Resolve CutBaseL CutBaseL' CutBaseR CutBaseR' CutBaseC CutBaseC' CutBaseI CutBaseI': core.
 Global Hint Constructors  buildTheory OLTheoryCut OLTheoryCutI OLTheory : core.
