@@ -63,4 +63,14 @@ Qed.
     eapply CutElimination;auto.
  Qed.
  
+ Theorem CutLL2' C B M N:  
+     LL2  |-- B; C::M -> 
+     LL2 |-- B; (dual C)::N -> 
+     LL2 |-- B; M ++ N.
+ Proof with sauto.
+   intros.
+   apply LL2StoLL2N in H, H0...
+   refine (CutLL2 H H0). 
+ Qed.
+
 End CutElimination.
