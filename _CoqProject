@@ -7,6 +7,19 @@ Misc/Permutations.v
 Misc/UtilsTactics.v
 Misc/UtilsForall.v
 
+# ===== Propositional classical linear logic ===== # 
+
+PLL/Syntax.v
+PLL/Sequent.v
+PLL/PreTactics.v
+PLL/StructuralRules.v
+PLL/Tactics.v
+PLL/Invertibility.v
+PLL/CutLElimination.v
+PLL/CutCElimination.v
+PLL/CutElimination.v
+
+
 # ===== First-order classical linear logic ===== # 
 
 FOLL/Syntax.v
@@ -24,6 +37,8 @@ FOLL/Dyadic/Tactics.v
 FOLL/Dyadic/CutLElimination.v
 FOLL/Dyadic/CutCElimination.v
 FOLL/Dyadic/CutElimination.v
+FOLL/Dyadic/Invertibility.v
+FOLL/Dyadic/InvertibilityUsingCut.v
 
 # Dyadic System with Explicit Exchange
 FOLL/DyadicExc/Sequent.v
@@ -64,11 +79,18 @@ SL/FLL/Specifications/CutCoherence.v
 SL/FLL/Specifications/Requirement1.v
 SL/FLL/Specifications/Requirement2.v
 SL/FLL/Specifications/OLTheory.v
-SL/FLL/Specifications/Substructural/OLCut.v
-SL/FLL/Specifications/Intuitionistic/OLCut.v
 
-#SL/FLL/IdElimination.v
-#SL/FLL/Examples.v
+#SL/FLL/Specifications/Substructural/OLCut.v
+#SL/FLL/Specifications/Substructural/MALL/Bipoles.v
+#SL/FLL/Specifications/Substructural/MALL/Cut.v
+
+SL/FLL/Specifications/Classical/OLCut.v
+SL/FLL/Specifications/Classical/LK/Bipoles.v
+SL/FLL/Specifications/Classical/LK/Cut.v
+
+SL/FLL/Specifications/Intuitionistic/OLCut.v
+SL/FLL/Specifications/Intuitionistic/LJ/Bipoles.v
+SL/FLL/Specifications/Intuitionistic/LJ/Cut.v
 
 # Linear Logic with Subexponentials
 SL/SELLF/Signature.v
@@ -93,3 +115,16 @@ SL/MMLL/Tactics.v
 SL/MMLL/InvNegativePhase.v
 SL/MMLL/InvPositivePhase.v
 SL/MMLL/CutEliminationUnb.v
+SL/MMLL/Reasoning.v
+
+# Multi-modal System as Framework
+
+SL/MMLL/Specifications/OL2MLL.v
+SL/MMLL/Specifications/OL2MLLResults.v
+SL/MMLL/Specifications/StructuralClauses.v
+SL/MMLL/Specifications/Bipoles.v
+SL/MMLL/Specifications/CutCoherence.v
+SL/MMLL/Specifications/Requirement1.v
+#SL/MMLL/Specifications/Requirement2.v
+SL/MMLL/Specifications/OLTheory.v
+SL/MMLL/Specifications/Substructural/OLCut.v

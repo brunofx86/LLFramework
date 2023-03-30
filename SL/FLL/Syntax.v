@@ -8,53 +8,6 @@ Create HintDb LLBase.
 
 Section FLLSyntax.
   Context `{OLS: OLSig}.
-
-  (** Well formedness condition  *)
-  Inductive isFormula: oo -> Prop  :=
-  | wf_atm : forall (P1:atm), isFormula (atom P1)
-  | wf_perp : forall (P1:atm), isFormula (perp P1)
-  | wf_Top : isFormula Top
-  | wf_One : isFormula One
-  | wf_Zero : isFormula Zero
-  | wf_Bot : isFormula Bot
-  | wf_AAnd : forall (A1 A2 :oo), isFormula A1  -> isFormula A2  -> isFormula (AAnd A1 A2)
-  | wf_MAnd : forall (A1 A2 :oo), isFormula A1  -> isFormula A2  -> isFormula (MAnd A1 A2)
-  | wf_AOr : forall (A1 A2 :oo), isFormula A1  -> isFormula A2  -> isFormula (AOr A1 A2)
-  | wf_MOr : forall (A1 A2 :oo), isFormula A1  -> isFormula A2  -> isFormula (MOr A1 A2)
-  | wf_Bang : forall (A1 :oo), isFormula A1 -> isFormula (Bang A1)
-  | wf_Quest : forall (A1 :oo), isFormula A1 -> isFormula (Quest A1)
-  | wf_All : forall (A : expr con -> oo), uniform_oo A -> (forall t: expr con, isFormula (A t)) -> isFormula (All A)
-  | wf_Some : forall (A : expr con -> oo), uniform_oo A -> (forall t: expr con, isFormula (A t)) -> isFormula (Some A).
-  
-  (** Well formendness conditions for lists and arrows *)
-  Definition isFormulaL  (L:list oo)  := Forall isFormula L. 
- 
-  Lemma isFormulaIn F L: 
-      isFormulaL L -> In F L -> isFormula F. 
-  Proof.
-    intros.
-    eapply @ForallIn with (F:=F) in H;auto.
-  Qed.
-
-
-Lemma isFormulaInP F L L': 
-      isFormulaL L -> Permutation L (F::L') -> isFormula F. 
-  Proof.
- intros.
-    eapply @ForallInP with (F:=F) in H;auto.
-  Qed.
- 
- 
-  Generalizable All Variables.
-  Global Instance isFormulaL_morph : 
-    Proper ((@Permutation oo) ==> Basics.impl) (isFormulaL).
-  Proof.
-    unfold Proper; unfold respectful; unfold Basics.impl.
-    intros.
-    unfold isFormulaL.
-    rewrite <- H;auto.
-  Qed.  
-  
   
   (** Arrows for the focused system
       - [UP] : negative phase
