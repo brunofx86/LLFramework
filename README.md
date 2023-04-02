@@ -21,7 +21,7 @@ The directories PLL and FOLL correspond to the specification of Propositional an
 
 * **Monadic**: a single context of formulas represented as a multiset.
 * **Dyadic**: two contexts of formulas, both represented as multisets.
-* c**DyadicExc**: two contexts of formulas: the classical context, represented as a multiset, and the linear context, represented as a list. Due to this difference, there is an explicit rule for exchanging formulas in the linear context.
+* **DyadicExc**: two contexts of formulas: the classical context, represented as a multiset, and the linear context, represented as a list. Due to this difference, there is an explicit rule for exchanging formulas in the linear context.
 
 ## Linear Logic as a Logical Framework 
 
