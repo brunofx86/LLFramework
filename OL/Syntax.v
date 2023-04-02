@@ -125,6 +125,7 @@ Inductive atm' : Set :=
 Inductive uniform_atm' : (uexp -> atm') -> Prop :=
   | uniform_up: forall FX, uniform FX -> uniform_atm' (fun x:uexp => up' (FX x))
   | uniform_down: forall FX, uniform FX -> uniform_atm' (fun x:uexp => down' (FX x)).
+
   
 Global Instance OLSyntaxIns : OLSig := {|
   atm := atm';
@@ -133,9 +134,8 @@ Global Instance OLSyntaxIns : OLSig := {|
 
 Definition up : uexp -> atm := up'.
 Definition down : uexp -> atm := down'.
-
-
 End OLSyntax.
+
 
 Global Hint Constructors isOLTerm isOLAtom isOLConstant isOLFormula : core.
 Global Hint Constructors lengthUexp: core.
