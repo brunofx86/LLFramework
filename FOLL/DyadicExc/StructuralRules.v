@@ -3,6 +3,10 @@ Require Import Coq.Program.Equality.
 
 Set Implicit Arguments.
 
+Export ListNotations.
+Export LLNotations.
+
+Import DyadicExcTactics.
 
 Section LL3BasicTheory.
   Context `{OLS: OLSig}.
@@ -64,10 +68,10 @@ Section LL3BasicTheory.
     induction n using strongind;intros.
     * inversion H...
     * inversion H0...
-      LL3store.
+      LLstore.
       rewrite perm_swap...
-      LL3exist t.
-      LL3copy F0.
+      LLexists t.
+      LLcopy F0.
       firstorder.
       LL3exchangeL M.
    Qed.    
@@ -78,10 +82,10 @@ Section LL3BasicTheory.
       intros.
     revert dependent F.
     induction H;intros...
-    LL3store.
+    LLstore.
     rewrite perm_swap...
-    LL3exist t.
-    LL3copy F.
+    LLexists t.
+    LLcopy F.
     firstorder.
     LL3exchangeL M. 
  Qed.     
@@ -93,11 +97,11 @@ Theorem LL3contractionN  : forall n F CC LC,
   induction n;intros... 
   * inversion H...
   * inversion H...
-    LL3store.
+    LLstore.
     rewrite perm_swap in H2... 
     apply IHn in H2...
-    LL3exist t.
-    LL3copy F0.
+    LLexists t.
+    LLcopy F0.
     inversion H2...
     LL3exchangeL M.
 Qed.
@@ -107,13 +111,13 @@ Theorem LL3contraction  : forall F CC LC,
   Proof with sauto.
   intros.
   dependent induction H generalizing CC...
-  LL3store. 
+  LLstore. 
   apply IHLL3S...
-  LL3exist t.
+  LLexists t.
   apply in_app_or in H...
-  LL3copy F0.
+  LLcopy F0.
   inversion H2...
-  LL3copy F0.
+  LLcopy F0.
   rewrite <- H...
 Qed.
 
@@ -129,8 +133,8 @@ End StructuralProperties.
       induction n;intros ...
       + inversion H ...
       + inversion H;subst; try mgt0;intuition.
-        LL3exist t;eauto;eapply IHn;try lia ...
-        LL3copy F;eauto;eapply IHn;try lia ...
+        LLexists t;eauto;eapply IHn;try lia ...
+        LLcopy F;eauto;eapply IHn;try lia ...
         LL3exchangeL M;eauto;eapply IHn;try lia ...
       Qed.
 

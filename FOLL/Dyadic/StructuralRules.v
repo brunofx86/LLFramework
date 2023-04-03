@@ -3,6 +3,8 @@ Require Export LL.FOLL.Dyadic.PreTactics.
 Require Import Coq.Program.Equality.
 
 Export LLNotations .
+Import DyadicTactics.
+
 Set Implicit Arguments.
 
 
@@ -20,31 +22,31 @@ Proof with sauto.
   induction n using lt_wf_ind; intros...
   inversion H0...
   all: try rewrite PL in H1. 
-  LL2init A.  
-  LL2top M.  
-  LL2plus1 F G M.
+  LLinit A.  
+  LLtop M.  
+  LLleft F G M.
   eapply H with (B1:=B1)...
-  LL2plus2 F G M.
+  LLright F G M.
   eapply H with (B1:=B1)...  
-  LL2with F G M.
+  LLwith F G M.
   eapply H with (B1:=B1)...
   eapply H with (B1:=B1)...    
-  LL2bot M.
+  LLbot M.
   eapply H with (B1:=B1)...                          
-  LL2par F G M.
+  LLpar F G M.
   eapply H with (B1:=B1)...
-  LL2tensor F G M N.
+  LLtensor F G M N.
   eapply H with (B1:=B1)...
   eapply H with (B1:=B1)...
-  LL2store F M.
+  LLstore F M.
   eapply H with (B1:=F::B1)...
-  LL2bang.
+  LLbang.
   eapply H with (B1:=B1)... 
-  LL2exist t FX M.
+  LLexists t FX M.
   eapply H with (B1:=B1)...
-  LL2forall FX M.
+  LLforall FX M.
   eapply H with (B1:=B1)...
-  LL2copy F.
+  LLcopy F.
   rewrite <- PB...
   eapply H with (B1:=B1) (L1:=F::L1)... 
  Qed.
@@ -67,21 +69,21 @@ Proof with sauto.
   revert dependent B2.
   revert dependent L2. 
   induction H;intros L2 PL B2 PB...
-  LL2init A.
+  LLinit A.
   all: try rewrite PL in H.
-  LL2top M.   
-  LL2plus1 F G M.
-  LL2plus2 F G M.
-  LL2with F G M.
-  LL2bot M.
-  LL2par F G M.
-  LL2tensor F G M N.
-  LL2store F M.
-  LL2exist t FX M.
-  LL2forall FX M.
+  LLtop M.   
+  LLleft F G M.
+  LLright F G M.
+  LLwith F G M.
+  LLbot M.
+  LLpar F G M.
+  LLtensor F G M N.
+  LLstore F M.
+  LLexists t FX M.
+  LLforall FX M.
   eapply H2 with (x:=x)...
   rewrite PB in H.
-  LL2copy F.
+  LLcopy F.
  Qed. 
 
 Global Instance LL2S_morphism:
@@ -108,26 +110,26 @@ Lemma LL2NtoLL2S : forall n B L,
   induction n using lt_wf_ind;intros...
   inversion H0...
   all: clear H0. 
-  LL2init A. 
+  LLinit A. 
   all:
   try repeat
     match goal with
     [H1: LL2N _ _ _ |- _] => 
     apply H in H1;sauto
     end.
-   LL2top M. 
-   LL2plus1 F G M.
-   LL2plus2 F G M.
-   LL2with F G M.
-   LL2bot M.
-   LL2par F G M.
-   LL2tensor F G M N.
-   LL2store F M.
-   LL2exist t FX M.
-   LL2forall FX M.
+   LLtop M. 
+   LLleft F G M.
+   LLright F G M.
+   LLwith F G M.
+   LLbot M.
+   LLpar F G M.
+   LLtensor F G M N.
+   LLstore F M.
+   LLexists t FX M.
+   LLforall FX M.
    specialize (H3 x H0).
     apply H in H3...
-   LL2copy F.
+   LLcopy F.
   Qed.    
 
   
@@ -139,19 +141,19 @@ Theorem LL2weakeningN : forall n CC LC F ,
  Proof with sauto.
     induction n using lt_wf_ind;intros.
       inversion H0...
-      LL2init A.
-      LL2top M.
-      LL2plus1 F0 G M.
-      LL2plus2 F0 G M.
-      LL2with F0 G M.
-      LL2bot M.
-      LL2par F0 G M.
-      LL2tensor F0 G M N.
-      LL2store F0 M.
+      LLinit A.
+      LLtop M.
+      LLleft F0 G M.
+      LLright F0 G M.
+      LLwith F0 G M.
+      LLbot M.
+      LLpar F0 G M.
+      LLtensor F0 G M N.
+      LLstore F0 M.
       rewrite perm_swap;auto.
-      LL2exist t FX M.
-      LL2forall FX M.
-      LL2copy F0.
+      LLexists t FX M.
+      LLforall FX M.
+      LLcopy F0.
       firstorder.
   Qed.
 
@@ -162,19 +164,19 @@ Theorem LL2weakening (CC LC : multiset oo) F:
     intros.
     revert dependent F.
     induction H;intros...
-    LL2init A.
-    LL2top M.
-    LL2plus1 F G M.
-    LL2plus2 F G M.
-    LL2with F G M.
-    LL2bot M.
-    LL2par F G M.
-    LL2tensor F G M N.
-    LL2store F M.
+    LLinit A.
+    LLtop M.
+    LLleft F G M.
+    LLright F G M.
+    LLwith F G M.
+    LLbot M.
+    LLpar F G M.
+    LLtensor F G M N.
+    LLstore F M.
     rewrite perm_swap;auto.
-    LL2exist t FX M.
-    LL2forall FX M.
-    LL2copy F.
+    LLexists t FX M.
+    LLforall FX M.
+    LLcopy F.
     firstorder.
  Qed.     
 
@@ -189,7 +191,7 @@ Theorem LL2weakeningGen (CC' CC LC : multiset oo):
     apply LL2weakening...
  Qed.   
 
-Theorem LL2storeGen (CC' CC LC : multiset oo):
+Theorem LLstoreGen (CC' CC LC : multiset oo):
     LL2S (CC'++CC) LC -> LL2S CC (map Quest CC' ++ LC).
    Proof with sauto. 
     intros.
@@ -197,12 +199,12 @@ Theorem LL2storeGen (CC' CC LC : multiset oo):
     revert LC.
     induction CC';intros...
     simpl...
-    LL2store a (map Quest CC' ++ LC).
+    LLstore a (map Quest CC' ++ LC).
     eapply IHCC'. 
     rewrite <- Permutation_middle...
  Qed.   
 
-Theorem LL2copyGen (CC' CC LC : multiset oo):
+Theorem LLcopyGen (CC' CC LC : multiset oo):
    LL2S CC (CC' ++ LC) ->  LL2S (CC'++CC) LC.
    Proof with sauto. 
     intros.
@@ -210,7 +212,7 @@ Theorem LL2copyGen (CC' CC LC : multiset oo):
     revert LC.
     induction CC';intros...
     simpl...
-    LL2copy a...
+    LLcopy a...
     apply LL2weakening...
     eapply IHCC'. 
     rewrite <- Permutation_middle...
@@ -222,20 +224,20 @@ Theorem LL2contractionN  : forall n F CC LC,
   do 2 intro.
   induction n using lt_wf_ind;intros... 
     inversion H0...
-    LL2init A.
-    LL2top M.
-    LL2plus1 F0 G M.
-    LL2plus2 F0 G M.
-    LL2with F0 G M.
-    LL2bot M.
-    LL2par F0 G M.
-    LL2tensor F0 G M N.
-    LL2store F0 M.
+    LLinit A.
+    LLtop M.
+    LLleft F0 G M.
+    LLright F0 G M.
+    LLwith F0 G M.
+    LLbot M.
+    LLpar F0 G M.
+    LLtensor F0 G M N.
+    LLstore F0 M.
     rewrite perm_swap in H3... 
     apply H in H3...
-    LL2exist t FX M.
-    LL2forall FX M.
-    LL2copy F0.
+    LLexists t FX M.
+    LLforall FX M.
+    LLcopy F0.
     inversion H2...
 Qed.
 
@@ -244,65 +246,65 @@ Theorem LL2contraction  : forall F CC LC,
   Proof with sauto.
   intros.
   dependent induction H generalizing CC... 
-    LL2init A.
-    LL2top M.
-    LL2plus1 F0 G M.
-    LL2plus2 F0 G M.
-    LL2with F0 G M.
-    LL2bot M.
-    LL2par F0 G M.
-    LL2tensor F0 G M N.
-    LL2store F0 M.
+    LLinit A.
+    LLtop M.
+    LLleft F0 G M.
+    LLright F0 G M.
+    LLwith F0 G M.
+    LLbot M.
+    LLpar F0 G M.
+    LLtensor F0 G M N.
+    LLstore F0 M.
     apply IHLL2S...
-    LL2exist t FX M.
-    LL2forall FX M.
+    LLexists t FX M.
+    LLforall FX M.
     apply in_app_or in H...
-    LL2copy F0.
+    LLcopy F0.
     inversion H2...
-    LL2copy F0.
+    LLcopy F0.
 Qed.
 
-Theorem LL2initGen : forall B F, isFormula F -> isFormula (dual F) ->  LL2S B [F; dual F].
+Theorem LLinitGen : forall B F, isFormula F -> isFormula (dual F) ->  LL2S B [F; dual F].
 Proof with simpl;sauto.
    induction F;intros isF1 isF2. 
-   1-2: LL2init a.
-   1,3: LL2top [0].
-   1-2: LL2bot ['1].
-   - LL2with F1 F2 [F1 ^ ⊕ F2 ^].
-     LL2plus1 (dual F1) (dual F2) [F1].
+   1-2: LLinit a.
+   1,3: LLtop [0].
+   1-2: LLbot ['1].
+   - LLwith F1 F2 [F1 ^ ⊕ F2 ^].
+     LLleft (dual F1) (dual F2) [F1].
      rewrite perm_takeit_8... inversion isF1... inversion isF2...
-     LL2plus2 (dual F1) (dual F2) [F2]...
+     LLright (dual F1) (dual F2) [F2]...
      rewrite perm_takeit_8... inversion isF1... inversion isF2...
-   - LL2par (dual F1) (dual F2) [F1 ⊗ F2].
-      LL2tensor F1 F2 [dual F1] [dual F2]. 
+   - LLpar (dual F1) (dual F2) [F1 ⊗ F2].
+      LLtensor F1 F2 [dual F1] [dual F2]. 
       1-2: inversion isF1; inversion isF2...  
-   - LL2with (dual F1) (dual F2) [F1 ⊕ F2 ].
-     LL2plus1 F1 F2 [dual F1]. inversion isF1... inversion isF2...
-     LL2plus2 F1 F2 [dual F2]. inversion isF1... inversion isF2...
-   - LL2par F1 F2 [dual F1 ⊗ dual F2].
-      LL2tensor (dual F1) (dual F2) [F1] [F2].
+   - LLwith (dual F1) (dual F2) [F1 ⊕ F2 ].
+     LLleft F1 F2 [dual F1]. inversion isF1... inversion isF2...
+     LLright F1 F2 [dual F2]. inversion isF1... inversion isF2...
+   - LLpar F1 F2 [dual F1 ⊗ dual F2].
+      LLtensor (dual F1) (dual F2) [F1] [F2].
      1-2: rewrite perm_takeit_8...
      1-2: inversion isF1; inversion isF2... 
-   - LL2store (dual F) [! F].
+   - LLstore (dual F) [! F].
      constructor.
-     LL2copy (dual F)...
+     LLcopy (dual F)...
     apply LL2weakening.
      rewrite perm_takeit_8...
     inversion isF1... inversion isF2...
-   - LL2store F [! (dual F)].
+   - LLstore F [! (dual F)].
      constructor.
-     LL2copy F...
+     LLcopy F...
      apply LL2weakening...
      inversion isF1... inversion isF2...
    - inversion isF1... inversion isF2...
-    LL2forall o [∃{ fun x : expr con => (o x) ^}]...
+    LLforall o [∃{ fun x : expr con => (o x) ^}]...
     pose proof (H2 x).
    pose proof (H4 x).
     pose proof (H x H5 H6).
    rewrite perm_takeit_8 in H7...
    eapply ll2_ex' with (t:=x) (FX:=fun x0 : expr con => (o x0) ^) (M:=[o x])...
    - inversion isF1... inversion isF2...
-    LL2forall (fun x : expr con => (o x) ^) [∃{ o}]...
+    LLforall (fun x : expr con => (o x) ^) [∃{ o}]...
     pose proof (H2 x).
    pose proof (H4 x).
     pose proof (H x H5 H6).
@@ -323,32 +325,32 @@ Section GeneralResults.
    - inversion H0...
    - inversion H0...
      inversion H...
-     LL2init A.
-     LL2top M. 
-     LL2plus1 F G M.
+     LLinit A.
+     LLtop M. 
+     LLleft F G M.
      apply IHm in H3... 
-     LL2plus2 F G M.
+     LLright F G M.
      apply IHm in H3... 
-     LL2with F G M.
+     LLwith F G M.
      apply IHm in H3...
      apply IHm in H4...
-     LL2bot M.
+     LLbot M.
      apply IHm in H3... 
-     LL2par F G M.
+     LLpar F G M.
      apply IHm in H3... 
-     LL2tensor F G M N. 
+     LLtensor F G M N. 
      apply IHm in H3...
      apply IHm in H4...
-     LL2store F M.
+     LLstore F M.
      apply IHm in H3... 
-     LL2bang.
+     LLbang.
      apply IHm in H1...
-     LL2exist t FX M.
+     LLexists t FX M.
      apply IHm in H5... 
-     LL2forall FX M.
+     LLforall FX M.
      specialize(H4 x H5).
      apply IHm in H4...
-     LL2copy F.
+     LLcopy F.
      apply IHm in H3...
  Qed.
  

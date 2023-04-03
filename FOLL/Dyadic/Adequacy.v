@@ -176,7 +176,7 @@ Proof with sauto.
            simpl in H0. inversion H0...
            simpl in H0. 
           checkPermutationCases H0. }
-        LL2init A.
+        LLinit A.
         destruct B;
         simpl in H3; inversion H3...
      - destruct B;
@@ -188,7 +188,7 @@ Proof with sauto.
         rewrite H0...
         apply in_map_iff in H1...
         apply InPermutation in H1...
-        LL2top x.
+        LLtop x.
   + inversion H...
      - checkPermutationCases H0.
         { destruct B; simpl in H0;
@@ -197,7 +197,7 @@ Proof with sauto.
            simpl in H0. inversion H0...
            simpl in H0. 
           checkPermutationCases H0. }
-        LL2init A.
+        LLinit A.
         destruct B;
         simpl in H3; inversion H3...
      - destruct B;
@@ -209,7 +209,7 @@ Proof with sauto.
         rewrite H0...
         apply in_map_iff in H1...
         apply InPermutation in H1...
-        LL2top x. 
+        LLtop x. 
        - assert(~ In (F ⊕ G)  (map Quest B) ).
         intro.
         apply in_map_iff in H0...
@@ -222,7 +222,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2plus1 F G x.
+        LLleft F G x.
         eapply IHn.
         rewrite Permutation_midle. 
         rewrite H5...
@@ -238,7 +238,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2plus2 F G x.
+        LLright F G x.
         eapply IHn.
         rewrite Permutation_midle. 
         rewrite H5...
@@ -254,7 +254,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2with F G x.
+        LLwith F G x.
         eapply IHn.
         rewrite !Permutation_midle. 
         rewrite H6...
@@ -273,7 +273,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2bot  x.
+        LLbot  x.
         eapply IHn.
         rewrite H5...
        - assert(~ In (F ⅋ G)  (map Quest B) ).
@@ -288,7 +288,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2par F G x.
+        LLpar F G x.
         eapply IHn.
         rewrite !Permutation_midle. 
         rewrite H5...     
@@ -305,7 +305,7 @@ Proof with sauto.
         rewrite H1 in H0.
         elim H0...
         apply destructMapQuest in H6...
-        LL2tensor F G x2 x3.
+        LLtensor F G x2 x3.
         rewrite H7 in H2.
         rewrite <- Permutation_midle in H2.
         eapply IHn in H2.
@@ -324,7 +324,7 @@ Proof with sauto.
        rewrite H1... 
        apply in_map_iff in H0...
        inversion H4...
-       LL2copy F.
+       LLcopy F.
        apply InPermutation in H0...
        rewrite H0. 
        apply LL2weakening.
@@ -339,8 +339,8 @@ Proof with sauto.
       rewrite <- !Permutation_midle in H2. 
         eapply IHn 
         in H2.
-        LL2store F x.
-        LL2copy F...
+        LLstore F x.
+        LLcopy F...
         apply LL2weakening... 
    - assert(~ In (! F )  (map Quest B) ).
         intro.
@@ -360,8 +360,8 @@ Proof with sauto.
         rewrite H4 in H1.
         rewrite H1.
         rewrite Permutation_cons_append.
-        apply LL2storeGen.
-        LL2bang.
+        apply LLstoreGen.
+        LLbang.
         rewrite Permutation_app_comm.
         rewrite H6...
         - assert(~ In (∃{ FX})  (map Quest B) ).
@@ -376,7 +376,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2exist t FX x.
+        LLexists t FX x.
         eapply IHn.
         rewrite !Permutation_midle. 
         rewrite H7...
@@ -392,7 +392,7 @@ Proof with sauto.
         checkPermutationCases H1.
         rewrite H1 in H0.
         elim H0...
-        LL2forall FX x.
+        LLforall FX x.
         specialize (H3 x0 H5).
         eapply IHn.
         rewrite !Permutation_midle. 
@@ -410,7 +410,7 @@ Proof with sauto.
     apply LL2weakening...
     rewrite <- H3 in H2.
     apply IHn in H2.
-    LL2store F x.
+    LLstore F x.
     apply LL2weakening...
         - checkPermutationCases H1. 
           symmetry in H1.    
@@ -430,7 +430,7 @@ Proof with sauto.
     rewrite !app_comm_cons in H2.
     rewrite <- !map_cons in H2.
     apply IHn in H2.
-    LL2store F x.
+    LLstore F x.
     apply LL2contraction with (F:=F)...
     rewrite Permutation_app_comm...
     Qed.

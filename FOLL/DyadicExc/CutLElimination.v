@@ -1,5 +1,6 @@
 Require Export LL.FOLL.DyadicExc.Tactics.
 
+Import DyadicExcTactics.
 Set Implicit Arguments.
 
 Section CutLElimination.
@@ -20,7 +21,7 @@ Proof with sauto; try dualSimpl.
    solvell3.
    putFirst H0.
    cutLH Ha H0.
-   LL3copy F. 
+   LLcopy F. 
    apply Permutation_vs_cons_inv' in H...
    cutLH Ha H0.
    exact Bot.
@@ -28,7 +29,7 @@ Proof with sauto; try dualSimpl.
  * inversion Hb... 
     putFirst H0.
     cutLH Ha H0.
-    LL3copy F. 
+    LLcopy F. 
     rewrite Permutation_middle...   
     apply Permutation_vs_cons_inv' in H...
     cutLH Ha H0.
@@ -38,7 +39,7 @@ Proof with sauto; try dualSimpl.
     putFirst H4.
     cutLW H2 H4.
     simpl...
-    LL3copy F0.
+    LLcopy F0.
     putFirst H0.   
     cutLH Ha H0.
     rewrite Permutation_middle...
@@ -49,7 +50,7 @@ Proof with sauto; try dualSimpl.
     putFirst H6.
     cutLW H2 H6.
     simpl...
-    LL3copy F0.
+    LLcopy F0.
     putFirst H0.   
     cutLH Ha H0.
     rewrite Permutation_middle...
@@ -63,7 +64,7 @@ Proof with sauto; try dualSimpl.
     putFirst H2.
     cutLW H4 H2.
     simpl...
-    LL3copy F0.
+    LLcopy F0.
     putFirst H0.   
     cutLH Ha H0.
     rewrite Permutation_middle...
@@ -72,7 +73,7 @@ Proof with sauto; try dualSimpl.
     cutLH Ha H0.
  * inversion Hb...
     solvell3.
-    LL3copy F.
+    LLcopy F.
     putFirst H0.   
     cutLH Ha H0.
     rewrite Permutation_middle...
@@ -92,7 +93,7 @@ Proof with sauto; try dualSimpl.
     rewrite app_assoc...
     putFirst H0.   
     cutLH Ha H0.
-    LL3copy F0.
+    LLcopy F0.
     rewrite Permutation_middle...
     apply Permutation_vs_cons_inv' in H...
     cutLH Ha H0. 
@@ -109,7 +110,7 @@ Proof with sauto; try dualSimpl.
     rewrite app_assoc_reverse...
     putFirst H0.   
     cutLH Ha H0.
-    LL3copy F0.
+    LLcopy F0.
     rewrite Permutation_middle...
     apply Permutation_vs_cons_inv' in H...
     cutLH Ha H0. 
@@ -122,7 +123,7 @@ Proof with sauto; try dualSimpl.
     simpl...
     putFirst H0.   
     cutLH Ha H0.
-    LL3copy F0.
+    LLcopy F0.
     apply Permutation_vs_cons_inv' in H...
     cutLH Ha H0. 
     rewrite H3...
@@ -136,7 +137,7 @@ Proof with sauto; try dualSimpl.
    specialize (ComplexityUniformEq H1 H H0);intros...
    putFirst H0.   
    cutLH Ha H0.
-   LL3copy F.
+   LLcopy F.
    rewrite Permutation_middle...
    apply Permutation_vs_cons_inv' in H...
    cutLH Ha H0. 
@@ -151,7 +152,7 @@ Proof with sauto; try dualSimpl.
    specialize (ComplexityUniformEq H3 H H0);intros...
    putFirst H0.   
    cutLH Ha H0.
-   LL3copy F.
+   LLcopy F.
    rewrite Permutation_middle...
    apply Permutation_vs_cons_inv' in H...
    cutLH Ha H0.
@@ -163,7 +164,7 @@ Proof with sauto; try dualSimpl.
    cutLH Hb H0...
    simpl in HCUT...
    rewrite Permutation_app_comm...
-   LL3copy F. 
+   LLcopy F. 
    rewrite Permutation_middle...
  * apply Permutation_vs_cons_inv' in H...
    rewrite (ng_involutive C) in H0.
@@ -179,24 +180,24 @@ Proof with sauto; try dualSimpl.
       solvell3.
    *  rewrite app_comm_cons in H2.
       cutLH Ha H2.
-      LL3plus1.  
+      LLleft.  
       rewrite Permutation_middle...
    *  rewrite app_comm_cons in H2.
       cutLH Ha H2.
-      LL3plus2.  
+      LLright.  
       rewrite Permutation_middle...
    * rewrite app_comm_cons in H3.
      rewrite app_comm_cons in H4.
      cutLH Ha H3.
      cutLH Ha H4.
-     LL3with. 
+     LLwith. 
      LL3exchangeL (M ++ (F :: N) ++ O).
      LL3exchangeL (M ++ (G :: N) ++ O).
    * cutLH Ha H2.
    * rewrite app_comm_cons in H2.
      rewrite app_comm_cons in H2.
      cutLH Ha H2.
-     LL3par. 
+     LLpar. 
      LL3exchangeL (M ++ (F :: G :: N) ++ O).      
     * apply eq_then_Permutation in H0.
       rewrite Permutation_midle in H0.
@@ -206,7 +207,7 @@ Proof with sauto; try dualSimpl.
       apply Permutation_vs_cons_inv' in H0...
       rewrite app_comm_cons in H3.
       cutLH Ha H3.
-      LL3tensor ;try solvell3. 
+      LLtensor ;try solvell3. 
       rewrite H2.
       rewrite Permutation_middle...
       rewrite <- H1.
@@ -214,23 +215,23 @@ Proof with sauto; try dualSimpl.
       apply Permutation_vs_cons_inv' in H0...
       rewrite app_comm_cons in H4.
       cutLH Ha H4.
-      LL3tensor;try solvell3. 
+      LLtensor;try solvell3. 
       rewrite H2.
       LL3exchangeL (M ++ (G :: x0) ++ x1).
    * apply @LL3weakeningN with (F:=F) in Ha.
      cutLH Ha H2.
    * rewrite app_comm_cons in H5.
      cutLH Ha H5.
-     LL3exist t.
+     LLexists t.
      LL3exchangeL (M ++ (FX t :: N) ++ O).
-   * LL3forall.
+   * LLforall.
      apply H4 in H.
      rewrite app_comm_cons in H.
      cutLH Ha H.
      LL3exchangeL (M ++ (FX x :: N) ++ O).
    * do 2 rewrite app_comm_cons in H0.
      cutLH Ha H0.
-     LL3copy F.
+     LLcopy F.
      LL3exchangeL (M ++ (F :: o :: N) ++ O).
    * assert(Permutation  (o :: N ++ C ^ :: O)  (C ^ :: o :: N ++ O)) by perm.
      rewrite H1 in H. clear H1.

@@ -1,9 +1,12 @@
-Require Import LL.FOLL.DyadicExc.Tactics.
 Require Import LL.FOLL.Dyadic.Tactics.
+Require Import LL.FOLL.DyadicExc.Tactics.
+
 
 Section LLAdequacy.
   Context `{OLS: OLSig}.
   
+Import DyadicExcTactics.
+
 Theorem LL2N_to_LL3S n B L : LL2N n B L -> LL3S B L.
 Proof with sauto.
   intros.
@@ -17,9 +20,11 @@ Proof with sauto.
     all: try match goal with
       | H: Permutation ?L _ |- LL3 |-- ?B; ?L => rewrite H;sauto
      end.
-    - LL3exist t.
-    - LL3copy F.        
+    - LLexists t.
+    - LLcopy F.        
  Qed.   
+
+Import DyadicTactics.
 
    Theorem LL3N_to_LL2 n B L : LL3N n B L -> LL2S B L.
 Proof with sauto.
@@ -28,19 +33,19 @@ Proof with sauto.
   revert L.
   induction n;intros...
   + inversion H...
-    LL2init A.
-    LL2top M.
+    LLinit A.
+    LLtop M.
   + inversion H...
-    LL2plus1 F G M.
-    LL2plus2 F G M.
-    LL2with F G M.
-    LL2bot M.
-    LL2par F G M.
-    LL2tensor F G M N.
-    LL2store F M. 
-    LL2exist t FX M.
-    LL2forall FX M.
-    LL2copy F.
+    LLleft F G M.
+    LLright F G M.
+    LLwith F G M.
+    LLbot M.
+    LLpar F G M.
+    LLtensor F G M N.
+    LLstore F M. 
+    LLexists t FX M.
+    LLforall FX M.
+    LLcopy F.
     rewrite <- H1...    
   Qed.  
     

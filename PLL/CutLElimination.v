@@ -37,22 +37,22 @@ Proof with sauto; try dualSimpl.
    - checkPermutationCases H.
    - checkPermutationCases H.
      rewrite H1.
-     LL2top x.
+     LLtop x.
    - checkPermutationCases H.
      rewrite H2.
-     LL2plus1 F G x;try solvell2.
+     LLleft F G x;try solvell2.
      rewrite H in H0.
      putFirst H0 Bot.
      cutH2 H0 Hi...
    - checkPermutationCases H.
      rewrite H2.
-     LL2plus2 F G x;try solvell2.
+     LLright F G x;try solvell2.
      rewrite H in H0.
      putFirst H0 Bot.
      cutH H0 Hi...
    - checkPermutationCases H.
      rewrite H3.
-     LL2with F G x;try solvell2.
+     LLwith F G x;try solvell2.
      rewrite H in H0.
      putFirst H0 Bot.
      cutH H0 Hi...
@@ -63,12 +63,12 @@ Proof with sauto; try dualSimpl.
      rewrite H3.
      solvell2.
      rewrite H2.
-     LL2bot x;try solvell2.
+     LLbot x;try solvell2.
      rewrite H in H0.
      cutH H0 Hi... exact Bot.
    - checkPermutationCases H.
      rewrite H2.
-     LL2par F G x;try solvell2.
+     LLpar F G x;try solvell2.
      rewrite H in H0.
      putFirst H0 Bot.
      cutH H0 Hi...        
@@ -76,19 +76,19 @@ Proof with sauto; try dualSimpl.
      checkPermutationCases H.
      rewrite H3.
      rewrite <- H4.
-     LL2tensor F G x0 N0;try solvell2.
+     LLtensor F G x0 N0;try solvell2.
      rewrite H in H0. 
      putFirst H0 Bot. 
      cutH H0 Hi... 
      rewrite H3.
      rewrite <- H4.
-     LL2tensor F G M x0;try solvell2.
+     LLtensor F G M x0;try solvell2.
      rewrite H in H1.
      putFirst H1 Bot.
      cutH H1 Hi...
    - checkPermutationCases H.
      rewrite H2.
-     LL2store F x;try solvell2.
+     LLstore F x;try solvell2.
      rewrite H in H0.
      assert(LL2 n |-- F::B; Bot::x ->
             LL2 i |-- F::B; [One] ->
@@ -96,7 +96,7 @@ Proof with sauto; try dualSimpl.
      eapply CH...
      rewrite app_nil_r in H1. 
      apply H1...
-   - LL2copy F.
+   - LLcopy F.
      simpl in H0.
      putFirst H0 Bot.
      cutH H0 Hi...
@@ -104,30 +104,30 @@ Proof with sauto; try dualSimpl.
  
    2:{ rewrite H1.
        rewrite <- app_comm_cons...
-       LL2top (x++N). }
+       LLtop (x++N). }
    clear H2.
    inversion Hj...
      + checkPermutationCases H.
      + checkPermutationCases H.
        rewrite H1.
-       LL2top (M++x).
+       LLtop (M++x).
      + checkPermutationCases H.
        rewrite H2.
-       LL2plus1 F G (M++x).
+       LLleft F G (M++x).
        rewrite H in H0...
        putFirst H0 Zero. 
        cutH Hi H0...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H2.
-       LL2plus2 F G (M++x).
+       LLright F G (M++x).
        rewrite H in H0...
        putFirst H0 Zero. 
        cutH Hi H0...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H3.
-       LL2with F G (M++x).
+       LLwith F G (M++x).
        rewrite H in H0.
        putFirst H0 Zero.
        cutH Hi H0...
@@ -138,13 +138,13 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H2.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H0...
        cutH Hi H0...
        exact Zero.
      + checkPermutationCases H.
        rewrite H2. 
-       LL2par F G (M++x).
+       LLpar F G (M++x).
        rewrite H in H0.
        putFirst H0 Zero. 
        cutH Hi H0...
@@ -154,7 +154,7 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H3.
        rewrite <- H4.
-       LL2tensor F G (M++x0) N0;try solvell2.
+       LLtensor F G (M++x0) N0;try solvell2.
        rewrite H in H0...
        putFirst H0 Zero.
        cutH Hi H0...
@@ -162,14 +162,14 @@ Proof with sauto; try dualSimpl.
      
        rewrite H3.
        rewrite <- H4.
-       LL2tensor F G M1 (M++x0);try solvell2.
+       LLtensor F G M1 (M++x0);try solvell2.
        rewrite H in H1...
        putFirst H1 Zero.
        cutH Hi H1...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H2.
-       LL2store F (M++x).
+       LLstore F (M++x).
        rewrite H in H0.
        assert(LL2 i |-- F::B; Top :: M ->
             LL2 n |-- F::B; Top^::x ->
@@ -177,14 +177,14 @@ Proof with sauto; try dualSimpl.
        eapply CH ...
        apply H1...
        apply LL2weakeningN...
-     + LL2copy F.
+     + LLcopy F.
        putFirst H0 (dual Top).
        cutH Hi H0...
        rewrite <- Permutation_midle...
  * checkPermutationCases H...
  
    2:{ rewrite H2.
-       LL2plus1 F G (x++N).
+       LLleft F G (x++N).
        rewrite H in H0.
        putFirst H0 C.
        cutH H0 Hj... }
@@ -194,17 +194,17 @@ Proof with sauto; try dualSimpl.
      + checkPermutationCases H.
      + checkPermutationCases H.
        rewrite H2.
-       LL2top (M++x).   
+       LLtop (M++x).   
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus1 F0 G0 (M++x).
+       LLleft F0 G0 (M++x).
        rewrite H in H1...
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus2 F0 G0 (M++x).
+       LLright F0 G0 (M++x).
        rewrite H in H1...
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -215,7 +215,7 @@ Proof with sauto; try dualSimpl.
        cutW H0 H1...
        simpl...
        rewrite H4.
-       LL2with F0 G0 (M++x).
+       LLwith F0 G0 (M++x).
        rewrite H in H1.
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -226,12 +226,12 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...     
      + checkPermutationCases H.
        rewrite H3.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H1...
        cutH Hi H1...   
      + checkPermutationCases H.
        rewrite H3. 
-       LL2par F0 G0 (M++x).
+       LLpar F0 G0 (M++x).
        rewrite H in H1.
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -241,7 +241,7 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F0 G0 (M++x0) N0;try solvell2.
+       LLtensor F0 G0 (M++x0) N0;try solvell2.
        rewrite H in H1...
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -249,14 +249,14 @@ Proof with sauto; try dualSimpl.
      
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F0 G0 M1 (M++x0);try solvell2.
+       LLtensor F0 G0 M1 (M++x0);try solvell2.
        rewrite H in H2...
        putFirst H2 (F ^ & G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
     + checkPermutationCases H.
        rewrite H3.
-       LL2store F0 (M++x).
+       LLstore F0 (M++x).
        rewrite H in H1.
        assert(LL2 S n |-- F0::B; (F ⊕ G) :: M ->
             LL2 n0 |-- F0::B; (F ⊕ G)^::x ->
@@ -264,14 +264,14 @@ Proof with sauto; try dualSimpl.
        eapply CH...
        apply H2...
        apply LL2weakeningN...
-     + LL2copy F0.
+     + LLcopy F0.
        putFirst H1 (dual (F ⊕ G)).
        cutH Hi H1...
        rewrite <- Permutation_midle...
 * checkPermutationCases H...
  
    2:{ rewrite H2.
-       LL2plus2 F G (x++N).
+       LLright F G (x++N).
        rewrite H in H0.
        putFirst H0 C.
        cutH H0 Hj... }
@@ -281,17 +281,17 @@ Proof with sauto; try dualSimpl.
      + checkPermutationCases H.
      + checkPermutationCases H.
        rewrite H2.
-       LL2top (M++x).   
+       LLtop (M++x).   
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus1 F0 G0 (M++x).
+       LLleft F0 G0 (M++x).
        rewrite H in H1...
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus2 F0 G0 (M++x).
+       LLright F0 G0 (M++x).
        rewrite H in H1...
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -302,7 +302,7 @@ Proof with sauto; try dualSimpl.
        cutW H0 H2...
        simpl...
        rewrite H4.
-       LL2with F0 G0 (M++x).
+       LLwith F0 G0 (M++x).
        rewrite H in H1.
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -313,12 +313,12 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...     
      + checkPermutationCases H.
        rewrite H3.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H1...
        cutH Hi H1...   
      + checkPermutationCases H.
        rewrite H3. 
-       LL2par F0 G0 (M++x).
+       LLpar F0 G0 (M++x).
        rewrite H in H1.
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -328,7 +328,7 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F0 G0 (M++x0) N0;try solvell2.
+       LLtensor F0 G0 (M++x0) N0;try solvell2.
        rewrite H in H1...
        putFirst H1 (F ^ & G ^).
        cutH Hi H1...
@@ -336,14 +336,14 @@ Proof with sauto; try dualSimpl.
      
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F0 G0 M1 (M++x0);try solvell2.
+       LLtensor F0 G0 M1 (M++x0);try solvell2.
        rewrite H in H2...
        putFirst H2 (F ^ & G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
     + checkPermutationCases H.
        rewrite H3.
-       LL2store F0 (M++x).
+       LLstore F0 (M++x).
        rewrite H in H1.
        assert(LL2 S n |-- F0::B; (F ⊕ G) :: M ->
             LL2 n0 |-- F0::B; (F ⊕ G)^::x ->
@@ -351,14 +351,14 @@ Proof with sauto; try dualSimpl.
        eapply CH...
        apply H2...
        apply LL2weakeningN...
-     + LL2copy F0.
+     + LLcopy F0.
        putFirst H1 (dual (F ⊕ G)).
        cutH Hi H1...
        rewrite <- Permutation_midle...
  * checkPermutationCases H...
  
    2:{ rewrite H3.
-       LL2with F G (x++N).
+       LLwith F G (x++N).
        rewrite H in H0.
        putFirst H0 C.
        cutH H0 Hj...
@@ -372,14 +372,14 @@ Proof with sauto; try dualSimpl.
      + checkPermutationCases H.
      + checkPermutationCases H.
        rewrite H3.
-       LL2top (M++x).     
+       LLtop (M++x).     
      + checkPermutationCases H.
        inversion H4...
        cutW H0 H2...
        simpl...
        rewrite H5...
        rewrite H4.
-       LL2plus1 F0 G0 (M++x).
+       LLleft F0 G0 (M++x).
        rewrite H in H2...
        putFirst H2 (F ^ ⊕ G ^).
        cutH Hi H2...
@@ -390,14 +390,14 @@ Proof with sauto; try dualSimpl.
        simpl...
        rewrite H5...
        rewrite H4.
-       LL2plus2 F0 G0 (M++x).
+       LLright F0 G0 (M++x).
        rewrite H in H2...
        putFirst H2 (F ^ ⊕ G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H5.
-       LL2with F0 G0 (M++x).
+       LLwith F0 G0 (M++x).
        rewrite H in H2.
        putFirst H2 (F ^ ⊕ G ^).
        cutH Hi H2...
@@ -408,12 +408,12 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...    
      + checkPermutationCases H.
        rewrite H4.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H2...
        cutH Hi H2...
      + checkPermutationCases H.
        rewrite H4. 
-       LL2par F0 G0 (M++x).
+       LLpar F0 G0 (M++x).
        rewrite H in H2.
        putFirst H2 (F ^ ⊕ G ^).
        cutH Hi H2...
@@ -423,21 +423,21 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H5.
        rewrite <- H6.
-       LL2tensor F0 G0 (M++x0) N0;try solvell2.
+       LLtensor F0 G0 (M++x0) N0;try solvell2.
        rewrite H in H2.
        putFirst H2 (F ^ ⊕ G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
        rewrite H5.
        rewrite <- H6.
-       LL2tensor F0 G0  M1 (M++x0);try solvell2.
+       LLtensor F0 G0  M1 (M++x0);try solvell2.
        rewrite H in H3.
        putFirst H3 (F ^ ⊕ G ^).
        cutH Hi H3...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H4.
-       LL2store F0 (M++x).
+       LLstore F0 (M++x).
        rewrite H in H2.
        assert(LL2 S n |-- F0::B; (F & G) :: M ->
             LL2 n0 |-- F0::B; (F & G)^::x ->
@@ -445,14 +445,14 @@ Proof with sauto; try dualSimpl.
        eapply CH...
        apply H3...
        apply LL2weakeningN...
-     + LL2copy F0.
+     + LLcopy F0.
        putFirst H2 (dual (F & G)).
        cutH Hi H2...
        rewrite <- Permutation_midle...
  * checkPermutationCases H...
    
    2:{ rewrite H2.
-       LL2bot (x++N).
+       LLbot (x++N).
        rewrite H in H0.
        cutH H0 Hj... }
        
@@ -463,24 +463,24 @@ Proof with sauto; try dualSimpl.
      + solvell2.
      + checkPermutationCases H.
        rewrite H2.
-       LL2top (M++x).
+       LLtop (M++x).
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus1 F G (M++x).
+       LLleft F G (M++x).
        rewrite H in H1...
        putFirst H1 One.
        cutH Hi H1...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus2 F G (M++x).
+       LLright F G (M++x).
        rewrite H in H1...
        putFirst H1 One.
        cutH Hi H1...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H4.
-       LL2with F G (M++x).
+       LLwith F G (M++x).
        rewrite H in H1.
        putFirst H1 One.
        cutH Hi H1...
@@ -491,12 +491,12 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...          
      + checkPermutationCases H.
        rewrite H3.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H1...
        cutH Hi H1... exact Bot.
      + checkPermutationCases H.
        rewrite H3. 
-       LL2par F G (M++x).
+       LLpar F G (M++x).
        rewrite H in H1.
        putFirst H1 One.
        cutH Hi H1...
@@ -506,7 +506,7 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F G (M++x0) N0;try solvell2.
+       LLtensor F G (M++x0) N0;try solvell2.
        rewrite H in H1...
        putFirst H1 One.
        cutH Hi H1...
@@ -514,14 +514,14 @@ Proof with sauto; try dualSimpl.
      
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F G M1 (M++x0);try solvell2.
+       LLtensor F G M1 (M++x0);try solvell2.
        rewrite H in H2...
        putFirst H2 One.
        cutH Hi H2...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H3.
-       LL2store F (M++x).
+       LLstore F (M++x).
        rewrite H in H1.
        assert(LL2 S n |-- F::B; Bot :: M ->
             LL2 n0 |-- F::B; Bot^::x ->
@@ -529,7 +529,7 @@ Proof with sauto; try dualSimpl.
        eapply CH...
        apply H2...
        apply LL2weakeningN...
-     + LL2copy F.
+     + LLcopy F.
        putFirst H1 (dual Bot).
        cutH Hi H1...
        rewrite <- Permutation_midle...
@@ -539,24 +539,24 @@ Proof with sauto; try dualSimpl.
      + checkPermutationCases H.
      + checkPermutationCases H.
         rewrite H2.
-        LL2top (M++x).
+        LLtop (M++x).
     + checkPermutationCases H.
         rewrite H4.
-        LL2plus1 F0 G0 (M++x).
+        LLleft F0 G0 (M++x).
         rewrite H in H1...
         putFirst H1 (F ^ ⊗ G ^).
         cutH Hi H1...
        rewrite <- Permutation_midle...
     + checkPermutationCases H.
        rewrite H4.
-       LL2plus2 F0 G0 (M++x).
+       LLright F0 G0 (M++x).
        rewrite H in H1...
        putFirst H1 (F ^ ⊗ G ^).
        cutH Hi H1...
        rewrite <- Permutation_midle...
     + checkPermutationCases H.
        rewrite H5.
-       LL2with F0 G0 (M++x).
+       LLwith F0 G0 (M++x).
        rewrite H in H1.
        putFirst H1 (F ^ ⊗ G ^).
        cutH Hi H1...
@@ -567,12 +567,12 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H4.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H1...
        cutH Hi H1...
      + checkPermutationCases H.
        rewrite H4. 
-       LL2par F0 G0 (M++x).
+       LLpar F0 G0 (M++x).
        rewrite H in H1.
        putFirst H1 (F ^ ⊗ G ^).
        cutH Hi H1...
@@ -600,7 +600,7 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H5.
        rewrite <- H6.
-       LL2tensor F0 G0 (M++x0) N0;try solvell2.
+       LLtensor F0 G0 (M++x0) N0;try solvell2.
        rewrite H in H1...
        putFirst H1 (F ^ ⊗ G ^).
        cutH Hi H1...
@@ -608,14 +608,14 @@ Proof with sauto; try dualSimpl.
      
        rewrite H5.
        rewrite <- H6.
-       LL2tensor F0 G0 M1 (M++x0);try solvell2.
+       LLtensor F0 G0 M1 (M++x0);try solvell2.
        rewrite H in H2...
        putFirst H2 (F ^ ⊗ G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H4.
-       LL2store F0 (M++x).
+       LLstore F0 (M++x).
        rewrite H in H1.
        assert(LL2 S n |-- F0::B; (F ⅋  G) :: M ->
             LL2 n0 |-- F0::B; (F ⅋  G)^::x ->
@@ -623,12 +623,12 @@ Proof with sauto; try dualSimpl.
        eapply CH... 
        apply H2...
        apply LL2weakeningN...
-      + LL2copy F0.
+      + LLcopy F0.
        putFirst H1 (dual (F ⅋ G)).
        cutH Hi H1...
        rewrite <- Permutation_midle...
    -  rewrite H2.
-       LL2par F G (x++N).
+       LLpar F G (x++N).
        rewrite H in H0.
        putFirst H0 C.
        cutH H0 Hj...
@@ -637,24 +637,24 @@ Proof with sauto; try dualSimpl.
      + checkPermutationCases H.
      + checkPermutationCases H.
          rewrite H3.
-         LL2top (M++x).
+         LLtop (M++x).
      + checkPermutationCases H.
        rewrite H5.
-       LL2plus1 F0 G0 (M++x).
+       LLleft F0 G0 (M++x).
        rewrite H in H2...
        putFirst H2 (F ^ ⅋ G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H5.
-       LL2plus2 F0 G0 (M++x).
+       LLright F0 G0 (M++x).
        rewrite H in H2...
        putFirst H2 (F ^ ⅋ G ^).
        cutH Hi H2...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H6.
-       LL2with F0 G0 (M++x).
+       LLwith F0 G0 (M++x).
        rewrite H in H2.
        putFirst H2 (F ^ ⅋ G ^).
        cutH Hi H2...
@@ -666,7 +666,7 @@ Proof with sauto; try dualSimpl.
        rewrite <- Permutation_midle...       
        + checkPermutationCases H.
        rewrite H5.
-       LL2bot (M++x).
+       LLbot (M++x).
        rewrite H in H2...
        cutH Hi H2...
       + checkPermutationCases H.
@@ -690,7 +690,7 @@ Proof with sauto; try dualSimpl.
        apply WCUT...
        
        rewrite H5.
-       LL2par F0 G0 (M++x).
+       LLpar F0 G0 (M++x).
        rewrite H in H2.
        putFirst H2 (F ^ ⅋ G ^).
        cutH Hi H2...
@@ -701,7 +701,7 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H6.
        rewrite <- H7.
-       LL2tensor F0 G0 (M++x0) N1;try solvell2.
+       LLtensor F0 G0 (M++x0) N1;try solvell2.
        rewrite H in H2...
        putFirst H2 (F ^ ⅋ G ^).
        cutH Hi H2...
@@ -709,14 +709,14 @@ Proof with sauto; try dualSimpl.
      
        rewrite H6.
        rewrite <- H7.
-       LL2tensor F0 G0 M1 (M++x0);try solvell2.
+       LLtensor F0 G0 M1 (M++x0);try solvell2.
        rewrite H in H3...
        putFirst H3 (F ^ ⅋ G ^).
        cutH Hi H3...
        rewrite <- Permutation_midle...
      + checkPermutationCases H.
        rewrite H5.
-       LL2store F0 (M++x).
+       LLstore F0 (M++x).
        rewrite H in H2.
        assert(LL2 S n |-- F0::B; (F ⊗ G) :: M ->
             LL2 n0 |-- F0::B; (F ⊗ G)^::x ->
@@ -724,21 +724,21 @@ Proof with sauto; try dualSimpl.
        eapply CH...
        apply H3...
        apply LL2weakeningN...
-     + LL2copy F0.
+     + LLcopy F0.
        putFirst H2 (dual (F ⊗ G)).
        cutH Hi H2...
        rewrite <- Permutation_midle... 
     + checkPermutationCases H.
         rewrite H3.
         rewrite <- H4.
-        LL2tensor F G (N++x0) N0;try solvell2.
+        LLtensor F G (N++x0) N0;try solvell2.
         rewrite H in H0.
         putFirst H0 C.
         cutH H0 Hj...
        rewrite Permutation_app_comm...
        rewrite H3.
        rewrite <- H4...
-       LL2tensor F G M0 (N++x0);try solvell2.
+       LLtensor F G M0 (N++x0);try solvell2.
        rewrite H in H1.
        putFirst H1 C.
        cutH H1 Hj...
@@ -753,7 +753,7 @@ Proof with sauto; try dualSimpl.
      apply H...
     +     
     rewrite H2.
-       LL2store F (x++N).
+       LLstore F (x++N).
        rewrite H in H0.
        apply @LL2weakeningN with (F:=F) in Hj.
        cutH H0 Hj... 
@@ -762,22 +762,22 @@ Proof with sauto; try dualSimpl.
      + checkPermutationCases H.
      + checkPermutationCases H.
          rewrite H1.
-         LL2top x.
+         LLtop x.
     + checkPermutationCases H.
        rewrite H3.
-       LL2plus1 F0 G x.
+       LLleft F0 G x.
        rewrite H in H0...
        putFirst H0 (? F ^).
        cutH Hi H0...
      + checkPermutationCases H.
        rewrite H3.
-       LL2plus2 F0 G x.
+       LLright F0 G x.
        rewrite H in H0...
        putFirst H0 (? F ^).
        cutH Hi H0...
     + checkPermutationCases H.
        rewrite H4.
-       LL2with F0 G x.
+       LLwith F0 G x.
        rewrite H in H0.
        putFirst H0 (? F ^).
        cutH Hi H0...
@@ -786,12 +786,12 @@ Proof with sauto; try dualSimpl.
        cutH Hi H1...         
    + checkPermutationCases H.
        rewrite H3.
-       LL2bot x.
+       LLbot x.
        rewrite H in H0...
        cutH Hi H0...
      + checkPermutationCases H.
        rewrite H3. 
-       LL2par F0 G x.
+       LLpar F0 G x.
        rewrite H in H0.
        putFirst H0 (? F ^).
        cutH Hi H0...
@@ -799,14 +799,14 @@ Proof with sauto; try dualSimpl.
        checkPermutationCases H.
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F0 G x0 N0;try solvell2.
+       LLtensor F0 G x0 N0;try solvell2.
        rewrite H in H0...
        putFirst H0 (? F ^ ).
        cutH Hi H0...
        
        rewrite H4.
        rewrite <- H5.
-       LL2tensor F0 G M x0;try solvell2.
+       LLtensor F0 G M x0;try solvell2.
        rewrite H in H1...
        putFirst H1 (? F ^).
        cutH Hi H1...
@@ -822,15 +822,15 @@ Proof with sauto; try dualSimpl.
        rewrite H4...
        
        rewrite H3.
-       LL2store F0 x.
+       LLstore F0 x.
        rewrite H in H0.
        eapply @LL2weakeningN with (F:=F0) in Hi. 
        cutH Hi H0...
        
-     + LL2copy F0.
+     + LLcopy F0.
        putFirst H0 (dual (! F)).
        cutH Hi H0...
-    *  LL2copy F. 
+    *  LLcopy F. 
        putFirst H0 C.
        cutH H0 Hj...
 Qed. 

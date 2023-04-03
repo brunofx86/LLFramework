@@ -1,6 +1,7 @@
 Require Export LL.FOLL.DyadicExc.StructuralRules.
 
 Export LLNotations.
+Import DyadicExcTactics.
 Set Implicit Arguments.
 
    Global Instance LL3N_morphism {OLS : OLSig} n:

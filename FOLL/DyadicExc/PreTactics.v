@@ -1,75 +1,77 @@
 Require Export LL.FOLL.DyadicExc.Sequent.
 
 
-Export ListNotations.
-Export LLNotations.
-Set Implicit Arguments.
+Module DyadicExcTactics.
 
 (** Axioms *)
 
-Ltac LL3init := match goal with
+Ltac LLinit := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_init'
        | [|- LL3N _ _ _] => eapply @ll3_init end;auto.
  
 
-Ltac LL3top := match goal with
+Ltac LLtop := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_top'
        | [|- LL3N _ _ _] => eapply @ll3_top end;auto.                               
 
 (** Additives *)
 
-Ltac LL3plus1 := match goal with
+Ltac LLleft := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_plus1'
        | [|- LL3N _ _ _] =>  eapply @ll3_plus1 end;auto.
 
-Ltac LL3plus2 := match goal with
+Ltac LLright := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_plus2'
        | [|- LL3N _ _ _] =>  eapply @ll3_plus2 end;auto.
 
-Ltac LL3with := match goal with
+Ltac LLwith := match goal with
        | [ |- LL3S _ _ ] => eapply @ll3_with'
        | [|- LL3N _ _ _] => eapply @ll3_with end;auto.
        
 (** Multiplicatives *)
 
-Ltac LL3bot := match goal with
+Ltac LLbot := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_bot'
        | [|- LL3N _ _ _] => eapply @ll3_bot end;auto.  
        
-Ltac LL3par := match goal with
+Ltac LLpar := match goal with
        | [ |- LL3S _ _ ] => eapply @ll3_par'
        | [|- LL3N _ _ _] => eapply @ll3_par end;auto. 
 
-Ltac LL3tensor := match goal with
+Ltac LLtensor := match goal with
        | [ |- LL3S _ _ ] => eapply @ll3_tensor'
        | [|- LL3N _ _ _] => eapply @ll3_tensor end;auto.
                     
 (** Exponentials *)
 
-Ltac LL3store := match goal with
+Ltac LLstore := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_quest'
        | [|- LL3N _ _ _] => eapply @ll3_quest end;auto.                       
 
-Ltac LL3bang := match goal with
+Ltac LLbang := match goal with
        | [ |- LL3S _ _ ] => eapply ll3_bang'
        | [|- LL3N _ _ _] => eapply ll3_bang end;auto.
        
 (** Quantifiers *)
 
-Ltac LL3exist tt := match goal with
+Ltac LLexists tt := match goal with
        | [ |- LL3S _ _ ] => eapply @ll3_ex' with (t:=tt)
        | [|- LL3N _ _ _] => eapply @ll3_ex with (t:=tt) end;auto.
 
-Ltac LL3forall := match goal with
+Ltac LLforall := match goal with
        | [ |- LL3S _ _ ] => eapply @ll3_fx';intros
        | [|- LL3N _ _ _] => eapply @ll3_fx;intros end;auto.
        
 (** Structurals *)
     
-Ltac LL3copy CF := match goal with
+
+Ltac LLcopy CF := match goal with
        | [ |- LL3S _ _ ] =>  eapply @ll3_abs' with (F:=CF)
        | [|- LL3N _ _ _] => eapply @ll3_abs  with (F:=CF) end;auto.                       
 
 Ltac LL3exchangeL CX := match goal with
        | [ |- LL3S _ _ ] => eapply @ll3_exh' with (M:=CX);try perm
-       | [|- LL3N _ _ _] => eapply @ll3_exh with (M:=CX);try perm end;auto.                        
+       | [|- LL3N _ _ _] => eapply @ll3_exh with (M:=CX);try perm end;auto.      
+
+End DyadicExcTactics.
+                  
