@@ -25,15 +25,16 @@ PLL/CutElimination.v
 FOLL/Syntax.v
 
 # Monadic System
-#FOLL/Monadic/Sequent.v
-#FOLL/Monadic/PreTactics.v
-#FOLL/Monadic/StructuralRules.v
+FOLL/Monadic/Sequent.v
+FOLL/Monadic/PreTactics.v
+FOLL/Monadic/StructuralRules.v
 
 # Dyadic System
 FOLL/Dyadic/Sequent.v
 FOLL/Dyadic/PreTactics.v
 FOLL/Dyadic/StructuralRules.v
 FOLL/Dyadic/Tactics.v
+FOLL/Dyadic/Adequacy.v
 FOLL/Dyadic/CutLElimination.v
 FOLL/Dyadic/CutCElimination.v
 FOLL/Dyadic/CutElimination.v
