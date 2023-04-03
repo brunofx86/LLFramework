@@ -245,7 +245,7 @@ Proof with sauto;try solveLL.
    2:{ inversion H5;CleanContext... 
        rewrite H1.
        rewrite <- app_comm_cons.
-        LFocus. LLRelease.
+        LLfocus1. LLrelease.
         assert(S n0 |--- B; x++ [C]; (UP [F]) ->
                j |--- B; N; (UP [dual C]) ->
                  |-- B; x ++ N; (UP [F])) as Cut.
@@ -264,7 +264,7 @@ Proof with sauto;try solveLL.
               destruct(PositiveOrNegative F0).
               { (* first *) 
               assert(S n0 |--- B; (F0::x0)++[C]; (UP [])).
-              LFocus F0 (x0++[C])...
+              LLfocus1 F0 (x0++[C])...
               rewrite <- H2... LLExact H10.
               rewrite H1.
               rewrite <- app_comm_cons.
@@ -311,7 +311,7 @@ LLPerm(B++[]++[]).
               destruct(PositiveOrNegative G).
               { (* first *) 
               assert(S n0 |--- B; (G::x0)++[C]; (UP [])).
-              LFocus G (x0++[C])...
+              LLfocus1 G (x0++[C])...
               rewrite <- H2... LLExact H14.  
               rewrite H1.
               rewrite <- H3.
@@ -354,7 +354,7 @@ LLPerm(B++[]++[]).
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
-                 LLStore. 
+                 LLstore. 
                 assert((S n0) |--- B; (F0::x) ++ [C]; (UP [ ]) ->
                        j |--- B; N; (UP [dual C]) ->
                          |-- B; (F0::x) ++ N; (UP [ ])) as Cut.
@@ -362,7 +362,7 @@ LLPerm(B++[]++[]).
                 rewrite app_comm_cons...
                 apply Cut...
                  rewrite <- app_comm_cons...
-                 LFocus F0. 
+                 LLfocus1 F0. 
                LLExact H8. }
              {   inversion H8;CleanContext...  
                  rewrite H1.
@@ -378,7 +378,7 @@ LLPerm(B++[]++[]).
        {         rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
-                 LLStore. 
+                 LLstore. 
                 
                 assert((S n0) |--- B; (G::x) ++ [C]; (UP [ ]) ->
                        j |--- B; N; (UP [dual C]) ->
@@ -387,7 +387,7 @@ LLPerm(B++[]++[]).
                 rewrite app_comm_cons...
                 apply Cut...
                  rewrite <- app_comm_cons...
-                 LFocus G. 
+                 LLfocus1 G. 
                LLExact H8. }
              {   inversion H8;CleanContext...  
                  rewrite H1.
@@ -404,7 +404,7 @@ LLPerm(B++[]++[]).
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
-                 LLStore. 
+                 LLstore. 
                 assert((S n0) |--- B; (FX t::x) ++ [C]; (UP [ ]) ->
                        j |--- B; N; (UP [dual C]) ->
                          |-- B; (FX t::x) ++ N; (UP [ ])) as Cut.
@@ -412,7 +412,7 @@ LLPerm(B++[]++[]).
                 rewrite app_comm_cons...
                 apply Cut...
                  rewrite <- app_comm_cons...
-                 LFocus (FX t). 
+                 LLfocus1 (FX t). 
                LLExact H10. }
              {   inversion H10;subst;auto;
                try match goal with 
@@ -457,7 +457,7 @@ LLPerm(B++[]++[]).
                 eapply CH...
                LLPerm((F0 :: x) ++ N)... apply Cut...
                rewrite <- app_comm_cons.
-               LFocus F0. 
+               LLfocus1 F0. 
                LLExact H11. 
                apply Derivation1.
                apply MLLNtoSeq in H15... LLExact H15. }
@@ -496,7 +496,7 @@ LLPerm(B++[]++[]).
                 eapply CH...
                LLPerm((G :: x) ++ N)... apply Cut...
                rewrite <- app_comm_cons.
-               LFocus G. 
+               LLfocus1 G. 
                LLExact H15.  }
             { (* first *) 
                rewrite <- H9.
@@ -526,7 +526,7 @@ LLPerm(B++[]++[]).
                LLPerm( (F0::M) ++ N)...
                apply Cut...
                rewrite <- app_comm_cons.
-               LFocus F0.  }
+               LLfocus1 F0.  }
                 
      {  inversion H9;CleanContext...               
         eapply @InvPlusC with (F:=F0) (G:=G) (i:=i0)...
@@ -547,7 +547,7 @@ LLPerm(B++[]++[]).
                LLPerm( (G::M) ++ N)...
                apply Cut...
                rewrite <- app_comm_cons.
-               LFocus G. }
+               LLfocus1 G. }
                 
      {  inversion H9;CleanContext...               
         eapply @InvPlusCComm with (F:=F0) (G:=G) (i:=i0)...
@@ -570,7 +570,7 @@ LLPerm(B++[]++[]).
         LLPerm((FX t :: M) ++ N)...
         apply Cut...
         rewrite <- app_comm_cons.
-        LFocus (FX t).      }
+        LLfocus1 (FX t).      }
      {  inversion H11;subst;auto;
                try match goal with 
                [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
@@ -619,7 +619,7 @@ LLPerm(B++[]++[]).
                 eapply CH...
                LLPerm((F0 :: x) ++ N)... apply Cut...
                rewrite <- app_comm_cons.
-               LFocus F0. 
+               LLfocus1 F0. 
                LLExact H9. 
                apply Derivation1.
                apply MLLNtoSeq in H13... LLExact H13. }
@@ -658,7 +658,7 @@ LLPerm (B++[]++[]).
                 eapply CH...
                LLPerm((G :: x) ++ N)... apply Cut...
                rewrite <- app_comm_cons.
-               LFocus G. 
+               LLfocus1 G. 
                LLExact H13.  }
             { (* first *) 
                rewrite <- H7.
@@ -688,7 +688,7 @@ LLPerm (B++[]++[]).
                LLPerm( (F0::M) ++ N)...
                apply Cut...
                rewrite <- app_comm_cons.
-               LFocus F0.  }
+               LLfocus1 F0.  }
                 
      {  inversion H7;CleanContext...               
         eapply @InvPlusT with (F:=F0) (G:=G)...
@@ -709,7 +709,7 @@ LLPerm (B++[]++[]).
                LLPerm( (G::M) ++ N)...
                apply Cut...
                rewrite <- app_comm_cons.
-               LFocus G. }
+               LLfocus1 G. }
                 
      {  inversion H7;CleanContext...               
         eapply @InvPlusTComm with (F:=F0) (G:=G)...
@@ -732,7 +732,7 @@ LLPerm (B++[]++[]).
         LLPerm((FX t :: M) ++ N)...
         apply Cut...
         rewrite <- app_comm_cons.
-        LFocus (FX t).      }
+        LLfocus1 (FX t).      }
      {  inversion H9;subst;auto;
                try match goal with 
                [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
@@ -1049,7 +1049,7 @@ Theorem CutDwC a j n w h P F L B:
     inversion Hn...
     * solveLL.
     * checkPermutationCases H5.
-      { LLStore. LFocus (perp A). init2 i x. } 
+      { LLstore. LLfocus1 (perp A). LLinit2 i x. } 
       { inversion H2...
         simpl in Hj.
         apply (InvBangT H1 Hj). } 
@@ -1073,7 +1073,7 @@ Theorem CutDwC a j n w h P F L B:
         simpl... rewrite Hc...
         rewrite Nat.lt_succ_pred with (z:=0%nat)...
        
-      LLStore. rewrite H0.
+      LLstore. rewrite H0.
       rewrite <- (app_nil_l []).  
       LLPerm (B++[]++[]).
         eapply @InvTensor with (B:=B) (C:=[]) (D:=[])...
@@ -1085,7 +1085,7 @@ Theorem CutDwC a j n w h P F L B:
         simpl... rewrite Hc...
         rewrite Nat.lt_succ_pred with (z:=0%nat)...
        
-        LLStore. 
+        LLstore. 
         apply InvPlus...
     *   assert(n0 |--- B ++ [(a, P)]; L; (DW G) ->
              j |--- B; []; (DW  (Bang a (dual P ))) ->
@@ -1095,7 +1095,7 @@ Theorem CutDwC a j n w h P F L B:
         simpl... rewrite Hc...
         rewrite Nat.lt_succ_pred with (z:=0%nat)...
        
-        LLStore. 
+        LLstore. 
         apply InvPlusComm...
     *   assert(Hcut:
               n0 |--- B ++ [(a,P)]; L; (UP [F]) ->
@@ -1119,7 +1119,7 @@ Theorem CutDwC a j n w h P F L B:
         simpl... rewrite Hc...
         rewrite Nat.lt_succ_pred with (z:=0%nat)...
        
-       LLStore.
+       LLstore.
         eapply InvEx with (t:=t)...
     *   
         assert(Hcut:
@@ -1133,9 +1133,9 @@ Theorem CutDwC a j n w h P F L B:
         simpl... rewrite Hc...
         rewrite Nat.lt_succ_pred with (z:=0%nat)...
        
-        LLStore.
-        LFocus (Bang loc F0). 
-    *  LLStore. LFocus (Bang i F0).
+        LLstore.
+        LLfocus1 (Bang loc F0). 
+    *  LLstore. LLfocus1 (Bang i F0).
        createWorld.
        
        eapply @CutK4SubCase with (n:=n0) (j:=j) (P:=P) (a:=a) (w:=w) (B:=B)... 

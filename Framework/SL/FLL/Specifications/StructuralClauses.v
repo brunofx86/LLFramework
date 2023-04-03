@@ -26,9 +26,9 @@ flls th (D++[(atom (down F))] ) (M) (UP []) ->
 flls th D ((atom (down F)) :: M) (UP []).
 Proof with sauto.
   intros. 
-  TFocus (POS F ). 
+  LLtheory (POS F ). 
   inversion H1...
-  FLLsplit [(atom (down F))] M.
+  LLtensor [(atom (down F))] M.
 Qed.    
 
 Lemma PosFN : forall n (th : oo -> Prop) F D M , 
@@ -37,9 +37,9 @@ flln th n ((atom (down F))::D ) (M) (UP []) ->
 flln th (S (S (S (S n)))) D ((atom (down F)) :: M) (UP []).
 Proof with sauto.
   intros. 
-  TFocus (POS F ). 
+  LLtheory (POS F ). 
   inversion H1...
-  FLLsplit [(atom (down F))] M.
+  LLtensor [(atom (down F))] M.
 Qed.    
 
 
@@ -49,9 +49,9 @@ flls th (D ++ [(atom (up F))]) M (UP []) ->
 flls th D ((atom (up F)) :: M) (UP []).
 Proof with sauto.
   intros. 
-  TFocus (NEG F ).
+  LLtheory (NEG F ).
   inversion H1.
-  FLLsplit [(atom (up F))] M.
+  LLtensor [(atom (up F))] M.
 Qed. 
 
 Lemma NegFN : forall n (th : oo -> Prop) F D M , 
@@ -60,9 +60,9 @@ flln th n ((atom (up F))::D ) (M) (UP []) ->
 flln th (S (S (S (S n)))) D ((atom (up F)) :: M) (UP []).
 Proof with sauto.
   intros. 
-  TFocus (NEG F ). 
+  LLtheory (NEG F ). 
   inversion H1...
-  FLLsplit [(atom (up F))] M.
+  LLtensor [(atom (up F))] M.
 Qed.    
 
 
@@ -76,9 +76,9 @@ Proof with sauto.
   inversion H...
   simpl in *...
   
-  TFocus (POS a)...
+  LLtheory (POS a)...
   inversion H1.
-  FLLsplit [(atom (down a))] (M ++ LEncode L)...
+  LLtensor [(atom (down a))] (M ++ LEncode L)...
   solveLL.
   eapply IHL... 
   LLExact H0.
@@ -94,9 +94,9 @@ Proof with sauto.
   inversion H...
   simpl in *...
   
-  TFocus (NEG a)...
+  LLtheory (NEG a)...
   inversion H1.
-  FLLsplit [(atom (up a))] (M ++ REncode L)...
+  LLtensor [(atom (up a))] (M ++ REncode L)...
   solveLL.
   eapply IHL...
   LLExact H0.

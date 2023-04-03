@@ -72,17 +72,17 @@ solveLL;try solve [HProof];
 try
   match goal with
   | [H: flln _ ?n ?B ?L (DW ?F) |- flln _ ?m ?B ?L (DW (?F ⊕ ?G))] =>
-      FLLleft; HProof
+      LLleft; HProof
   | [H: flln _ ?n ?B ?L (DW ?G) |- flln _ ?m ?B ?L (DW (?F ⊕ ?G))] =>
-      FLLright; HProof 
+      LLright; HProof 
   | [H: flln _ ?n ?B ?L (DW ?F) |- flls _ ?B ?L (DW (?F ⊕ ?G))] =>
-      FLLleft; HProof
+      LLleft; HProof
   | [H: flln _ ?n ?B ?L (DW ?G) |- flls _ ?B ?L (DW (?F ⊕ ?G))] =>
-      FLLright; HProof 
+      LLright; HProof 
   | [H: flls _ ?B ?L (DW ?F) |- flls _ ?B ?L (DW (?F ⊕ ?G))] =>
-      FLLleft
+      LLleft
   | [H: flls _ ?B ?L (DW ?G) |- flls _ ?B ?L (DW (?F ⊕ ?G))] =>
-      FLLright       
+      LLright       
  end; try solveLL.
 
 Ltac LLPermH H LI :=

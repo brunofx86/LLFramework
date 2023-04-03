@@ -133,7 +133,7 @@ Section InvNPhase .
     revert dependent M'.
     induction SizeM using strongind;intros ...
     - symmetry in HeqSizeM; apply ComplexityL0 in HeqSizeM ...
-      LLStore.
+      LLstore.
       LLExact H0.
     - destruct M as [ | a]; simpl in HeqSizeM.
       inversion HeqSizeM.
@@ -244,12 +244,12 @@ Section InvNPhase .
   
     rewrite <- app_comm_cons. 
     
-    LLStore.
+    LLstore.
     eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveF; inversion H0;subst;auto.
     
      inversion H0... inversion H3...
    rewrite <- app_comm_cons. 
-    LLForall.
+    LLforall.
     eapply H with (M:= o x :: M) (m:= complexityL (o x ::M));simpl in * ; inversion HeqSizeM; solveF; inversion H0;subst;auto.
 
     
@@ -290,11 +290,11 @@ Section InvNPhase .
     inversion H5... intros. generalize (H2 _ H3);intros Hs;invTri' Hs ;solveF.
     
    inversion H5...
-   LLStore.
+   LLstore.
     eapply H with (M:= M)(m:= complexityL (M));inversion HeqSizeM;subst... intros. generalize (H2 _ H3);intros Hs;invTri' Hs ;solveF.
     inversion H5...
     
-   LLForall.
+   LLforall.
    
     eapply H with (M:=  o x :: M)(m:= complexityL (o x :: M));inversion HeqSizeM;subst...
     generalize (ComplexityUniformEq H4 H3 (proper_VAR con 0%nat));intros... simpl...
@@ -361,7 +361,7 @@ Section InvNPhase .
         ++ destruct Heq;subst.
            inversion H0;subst;try(simpl in Heqw; inversion Heqw; subst;simpl;try(lia)).
            +++  (* top *)
-             LLTop.
+             LLtop.
            +++ (* bottom *)
              eapply IH with (L' :=L') in H7;auto.
              inversion H;subst;auto.
@@ -703,7 +703,7 @@ solveForall.
   induction n using strongind;intros...
   + inversion H...
     apply ListConsApp in H4...
-    LFocus. Print positiveFormula. constructor. 
+    LLfocus1. Print positiveFormula. constructor. 
   + inversion H0... 
     -
     apply ListConsApp in H5...

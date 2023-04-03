@@ -39,7 +39,7 @@ Proof with sauto;solveLL.
              end...
   1-15:eauto.
   LLPerm(F::B)... eauto.
-  TFocus F...
+  LLtheory F...
   2:eauto.
   inversion H4...
   eapply ctn with (m:=m0)... 
@@ -74,10 +74,10 @@ lengthUexp F n -> isOLFormula F ->
 flls (CutRuleN cutR1 n) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
-  TFocus (RCUT F).
+  LLtheory (RCUT F).
   inversion H1.
   eapply ctn with (m:=n)... firstorder. 
-  FLLsplit [⌈ F ⌉^]  [⌊ F ⌋^]  .
+  LLtensor [⌈ F ⌉^]  [⌊ F ⌋^]  .
   all: solveLL.
 Qed. 
 
@@ -95,10 +95,10 @@ lengthUexp F n -> isOLFormula F ->
 flls (CutRuleN cutR1 n) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
-  TFocus (RCUT F).
+  LLtheory (RCUT F).
   inversion H1.
   eapply ctn with (m:=n)... firstorder. 
-  FLLsplit (@nil oo) [⌊ F ⌋^].   
+  LLtensor (@nil oo) [⌊ F ⌋^].   
   all: solveLL.
 Qed. 
 
@@ -163,10 +163,10 @@ lengthUexp F n -> isOLFormula F ->
 flls (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
-  TFocus (RCUTI F).
+  LLtheory (RCUTI F).
   inversion H1.
   eapply ctni with (m:=n)...  
-  FLLsplit (@nil oo) [⌊ F ⌋^].   
+  LLtensor (@nil oo) [⌊ F ⌋^].   
   all: solveLL.
 Qed. 
 
@@ -175,10 +175,10 @@ lengthUexp F m -> isOLFormula F ->
 flls (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
-  TFocus (RCUTI F).
+  LLtheory (RCUTI F).
   inversion H1.
   eapply ctni with (m:=m)...
-  FLLsplit (@nil oo) [⌊ F ⌋^].   
+  LLtensor (@nil oo) [⌊ F ⌋^].   
   all: solveLL.
 Qed. 
 

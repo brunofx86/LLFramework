@@ -36,7 +36,7 @@ Section Absorption.
           destruct H3.
           rewrite H3 in H4;simpl in H4.
           apply Permutation_cons_inv in H4.
-          LLTensor x N B C D.
+          LLtensor x N B C D.
          apply aux_c in H5...
           apply InPermutation in H5...
           rewrite H5 in H9.
@@ -51,7 +51,7 @@ Section Absorption.
         rewrite H3 in H4;simpl in H4.
         rewrite <- perm_takeit_2 in H4.
         apply Permutation_cons_inv in H4.
-        LLTensor M x B C D.
+        LLtensor M x B C D.
         apply aux_c in H5...
           apply InPermutation in H5...
           rewrite H5 in H10.
@@ -63,24 +63,24 @@ Section Absorption.
     + LLSwap. apply H... LLExact H4.  
     + apply H... LLExact H5.  
     +  checkPermutationCases H5.
-      UFocus i F. inversion H3;inversion H4...
+      LLfocus2 i F. inversion H3;inversion H4...
       eapply exchangeLCN with (LC:=L')... 
       rewrite H7 in H6...
       eapply H in H6...
       rewrite H5.
-      LFocus F0.
+      LLfocus1 F0.
     + inversion H7... 
       { apply H in H8...
-        UFocus i0 F0... }
+        LLfocus2 i0 F0... }
       { apply H in H8...
-        UFocus i0 F0... }
+        LLfocus2 i0 F0... }
     + checkPermutationCases H7...    
-      BFocus i0 F0 ((i, F) :: x)... rewrite H7...
+      LLfocus3 i0 F0 ((i, F) :: x)... rewrite H7...
       rewrite H9 in  H8...
     + apply H in H6...
-      TFocus F0.
+      LLtheory F0.
     + apply H in H6...
-      LLExists t.
+      LLexists t.
   Qed.
 
 
@@ -107,7 +107,7 @@ Section Absorption.
           destruct H2.
           rewrite H2 in H3;simpl in H3.
           apply Permutation_cons_inv in H3.
-          LLTensor x N B ((i,F)::C) D.
+          LLtensor x N B ((i,F)::C) D.
            rewrite H4...
           rewrite <- Permutation_middle.
           apply H...
@@ -119,7 +119,7 @@ Section Absorption.
         rewrite H2 in H3;simpl in H3.
         rewrite <- perm_takeit_2 in H3.
         apply Permutation_cons_inv in H3.
-        LLTensor M x B C ((i,F)::D).
+        LLtensor M x B C ((i,F)::D).
            rewrite H4...
           rewrite <- Permutation_middle.
           apply H...
@@ -128,16 +128,16 @@ Section Absorption.
      + LLSwap...    
     + apply H... LLExact H4.    
     +  checkPermutationCases H4. 
-      BFocus i F. inversion H2;inversion H3...
+      LLfocus3 i F. inversion H2;inversion H3...
       rewrite <- H7...
       rewrite H4.
-      LFocus F0.
+      LLfocus1 F0.
       rewrite H6 in H5...
-    + UFocus i0 F0... 
-    + BFocus i0 F0 ((i, F) :: B')...
+    + LLfocus2 i0 F0... 
+    + LLfocus3 i0 F0 ((i, F) :: B')...
         rewrite <- H6...
-    + TFocus F0.
-    + LLExists t.
+    + LLtheory F0.
+    + LLexists t.
   Qed.
 
 
@@ -292,7 +292,7 @@ Section InvPosPhase.
     Theorem AbsorptionPerp :  forall n B M A X , theory (perp A) -> n |--- B; (perp A) ::  M; X -> n |--- B; M; X.
     Proof with solveF.
       induction n;intros ;inversion H0;subst;eauto;clear H0...
-      + (* LLTensor: A+ is in N or in M0 *)
+      + (* LLtensor: A+ is in N or in M0 *)
         assert (In (perp A)  ( M0 ++ N)).
         apply Permutation_in with (l:= (perp A) :: M)...
         apply in_app_or in H0;destruct H0.
@@ -305,7 +305,7 @@ Section InvPosPhase.
           apply Permutation_cons_inv in H2.
           eapply exchangeLCN.
           rewrite H2...
-          LLTensor x N B0 C D.
+          LLtensor x N B0 C D.
         ++ (* A+ in N *)
           apply InPermutation in H0;destruct H0.
           eapply exchangeLCN in H8.
@@ -316,16 +316,16 @@ Section InvPosPhase.
           apply Permutation_cons_app_inv in H2.
           eapply exchangeLCN.
           rewrite H2...
-          LLTensor M0 x B0 C D.
-      + LLStore.
+          LLtensor M0 x B0 C D.
+      + LLstore.
         eapply exchangeLCN with (LC':= perp A :: F:: M) in H3...
         eapply IHn in H3;auto.
       + (*dec1 *)
         checkPermutationCases H3. 
-        TFocus (perp A).
+        LLtheory (perp A).
         rewrite <- H5...
         rewrite H1.
-        LFocus F.
+        LLfocus1 F.
         rewrite H3 in H4...
         apply IHn in H4...
     Qed.
@@ -339,17 +339,17 @@ Section InvPosPhase.
       + inversion H0...
         -  apply ListConsApp in H5...
         - apply ListConsApp in H2...
-          LLBot.
+          LLbot.
           apply IHn with (A:=A)...
         -  apply ListConsApp in H2...
-          LLPar.
+          LLpar.
           apply IHn with (A:=A)...
         - apply ListConsApp in H2...
-          LLWith.
+          LLwith.
           apply IHn with (A:=A)...
           apply IHn with (A:=A)...   
         - apply ListConsApp in H2...
-          LLStoreC.
+          LLstorec.
           apply IHn with (A:=A)...
         - apply ListConsApp in H2...
           CleanContext.
@@ -357,10 +357,10 @@ Section InvPosPhase.
           eapply HeightGeqLEx.
           2:{ exact H6. }
           perm. lia.
-          LLStore.
+          LLstore.
           apply IHn with (A:=A)...
         - apply ListConsApp in H2...
-          LLForall.
+          LLforall.
           apply H6 in H1.
           apply IHn with (A:=A)...
     Qed.      
@@ -409,7 +409,7 @@ Section InvPosPhase.
       unfold RUpTheory. intros B L F M FT FNP FNN HD.
       destruct L.
       + inversion HD...
-        TFocus Top.
+        LLtheory Top.
       + inversion HD ...
     Qed.
 
@@ -427,18 +427,18 @@ Section InvPosPhase.
       + (* L1 is Empty *)
         inversion HD1... 
         ++
-          TFocus Top. 
+          LLtheory Top. 
         ++ 
           apply MLLNtoSeq in H3;auto. 
         ++ 
-          TFocus (MOr F0 G). 
+          LLtheory (MOr F0 G). 
           apply MLLNtoSeq in H3;auto. 
         ++ 
-          TFocus (AAnd F0 G). 
+          LLtheory (AAnd F0 G). 
           apply MLLNtoSeq in H4;auto.
           apply MLLNtoSeq in H5;auto. 
         ++ 
-          TFocus (Quest i F0).
+          LLtheory (Quest i F0).
           apply MLLNtoSeq in H3;auto. 
         ++ 
           assert(RIndTheory n) by ( apply IH;auto).
@@ -446,28 +446,28 @@ Section InvPosPhase.
           inversion H5;subst ...
         * checkPermutationCases H0.
           **
-            TFocus F.
+            LLtheory F.
             apply MLLNtoSeq in H1;auto.
             rewrite <- H6;auto.
           **   
-            LFocus F0 x.
+            LLfocus1 F0 x.
             eapply HDown with (F:= F);auto.
             inversion H4...
             eapply exchangeLCN with (LC:=L')...
         *
-          UFocus i F0. 
+          LLfocus2 i F0. 
           eapply HDown with (F:= F);auto.
             inversion H4...
         *
-          BFocus i F0 B'. 
+          LLfocus3 i F0 B'. 
           eapply HDown with (F:= F);auto.
             inversion H4...
          *
-          TFocus F0 ...
+          LLtheory F0 ...
           eapply HDown with (F:= F);auto.
             inversion H4...
           ++ 
-           TFocus (All FX) ...
+           LLtheory (All FX) ...
             generalize (H5 x);intros.
             apply H in properX .
             apply MLLNtoSeq in properX;auto. 
@@ -498,7 +498,7 @@ Section InvPosPhase.
           assert(n0 |--- B0++C; (F::x); (DW F0)).
           MLLSPerm H0 H6. 
 (*           apply HDown in H... *)
-          LLTensor x N B0 C D.  
+          LLtensor x N B0 C D.  
           apply HDown in H... 
           apply MLLNtoSeq in H10;auto.
         ++
@@ -509,7 +509,7 @@ Section InvPosPhase.
 
           apply HDown in H...
 
-          LLTensor M0 x B0 C D.   
+          LLtensor M0 x B0 C D.   
        
           apply MLLNtoSeq in H6;auto.
       +
@@ -528,7 +528,7 @@ Section InvPosPhase.
         assert(HRI: RIndTheory (S n0)) by ( apply IH;auto).
         destruct HRI as [HUp  HDown] ...
         apply HDown in H6 ...
-        LLExists t.
+        LLexists t.
     Qed.
 
     Theorem InvAuxTheory : forall n, RIndTheory n.
@@ -583,7 +583,7 @@ Section InvPosPhase.
       unfold RUp. intros i B L F M U MT FB HD.
       destruct L.
       + inversion HD...
-        UFocus i Top.
+        LLfocus2 i Top.
       + inversion HD ...
     Qed.
 
@@ -600,18 +600,18 @@ Section InvPosPhase.
       + (* L1 is Empty *)
         inversion HD... 
         ++
-        UFocus i Top.
+        LLfocus2 i Top.
         ++ 
           apply MLLNtoSeq in H3;auto. 
         ++
-        UFocus i (MOr F0 G).
+        LLfocus2 i (MOr F0 G).
         apply MLLNtoSeq in H3;auto.
         ++ 
-          UFocus i (AAnd F0 G). 
+          LLfocus2 i (AAnd F0 G). 
           apply MLLNtoSeq in H4;auto.
           apply MLLNtoSeq in H5;auto. 
         ++ 
-          UFocus i (Quest i0 F0). 
+          LLfocus2 i (Quest i0 F0). 
           apply MLLNtoSeq in H3;auto. 
         ++ 
           assert(RInd n) by ( apply IH;auto).
@@ -622,27 +622,27 @@ Section InvPosPhase.
           **
             apply MLLNtoSeq in H1;auto.
             rewrite <- H6;auto.
-            UFocus i F.
+            LLfocus2 i F.
             inversion H;inversion H0;sauto.
           **    
-            LFocus F0 x. 
+            LLfocus1 F0 x. 
             eapply HDown with (F:= F) (i:=i);auto.
             
             eapply exchangeLCN with (LC:=F :: x)...
             MLLSPerm H3 H1...
         *
-          UFocus i0 F0.
+          LLfocus2 i0 F0.
             eapply HDown with (F:= F) (i:=i);auto.
             
         * rewrite <- H2 in FB;sauto.
           inversion FB...
-          BFocus i0 F0 B'.
+          LLfocus3 i0 F0 B'.
           eapply HDown with (F:= F) (i:=i);auto.
         *
-          TFocus F0. 
+          LLtheory F0. 
           eapply HDown with (F:= F) (i:=i);auto.
           ++ 
-            UFocus i (All FX).
+            LLfocus2 i (All FX).
             solveLL. generalize (H5 x);intro.
             apply H in properX.
             apply MLLNtoSeq in properX;auto. 
@@ -676,7 +676,7 @@ Section InvPosPhase.
           MLLSPerm H0 H6.
 
           eapply HDown in H...
-          LLTensor x0 N B0 C D.  
+          LLtensor x0 N B0 C D.  
          
           apply MLLNtoSeq in H10;auto.
           exact U. auto.
@@ -690,7 +690,7 @@ Section InvPosPhase.
           MLLSPerm H0 H10.
 
           eapply HDown in H...
-          LLTensor M0 x0 B0 C D.  
+          LLtensor M0 x0 B0 C D.  
    
           apply MLLNtoSeq in H6;auto.
           exact U. auto.
@@ -717,7 +717,7 @@ Section InvPosPhase.
         assert(HRI: RInd (S n0)) by ( apply IH;auto).
         destruct HRI as [HUp  HDown] ...
         eapply HDown in H6 ...
-        LLExists t.
+        LLexists t.
         exact U. auto. auto.
     Qed.
 
@@ -820,7 +820,7 @@ Section AbsorptionLinear.
       unfold RLUp. intros i B B' L F M ML MT FB HD.
       destruct L.
       + inversion HD...
-        BFocus i Top B'. 
+        LLfocus3 i Top B'. 
       + inversion HD ...
     Qed.
 
@@ -839,19 +839,19 @@ Section AbsorptionLinear.
       + (* L1 is Empty *)
         inversion HD... 
         ++
-        BFocus i Top B'.
+        LLfocus3 i Top B'.
         ++
-           BFocus i Bot B'.
+           LLfocus3 i Bot B'.
           apply MLLNtoSeq in H3;auto. 
         ++
-        BFocus i (MOr F0 G) B'.
+        LLfocus3 i (MOr F0 G) B'.
         apply MLLNtoSeq in H3;auto.
         ++ 
-          BFocus i (AAnd F0 G) B'. 
+          LLfocus3 i (AAnd F0 G) B'. 
           apply MLLNtoSeq in H4;auto.
           apply MLLNtoSeq in H5;auto. 
         ++ 
-          BFocus i (Quest i0 F0) B'. 
+          LLfocus3 i (Quest i0 F0) B'. 
           apply MLLNtoSeq in H3;auto. 
         ++ 
           assert(RLInd n) by ( apply IH;auto).
@@ -860,18 +860,18 @@ Section AbsorptionLinear.
         * 
          checkPermutationCases H0.
           **
-            BFocus i F B'.
+            LLfocus3 i F B'.
             inversion H0... 
             apply MLLNtoSeq in H1;auto.
             rewrite <- H6;auto.
           **    
-            LFocus F0 x. 
+            LLfocus1 F0 x. 
             eapply HDown with (F:= F) (i:=i) (B':=B') ;auto.
             
             eapply exchangeLCN with (LC:=F :: x)...
             MLLSPerm H3 H1...
         *
-           UFocus i0 F0.
+           LLfocus2 i0 F0.
            rewrite <- FB...  
             eapply HDown with (F:= F) (i:=i) (B':=B');auto.
         *
@@ -879,13 +879,13 @@ Section AbsorptionLinear.
            rewrite  <- FB.
            eapply exchangeCC' with (CC:=(i0, F0) :: (i, F) :: B'0).
            perm.
-           BFocus i0 F0 ( (i, F) :: B'0).
+           LLfocus3 i0 F0 ( (i, F) :: B'0).
            eapply HDown with (F:= F) (i:=i);auto.
         *
-          TFocus F0. 
+          LLtheory F0. 
           eapply HDown with (F:= F) (i:=i) (B':=B');auto.
           ++ 
-            BFocus i (All FX) B'.
+            LLfocus3 i (All FX) B'.
             solveLL. 
             generalize (H5 x);intro.
             apply H in properX.
@@ -924,7 +924,7 @@ Section AbsorptionLinear.
            
           assert(|-- (i, F) :: B0++C; x; (DW F0)). 
           eapply HDown with (i:=i) (F:=F) (B':=B0++C)...
-          LLTensor x N B0 ((i, F) :: C) D.
+          LLtensor x N B0 ((i, F) :: C) D.
           rewrite <- FB, H2.
           simpl... 
           LLExact H7.   
@@ -937,7 +937,7 @@ Section AbsorptionLinear.
           assert(|-- (i, F) :: B0++D; x; (DW G)). 
           eapply HDown with (i:=i) (F:=F) (B':=B0++D)...
          
-          LLTensor M0 x B0 C ((i, F) :: D).
+          LLtensor M0 x B0 C ((i, F) :: D).
           rewrite <- FB, H2...
           apply MLLNtoSeq in H6;auto.
          LLExact H7.
@@ -946,14 +946,14 @@ Section AbsorptionLinear.
         destruct HRI as [HUp  HDown] ...
         assert(|-- (i, F) :: B'; M; (DW F0)). 
         eapply HDown with (i:=i) (F:=F) (B':=B')...
-        LLPlusL.
+        LLleft.
         rewrite <- FB...
       +
         assert(HRI: RLInd (S n0)) by (apply IH ; auto).
         destruct HRI as [HUp  HDown] ...
         assert(|-- (i, F) :: B'; M; (DW G)). 
         eapply HDown with (i:=i) (F:=F) (B':=B')...
-        LLPlusR.
+        LLright.
         rewrite <- FB...
       + eapply UpExtension in H5...
         assert(HRI: RLInd x)  by (apply IH ;auto).
@@ -966,7 +966,7 @@ Section AbsorptionLinear.
         destruct HRI as [HUp  HDown] ...
         assert(|-- (i, F) :: B'; M; (DW (FX t))).
         eapply HDown with (i:=i) (F:=F)...
-        LLExists t.
+        LLexists t.
         rewrite <- FB... 
     Qed.
 
@@ -1059,10 +1059,10 @@ Section AbsorptionLinear.
       intros.
       destruct L.
       + inversion H1...
-        LFocus (Some FX) M ...
-        LLExists t.  
+        LLfocus1 (Some FX) M ...
+        LLexists t.  
           rewrite <- H6.
-          LLRelease... 
+          LLrelease... 
       + inversion H1...
     Qed.
 
@@ -1077,30 +1077,30 @@ Section AbsorptionLinear.
       + (* L1 is Empty *)
         inversion HD1... 
         ++
-        LFocus (Some FX) M1...
-        LLExists t.  
+        LLfocus1 (Some FX) M1...
+        LLexists t.  
           rewrite <- H3.
-         LLRelease...
-        ++ LFocus (Some FX) M1...
-           LLExists t.  
+         LLrelease...
+        ++ LLfocus1 (Some FX) M1...
+           LLexists t.  
            rewrite <- H0.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H3;auto. 
-        ++ LFocus (Some FX) M1...
-           LLExists t.  
+        ++ LLfocus1 (Some FX) M1...
+           LLexists t.  
            rewrite <- H0.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H3;auto. 
-        ++ LFocus (Some FX) M1...
-           LLExists t.  
+        ++ LLfocus1 (Some FX) M1...
+           LLexists t.  
            rewrite <- H0.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H4;auto. 
            apply MLLNtoSeq in H5;auto.
-        ++ LFocus (Some FX) M1...
-           LLExists t.  
+        ++ LLfocus1 (Some FX) M1...
+           LLexists t.  
            rewrite <- H0.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H3;auto. 
         ++ 
           assert(RIndExists n) by ( apply IH;auto).
@@ -1109,26 +1109,26 @@ Section AbsorptionLinear.
         * 
           checkPermutationCases H0. 
           
-          LFocus (Some FX) M1...
-          LLExists t.  
+          LLfocus1 (Some FX) M1...
+          LLexists t.  
           rewrite <- H6.
           apply MLLNtoSeq in H1;auto.
           
           destruct (NotAsynchronousPosAtoms H4).
           2:{
           inversion H2...
-            LFocus (Some FX) M1... 
-            LLExists t.
+            LLfocus1 (Some FX) M1... 
+            LLexists t.
              rewrite <- H7.
              rewrite <- H7 in H5.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H5;auto.
           }
           assert( n0 |--- B; (FX t)::x; (DW F)).
           MLLSPerm H3 H1.
 
           apply HDown in H6...
-          LFocus F ((Some FX)::x) ...
+          LLfocus1 F ((Some FX)::x) ...
           rewrite H0...
           inversion H7...
           
@@ -1137,45 +1137,45 @@ Section AbsorptionLinear.
           destruct (NotAsynchronousPosAtoms H4).
           2:{
           inversion H6...
-            LFocus (Some FX) M1... 
-            LLExists t.
+            LLfocus1 (Some FX) M1... 
+            LLexists t.
              rewrite <- H8.
              rewrite <- H8 in H5.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H5;auto. }
           eapply HDown in H3...
-          UFocus i F.
+          LLfocus2 i F.
           eauto. 
         *
           destruct (NotAsynchronousPosAtoms H4).
           2:{
           inversion H6...
-            LFocus (Some FX) M1... 
-            LLExists t.
+            LLfocus1 (Some FX) M1... 
+            LLexists t.
              rewrite <- H8.
              rewrite <- H8 in H5.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H5;auto.
           }
           apply HDown in H3 ...
-          BFocus i F B'.
+          LLfocus3 i F B'.
           eauto.
          *
           destruct (NotAsynchronousPosAtoms H4).
           2:{
           inversion H2...
-            LFocus (Some FX) M1... 
-            LLExists t.
+            LLfocus1 (Some FX) M1... 
+            LLexists t.
              rewrite <- H6.
              rewrite <- H6 in H5.
-           LLRelease...
+           LLrelease...
            apply MLLNtoSeq in H5;auto.
           }
           apply HDown in H1 ...
-          TFocus F. eauto.
+          LLtheory F. eauto.
         ++ 
-            LFocus (Some FX) M1... 
-            LLExists t.
+            LLfocus1 (Some FX) M1... 
+            LLexists t.
             rewrite <- H0...
             generalize(H5 x properX);intro.
             apply MLLNtoSeq in H;auto.
@@ -1212,7 +1212,7 @@ Section AbsorptionLinear.
           auto using le_n_S.
           destruct HRI as [HUp  HDown] ...
           apply HDown in H6 ...
-          LLTensor (Some FX::x ) N B0 C D.
+          LLtensor (Some FX::x ) N B0 C D.
           rewrite <- H1...
           apply MLLNtoSeq in H10;auto.
         ++ 
@@ -1222,7 +1222,7 @@ Section AbsorptionLinear.
           auto using le_n_S.
           destruct HRI as [HUp  HDown] ...
           apply HDown in H10 ...
-          LLTensor M0 (Some FX::x) B0 C D.
+          LLtensor M0 (Some FX::x) B0 C D.
           rewrite <- H1...
           apply MLLNtoSeq in H6;auto.
       +                   
@@ -1245,7 +1245,7 @@ Section AbsorptionLinear.
           auto using le_n_S.
           destruct HRI as [HUp  HDown] ...
           apply HDown in H6...
-          LLExists t0.
+          LLexists t0.
     Qed.
 
     Theorem InvExAux : forall n, RIndExists n.
@@ -1341,7 +1341,7 @@ Section AbsorptionLinear.
       intros B L M F G HD.
       destruct L.
       + inversion HD;subst...
-        LFocus (AOr Top G) M...
+        LLfocus1 (AOr Top G) M...
       + inversion HD...
     Qed.
 
@@ -1357,23 +1357,23 @@ Section AbsorptionLinear.
       + (* L1 is Empty *)
         inversion HD1;subst ...
         ++
-          LFocus (AOr Top G). 
+          LLfocus1 (AOr Top G). 
         ++ 
-          LFocus (AOr Bot G). 
-          LLPlusL.
+          LLfocus1 (AOr Bot G). 
+          LLleft.
           apply MLLNtoSeq in H3;auto.
         ++
-          LFocus (AOr (MOr F0 G0) G). 
-          LLPlusL.
+          LLfocus1 (AOr (MOr F0 G0) G). 
+          LLleft.
           apply MLLNtoSeq in H3;auto.
         ++ 
-          LFocus (AOr (AAnd F0 G0) G). 
-          LLPlusL.
+          LLfocus1 (AOr (AAnd F0 G0) G). 
+          LLleft.
           apply MLLNtoSeq in H4;auto.
           apply MLLNtoSeq in H5;auto.
         ++
-          LFocus (AOr (Quest i F0) G). 
-          LLPlusL.
+          LLfocus1 (AOr (Quest i F0) G). 
+          LLleft.
           apply MLLNtoSeq in H3;auto.
         ++ 
           assert(RIndPlus n) by ( apply IH;auto).
@@ -1381,58 +1381,58 @@ Section AbsorptionLinear.
           inversion H5;subst ...
         *  
           checkPermutationCases H0. 
-          LFocus (AOr F G) M1...
-          LLPlusL.
+          LLfocus1 (AOr F G) M1...
+          LLleft.
           rewrite <- H6.
           apply MLLNtoSeq in H1;auto.
 
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus (AOr F G) M1...
-            LLPlusL.
+            LLfocus1 (AOr F G) M1...
+            LLleft.
             inversion H2...
             apply MLLNtoSeq in H5;auto.
           }
           assert(n0 |--- B; (F::x); (DW F0)).
           MLLSPerm H3 H1.
-          LFocus F0 ((AOr F G)::x)...
+          LLfocus1 F0 ((AOr F G)::x)...
           rewrite H0...
         * 
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus (AOr F G) M1...
-            LLPlusL.
+            LLfocus1 (AOr F G) M1...
+            LLleft.
             inversion H6...
             apply MLLNtoSeq in H5;auto.
           }
           eapply HDown in H3 ...
-          UFocus i F0. 
+          LLfocus2 i F0. 
           exact H3. 
         * 
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-           LFocus (AOr F G) M1...
-            LLPlusL.
+           LLfocus1 (AOr F G) M1...
+            LLleft.
             inversion H6...
             apply MLLNtoSeq in H5;auto.
           }
           eapply HDown in H3 ...
-          BFocus i F0 B'. 
+          LLfocus3 i F0 B'. 
           exact H3. 
          * 
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-           LFocus (AOr F G) M1...
-            LLPlusL.
+           LLfocus1 (AOr F G) M1...
+            LLleft.
             inversion H2...
             apply MLLNtoSeq in H5;auto.
           }
           eapply HDown in H1 ...
-          TFocus F0. 
+          LLtheory F0. 
           exact H1.          
           ++
-            LFocus (AOr (All FX) G) M1...
-            LLPlusL.
+            LLfocus1 (AOr (All FX) G) M1...
+            LLleft.
             solveLL.
             generalize (H5 x properX);intro.
             apply MLLNtoSeq in H;auto.
@@ -1463,13 +1463,13 @@ Section AbsorptionLinear.
        ++
        eapply exchangeLCN in H6.
        2: rewrite H0...
-       LLTensor ((AOr F G) ::x) N B0 C D...
+       LLtensor ((AOr F G) ::x) N B0 C D...
        rewrite <- H1...  
        apply MLLNtoSeq in H10...
        ++
        eapply exchangeLCN in H10.
        2: rewrite H0...
-       LLTensor M0  ((AOr F G) ::x) B0 C D...  
+       LLtensor M0  ((AOr F G) ::x) B0 C D...  
        rewrite <- H1...
        apply MLLNtoSeq in H6...
      +
@@ -1485,7 +1485,7 @@ Section AbsorptionLinear.
       +
         assert(HRI: RIndPlus (S n0)) by auto.
         destruct HRI as [HUp  HDown] ...
-        LLExists t.
+        LLexists t.
     Qed.
 
 
@@ -1567,12 +1567,12 @@ Section AbsorptionLinear.
           eapply exchangeLCN in H7.
            2: rewrite H2...
           eapply H in H7...
-          LLTensor (AOr G F::x) N B0 C D...
+          LLtensor (AOr G F::x) N B0 C D...
           rewrite <- H9...
           eapply exchangeLCN in H8.
            2: rewrite H2...
           eapply H in H8...
-          LLTensor M0 (AOr G F::x) B0 C D...
+          LLtensor M0 (AOr G F::x) B0 C D...
           rewrite <- H9... 
         ++
           assert (n |--- B; AOr F G::(M ++ [F0]); (UP M0)).
@@ -1581,25 +1581,25 @@ Section AbsorptionLinear.
           LLExact H1.
         ++
         checkPermutationCases H3. 
-          LFocus...
+          LLfocus1...
           eapply exchangeLCN. 
           rewrite <- H6... 
           inversion H4...
 
-          LFocus F0  (AOr G F::x)...
+          LLfocus1 F0  (AOr G F::x)...
           rewrite H3...
           eapply exchangeLCN in H4. 
           2: rewrite H5... 
           apply H in H4...
        ++
-       UFocus i F0.
+       LLfocus2 i F0.
        ++
-       BFocus i F0 B'.
+       LLfocus3 i F0 B'.
           
         ++
-       TFocus F0.
+       LLtheory F0.
         ++ 
-          LLExists t. 
+          LLexists t. 
        
     Qed.
 
@@ -1700,8 +1700,8 @@ Section AbsorptionLinear.
       +
         inversion HD1...
         inversion HD2...
-        LFocus (MAnd Top  Top) (M++M')... 
-        LLTensor M M' B C D. 
+        LLfocus1 (MAnd Top  Top) (M++M')... 
+        LLtensor M M' B C D. 
       + 
         inversion H3... inversion HD2...
       + 
@@ -1729,12 +1729,12 @@ Section AbsorptionLinear.
         * eapply exchangeLCN in H7.
          2: rewrite H2...
           apply H in H7...
-          LLTensor (MAnd G F::x) N B0 C D.
+          LLtensor (MAnd G F::x) N B0 C D.
           rewrite <- H9...
         * eapply exchangeLCN in H8.
          2: rewrite H2...
           apply H in H8...
-          LLTensor M0 (MAnd G F::x) B0 C D.
+          LLtensor M0 (MAnd G F::x) B0 C D.
           rewrite <- H9... 
           ++ 
             assert(n |--- B; MAnd F G::(M ++ [F0]); (UP M0)).
@@ -1744,25 +1744,25 @@ Section AbsorptionLinear.
           ++
           checkPermutationCases H3. 
             2:{ 
-             LFocus F0 (MAnd G F::x).
+             LLfocus1 F0 (MAnd G F::x).
              rewrite H3...
               apply H...
               LLExact H4.   }
               inversion H4...
-            LFocus.
-            LLTensor N  M0 B0 D C.
+            LLfocus1.
+            LLtensor N  M0 B0 D C.
             rewrite <- H6... rewrite H5...
             rewrite H7...
           ++  
-            UFocus i F0 ...
+            LLfocus2 i F0 ...
           ++  
-            BFocus i F0 B' ...
+            LLfocus3 i F0 B' ...
          
           ++  
-            TFocus F0 ...
+            LLtheory F0 ...
          
           ++ 
-            LLExists t. 
+            LLexists t. 
            
     Qed.
 
@@ -1907,12 +1907,12 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
        |-- B++C++D; (MAnd F  G):: M1 ++ M2; UP [].
     Proof.
       intros.
-      LFocus (MAnd F G). 
-      LLTensor M1 M2 B C D.
-      LLRelease.
+      LLfocus1 (MAnd F G). 
+      LLtensor M1 M2 B C D.
+      LLrelease.
       apply MLLNtoSeq in H4;auto.
 
-      LLRelease.
+      LLrelease.
       apply MLLNtoSeq in H5;auto.
    Qed.
 
@@ -1934,21 +1934,21 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
       apply NotAsynchronousPosAtoms in H0; destruct H0 as [AG | AG].
        
       2:{
-        (* G is a positive atom... then, LLRelease works (Lemma  ITCaseAsyncAsync) *)
+        (* G is a positive atom... then, LLrelease works (Lemma  ITCaseAsyncAsync) *)
         eapply ITCaseAsyncAsync with (n:=n) (m:=S m) (B:=B) (D:=D);eauto. }
       +
-        (* G cannot do LLRelease *)
+        (* G cannot do LLrelease *)
        
         inversion H7...
         ++ checkPermutationCases H8.  
-        * LFocus (MAnd F G). 
-          LLTensor M1 M2 B C D.
-          LLRelease. 
+        * LLfocus1 (MAnd F G). 
+          LLtensor M1 M2 B C D.
+          LLrelease. 
           apply MLLNtoSeq in H6;auto. 
           rewrite <- H11.
           apply MLLNtoSeq in H9;auto. 
         * 
-          LFocus F0 ((MAnd F G) ::M1 ++ x)...
+          LLfocus1 F0 ((MAnd F G) ::M1 ++ x)...
           rewrite H8...
           
           assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto); destruct IH2 as [HUp HDw].
@@ -1962,7 +1962,7 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
           LLExact H9.
       
      ++ LLPerm (B++D++C).
-            UFocus i F0.  apply in_or_app.
+            LLfocus2 i F0.  apply in_or_app.
             left.
             apply in_app_or in H10...
             apply InPermutation in H2...
@@ -1978,7 +1978,7 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
            checkPermutationCases H10.
            rewrite H10 in H3.
            inversion H3...
-          BFocus i F0 (B++x++C).
+          LLfocus3 i F0 (B++x++C).
           rewrite app_comm_cons. 
           rewrite H10...
              assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto);
@@ -1992,7 +1992,7 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
             inversion H5...
              rewrite H12...
           ++
-            TFocus F0.
+            LLtheory F0.
             LLPerm(B++D++C). 
             assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto);
               destruct IH2 as [HUp HDw].
@@ -2038,14 +2038,14 @@ Qed.
             LLPerm (B++D++C).
             eapply ITAsyncSync with (nm:=nm) (n:= S m) (m:= n) ;try lia... }
  
-  (* F nor G can do LLRelease *)
+  (* F nor G can do LLrelease *)
         inversion HD1...
         inversion HD2...
           
         inversion H5;subst...
         2:{
         
-        UFocus i F0.
+        LLfocus2 i F0.
         rewrite app_assoc.
         apply in_or_app... 
           assert (IH' : RIndTensor (m + S (S n0))) by ( apply IH; lia).
@@ -2054,7 +2054,7 @@ Qed.
           eapply  HDw with (n:= n0) (m:= S m);try lia...
         }
        3:{ 
-        TFocus F0. 
+        LLtheory F0. 
           assert (IH' : RIndTensor (m + S (S n0))) by ( apply IH; lia).
           destruct IH' as [HUp  HDw].
           assert(Hn : m + S (S n0) - 1 = m + (S n0)) by lia;rewrite Hn in HDw;clear Hn.
@@ -2067,7 +2067,7 @@ Qed.
           assert(Hn : m + S (S n0) - 1 = m + (S n0)) by lia;rewrite Hn in HDw;clear Hn.
        
         checkPermutationCases H0.
-       2:{   LFocus F0 ((MAnd F G) :: x++M2).
+       2:{   LLfocus1 F0 ((MAnd F G) :: x++M2).
           rewrite H0...
        
           eapply HDw with (n:= n0) (m:= S m) (B:=B) (D:=D);try lia... 
@@ -2081,7 +2081,7 @@ Qed.
           inversion H7...
           -
           checkPermutationCases H2.
-        2:{ LFocus F0 ((MAnd F G)::M1++x).
+        2:{ LLfocus1 F0 ((MAnd F G)::M1++x).
           rewrite H2...
        LLPerm (B++D++C).
             
@@ -2091,15 +2091,15 @@ Qed.
              
                  LLExact H3. }
  
-          LFocus (MAnd F G).  
-          LLTensor M1 L'0 B C D.
+          LLfocus1 (MAnd F G).  
+          LLtensor M1 L'0 B C D.
           rewrite H10...
           apply MLLNtoSeq in H1...
           apply MLLNtoSeq in H3...
           -
           LLPerm (B++D++C).
             
-           UFocus i F0.
+           LLfocus2 i F0.
             rewrite app_assoc.
             apply in_or_app... 
             apply TensorComm'.
@@ -2110,7 +2110,7 @@ Qed.
             checkPermutationCases H8. 
             rewrite H8 in P1.
             inversion P1...
-             BFocus i F0 (B++ x ++ C). 
+             LLfocus3 i F0 (B++ x ++ C). 
            rewrite H8...  
             apply TensorComm'.
             rewrite (Permutation_app_comm M1).  
@@ -2120,7 +2120,7 @@ Qed.
           rewrite H11...
          -
           LLPerm(B++D++C).
-         TFocus F0. 
+         LLtheory F0. 
             apply TensorComm'.
             rewrite (Permutation_app_comm M1).
              
@@ -2129,7 +2129,7 @@ Qed.
        checkPermutationCases H2. 
        rewrite H2 in P1.
        inversion P1...
-       BFocus i F0 (B ++ x ++ D)...
+       LLfocus3 i F0 (B ++ x ++ D)...
       rewrite H2...
        assert (IH' : RIndTensor (S m + S n0)) by ( apply IH; lia).
        destruct IH' as [HUp  HDw].
@@ -2251,7 +2251,7 @@ Qed.
           destruct HRI as [HUp  HDown] ...
           simpl in HDown.
           pose proof  (PermSetUSetL P1 P2 H2 H3 H4 H5)...
-          LLTensor (MAnd F G::x ++ M') N B0 (C0++D) D0.
+          LLtensor (MAnd F G::x ++ M') N B0 (C0++D) D0.
           rewrite <- H1...
           rewrite H7, H8...
           apply Forall_app...
@@ -2268,7 +2268,7 @@ Qed.
           simpl in HDown.
           rewrite Nat.sub_0_r in HDown.
            pose proof  (PermSetUSetL P1 P2 H2 H3 H4 H5)...
-          LLTensor M0 (MAnd F G::x ++ M') B0 C0 (D0++D).
+          LLtensor M0 (MAnd F G::x ++ M') B0 C0 (D0++D).
           rewrite <- H1...
           rewrite H7, H8...
           apply Forall_app...
@@ -2280,13 +2280,13 @@ Qed.
         assert(HRI: RIndTensor (S m +n1)) by (apply IH ; lia).
         destruct HRI as [HUp  HDown] ...
         assert(Hn : S m + n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
-        LLPlusL. 
+        LLleft. 
         eapply HDown  with (n:=n1) (m:=m)  (B:=B) (D:=D) ... lia. 
       +
         assert(HRI: RIndTensor (S m +n1)) by (apply IH ; lia).
         destruct HRI as [HUp  HDown] ...
         assert(Hn : S m + n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
-        LLPlusR. 
+        LLright. 
         eapply HDown  with (n:=n1) (m:=m)  (B:=B) (D:=D)... lia. 
       +
         apply UpExtension in H5 ...
@@ -2299,7 +2299,7 @@ Qed.
         assert(HRI: RIndTensor (m + S n1 )) by ( apply IH;lia).
         destruct HRI as [HUp  HDown] ...
         assert(Hn : m + S n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
-        LLExists t. 
+        LLexists t. 
                 eapply HDown with (n:=n1) (m:=m) (B:=B) (D:=D)...  
         lia.
     Qed.

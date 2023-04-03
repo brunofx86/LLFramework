@@ -346,13 +346,13 @@ Proof with sauto;solveLL.
     inversion H... 
     SLFormulaSolve.
     +
-    LFocus F L'0. 
+    LLfocus1 F L'0. 
     HProof. 
     +
-    CFocus F. 
+    LLfocus2 F. 
     HProof.
     +
-    TFocus F. 
+    LLtheory F. 
     HProof.
  Qed.
 
@@ -428,11 +428,11 @@ Theorem EquivUpArrow2' : forall B L L' M ,
     rewrite Permutation_cons_append in H1.
     SLFormulaSolve.
     +
-    LFocus F L'. 
+    LLfocus1 F L'. 
     +
-    CFocus F. 
+    LLfocus2 F. 
     +
-    TFocus F. 
+    LLtheory F. 
 
  Qed.
    
@@ -467,7 +467,7 @@ Lemma UpExtension: forall B M L F n,
       destruct L. (* L must be empty. The second case is trivial *)
       { exists ((S n)). firstorder.
       simpl.
-      FLLstore. }
+      LLstore. }
       apply exp_weight0LF in Hw;contradiction.
       
     + intros.
@@ -559,7 +559,7 @@ Lemma UpExtension2': forall B M L F,
       destruct L. (* L must be empty. The second case is trivial *)
       {  
       simpl.
-      FLLstore. }
+      LLstore. }
       apply exp_weight0LF in Hw;contradiction.
       
     + intros.
@@ -579,7 +579,7 @@ Lemma UpExtension2': forall B M L F,
         apply IH with (m:= complexityL  L) in H4;auto.
         lia.
        ++  (* FORALL *)
-        FLLforall.
+        LLforall.
         specialize (H6 x H1). 
         eapply IH with (m:=complexity (FX x) + complexityL L) in H6;auto.
         assert(complexity (FX (VAR con 0%nat)) = complexity (FX x) ).
@@ -694,7 +694,7 @@ Lemma UpExtensionInv2' F B M L :
         apply IH with (m:= complexityL  L) in H4;auto.
         lia.
      ++  (* FORALL *)
-        FLLforall.
+        LLforall.
         specialize (H6 x H1).
         rewrite app_comm_cons in H6.  
         eapply IH with (m:=complexity (FX x) + complexityL L) in H6;auto.
@@ -705,7 +705,7 @@ Lemma UpExtensionInv2' F B M L :
         constructor.
         lia.     ++ (* Store *)
       apply IH with (m:= complexityL  L) in H6;try lia;auto.
-      FLLstore. LLExact H6.
+      LLstore. LLExact H6.
         assert (complexity o > 0) by (apply Complexity0);lia.
  
   Qed.

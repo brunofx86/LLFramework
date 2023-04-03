@@ -372,9 +372,9 @@ Proof with sauto.
      - inversion H12...
         cutOL H8 H14.
          OLSolve.
-        TFocus (makeRRuleU C F).
+        LLtheory (makeRRuleU C F).
         inversion H16.
-        FLLsplit (@nil oo) (M++N).
+        LLtensor (@nil oo) (M++N).
         apply H18...
         rewrite Permutation_assoc_comm... 
  Qed.
@@ -408,9 +408,9 @@ Proof with sauto.
         inversion H11...
         cutOL H9 H15.
         OLSolve.
-        TFocus (makeLRuleU C F).
+        LLtheory (makeLRuleU C F).
         inversion H17.
-        FLLsplit (@nil oo) (M++N).
+        LLtensor (@nil oo) (M++N).
         apply H19...
         rewrite Permutation_assoc_comm...  
 Qed. 
@@ -487,9 +487,9 @@ Proof with sauto.
      - inversion H12...
         cutOL H8 H14.
         OLSolve.
-        TFocus (makeRRuleB C F G).
+        LLtheory (makeRRuleB C F G).
         inversion H16.
-        FLLsplit (@nil oo) (M++N). 
+        LLtensor (@nil oo) (M++N). 
         apply H18...
         rewrite Permutation_assoc_comm...
   * Cases H10.
@@ -518,9 +518,9 @@ Proof with sauto.
         apply ContractionLinear...
         rewrite H12.
         LLPerm ((x++N)++(x0++N)).
-        TFocus (makeRRuleB C F G).
+        LLtheory (makeRRuleB C F G).
         inversion H19.
-        FLLsplit (@nil oo) ((x ++ N) ++ x0 ++ N). 
+        LLtensor (@nil oo) ((x ++ N) ++ x0 ++ N). 
         apply H21...
         rewrite Permutation_assoc_comm...
         rewrite Permutation_assoc_comm...
@@ -538,9 +538,9 @@ Proof with sauto.
         OLSolve.
         cutOL H8 H16.
         OLSolve.
-        TFocus (makeRRuleB C F G).
+        LLtheory (makeRRuleB C F G).
         inversion H18.
-        FLLsplit (@nil oo) (M ++ N). 
+        LLtensor (@nil oo) (M ++ N). 
         apply H20...
         rewrite Permutation_assoc_comm...
         rewrite Permutation_assoc_comm...
@@ -576,9 +576,9 @@ Proof with sauto.
         inversion H11...
         cutOL H9 H15.
         OLSolve.
-        TFocus (makeLRuleB C F G).
+        LLtheory (makeLRuleB C F G).
         inversion H17.
-        FLLsplit (@nil oo) (M++N).
+        LLtensor (@nil oo) (M++N).
         apply H19...
         rewrite Permutation_assoc_comm...
   * Cases H11.
@@ -608,9 +608,9 @@ Proof with sauto.
         apply ContractionLinear...
         rewrite H13.
         LLPerm ((x++N)++(x0++N)).
-        TFocus (makeLRuleB C F G).
+        LLtheory (makeLRuleB C F G).
         inversion H20.
-        FLLsplit (@nil oo) ((x++N)++(x0++N)).
+        LLtensor (@nil oo) ((x++N)++(x0++N)).
         apply H22...
         rewrite Permutation_assoc_comm...
         rewrite Permutation_assoc_comm...
@@ -629,9 +629,9 @@ Proof with sauto.
         OLSolve.
         cutOL H9 H17.
         OLSolve.
-        TFocus (makeLRuleB C F G).
+        LLtheory (makeLRuleB C F G).
         inversion H19.
-        FLLsplit (@nil oo) ((M++N)).
+        LLtensor (@nil oo) ((M++N)).
         apply H21...
         rewrite Permutation_assoc_comm...
         rewrite Permutation_assoc_comm... 
@@ -664,9 +664,9 @@ Proof with sauto.
      - inversion H12...
         cutOL H8 H14.
         OLSolve.
-        TFocus (makeRRuleQ C FX).
+        LLtheory (makeRRuleQ C FX).
         inversion H16.
-        FLLsplit (@nil oo) (M++N).
+        LLtensor (@nil oo) (M++N).
         apply H18...
         rewrite Permutation_assoc_comm...
  Qed.
@@ -700,9 +700,9 @@ Proof with sauto.
        inversion H11...
         cutOL H9 H15.
         OLSolve.
-        TFocus (makeLRuleQ C FX).
+        LLtheory (makeLRuleQ C FX).
         inversion H17.
-        FLLsplit (@nil oo) (M++N).
+        LLtensor (@nil oo) (M++N).
         apply H19...
         rewrite Permutation_assoc_comm...
  Qed.
@@ -814,9 +814,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H8.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H10.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H12...
                LLPerm ( (M ++ x) ++ N)...
            -- wellConstant Hseq2'.   
@@ -838,9 +838,9 @@ Proof with sauto.
                inversion H7... inversion H6.
                cutOL Hseq1 H8.
                OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H10.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H12...
                LLPerm ( (M ++ x) ++ N)...
            -- permuteUnary.
@@ -872,9 +872,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                rewrite Permutation_assoc_comm...
          - wellConstant Hseq2'.
@@ -916,9 +916,9 @@ Proof with sauto.
                refine (ConstantPrincipalCase _ H1 H6).
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                rewrite Permutation_assoc_comm...
          - permuteUnary.
@@ -929,9 +929,9 @@ Proof with sauto.
          - permuteQuantifier.
          -    cutOL H3 Hseq2.
                OLSolve.
-               TFocus (makeRRuleC C).
+               LLtheory (makeRRuleC C).
                inversion H5.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H7...
                rewrite app_assoc_reverse...
 Qed.               
@@ -978,9 +978,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- wellConstant Hseq2'.   
@@ -996,9 +996,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- permuteUnary.
@@ -1030,9 +1030,9 @@ Proof with sauto.
                refine (UConnectivePrincipalCase H1 H6 _ _ HL')...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeLRuleU C0 F1).
+               LLtheory (makeLRuleU C0 F1).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- permuteBinary.
@@ -1041,9 +1041,9 @@ Proof with sauto.
            -- permuteQuantifier.
          - cutOL H3 Hseq2.
             OLSolve.
-            TFocus (makeRRuleU C F).
+            LLtheory (makeRRuleU C F).
             inversion H5.
-            FLLsplit (@nil oo) (M++N).
+            LLtensor (@nil oo) (M++N).
             apply H7...
             LLPerm (M++N++x)...
 Qed.            
@@ -1096,9 +1096,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- wellConstant Hseq2'.   
@@ -1114,9 +1114,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- permuteUnary.
@@ -1151,9 +1151,9 @@ Proof with sauto.
             
               cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)... }
                { Cases H1.
@@ -1223,9 +1223,9 @@ Proof with sauto.
                apply ContractionLinear...
                rewrite H6...
                LLPerm ((x2++N)++(x3++N)).
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H14.
-               FLLsplit (@nil oo) ( (x2 ++ N) ++ x3 ++ N).
+               LLtensor (@nil oo) ( (x2 ++ N) ++ x3 ++ N).
                apply H16...
                LLPerm ((x2 ++ x4) ++ N)...
                LLPerm ((x3 ++ x5) ++ N)... }
@@ -1267,9 +1267,9 @@ Proof with sauto.
                OLSolve.
               cutOL Hseq1 H11.
                OLSolve.
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H13.
-               FLLsplit (@nil oo) ( M++ N).
+               LLtensor (@nil oo) ( M++ N).
                apply H15...
                LLPerm ((M ++ x3) ++ N)...
                LLPerm ((M ++ x4) ++ N)... }               
@@ -1278,9 +1278,9 @@ Proof with sauto.
            -- permuteQuantifier.
          - cutOL H3 Hseq2.
             OLSolve.
-            TFocus (makeRRuleB C F G).
+            LLtheory (makeRRuleB C F G).
             inversion H5.
-            FLLsplit (@nil oo) (M++N).
+            LLtensor (@nil oo) (M++N).
             apply H7...
             LLPerm (M++N++x)...
   * Cases H. 
@@ -1319,9 +1319,9 @@ Proof with sauto.
                inversion H9...
                cutOL Hseq1 H12.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H14.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H16...
                LLPerm ( (M ++ x5) ++ N)...
            -- wellConstant Hseq2'.   
@@ -1337,9 +1337,9 @@ Proof with sauto.
                inversion H9...
                cutOL Hseq1 H12.
                 OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H14.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H16...
                LLPerm ( (M ++ x5) ++ N)...
            -- permuteUnary.
@@ -1379,9 +1379,9 @@ Proof with sauto.
                refine (BinConnectivePrincipalCase H3 H9 _ _ HL')...
                cutOL Hseq1 H12.
                OLSolve.
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H14.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H16...
                LLPerm ( (M ++ x5) ++ N)... }
                { Cases H3.
@@ -1445,9 +1445,9 @@ Proof with sauto.
                apply ContractionLinear...
                rewrite H9...
                LLPerm ((x5++N)++(x6++N)).
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H17.
-               FLLsplit (@nil oo) ( (x5 ++ N) ++ x6 ++ N).
+               LLtensor (@nil oo) ( (x5 ++ N) ++ x6 ++ N).
                apply H19...
                LLPerm ((x5 ++ x7) ++ N)...
                LLPerm ((x6 ++ x8) ++ N)... }
@@ -1497,9 +1497,9 @@ Proof with sauto.
                cutOL Hseq1 H14.
                do 2 OLSolve.
                
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H16.
-               FLLsplit (@nil oo) ( M++ N).
+               LLtensor (@nil oo) ( M++ N).
                apply H18...
                LLPerm ((M ++ x6) ++ N)...
                LLPerm ((M ++ x7) ++ N)... }               
@@ -1514,9 +1514,9 @@ Proof with sauto.
             apply ContractionLinear...
             rewrite H1.
             LLPerm ((M ++ x) ++ (M ++ x0))...
-            TFocus (makeRRuleB C F G).
+            LLtheory (makeRRuleB C F G).
             inversion H8.
-            FLLsplit (@nil oo) ((M ++ x) ++ M ++ x0).
+            LLtensor (@nil oo) ((M ++ x) ++ M ++ x0).
             apply H10...
             LLPerm (M ++ x ++ x1)... 
             LLPerm (M ++ x0 ++ x2)... 
@@ -1546,9 +1546,9 @@ Proof with sauto.
            
                 cutOL Hseq1 H11.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H13.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H15...
                LLPerm ( (M ++ x) ++ N)...
            -- wellConstant Hseq2'.   
@@ -1564,9 +1564,9 @@ Proof with sauto.
                inversion H8...
                cutOL Hseq1 H11.
                OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H13.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H15...
                LLPerm ( (M ++ x) ++ N)...
            -- permuteUnary.
@@ -1603,9 +1603,9 @@ Proof with sauto.
                refine (BinConnectivePrincipalCase H3 H8 _ _ HL')...
                cutOL Hseq1 H11.
                OLSolve.
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H13.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H15...
                LLPerm ( (M ++ x) ++ N)... }
                { Cases H3.
@@ -1665,9 +1665,9 @@ Proof with sauto.
                apply ContractionLinear...
                rewrite H8...
                LLPerm ((x++N)++(x4++N)).
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H16.
-               FLLsplit (@nil oo) ( (x ++ N) ++ x4 ++ N).
+               LLtensor (@nil oo) ( (x ++ N) ++ x4 ++ N).
                apply H18...
                LLPerm ((x ++ x5) ++ N)...
                LLPerm ((x4 ++ x6) ++ N)... }
@@ -1711,9 +1711,9 @@ Proof with sauto.
                do 2 OLSolve.
                cutOL Hseq1 H13.
                do 2 OLSolve.
-               TFocus (makeLRuleB C0 F1 G0).
+               LLtheory (makeLRuleB C0 F1 G0).
                inversion H15.
-               FLLsplit (@nil oo) ( M++ N).
+               LLtensor (@nil oo) ( M++ N).
                apply H17...
                LLPerm ((M ++ x4) ++ N)...
                LLPerm ((M ++ x5) ++ N)... }               
@@ -1724,9 +1724,9 @@ Proof with sauto.
             do 2 OLSolve.
             cutOL H5 Hseq2.
             do 2 OLSolve.
-            TFocus (makeRRuleB C F G).
+            LLtheory (makeRRuleB C F G).
             inversion H7.
-            FLLsplit (@nil oo) ((M ++ N)).
+            LLtensor (@nil oo) ((M ++ N)).
             apply H9...
             LLPerm (M ++ N ++ x0)... 
             LLPerm (M ++ N++ x1)...
@@ -1775,9 +1775,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeRRuleC C0).
+               LLtheory (makeRRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- wellConstant Hseq2'.   
@@ -1793,9 +1793,9 @@ Proof with sauto.
                inversion H6...
                cutOL Hseq1 H9.
                OLSolve.
-               TFocus (makeLRuleC C0).
+               LLtheory (makeLRuleC C0).
                inversion H11.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
            -- permuteUnary.
@@ -1830,16 +1830,16 @@ Proof with sauto.
                refine (QuantifierPrincipalCase H12 H13 _ _ _ _ _ _ HL')... 
               cutOL Hseq1 H10.
                OLSolve.
-               TFocus (makeLRuleQ C0 FX0).
+               LLtheory (makeLRuleQ C0 FX0).
                inversion H12.
-               FLLsplit (@nil oo) (M++N).
+               LLtensor (@nil oo) (M++N).
                apply H14...
                LLPerm ((M ++ x2) ++ N)...
          - cutOL H3 Hseq2.
             OLSolve.
-            TFocus (makeRRuleQ C FX).
+            LLtheory (makeRRuleQ C FX).
             inversion H5.
-            FLLsplit (@nil oo) (M++N).
+            LLtensor (@nil oo) (M++N).
             apply H7...
             LLPerm (M++N++x)...
 Qed.
@@ -1874,9 +1874,9 @@ Proof with sauto.
     +  inversion H1...
          cutOL H3 Hseq2.
          OLSolve.
-         TFocus (makeLRuleC C).
+         LLtheory (makeLRuleC C).
          inversion H5.
-         FLLsplit (@nil oo) (M++N).
+         LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
 Qed.                  
@@ -1907,9 +1907,9 @@ Proof with sauto.
      + inversion H1...
          cutOL H3 Hseq2.
          OLSolve.
-         TFocus (makeLRuleU C F).
+         LLtheory (makeLRuleU C F).
          inversion H5.
-         FLLsplit (@nil oo) (M++N).
+         LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
 Qed.       
@@ -1940,9 +1940,9 @@ Proof with sauto.
      + inversion H1...
          cutOL H3 Hseq2.
          OLSolve.
-         TFocus (makeLRuleB C F G).
+         LLtheory (makeLRuleB C F G).
          inversion H5.
-         FLLsplit (@nil oo) (M++N).
+         LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
   * Cases H. 
@@ -1977,9 +1977,9 @@ Proof with sauto.
          OLSolve.
          LLPerm(N++M).
          apply ContractionLinear...
-         TFocus (makeLRuleB C F G).
+         LLtheory (makeLRuleB C F G).
          inversion H8.
-         FLLsplit (@nil oo) (M++M++N).
+         LLtensor (@nil oo) (M++M++N).
          rewrite H1.
          LLPerm ((M++x)++(M++x0)).
          apply H10...
@@ -2007,9 +2007,9 @@ Proof with sauto.
          cutOL H5 Hseq2.
                clearNotFormulas.
          OLSolve.
-           TFocus (makeLRuleB C F G).
+           LLtheory (makeLRuleB C F G).
          inversion H7.
-         FLLsplit (@nil oo) (M++N).
+         LLtensor (@nil oo) (M++N).
          apply H9...
          LLPerm(M ++ N ++ x0)...
          LLPerm(M ++ N  ++ x1)...         
@@ -2041,9 +2041,9 @@ Proof with sauto.
      + inversion H1...
          cutOL H3 Hseq2.
          OLSolve.
-         TFocus (makeLRuleQ C FX).
+         LLtheory (makeLRuleQ C FX).
          inversion H5.
-         FLLsplit (@nil oo) (M++N).
+         LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
 Qed.
@@ -2149,46 +2149,46 @@ Qed.
     * apply FocusingInitRuleU in H5...
        - apply WeakeningLinear...
           rewrite H7.
-          TFocus (RINIT OO0).
-          FLLsplit [ (⌈ OO0 ⌉)]  [ (⌊ OO0 ⌋)].
+          LLtheory (RINIT OO0).
+          LLtensor [ (⌈ OO0 ⌉)]  [ (⌊ OO0 ⌋)].
        - inversion H10...
           inversion H5...
-          TFocus (NEG OO0).
+          LLtheory (NEG OO0).
           inversion H5. apply OLCutHasNeg...
-          FLLsplit [ (⌈ OO0 ⌉)] N.
-          FLLrelease.
-          FLLstorec.
+          LLtensor [ (⌈ OO0 ⌉)] N.
+          LLrelease.
+          LLstorec.
           apply seqNtoSeq in Hseq1...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq1;auto using TheoryEmb1.
           LLExact Hseq1.
           apply WeakeningLinear...
-          TFocus (RINIT OO0).
-          FLLsplit [ (⌈ OO0 ⌉)] (@nil oo).
+          LLtheory (RINIT OO0).
+          LLtensor [ (⌈ OO0 ⌉)] (@nil oo).
        - inversion H10...
           apply WeakeningLinear...
-          TFocus (RINIT OO0).
-          FLLsplit (@nil oo) [ (⌊ OO0 ⌋)].
+          LLtheory (RINIT OO0).
+          LLtensor (@nil oo) [ (⌊ OO0 ⌋)].
        - inversion H9...
           inversion H7...
           inversion H10...
-          TFocus (NEG OO0).
+          LLtheory (NEG OO0).
           inversion H7. apply OLCutHasNeg...
-          FLLsplit (@nil oo) N.
+          LLtensor (@nil oo) N.
           solveLL.
           apply seqNtoSeq in Hseq1...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq1;auto using TheoryEmb1.
           LLExact Hseq1.
           LLPerm ([]++N).
           apply WeakeningLinear...
-          TFocus (RINIT OO0).
-          FLLsplit (@nil oo) (@nil oo).
+          LLtheory (RINIT OO0).
+          LLtensor (@nil oo) (@nil oo).
     * apply FocusingStruct in H5...
        apply weakeningGenN_rev with (CC':= [ (⌊ OO0 ⌋)]) in Hseq1. 
         rewrite <- app_comm_cons in Hseq1, H11.
         cutOL Hseq1 H11. 
         1-2: OLSolve. 
-        TFocus (POS OO0).
-        FLLsplit [ (⌊ OO0 ⌋)] (x0++N).
+        LLtheory (POS OO0).
+        LLtensor [ (⌊ OO0 ⌋)] (x0++N).
         rewrite H10...
         inversion H10...
         inversion H5...
@@ -2200,53 +2200,53 @@ Qed.
         rewrite <- app_comm_cons in Hseq1, H11.
         cutOL Hseq1 H11. 
         1-2: OLSolve. 
-        TFocus (POS OO0).
-        FLLsplit (@nil oo) (M++N).
+        LLtheory (POS OO0).
+        LLtensor (@nil oo) (M++N).
     * apply FocusingStruct in H5...
        apply weakeningGenN_rev with (CC':= [ (⌈ OO0 ⌉)]) in Hseq1. 
         rewrite <- app_comm_cons in Hseq1, H11.
         cutOL Hseq1 H11. 
         1-2: OLSolve. 
-        TFocus (NEG OO0).
-        FLLsplit [ (⌈ OO0 ⌉)] (x0++N).
+        LLtheory (NEG OO0).
+        LLtensor [ (⌈ OO0 ⌉)] (x0++N).
         rewrite H10...
         inversion H10...
         apply weakeningGenN_rev with (CC':= [ (⌈ OO0 ⌉)]) in Hseq1. 
         rewrite <- app_comm_cons in Hseq1, H11.
         cutOL Hseq1 H11. 
         1-2: OLSolve. 
-        TFocus (NEG OO0).
-        FLLsplit (@nil oo) (M++N).
+        LLtheory (NEG OO0).
+        LLtensor (@nil oo) (M++N).
     * apply FocusingInitRuleU in H2...
        - rewrite Permutation_app_comm. 
           apply WeakeningLinear...
           rewrite H7.
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
        - inversion H10...
           rewrite Permutation_app_comm. 
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)] (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)] (@nil oo).
        - inversion H10...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2. apply OLCutHasPos...
-          FLLsplit  [ (⌊ OO ⌋)] M.
+          LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit  (@nil oo) [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor  (@nil oo) [ (⌊ OO ⌋)].
        - inversion H9...
           inversion H7...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2. apply OLCutHasPos...
-          FLLsplit (@nil oo) M.
+          LLtensor (@nil oo) M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
@@ -2254,38 +2254,38 @@ Qed.
           inversion H7...
           LLPerm ([]++M).
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit (@nil oo) (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor (@nil oo) (@nil oo).
     * apply FocusingInitRuleU in H2...
        - rewrite Permutation_app_comm. 
           apply WeakeningLinear...
           rewrite H7.
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
        - inversion H10...
           rewrite Permutation_app_comm. 
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)] (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)] (@nil oo).
        - inversion H10...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2. apply OLCutHasPos...
-          FLLsplit  [ (⌊ OO ⌋)] M.
+          LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit  (@nil oo) [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor  (@nil oo) [ (⌊ OO ⌋)].
        - inversion H9...
           inversion H7...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2. apply OLCutHasPos...
-          FLLsplit (@nil oo) M.
+          LLtensor (@nil oo) M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
@@ -2293,38 +2293,38 @@ Qed.
           inversion H7...
           LLPerm ([]++M).
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit (@nil oo) (@nil oo).                
+          LLtheory (RINIT OO).
+          LLtensor (@nil oo) (@nil oo).                
     * apply FocusingInitRuleU in H2...
        - rewrite Permutation_app_comm. 
           apply WeakeningLinear...
           rewrite H7.
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
        - inversion H10...
           rewrite Permutation_app_comm. 
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)] (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)] (@nil oo).
        - inversion H10...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2.
-          FLLsplit  [ (⌊ OO ⌋)] M.
+          LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit  (@nil oo) [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor  (@nil oo) [ (⌊ OO ⌋)].
        - inversion H9...
           inversion H7...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2.
-          FLLsplit (@nil oo) M.
+          LLtensor (@nil oo) M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
@@ -2332,38 +2332,38 @@ Qed.
           inversion H7...
           LLPerm ([]++M).
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit (@nil oo) (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor (@nil oo) (@nil oo).
     * apply FocusingInitRuleU in H2...
        - rewrite Permutation_app_comm. 
           apply WeakeningLinear...
           rewrite H7.
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)]  [ (⌊ OO ⌋)].
        - inversion H10...
           rewrite Permutation_app_comm. 
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit [ (⌈ OO ⌉)] (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor [ (⌈ OO ⌉)] (@nil oo).
        - inversion H10...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2.
-          FLLsplit  [ (⌊ OO ⌋)] M.
+          LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit  (@nil oo) [ (⌊ OO ⌋)].
+          LLtheory (RINIT OO).
+          LLtensor  (@nil oo) [ (⌊ OO ⌋)].
        - inversion H9...
           inversion H7...
           inversion H2...
-          TFocus (POS OO).
+          LLtheory (POS OO).
           inversion H2.
-          FLLsplit (@nil oo) M.
+          LLtensor (@nil oo) M.
           solveLL.
           apply seqNtoSeq in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
@@ -2371,11 +2371,11 @@ Qed.
           inversion H7...
           LLPerm ([]++M).
           apply WeakeningLinear...
-          TFocus (RINIT OO).
-          FLLsplit (@nil oo) (@nil oo).
+          LLtheory (RINIT OO).
+          LLtensor (@nil oo) (@nil oo).
     * apply FocusingStruct in H2...
-       - TFocus (POS OO).
-          FLLsplit [ (⌊ OO ⌋)] (M++x0).
+       - LLtheory (POS OO).
+          LLtensor [ (⌊ OO ⌋)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
@@ -2383,16 +2383,16 @@ Qed.
         cutOL H11 Hseq2.  
         1-2: OLSolve.
        - inversion H10... 
-          TFocus (POS OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (POS OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.
     * apply FocusingStruct in H2...
-       - TFocus (POS OO).
-          FLLsplit [ (⌊ OO ⌋)] (M++x0).
+       - LLtheory (POS OO).
+          LLtensor [ (⌊ OO ⌋)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
@@ -2400,16 +2400,16 @@ Qed.
         cutOL H11 Hseq2.  
         1-2: OLSolve.
        - inversion H10... 
-          TFocus (POS OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (POS OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.
     * apply FocusingStruct in H2...
-       - TFocus (POS OO).
-          FLLsplit [ (⌊ OO ⌋)] (M++x0).
+       - LLtheory (POS OO).
+          LLtensor [ (⌊ OO ⌋)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
@@ -2417,16 +2417,16 @@ Qed.
         cutOL H11 Hseq2.  
         1-2: OLSolve.
        - inversion H10... 
-          TFocus (POS OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (POS OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.
     * apply FocusingStruct in H2...
-       - TFocus (POS OO).
-          FLLsplit [ (⌊ OO ⌋)] (M++x0).
+       - LLtheory (POS OO).
+          LLtensor [ (⌊ OO ⌋)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
@@ -2434,16 +2434,16 @@ Qed.
         cutOL H11 Hseq2.  
         1-2: OLSolve.
        - inversion H10... 
-          TFocus (POS OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (POS OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌊ OO ⌋)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.
     * apply FocusingStruct in H2...
-       - TFocus (NEG OO).
-          FLLsplit [ (⌈ OO ⌉)] (M++x0).
+       - LLtheory (NEG OO).
+          LLtensor [ (⌈ OO ⌉)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
@@ -2456,16 +2456,16 @@ Qed.
           simpl in H11.
           apply contractionN in H11...
           cutOL H11 Hseq2.
-          TFocus (NEG OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (NEG OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.
     * apply FocusingStruct in H2...
-       - TFocus (NEG OO).
-          FLLsplit [ (⌈ OO ⌉)] (M++x0).
+       - LLtheory (NEG OO).
+          LLtensor [ (⌈ OO ⌉)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
@@ -2478,16 +2478,16 @@ Qed.
           simpl in H11.
           apply contractionN in H11...
           cutOL H11 Hseq2.
-          TFocus (NEG OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (NEG OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.        
     * apply FocusingStruct in H2...
-       - TFocus (NEG OO).
-          FLLsplit [ (⌈ OO ⌉)] (M++x0).
+       - LLtheory (NEG OO).
+          LLtensor [ (⌈ OO ⌉)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
@@ -2500,16 +2500,16 @@ Qed.
           simpl in H11.
           apply contractionN in H11...
           cutOL H11 Hseq2.
-          TFocus (NEG OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (NEG OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
         cutOL H11 Hseq2.  
         OLSolve.
     * apply FocusingStruct in H2...
-       - TFocus (NEG OO).
-          FLLsplit [ (⌈ OO ⌉)] (M++x0).
+       - LLtheory (NEG OO).
+          LLtensor [ (⌈ OO ⌉)] (M++x0).
           rewrite H10...
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
@@ -2522,8 +2522,8 @@ Qed.
           simpl in H11.
           apply contractionN in H11...
           cutOL H11 Hseq2.
-          TFocus (NEG OO).
-          FLLsplit (@nil oo) (M++N).
+          LLtheory (NEG OO).
+          LLtensor (@nil oo) (M++N).
           solveLL.
           apply weakeningGenN_rev with (CC':= [ (⌈ OO ⌉)]) in Hseq2. 
         rewrite <- app_comm_cons in Hseq2, H11.
@@ -2556,8 +2556,8 @@ Qed.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
          do 2 OLSolve.
-         TFocus (makeRRuleC C).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeRRuleC C).
+         LLtensor (@nil oo) N.
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
          OLSolve.
@@ -2569,8 +2569,8 @@ Qed.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
          do 2 OLSolve.
-         TFocus (makeLRuleC C).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeLRuleC C).
+         LLtensor (@nil oo) N.
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
          OLSolve.
@@ -2580,8 +2580,8 @@ Qed.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
          do 2 OLSolve.
-         TFocus (makeRRuleU C F0).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeRRuleU C F0).
+         LLtensor (@nil oo) N.
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
          OLSolve.         
@@ -2591,8 +2591,8 @@ Qed.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
          do 2 OLSolve.
-         TFocus (makeLRuleU C F0).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeLRuleU C F0).
+         LLtensor (@nil oo) N.
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
          OLSolve.         
@@ -2602,8 +2602,8 @@ Qed.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
          do 2 OLSolve.
-         TFocus (makeRRuleB C F0 G).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeRRuleB C F0 G).
+         LLtensor (@nil oo) N.
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
          OLSolve.
@@ -2621,8 +2621,8 @@ Qed.
          rewrite H10 in isFN.
          inversion isFN...
          OLSolve.
-         TFocus (makeRRuleB C F0 G).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeRRuleB C F0 G).
+         LLtensor (@nil oo) N.
          rewrite H8.
          apply H17...
          refine (H _ _ _ _ _ _ H12)...
@@ -2635,8 +2635,8 @@ Qed.
          do 2 OLSolve.
          refine (H _ _ _ _ _ _ H12)...
          do 2 OLSolve.
-         TFocus (makeRRuleB C F0 G).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeRRuleB C F0 G).
+         LLtensor (@nil oo) N.
          apply H16...
          refine (H _ _ _ _ _ _ H11)...
          OLSolve.
@@ -2648,8 +2648,8 @@ Qed.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
          do 2 OLSolve.
-         TFocus (makeLRuleB C F0 G).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeLRuleB C F0 G).
+         LLtensor (@nil oo) N.
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
          OLSolve.
@@ -2667,8 +2667,8 @@ Qed.
          rewrite H10 in isFN.
          inversion isFN...
          OLSolve.
-         TFocus (makeLRuleB C F0 G).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeLRuleB C F0 G).
+         LLtensor (@nil oo) N.
          rewrite H8.
          apply H17...
          refine (H _ _ _ _ _ _ H12)...
@@ -2681,8 +2681,8 @@ Qed.
          do 2 OLSolve.
          refine (H _ _ _ _ _ _ H12)...
          do 2 OLSolve.
-         TFocus (makeLRuleB C F0 G).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeLRuleB C F0 G).
+         LLtensor (@nil oo) N.
          apply H16...
          refine (H _ _ _ _ _ _ H11)...
          OLSolve.
@@ -2694,8 +2694,8 @@ Qed.
          apply H15...
          refine (H _ _ _ _ _ _ H9)...
          do 2 OLSolve.
-         TFocus (makeRRuleQ C FX).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeRRuleQ C FX).
+         LLtensor (@nil oo) N.
          apply H15...
          refine (H _ _ _ _ _ _ H11)...
          OLSolve.         
@@ -2705,43 +2705,43 @@ Qed.
          apply H15...
          refine (H _ _ _ _ _ _ H9)...
          do 2 OLSolve.
-         TFocus (makeLRuleQ C FX).
-         FLLsplit (@nil oo) N.
+         LLtheory (makeLRuleQ C FX).
+         LLtensor (@nil oo) N.
          apply H15...
          refine (H _ _ _ _ _ _ H11)...
          OLSolve.         
       + (* init *)
          apply FocusingInitRuleU in H2...
          rewrite H5.
-         TFocus (RINIT OO).
-         FLLsplit [ (⌈ OO ⌉)] [ (⌊ OO ⌋)].
-         TFocus (RINIT OO).
-         FLLsplit [ (⌈ OO ⌉)] (@nil oo).
-         TFocus (RINIT OO).
-         FLLsplit (@nil oo) [ (⌊ OO ⌋)].
-         TFocus (RINIT OO).
-         FLLsplit.
+         LLtheory (RINIT OO).
+         LLtensor [ (⌈ OO ⌉)] [ (⌊ OO ⌋)].
+         LLtheory (RINIT OO).
+         LLtensor [ (⌈ OO ⌉)] (@nil oo).
+         LLtheory (RINIT OO).
+         LLtensor (@nil oo) [ (⌊ OO ⌋)].
+         LLtheory (RINIT OO).
+         LLtensor.
       + (* pos *)
          apply FocusingStruct in H2...
-         TFocus (POS OO).
-         FLLsplit [ (⌊ OO ⌋)] x0.
+         LLtheory (POS OO).
+         LLtensor [ (⌊ OO ⌋)] x0.
          solveLL.
          refine (H _ _ _ _ _ _ H8)...
          OLSolve. OLSolve.
-         TFocus (POS OO).
-         FLLsplit (@nil oo) N.
+         LLtheory (POS OO).
+         LLtensor (@nil oo) N.
          solveLL.
          refine (H _ _ _ _ _ _ H8)...
          OLSolve.
       + (* neg *)
          apply FocusingStruct in H2...
-         TFocus (NEG OO).
-         FLLsplit [ (⌈ OO ⌉)] x0.
+         LLtheory (NEG OO).
+         LLtensor [ (⌈ OO ⌉)] x0.
          solveLL.
          refine (H _ _ _ _ _ _ H8)...
          OLSolve. OLSolve.
-         TFocus (NEG OO).
-         FLLsplit (@nil oo) N.
+         LLtheory (NEG OO).
+         LLtensor (@nil oo) N.
          solveLL.
          refine (H _ _ _ _ _ _ H8)...
          OLSolve.         

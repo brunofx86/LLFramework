@@ -83,17 +83,17 @@ solveLL;try solve [HProof];
 try
   match goal with
   | [H: MLLN _ ?n ?B ?L (DW ?F) |- MLLN _ ?m ?B ?L (DW (AOr ?F ?G))] =>
-      LLPlusL; HProof
+      LLleft; HProof
   | [H: MLLN _ ?n ?B ?L (DW ?G) |- MLLN _ ?m ?B ?L (DW (AOr ?F ?G))] =>
-      LLPlusR; HProof 
+      LLright; HProof 
   | [H: MLLN _ ?n ?B ?L (DW ?F) |- MLLS _ ?B ?L (DW (AOr ?F ?G))] =>
-      LLPlusL; HProof
+      LLleft; HProof
   | [H: MLLN _ ?n ?B ?L (DW ?G) |- MLLS _ ?B ?L (DW (AOr ?F ?G))] =>
-      LLPlusR; HProof 
+      LLright; HProof 
   | [H: MLLS _ ?B ?L (DW ?F) |- MLLS _ ?B ?L (DW (AOr ?F ?G))] =>
-      LLPlusL
+      LLleft
   | [H: MLLS _ ?B ?L (DW ?G) |- MLLS _ ?B ?L (DW (AOr ?F ?G))] =>
-      LLPlusR       
+      LLright       
  end; try solveF.
 
 

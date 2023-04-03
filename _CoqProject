@@ -25,9 +25,9 @@ PLL/CutElimination.v
 FOLL/Syntax.v
 
 # Monadic System
-FOLL/Monadic/Sequent.v
-FOLL/Monadic/PreTactics.v
-FOLL/Monadic/StructuralRules.v
+#FOLL/Monadic/Sequent.v
+#FOLL/Monadic/PreTactics.v
+#FOLL/Monadic/StructuralRules.v
 
 # Dyadic System
 FOLL/Dyadic/Sequent.v
@@ -52,79 +52,79 @@ FOLL/DyadicExc/CutElimination.v
 
 # ===== Object Logics ===== #
 
-OL/Syntax.v
-OL/SyntaxResults.v
+Framework/OL/Syntax.v
+Framework/OL/SyntaxResults.v
 
 # ===== Specification Logics ===== #
 
 # Focused System
-SL/FLL/Syntax.v
-SL/FLL/Sequent.v
-SL/FLL/PreTactics.v
-SL/FLL/StructuralRules.v
-SL/FLL/Derivations.v
-SL/FLL/Tactics.v
-SL/FLL/Reasoning.v
-SL/FLL/InvNegativePhase.v
-SL/FLL/InvPositivePhase.v
-SL/FLL/CutElimination.v
+Framework/SL/FLL/Syntax.v
+Framework/SL/FLL/Sequent.v
+Framework/SL/FLL/PreTactics.v
+Framework/SL/FLL/StructuralRules.v
+Framework/SL/FLL/Derivations.v
+Framework/SL/FLL/Tactics.v
+Framework/SL/FLL/Reasoning.v
+Framework/SL/FLL/InvNegativePhase.v
+Framework/SL/FLL/InvPositivePhase.v
+Framework/SL/FLL/CutElimination.v
 
 # Focused System as Framework
 
-SL/FLL/Specifications/OL2FLL.v
-SL/FLL/Specifications/OL2FLLResults.v
-SL/FLL/Specifications/StructuralClauses.v
-SL/FLL/Specifications/Bipoles.v
-SL/FLL/Specifications/CutCoherence.v
-SL/FLL/Specifications/Requirement1.v
-SL/FLL/Specifications/Requirement2.v
-SL/FLL/Specifications/OLTheory.v
+Framework/SL/FLL/Specifications/OL2FLL.v
+Framework/SL/FLL/Specifications/OL2FLLResults.v
+Framework/SL/FLL/Specifications/StructuralClauses.v
+Framework/SL/FLL/Specifications/Bipoles.v
+Framework/SL/FLL/Specifications/CutCoherence.v
+Framework/SL/FLL/Specifications/Requirement1.v
+Framework/SL/FLL/Specifications/Requirement2.v
+Framework/SL/FLL/Specifications/OLTheory.v
 
-#SL/FLL/Specifications/Substructural/OLCut.v
-#SL/FLL/Specifications/Substructural/MALL/Bipoles.v
-#SL/FLL/Specifications/Substructural/MALL/Cut.v
+#Framework/SL/FLL/Specifications/Substructural/OLCut.v
+#Framework/SL/FLL/Specifications/Substructural/MALL/Bipoles.v
+#Framework/SL/FLL/Specifications/Substructural/MALL/Cut.v
 
-SL/FLL/Specifications/Classical/OLCut.v
-SL/FLL/Specifications/Classical/LK/Bipoles.v
-SL/FLL/Specifications/Classical/LK/Cut.v
+Framework/SL/FLL/Specifications/Classical/OLCut.v
+Framework/SL/FLL/Specifications/Classical/LK/Bipoles.v
+Framework/SL/FLL/Specifications/Classical/LK/Cut.v
 
-SL/FLL/Specifications/Intuitionistic/OLCut.v
-SL/FLL/Specifications/Intuitionistic/LJ/Bipoles.v
-SL/FLL/Specifications/Intuitionistic/LJ/Cut.v
+Framework/SL/FLL/Specifications/Intuitionistic/OLCut.v
+Framework/SL/FLL/Specifications/Intuitionistic/LJ/Bipoles.v
+Framework/SL/FLL/Specifications/Intuitionistic/LJ/Cut.v
 
 # Linear Logic with Subexponentials
-SL/SELLF/Signature.v
-SL/SELLF/Syntax.v
-SL/SELLF/Locations.v
-SL/SELLF/Sequent.v
-SL/SELLF/PreTactics.v
-SL/SELLF/StructuralRules.v
-SL/SELLF/Tactics.v
-SL/SELLF/InvNegativePhase.v
-SL/SELLF/InvPositivePhase.v
-#SL/SELLF/CutElimination.v
+#Framework/SL/SELLF/Signature.v
+#Framework/SL/SELLF/Syntax.v
+#Framework/SL/SELLF/Locations.v
+#Framework/SL/SELLF/Sequent.v
+#Framework/SL/SELLF/PreTactics.v
+#Framework/SL/SELLF/StructuralRules.v
+#Framework/SL/SELLF/Tactics.v
+#Framework/SL/SELLF/InvNegativePhase.v
+#Framework/SL/SELLF/InvPositivePhase.v
+#Framework/SL/SELLF/CutElimination.v
 
 # Linear Logic with multi-modalities
-SL/MMLL/Signature.v
-SL/MMLL/Syntax.v
-SL/MMLL/Locations.v
-SL/MMLL/Sequent.v
-SL/MMLL/PreTactics.v
-SL/MMLL/StructuralRules.v
-SL/MMLL/Tactics.v
-SL/MMLL/InvNegativePhase.v
-SL/MMLL/InvPositivePhase.v
-SL/MMLL/CutEliminationUnb.v
-SL/MMLL/Reasoning.v
+Framework/SL/MMLL/Signature.v
+Framework/SL/MMLL/Syntax.v
+Framework/SL/MMLL/Locations.v
+Framework/SL/MMLL/Sequent.v
+Framework/SL/MMLL/PreTactics.v
+Framework/SL/MMLL/StructuralRules.v
+Framework/SL/MMLL/Tactics.v
+Framework/SL/MMLL/InvNegativePhase.v
+Framework/SL/MMLL/InvPositivePhase.v
+Framework/SL/MMLL/CutEliminationUnb.v
+Framework/SL/MMLL/Reasoning.v
 
 # Multi-modal System as Framework
 
-SL/MMLL/Specifications/OL2MLL.v
-SL/MMLL/Specifications/OL2MLLResults.v
-SL/MMLL/Specifications/StructuralClauses.v
-SL/MMLL/Specifications/Bipoles.v
-SL/MMLL/Specifications/CutCoherence.v
-SL/MMLL/Specifications/Requirement1.v
-#SL/MMLL/Specifications/Requirement2.v
-SL/MMLL/Specifications/OLTheory.v
-SL/MMLL/Specifications/Substructural/OLCut.v
+#Framework/SL/MMLL/Specifications/OL2MLL.v
+#Framework/SL/MMLL/Specifications/OL2MLLResults.v
+#Framework/SL/MMLL/Specifications/StructuralClauses.v
+#Framework/SL/MMLL/Specifications/Bipoles.v
+#Framework/SL/MMLL/Specifications/CutCoherence.v
+#Framework/SL/MMLL/Specifications/Requirement1.v
+#Framework/SL/MMLL/Specifications/Requirement2.v
+#Framework/SL/MMLL/Specifications/OLTheory.v
+#Framework/SL/MMLL/Specifications/Substructural/OLCut.v

@@ -30,30 +30,30 @@ Proof with sauto.
     apply FocusingClause in H...
    - left. exists x0... simpl. solveLL.
      intros.
-      TFocus ((makeRRuleC TT )).
+      LLtheory ((makeRRuleC TT )).
      inversion H1.
-     FLLsplit [⌈ t_ccon TT ⌉] Delta1.
+     LLtensor [⌈ t_ccon TT ⌉] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
-      TFocus ((makeRRuleC TT )).
+      LLtheory ((makeRRuleC TT )).
      inversion H2.
-     FLLsplit (@nil oo) Delta1.
+     LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists Requirement1.BCAxiom.  
     do 3 intro.
     apply FocusingClause in H...
    - left. exists x0... simpl. solveLL.
      intros.
-      TFocus ((makeLRuleC FF )).
+      LLtheory ((makeLRuleC FF )).
      inversion H1.
-     FLLsplit [⌊ t_ccon FF ⌋] Delta1.
+     LLtensor [⌊ t_ccon FF ⌋] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
-      TFocus ((makeLRuleC FF )).
+      LLtheory ((makeLRuleC FF )).
      inversion H2.
-     FLLsplit (@nil oo) Delta1.
+     LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists Requirement1.BCFail.  
     do 2 intro.
@@ -100,9 +100,9 @@ Proof with sauto.
       LLExact H2.
       LLExact H5.
       lia. intros.
-      TFocus (makeLRuleB OR Fo1 Go1).
+      LLtheory (makeLRuleB OR Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon OR Fo1 Go1 ⌋ ] Delta12. 
+      LLtensor [⌊ t_bcon OR Fo1 Go1 ⌋ ] Delta12. 
       simpl. solveLL. LLExact H1. LLExact H4.
     - apply FocusingWith in H4...
       exists Delta, [⌊ Fo1 ⌋],  [⌊ Go1 ⌋], x0, 4.
@@ -126,9 +126,9 @@ Proof with sauto.
       split... do 2 constructor... 
       inversion H0...  inversion H... 
       left. exists []...
-      FLLleft. solveLL. 
+      LLleft. solveLL. 
       apply seqNtoSeq in H5...
-      LFocus. 
+      LLfocus1. 
       lia. intros.
       LLPerm ([⌈ t_bcon OR Fo1 Go1 ⌉] ++ Delta1++[]).
       eapply InvTensorT'. exact H. solveLL.
@@ -138,9 +138,9 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       split... do 2 constructor... 
       inversion H0...  inversion H... 
       left. exists []...
-      FLLright. solveLL. 
+      LLright. solveLL. 
       apply seqNtoSeq in H5...
-      LFocus. 
+      LLfocus1. 
       lia. intros.
   LLPerm ([⌈ t_bcon OR Fo1 Go1 ⌉] ++ Delta1++[]).
       eapply InvTensorT'. exact H. solveLL.
@@ -152,9 +152,9 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       split... do 2 constructor... 
       inversion H0...  inversion H...
       right... 
-      FLLleft. solveLL. 
+      LLleft. solveLL. 
       apply seqNtoSeq in H5...
-      LFocus.
+      LLfocus1.
       lia. intros.
       simpl;solveLL...  
       eapply InvPlus... solveLL. LLExact H.        
@@ -163,9 +163,9 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       split... do 2 constructor... 
       inversion H0...  inversion H... 
       right... 
-      FLLright. solveLL. 
+      LLright. solveLL. 
       apply seqNtoSeq in H5...
-       LFocus.
+       LLfocus1.
       lia. intros.
       simpl... solveLL.
       eapply InvPlusComm... solveLL. LLExact H.       
@@ -178,32 +178,32 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       split... do 2 constructor... 
       inversion H0...  inversion H... 
       left. exists x0...
-      FLLleft. solveLL. 
+      LLleft. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2.
       lia. intros.
-      TFocus (makeLRuleB AND Fo1 Go1).
+      LLtheory (makeLRuleB AND Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon AND Fo1 Go1 ⌋] Delta1. 
-      FLLleft. solveLL. LLExact H1.
+      LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋] Delta1. 
+      LLleft. solveLL. LLExact H1.
       exists [⌊ Go1 ⌋], x1, 4.
       split... do 2 constructor... 
       inversion H0...  inversion H... 
       left. exists x0...
-      FLLright. solveLL. 
+      LLright. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2.
       lia. intros.
-      TFocus (makeLRuleB AND Fo1 Go1).
+      LLtheory (makeLRuleB AND Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon AND Fo1 Go1 ⌋] Delta1. 
-      FLLright. solveLL. LLExact H1.
+      LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋] Delta1. 
+      LLright. solveLL. LLExact H1.
     - apply FocusingPlus in H4...
       exists [⌊ Fo1 ⌋], x0, 4.
       split... do 2 constructor... 
       inversion H0...  inversion H...
       right... 
-      FLLleft. solveLL. 
+      LLleft. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2.
       lia. intros. simpl. solveLL.
@@ -214,7 +214,7 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       inversion H0...  inversion H... 
       right...
  simpl. 
-      FLLright. solveLL. 
+      LLright. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2.
       lia. intros.
@@ -238,9 +238,9 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
 (*       apply BangConN in H5... *)
       LLExact H5. 
       lia. intros.
-      TFocus (makeRRuleB AND Fo1 Go1).
+      LLtheory (makeRRuleB AND Fo1 Go1).
       solveTF. 
-      FLLsplit [⌈ t_bcon AND Fo1 Go1 ⌉ ] Delta12.
+      LLtensor [⌈ t_bcon AND Fo1 Go1 ⌉ ] Delta12.
      simpl. solveLL. LLExact H1. LLExact H4.  
     - apply FocusingWithPos in H4...
       exists Delta, [!⌈ Fo1 ⌉],  [!⌈ Go1 ⌉], x0, 4.
@@ -267,15 +267,15 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       do 2 constructor... 
       inversion H0...  inversion H... 
       left. split... simpl. 
-      FLLsplit (@nil oo) x0; solveLL. 
+      LLtensor (@nil oo) x0; solveLL. 
       apply seqNtoSeq in H2...
       apply seqNtoSeq in H5...
       LLExact H5.
       lia. intros.
-      TFocus (makeLRuleB IMP Fo1 Go1).
+      LLtheory (makeLRuleB IMP Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon IMP Fo1 Go1 ⌋ ] (Delta0). 
-      simpl. FLLsplit (@nil oo) (Delta0); solveLL.  LLExact H4.
+      LLtensor [⌊ t_bcon IMP Fo1 Go1 ⌋ ] (Delta0). 
+      simpl. LLtensor (@nil oo) (Delta0); solveLL.  LLExact H4.
     - apply FocusingTensorPos in H4...
       exists Delta, [⌈ Fo1 ⌉],  [⌊ Go1 ⌋], x0, 4.
       split... do 2 constructor... 
@@ -283,14 +283,14 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       do 2 constructor... 
       inversion H0...  inversion H... 
       right. split... simpl. solveLL.
-      FLLsplit (@nil oo) Delta; solveLL. 
+      LLtensor (@nil oo) Delta; solveLL. 
       apply seqNtoSeq in H2...
       apply seqNtoSeq in H5...
       LLExact H5.
       lia. intros.
       simpl; solveLL. 
      LLPerm ((! ⌈ Fo1 ⌉) ⊗ ⌊ Go1 ⌋ :: []++Delta0).
-     apply InvTensor';solveLL... LFocus.   LLExact H1.
+     apply InvTensor';solveLL... LLfocus1.   LLExact H1.
   + exists Requirement1.BOneP.
      do 3 intro. intros. 
      apply FocusingClause in H...
@@ -306,9 +306,9 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       apply seqNtoSeq in H1...
       LLExact H1.
       lia. intros.
-      TFocus (makeRRuleB IMP Fo1 Go1).
+      LLtheory (makeRRuleB IMP Fo1 Go1).
       solveTF. 
-      FLLsplit [⌈ t_bcon IMP Fo1 Go1 ⌉] Delta1. 
+      LLtensor [⌈ t_bcon IMP Fo1 Go1 ⌉] Delta1. 
       simpl. solveLL.  LLExact H2. 
     - apply FocusingParPos in H4...
       exists [!⌈ Go1 ⌉ ; ⌊ Fo1 ⌋], x0, 5.
@@ -373,15 +373,15 @@ Proof with sauto.
    - left. apply checkEncodeCasesD' in H3...  
      exists x1... simpl. solveLL.
      intros.
-      TFocus ((makeLRuleC FF )).
+      LLtheory ((makeLRuleC FF )).
      inversion H3.
-     FLLsplit [⌊ t_ccon FF ⌋] Delta1.
+     LLtensor [⌊ t_ccon FF ⌋] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
-      TFocus ((makeLRuleC FF )).
+      LLtheory ((makeLRuleC FF )).
      inversion H2.
-     FLLsplit (@nil oo) Delta1.
+     LLtensor (@nil oo) Delta1.
     simpl. solveLL.
 Qed.
 
@@ -419,9 +419,9 @@ Proof with sauto.
       LLExact H2.  rewrite <- H1... rewrite LEncodeApp...
       LLExact H5.  rewrite <- H1... rewrite LEncodeApp...
       lia. intros.
-      TFocus (makeLRuleB OR Fo1 Go1).
+      LLtheory (makeLRuleB OR Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon OR Fo1 Go1 ⌋ ]  Delta12.
+      LLtensor [⌊ t_bcon OR Fo1 Go1 ⌋ ]  Delta12.
       simpl. solveLL. LLExact H4. LLExact H6.
     - apply FocusingWith in H4...
       exists Delta, [ Fo1 ],  [ Go1], x0, 4.
@@ -435,9 +435,9 @@ Proof with sauto.
       LLExact H2. simpl... 
       LLExact H5. simpl...
       lia. intros.
-    (*   TFocus (makeLRuleBin OR Fo1 Go1).
+    (*   LLtheory (makeLRuleBin OR Fo1 Go1).
       solveTF. 
-   FLLsplit (@nil oo) (⌈ F ⌉ :: ⌞ Delta12 ⌟).       *) 
+   LLtensor (@nil oo) (⌈ F ⌉ :: ⌞ Delta12 ⌟).       *) 
       simpl. solveLL. 
       LLExact H. LLExact H1.
   + exists Requirement1.BOneP.
@@ -451,14 +451,14 @@ Proof with sauto.
       inversion H0...  inversion H3...  
      left. exists x. split... 
       rewrite H1...
-      FLLleft. solveLL. 
+      LLleft. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2. rewrite <- H1 ... rewrite LEncodeApp...
       lia. intros.
-      TFocus (makeLRuleB AND Fo1 Go1).
+      LLtheory (makeLRuleB AND Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
-      FLLleft. solveLL. LLExact H4. 
+      LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
+      LLleft. solveLL. LLExact H4. 
 
        apply checkEncodeCasesD' in H3...  
        exists  [Go1 ], x1, 4.
@@ -467,35 +467,35 @@ Proof with sauto.
       inversion H0...  inversion H3...  
      left. exists x. split... 
       rewrite H1...
-      FLLright. solveLL. 
+      LLright. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2.   rewrite <- H1 ... rewrite LEncodeApp...
       lia. intros.
-      TFocus (makeLRuleB AND Fo1 Go1).
+      LLtheory (makeLRuleB AND Fo1 Go1).
       solveTF. 
-      FLLsplit [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
-      FLLright. solveLL. LLExact H4. 
+      LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
+      LLright. solveLL. LLExact H4. 
      - apply FocusingPlus in H4...
        exists  [Fo1 ], x0, 4.
       split...
      constructor... 
       inversion H0...  inversion H...  
      right. split... 
-      FLLleft. solveLL. 
+      LLleft. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2. 
       lia. intros.
-  FLLleft. solveLL. LLExact H. 
+  LLleft. solveLL. LLExact H. 
 exists  [Go1 ], x0, 4.
       split...
      constructor... 
       inversion H0...  inversion H...  
      right. split... 
-      FLLright. solveLL. 
+      LLright. solveLL. 
       apply seqNtoSeq in H2...
       LLExact H2. 
       lia. intros.
-  FLLright. solveLL. LLExact H.
+  LLright. solveLL. LLExact H.
  + exists Requirement1.BTwoPM.
      do 3 intro. intros. 
      apply FocusingClause in H...
@@ -505,7 +505,7 @@ exists  [Go1 ], x0, 4.
       split... 1-2: constructor...  inversion H0... inversion H3... 
  constructor...  inversion H0... inversion H3...
       left. split... simpl. 
-      FLLsplit (@nil oo)  (⌞ x ⌟ ++ [⌈ F ⌉]) ; solveLL. 
+      LLtensor (@nil oo)  (⌞ x ⌟ ++ [⌈ F ⌉]) ; solveLL. 
       apply seqNtoSeq in H2...
       apply seqNtoSeq in H5...
       LLExact H5.   rewrite <- H1...
@@ -514,7 +514,7 @@ LLExact H5.   rewrite <- H1... rewrite LEncodeApp...
       LLPerm ([⌊ t_bcon IMP Fo1 Go1 ⌋] ++ (Delta0)).
      eapply InvTensorT'. exact H3. solveLL.  simpl.  solveLL. 
       LLPerm ((! ⌈ Fo1 ⌉) ⊗ ⌊ Go1 ⌋ :: [ ] ++  Delta0).
-       eapply InvTensor';solveLL. LFocus. 
+       eapply InvTensor';solveLL. LLfocus1. 
  LLExact H4. 
     - apply FocusingTensorPos in H4...
      exists Delta, [Go1 ]. exists [⌈ Fo1 ⌉], x0, 4.
@@ -527,12 +527,12 @@ constructor...
     inversion H...
 right.
       split... 
-      FLLsplit (@nil oo)  (⌞Delta⌟ ++ [⌈ F ⌉]) ; solveLL. 
+      LLtensor (@nil oo)  (⌞Delta⌟ ++ [⌈ F ⌉]) ; solveLL. 
       apply seqNtoSeq in H2...
       apply seqNtoSeq in H5...
       LLExact H5. LLExact H5. rewrite LEncodeApp... 
       lia. intros. simpl;solveLL.
-        FLLsplit (@nil oo)  Delta0; solveLL. 
+        LLtensor (@nil oo)  Delta0; solveLL. 
  LLExact H. 
 Qed.
 

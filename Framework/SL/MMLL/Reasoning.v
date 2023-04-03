@@ -113,11 +113,11 @@ Proof with sauto;try solveLL.
  Proof with sauto;solveLL.
   intros.
   inversion H...
-  all:try LFocus.
+  all:try LLfocus1.
   apply tri_store'...
-  LFocus.
+  LLfocus1.
   apply tri_store'...
-  LFocus.
+  LLfocus1.
 Qed.
  
  Lemma select B M L P: positiveLFormula P ->
@@ -132,7 +132,7 @@ Lemma TensorCommN: forall n F G B M,
  Proof with sauto;solvePolarity;try solveLL.
       intros.
       inversion H... 
-      LLTensor N M0 B0 D C.  
+      LLtensor N M0 B0 D C.  
       rewrite H2...
       rewrite H3...
  Qed.
@@ -142,7 +142,7 @@ Lemma TensorComm: forall F G B M,
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
-      LLTensor N M0 B0 D C.  
+      LLtensor N M0 B0 D C.  
       rewrite H2...
 rewrite H3...
  Qed.
@@ -585,7 +585,7 @@ split;eauto. rewrite H2...
      MLLS th B D (DW F) -> MLLS th B  (atom A::D) (DW ((perp A) ⊗ F)).
    Proof with sauto.
    intros.
-   LLTensor [atom A] D.
+   LLtensor [atom A] D.
    Qed.  
 
  Theorem FocusingClauseL' (SIU: UNoDSigMMLL): forall B D D' A F,
@@ -601,7 +601,7 @@ split;eauto. rewrite H2...
    Proof with sauto.
    intros.
    rewrite <- (app_nil_l D).
-   LLTensor (nil (A:=oo)) D.
+   LLtensor (nil (A:=oo)) D.
    apply InPermutation in H0...
    solveLL.
    Qed.  

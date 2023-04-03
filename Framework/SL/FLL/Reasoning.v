@@ -14,7 +14,7 @@ Section FLLReasoning.
  Proof with sauto;solveLL.
   intros.
   inversion H...
-  all:LFocus.
+  all:LLfocus1.
 Qed.
  
  Lemma select B M L P: positiveLFormula P ->
@@ -29,7 +29,7 @@ Lemma TensorCommN: forall n F G B M,
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
-      FLLsplit N M0... 
+      LLtensor N M0... 
       rewrite H2...
  Qed.
 
@@ -38,7 +38,7 @@ Lemma TensorComm: forall F G B M,
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
-      FLLsplit N M0... 
+      LLtensor N M0... 
       rewrite H2...
  Qed.
  
@@ -77,7 +77,7 @@ Lemma BangDistWith: forall F G B M,
     split;intros.
    *  inversion H...
        inversion H3...
-       FLLsplit.
+       LLtensor.
    *  inversion H...
        inversion H5...
        inversion H6...
@@ -430,7 +430,7 @@ split;eauto. rewrite H2...
      flls th B D (DW F) -> flls th B  (atom A::D) (DW ((perp A) ⊗ F)).
    Proof with sauto.
    intros.
-   FLLsplit [atom A] D.
+   LLtensor [atom A] D.
    Qed.  
 
  Theorem FocusingClauseL' : forall B D D' A F,
@@ -446,7 +446,7 @@ split;eauto. rewrite H2...
    Proof with sauto.
    intros.
    rewrite <- (app_nil_l D).
-   FLLsplit (nil (A:=oo)) D.
+   LLtensor (nil (A:=oo)) D.
    Qed.  
 
 

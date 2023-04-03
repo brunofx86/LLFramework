@@ -57,18 +57,18 @@ Theorem AbsorptionPerp :  forall n B M A X , th (perp A) -> flln th n B ((perp A
 Proof with solveLL.
   induction n;intros ;inversion H0;subst;eauto;clear H0...
   * checkPermutationCases H2. 
-     + FLLsplit x N. 
+     + LLtensor x N. 
          eapply IHn with (A:=A)...
           HProof.
-     + FLLsplit M0 x. 
+     + LLtensor M0 x. 
          eapply IHn with (A:=A)...
          HProof.
   * eapply IHn with (A:=A)...
      HProof.
   * checkPermutationCases H3. 
-     + TFocus (perp A).
+     + LLtheory (perp A).
          HProof.
-     + LFocus F x.
+     + LLfocus1 F x.
          eapply IHn with (A:=A)...
          HProof.
 Qed.
@@ -144,7 +144,7 @@ Qed.
       unfold RUpTheory. intros B L F M FT FNP FNN HD.
       destruct L.
       + inversion HD...
-        TFocus Top.
+        LLtheory Top.
       + inversion HD ...
     Qed.
 
@@ -162,22 +162,22 @@ Qed.
       + (* L1 is Empty *)
         inversion HD1... 
         ++
-          TFocus Top. 
+          LLtheory Top. 
         ++ 
-          TFocus (F0 & G). 
+          LLtheory (F0 & G). 
           apply seqNtoSeq in H4;auto.
           apply seqNtoSeq in H5;auto. 
         ++ 
           apply seqNtoSeq in H3;auto. 
         ++ 
-          TFocus (F0 ⅋ G). 
+          LLtheory (F0 ⅋ G). 
           apply seqNtoSeq in H3;auto. 
         ++ 
-          TFocus (? F0).
+          LLtheory (? F0).
           apply seqNtoSeq in H3;auto.
           solveLL. LLPerm (F0::B)... 
   ++ 
-           TFocus (∀{ FX}) ...
+           LLtheory (∀{ FX}) ...
             generalize (H5 x);intros.
             apply H in properX .
             apply seqNtoSeq in properX;auto. 
@@ -188,18 +188,18 @@ Qed.
           inversion H5;subst ...
         * checkPermutationCases H0.
           **
-            TFocus F.
+            LLtheory F.
             apply seqNtoSeq in H1;auto.
             rewrite <- H6;auto.
           **   
-            LFocus F0 x.
+            LLfocus1 F0 x.
             eapply HDown with (F:= F)...
             HProof.
         *
-          CFocus  F0. 
+          LLfocus2  F0. 
           eapply HDown with (F:= F);auto.
         *
-          TFocus F0 ...
+          LLtheory F0 ...
           eapply HDown with (F:= F);auto.
          + (* L is not empty *)
         inversion HD1;subst; try(
@@ -237,7 +237,7 @@ Qed.
          
           assert(flln th n0 B (F::x) (DW F0)).
           seqPerm H0 H2. 
-          FLLsplit x N.  
+          LLtensor x N.  
           apply HDown in H...
           HProof. 
         ++
@@ -248,13 +248,13 @@ Qed.
 
           apply HDown in H...
 
-         FLLsplit M0 x.   
+         LLtensor M0 x.   
        HProof.
       +
         assert(HRI: RIndTheory (S n0)) by ( apply IH;auto).
         destruct HRI as [HUp  HDown] ...
         apply HDown in H6 ...
-        FLLexists t.
+        LLexists t.
       + eapply UpExtension in H5...
         assert(HRI: RIndTheory x)  by (apply IH ;auto).
         destruct HRI as [HUp  HDown] ...
@@ -312,7 +312,7 @@ Qed.
       unfold RUp. intros B L F M FB HD.
       destruct L.
       + inversion HD...
-        CFocus Top.
+        LLfocus2 Top.
       + inversion HD ...
     Qed.
 
@@ -329,22 +329,22 @@ Qed.
       + (* L1 is Empty *)
         inversion HD... 
         ++
-        CFocus Top.
+        LLfocus2 Top.
         ++ 
-          CFocus (F0 & G). 
+          LLfocus2 (F0 & G). 
           apply seqNtoSeq in H4;auto.
           apply seqNtoSeq in H5;auto. 
         ++ 
           apply seqNtoSeq in H3;auto. 
         ++
-        CFocus (F0 ⅋ G).
+        LLfocus2 (F0 ⅋ G).
         apply seqNtoSeq in H3;auto.
         ++ 
-          CFocus (? F0). 
+          LLfocus2 (? F0). 
           apply seqNtoSeq in H3;auto.
           solveLL. LLPerm (F0::B)... 
      ++ 
-            CFocus (∀{ FX}).
+            LLfocus2 (∀{ FX}).
             solveLL. 
             generalize (H5 x);intro.
             apply H in properX.
@@ -357,18 +357,18 @@ Qed.
         * 
           checkPermutationCases H0. 
           **
-            CFocus F.
+            LLfocus2 F.
             inversion H0;inversion H...
             HProof. 
           **    
-            LFocus F0 x. 
+            LLfocus1 F0 x. 
             eapply HDown with (F:= F) ;auto.
             HProof.
         *
-          CFocus F0.
+          LLfocus2 F0.
             eapply HDown with (F:= F) ;auto.
         *
-          TFocus F0.
+          LLtheory F0.
             eapply HDown with (F:= F) ;auto.
        + (* L is not empty *)
         inversion HD;subst; try(
@@ -409,7 +409,7 @@ Qed.
           HProof.
           
           eapply HDown in H...
-          FLLsplit x N.  
+          LLtensor x N.  
           HProof.
         ++
           assert(HRI: RInd (S n0)) by (apply IH;auto).
@@ -418,13 +418,13 @@ Qed.
           HProof.
           
           eapply HDown in H...
-          FLLsplit M0 x.  
+          LLtensor M0 x.  
           HProof.
       +
         assert(HRI: RInd (S n0)) by ( apply IH;auto).
         destruct HRI as [HUp  HDown] ...
         eapply HDown in H6 ...
-        FLLexists t.
+        LLexists t.
       + eapply UpExtension in H5...
         assert(HRI: RInd x)  by (apply IH ;auto).
         destruct HRI as [HUp  HDown] ...
@@ -537,10 +537,10 @@ Qed.
       intros.
       destruct L.
       + inversion H1...
-        LFocus (∃{ FX}) M ...
-        FLLexists t.  
+        LLfocus1 (∃{ FX}) M ...
+        LLexists t.  
           rewrite <- H6.
-          FLLrelease... 
+          LLrelease... 
       + inversion H1...
     Qed.
 
@@ -555,34 +555,34 @@ Qed.
       + (* L1 is Empty *)
         inversion HD1... 
         ++
-        LFocus (∃{ FX}) M1...
-        FLLexists t.  
+        LLfocus1 (∃{ FX}) M1...
+        LLexists t.  
           rewrite <- H3.
-          FLLrelease...
-        ++ LFocus (∃{ FX}) M1...
-           FLLexists t.  
+          LLrelease...
+        ++ LLfocus1 (∃{ FX}) M1...
+           LLexists t.  
            rewrite <- H0.
-           FLLrelease...
+           LLrelease...
            apply seqNtoSeq in H4;auto. 
            apply seqNtoSeq in H5;auto.
-        ++ LFocus (∃{ FX}) M1...
-           FLLexists t.  
+        ++ LLfocus1 (∃{ FX}) M1...
+           LLexists t.  
            rewrite <- H0.
-           FLLrelease...
+           LLrelease...
            apply seqNtoSeq in H3;auto. 
-        ++ LFocus (∃{ FX}) M1...
-           FLLexists t.  
+        ++ LLfocus1 (∃{ FX}) M1...
+           LLexists t.  
            rewrite <- H0.
-           FLLrelease...
+           LLrelease...
            apply seqNtoSeq in H3;auto. 
-        ++ LFocus (∃{ FX}) M1...
-           FLLexists t.  
+        ++ LLfocus1 (∃{ FX}) M1...
+           LLexists t.  
            rewrite <- H0.
-           FLLrelease...
+           LLrelease...
            apply seqNtoSeq in H3;auto.
           solveLL. LLPerm (F::B)... 
-         ++  LFocus... 
-            FLLexists t.
+         ++  LLfocus1... 
+            LLexists t.
             rewrite <- H0...
             solveLL.
             generalize(H5 x properX);intro.
@@ -594,40 +594,40 @@ Qed.
           inversion H5;subst ...
         * 
           checkPermutationCases H0.
-          LFocus...
-          FLLexists t.
+          LLfocus1...
+          LLexists t.
           HProof.  
           destruct (NotAsynchronousPosAtoms H4).
           
-          LFocus F ((∃{ FX})::x).
+          LLfocus1 F ((∃{ FX})::x).
           rewrite H0...
           eapply HDown with (t:=t)...
           HProof.
           
-          LFocus...
-          FLLexists t.
-          FLLrelease...
-          FLLstore...
-          LFocus F (FX t::x )...
+          LLfocus1...
+          LLexists t.
+          LLrelease...
+          LLstore...
+          LLfocus1 F (FX t::x )...
           rewrite H0...
           HProof.
         *
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus... 
-            FLLexists t.
-           FLLrelease... 
+            LLfocus1... 
+            LLexists t.
+           LLrelease... 
            HProof. }
           eapply HDown in H1...
-          CFocus F.
+          LLfocus2 F.
      *   destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus... 
-            FLLexists t.
-           FLLrelease... 
+            LLfocus1... 
+            LLexists t.
+           LLrelease... 
            HProof. }
           eapply HDown in H1...
-          TFocus F.
+          LLtheory F.
       +
         (* L is not empty *)
         inversion HD1;subst; try(
@@ -673,7 +673,7 @@ Qed.
           auto using le_n_S.
           destruct HRI as [HUp  HDown] ...
           apply HDown in H2 ...
-          FLLsplit (∃{ FX}::x ) N.
+          LLtensor (∃{ FX}::x ) N.
           rewrite <- H1...
           HProof.
         ++ 
@@ -683,7 +683,7 @@ Qed.
           auto using le_n_S.
           destruct HRI as [HUp  HDown] ...
           apply HDown in H6 ...
-          FLLsplit M0 (∃{ FX}::x).
+          LLtensor M0 (∃{ FX}::x).
           rewrite <- H1; perm.
           HProof.
       +
@@ -691,7 +691,7 @@ Qed.
           auto using le_n_S.
           destruct HRI as [HUp  HDown] ...
           apply HDown in H6...
-          FLLexists t0.
+          LLexists t0.
          
       + eapply UpExtension in H5...
         assert(HRI: RIndExists x) by auto.
@@ -782,7 +782,7 @@ Qed.
       intros B L M F G HD.
       destruct L.
       + inversion HD;subst...
-        LFocus (Top ⊕ G) M...
+        LLfocus1 (Top ⊕ G) M...
       + inversion HD...
     Qed.
 
@@ -798,29 +798,29 @@ Qed.
       + (* L1 is Empty *)
         inversion HD1;subst ...
         ++
-          LFocus (Top ⊕ G).
+          LLfocus1 (Top ⊕ G).
         ++ 
-          LFocus ((F0 & G0) ⊕ G). 
-          FLLleft.
+          LLfocus1 ((F0 & G0) ⊕ G). 
+          LLleft.
           apply seqNtoSeq in H4;auto.
           apply seqNtoSeq in H5;auto.
            
         ++ 
-          LFocus (Bot ⊕ G). 
-          FLLleft.
+          LLfocus1 (Bot ⊕ G). 
+          LLleft.
           apply seqNtoSeq in H3;auto.
         ++
-          LFocus ((F0 ⅋ G0) ⊕ G). 
-          FLLleft.
+          LLfocus1 ((F0 ⅋ G0) ⊕ G). 
+          LLleft.
           apply seqNtoSeq in H3;auto.
         ++
-          LFocus ((? F0) ⊕ G). 
-          FLLleft.
+          LLfocus1 ((? F0) ⊕ G). 
+          LLleft.
           apply seqNtoSeq in H3;auto.
 solveLL. LLPerm (F0::B)...
           ++
-            LFocus...
-            FLLleft.
+            LLfocus1...
+            LLleft.
             solveLL.
             generalize (H5 x properX);intro.
             apply seqNtoSeq in H;auto.
@@ -831,42 +831,42 @@ solveLL. LLPerm (F0::B)...
           inversion H5;subst ...
         *  
           checkPermutationCases H0. 
-          LFocus...
-          FLLleft.
+          LLfocus1...
+          LLleft.
           HProof.
       
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus...
-            FLLleft.
-            FLLrelease.
-            FLLstore... 
-            LFocus F0 (F::x)...
+            LLfocus1...
+            LLleft.
+            LLrelease.
+            LLstore... 
+            LLfocus1 F0 (F::x)...
             rewrite H0...
             HProof.
           }
-          LFocus F0 ((F ⊕ G)::x).
+          LLfocus1 F0 ((F ⊕ G)::x).
           rewrite H0...
           eapply HDown... 
           HProof.
          * 
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus (F ⊕ G) M1...
-            FLLleft.
+            LLfocus1 (F ⊕ G) M1...
+            LLleft.
             inversion H2...
             HProof.
           }
-          CFocus F0. 
+          LLfocus2 F0. 
          * 
           destruct (NotAsynchronousPosAtoms H4).
           2:{
-            LFocus (F ⊕ G) M1...
-            FLLleft.
+            LLfocus1 (F ⊕ G) M1...
+            LLleft.
             inversion H2...
             HProof.
           }
-          TFocus F0.
+          LLtheory F0.
        + (* L is not empty *)
         inversion HD1;subst; try(
                                  assert(RIndPlus n) by ( apply IH;auto);
@@ -900,13 +900,13 @@ solveLL. LLPerm (F0::B)...
        
        checkPermutationCases H1.
        ++
-       FLLsplit ((F ⊕ G) ::x) N...
+       LLtensor ((F ⊕ G) ::x) N...
        rewrite <- H1...  
        apply HDown...
        HProof.
        HProof.
        ++
-       FLLsplit M0 ((F ⊕ G) ::x)...
+       LLtensor M0 ((F ⊕ G) ::x)...
        rewrite <- H1...  
        HProof.
        apply HDown...
@@ -915,7 +915,7 @@ solveLL. LLPerm (F0::B)...
       +
         assert(HRI: RIndPlus (S n0)) by auto.
         destruct HRI as [HUp  HDown] ...
-        FLLexists t.
+        LLexists t.
      + 
        apply UpExtension in H5...
         assert(HRI: RIndPlus x)  by auto.
@@ -989,15 +989,15 @@ solveLL. LLPerm (F0::B)...
         inversion H0...
         ++ 
           checkPermutationCases H2.
-          FLLsplit (G ⊕ F::x) N...
+          LLtensor (G ⊕ F::x) N...
           rewrite <- H5...
           apply H... HProof.
           
-          FLLsplit M0 (G ⊕ F::x)...
+          LLtensor M0 (G ⊕ F::x)...
           rewrite <- H5...
           apply H... HProof.
         ++
-          FLLexists t. 
+          LLexists t. 
        
         ++
           assert (flln th n B (F ⊕ G::(M ++ [F0])) (UP M0)).
@@ -1007,19 +1007,19 @@ solveLL. LLPerm (F0::B)...
         ++ 
           checkPermutationCases H3. 
           
-          LFocus...
+          LLfocus1...
           apply OplusCommN.
           HProof.
          
          
-          LFocus F0  (G ⊕ F::x)...
+          LLfocus1 F0  (G ⊕ F::x)...
           rewrite H3...
           apply H ...
           HProof.
           ++
-       CFocus F0.
+       LLfocus2 F0.
           ++
-       TFocus F0.
+       LLtheory F0.
        
        
     Qed.
@@ -1106,8 +1106,8 @@ solveLL. LLPerm (F0::B)...
       +
         inversion HD1...
         inversion HD2...
-        LFocus (Top ⊗ Top) (M++M')... 
-        FLLsplit M M' . 
+        LLfocus1 (Top ⊗ Top) (M++M')... 
+        LLtensor M M' . 
       + 
         inversion H3...
         solveLL. 
@@ -1133,14 +1133,14 @@ solveLL. LLPerm (F0::B)...
         inversion H0...
         ++ 
           checkPermutationCases H2. 
-        * FLLsplit (G ⊗ F::x) N.
+        * LLtensor (G ⊗ F::x) N.
           rewrite <- H5...
           apply H... HProof. 
-        * FLLsplit M0 (G ⊗ F::x).
+        * LLtensor M0 (G ⊗ F::x).
           rewrite <- H5...
           apply H... HProof. 
        ++  
-            FLLexists t. 
+            LLexists t. 
         ++ 
             assert(flln th n B (F ⊗ G::(M ++ [F0])) (UP M0)).
             LLExact H3.
@@ -1148,17 +1148,17 @@ solveLL. LLPerm (F0::B)...
             HProof.
         ++ checkPermutationCases H3. 
             2:{ 
-             LFocus F0 (G ⊗ F::x).
+             LLfocus1 F0 (G ⊗ F::x).
              rewrite H3...
               apply H...
               HProof. }
-            LFocus.
+            LLfocus1.
             apply TensorCommN.
             HProof.
           ++  
-            CFocus F0 ...
+            LLfocus2 F0 ...
          ++  
-            TFocus F0 ...
+            LLtheory F0 ...
         Qed.
 
 
@@ -1296,9 +1296,9 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
        flls th B (F ⊗ G:: M1 ++ M2) (UP []).
     Proof.
       intros.
-      LFocus (F ⊗ G). 
-      all:FLLsplit M1 M2...
-      all: FLLrelease.
+      LLfocus1 (F ⊗ G). 
+      all:LLtensor M1 M2...
+      all: LLrelease.
       all:HProof.
     Qed.  
   
@@ -1313,17 +1313,17 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
       intros. 
       apply NotAsynchronousPosAtoms in H0; destruct H0 as [AG | AG].
       2:{
-        (* G is a positive atom... then, FLLrelease works (Lemma  ITCaseAsyncAsync) *)
+        (* G is a positive atom... then, LLrelease works (Lemma  ITCaseAsyncAsync) *)
         eapply ITCaseAsyncAsync with (n:=n) (m:=S m) (B:=B) ;eauto. } 
       +
-        (* G cannot do FLLrelease *)
+        (* G cannot do LLrelease *)
         inversion H4...
         ++ checkPermutationCases H5.
-        *   LFocus (F ⊗ G). 
-            FLLsplit M1 M2.
-            FLLrelease. all:HProof.
+        *   LLfocus1 (F ⊗ G). 
+            LLtensor M1 M2.
+            LLrelease. all:HProof.
         * 
-          LFocus F0 ((F ⊗ G) ::M1 ++ x)...
+          LLfocus1 F0 ((F ⊗ G) ::M1 ++ x)...
           rewrite H5...
           
           assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto); destruct IH2 as [HUp HDw].
@@ -1336,14 +1336,14 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
      ++ assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto);
          destruct IH2 as [HUp HDw].
          assert(Hn : n + S n0 -1 = n + n0) by lia;rewrite Hn in HDw;clear Hn.
-          CFocus F0.
+          LLfocus2 F0.
             apply TensorComm'.
             rewrite (Permutation_app_comm M1).   
             eapply HDw with (m:= n) (n:= n0) (B:=B);try(lia)...
       ++ assert(IH2 : RIndTensor(n + S n0)) by(  apply H1;auto);
          destruct IH2 as [HUp HDw].
          assert(Hn : n + S n0 -1 = n + n0) by lia;rewrite Hn in HDw;clear Hn.
-          TFocus F0.
+          LLtheory F0.
             apply TensorComm'.
             rewrite (Permutation_app_comm M1).   
             eapply HDw with (m:= n) (n:= n0) (B:=B);try(lia)...           
@@ -1377,14 +1377,14 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
         apply TensorComm'.
             rewrite (Permutation_app_comm M1). 
         eapply ITAsyncSync with (nm:=nm) (n:= S m) (m:= n) (B:=B) ... lia. }
-     1:{ (* F nor G can do FLLrelease *)
+     1:{ (* F nor G can do LLrelease *)
         inversion HD1...
         inversion HD2...
           
         inversion H7;subst...
         2:{
         
-        CFocus F0. 
+        LLfocus2 F0. 
         apply TensorComm'.
             rewrite (Permutation_app_comm M1). 
         
@@ -1395,7 +1395,7 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
         }
         
        checkPermutationCases H0.
-       2:{ LFocus F0 ((F ⊗ G) :: M1++x).
+       2:{ LLfocus1 F0 ((F ⊗ G) :: M1++x).
            rewrite H0...
           assert (IH' : RIndTensor (n0 + S (S n))) by ( apply IH; lia).
           destruct IH' as [HUp  HDw].
@@ -1406,7 +1406,7 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
         inversion H5;subst...
         2:{
         
-        CFocus F0. 
+        LLfocus2 F0. 
         
           assert (IH' : RIndTensor ( S (S (S n0)) + n1 )) by ( apply IH; lia).
           destruct IH' as [HUp  HDw].
@@ -1414,7 +1414,7 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
           eapply  HDw... }
       
        checkPermutationCases H2.
-       2:{ LFocus F0 ((F ⊗ G) :: x++M2).
+       2:{ LLfocus1 F0 ((F ⊗ G) :: x++M2).
            rewrite H2...
           assert (IH' : RIndTensor (S n0 + S (S n1))) by ( apply IH; lia).
           destruct IH' as [HUp  HDw].
@@ -1422,18 +1422,18 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
           eapply HDw...
            HProof. }
         -   
-       LFocus.
-       FLLsplit M1 M2...
+       LLfocus1.
+       LLtensor M1 M2...
        all:HProof.
        - 
-        TFocus F0. 
+        LLtheory F0. 
           assert (IH' : RIndTensor (S (S n0) + S n1)) by ( apply IH; lia).
           destruct IH' as [HUp  HDw].
           assert(Hn : S (S n0) + S n1 - 1 = S (S n0) + n1) by lia;rewrite Hn in HDw;clear Hn.
           eapply  HDw with (n:= n1) (m:= S (S n0))...
          lia. 
       -   
-        TFocus F0. 
+        LLtheory F0. 
           assert (IH' : RIndTensor (S (S n0) + n)) by ( apply IH; try lia).
           destruct IH' as [HUp  HDw].
           assert(Hn : S (S n0) + n - 1 = (S n0) + n) by lia;rewrite Hn in HDw;clear Hn.
@@ -1533,13 +1533,13 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
         assert(HRI: RIndTensor (S m +n1)) by (apply IH ; lia).
         destruct HRI as [HUp  HDown] ...
         assert(Hn : S m + n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
-        FLLleft. 
+        LLleft. 
         eapply HDown  with (n:=n1) (m:=m)  (B:=B)  ... lia. 
       +
         assert(HRI: RIndTensor (S m +n1)) by (apply IH ; lia).
         destruct HRI as [HUp  HDown] ...
         assert(Hn : S m + n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
-        FLLright. 
+        LLright. 
         eapply HDown  with (n:=n1) (m:=m)  (B:=B) ... lia. 
       +
       checkPermutationCases H1.
@@ -1548,7 +1548,7 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
           destruct HRI as [HUp  HDown] ...
           simpl in HDown.
            CleanContext.
-          FLLsplit (F ⊗ G::x ++ M') N ...
+          LLtensor (F ⊗ G::x ++ M') N ...
           rewrite <- H1... 
           eapply HDown with (m:=m) (n:=n1) (B:=B)  ;try lia...
           HProof.
@@ -1559,7 +1559,7 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
           destruct HRI as [HUp  HDown] ...
           simpl in HDown.
           rewrite Nat.sub_0_r in HDown.
-          FLLsplit M0 (F ⊗ G::x ++ M' ). 
+          LLtensor M0 (F ⊗ G::x ++ M' ). 
           rewrite <- H1... 
           HProof.
           eapply HDown with (m:=m) (n:=n1) (B:=B)  ;try lia...
@@ -1568,7 +1568,7 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
         assert(HRI: RIndTensor (m + S n1 )) by ( apply IH;lia).
         destruct HRI as [HUp  HDown] ...
         assert(Hn : m + S n1 -1 =  m + n1) by lia;rewrite Hn in HDown;clear Hn.
-        FLLexists t. 
+        LLexists t. 
                 eapply HDown with (n:=n1) (m:=m) (B:=B) ...  
         lia.
      +

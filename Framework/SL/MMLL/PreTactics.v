@@ -381,68 +381,68 @@ Ltac SplitContext' n :=
 (** Notation for forward reasoning on  MLLSuents *)
 
 (* Focusing on positive formulas *)
-Tactic Notation "LFocus" := match goal with
+Tactic Notation "LLfocus1" := match goal with
     | [ |- MLLS _ _ (?P::?PL) _ ] =>  eapply @tri_dec1' with (F:= P) (L':=PL);[solveF | sauto | sauto ]
     | [|- MLLN _ _ _ (?P::?PL) _] => eapply @tri_dec1 with (F:= P) (L':=PL);[solveF | sauto | sauto ]
 end.
 
-Tactic Notation "LFocus"  constr(R) := match goal with
+Tactic Notation "LLfocus1"  constr(R) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R);[solveF | sauto | sauto ]
     | [|- MLLN _ _ _ _ _] => eapply @tri_dec1 with (F:= R);[solveF | sauto | sauto]
 end.
 
-Tactic Notation "LFocus"  constr(R) constr(T) := match goal with
+Tactic Notation "LLfocus1"  constr(R) constr(T) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R) (L':=T);[solveF | sauto | sauto ]
     | [|- MLLN _ _ _ _ _] => eapply @tri_dec1 with (F:= R) (L':=T);[solveF | sauto | sauto]
 end.
 
 (* Focusing on unbounded formulas *)
-Tactic Notation "UFocus" := match goal with
+Tactic Notation "LLfocus2" := match goal with
     | [ |- MLLS _ ((?a,?P)::_) _ _ ] =>  eapply @tri_dec2u' with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
     | [|- MLLN _ _ ((?a,?P)::_) _ _] => eapply @tri_dec2u with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
                                                                      
-Tactic Notation "UFocus"  constr(a) constr(S) := match goal with
+Tactic Notation "LLfocus2"  constr(a) constr(S) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec2u' with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
     | [|- MLLN _ _ _ _ _] => eapply @tri_dec2u with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
 
 (* Focusing on bounded formulas *)
-Tactic Notation "BFocus" := match goal with
+Tactic Notation "LLfocus3" := match goal with
     | [ |- MLLS _ ((?a,?P)::_) _ _ ] =>  eapply @tri_dec2l' with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
     | [|- MLLN _ _ ((?a,?P)::_) _ _] => eapply @tri_dec2l with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
 
-Tactic Notation "BFocus"  constr(a) constr(S) := match goal with
+Tactic Notation "LLfocus3"  constr(a) constr(S) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec2l' with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
     | [|- MLLN _ _ _ _ _] => eapply @tri_dec2l with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
                                                                      
-Tactic Notation "BFocus"  constr(a) constr(S) constr(T):= match goal with
+Tactic Notation "LLfocus3"  constr(a) constr(S) constr(T):= match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec2l' with (F:= S) (i:=a) (B':= T);[sauto | sauto | solveF | sauto | sauto ]
     | [|- MLLN _ _ _ _ _] => eapply @tri_dec2l with (F:= S) (i:=a) (B':= T);[sauto | sauto | solveF | sauto | sauto ]
 end.
 
 (* Focusing on formulas in theory *)
-Tactic Notation "TFocus"  constr(S) := match goal with
+Tactic Notation "LLtheory"  constr(S) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec3' with (F:= S);[sauto | solveF | sauto]
     | [|- MLLN _ _ _ _ _] => eapply @tri_dec3 with (F:= S);[ sauto | solveF | sauto]
 end.
 
 (* Multiplicative conjuction with bounded formulas *)
-Tactic Notation "LLTensor"  constr(Ctx1) constr(Ctx2) constr(Ctx3) constr(Ctx4) constr(Ctx5) := match goal with
+Tactic Notation "LLtensor"  constr(Ctx1) constr(Ctx2) constr(Ctx3) constr(Ctx4) constr(Ctx5) := match goal with
                                                        | [ |- MLLS _ _ _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2) (B:=Ctx3) (C:=Ctx4) (D:=Ctx5);solveF
                                                        | [|- MLLN _ _ _ _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2) (B:=Ctx3) (C:=Ctx4) (D:=Ctx5);solveF
                                                        end.
 
 
 (* Multiplicative conjuction with no bounded formulas *)
-Tactic Notation "LLTensor"  constr(Ctx1) constr(Ctx2) := match goal with
+Tactic Notation "LLtensor"  constr(Ctx1) constr(Ctx2) := match goal with
                | [ |- MLLS _ ?BC _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2) (B:=BC) (C:=nil) (D:=nil);solveF
                | [|- MLLN _ _ ?BC _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2) (B:=BC) (C:=nil) (D:=nil);solveF
                  end.
 
-Tactic Notation "LLTensor"  := match goal with
+Tactic Notation "LLtensor"  := match goal with
                | [ |- MLLS _ ?BC [] _ ] =>  eapply @tri_tensor' with (M:=nil) (N:=nil) (B:=BC) (C:=nil) (D:=nil);solveF
                | [|- MLLN _ _ ?BC [] _] => eapply @tri_tensor with (M:=nil) (N:=nil) (B:=BC) (C:=nil) (D:=nil);solveF
                  end.
@@ -476,7 +476,7 @@ Global Hint Resolve allSeTU permSeTL permSeTL': core.
   MLLN th n B N (DW G) -> MLLN th (S n) B MN (DW (MAnd F  G)).
   Proof.   
   intros.
-  LLTensor M N.   Qed.
+  LLtensor M N.   Qed.
 
  Lemma tensorU' (OLS: OLSig) (SI : SigMMLL) th B MN M N F G:    SetU B ->    
   Permutation MN (M ++ N) ->
@@ -484,99 +484,99 @@ Global Hint Resolve allSeTU permSeTL permSeTL': core.
   MLLS th B N (DW G) -> MLLS th B MN (DW (MAnd F G)).
   Proof.   
   intros.
-  LLTensor M N. 
+  LLtensor M N. 
   Qed.
 
 (* Additive conjuction *)
-Tactic Notation "LLWith" := match goal with
+Tactic Notation "LLwith" := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_with';sauto
     | [|- MLLN _ _ _ _ _] => eapply @tri_with;sauto
 end.
 
 (* Additive disjuction *)
-Tactic Notation "LLPlusL" := match goal with
+Tactic Notation "LLleft" := match goal with
                            | [ |- MLLS _ _ _ _ ] =>   apply tri_plus1';sauto
                            | [|- MLLN _ _ _ _ _] =>  apply tri_plus1;sauto
                             end.
 
-Tactic Notation "LLPlusR" := match goal with
+Tactic Notation "LLright" := match goal with
    | [ |- MLLS _ _ _ _ ] =>   apply tri_plus2';sauto
    | [|- MLLN _ _ _ _ _] =>  apply tri_plus2;sauto
 end.
 
 (* Multiplicative disjuction *)
-Tactic Notation "LLPar" := match goal with
+Tactic Notation "LLpar" := match goal with
                          | [ |- MLLS _ _ _ _ ] =>  apply tri_par';sauto
                          | [|- MLLN _ _ _ _ _] => apply tri_par;sauto
                          end.
 
 (* Quantifiers *)
-Tactic Notation "LLExists" constr(tt) :=  match goal with
+Tactic Notation "LLexists" constr(tt) :=  match goal with
    | [ |- MLLS _ _ _ _ ] => eapply @tri_ex' with (t:=tt);try solveUniform;sauto
    | [|- MLLN _ _ _ _ _] => eapply @tri_ex with (t:=tt);try solveUniform;sauto
 end.
 
-Tactic Notation "LLForall" := match goal with
+Tactic Notation "LLforall" := match goal with
    | [ |- MLLS _ _ _ _ ] => eapply @tri_fx'; intros;sauto
    | [|- MLLN _ _ _ _ _] => eapply @tri_fx; intros;sauto
 end.
 
 (* Storing formulas *)
-Tactic Notation "LLStore" := match goal with
+Tactic Notation "LLstore" := match goal with
        | [ |- MLLS _ _ _ _ ] =>  apply tri_store';[solveF | auto]
        | [|- MLLN _ _ _ _ _] => apply tri_store;[solveF | auto]
                            end. 
 
-Tactic Notation "LLStoreC" := match goal with
+Tactic Notation "LLstorec" := match goal with
        | [ |- MLLS _ _ _ _ ] =>  apply tri_quest';sauto
        | [|- MLLN _ _ _ _ _] => apply tri_quest;sauto
                            end.
 
 (* Changing to the negative phase *)
-Tactic Notation "LLRelease" := match goal with
+Tactic Notation "LLrelease" := match goal with
                          | [ |- MLLS _ _ _ _ ] =>  apply tri_rel';[solveF | auto]
                          | [|- MLLN _ _ _ _ _] => apply tri_rel;[solveF | auto]
                          end. 
 
 (* Axioms *)   
-Tactic Notation "init1"  := match goal with
+Tactic Notation "LLinit1"  := match goal with
      | [ |- MLLS _ _ _ _ ] =>  apply tri_init1';try SLSolve;auto
      | [|- MLLN _ _ _ _ _] => apply tri_init1;try SLSolve;auto
                           end.
 
 
-Tactic Notation "init2" constr(a) constr(b) := match goal with
+Tactic Notation "LLinit2" constr(a) constr(b) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_init2' with (i:=a) (C:=b);[try SLSolve | auto | try perm ];auto
     | [|- MLLN _ _ _ _ _] => eapply @tri_init2 with (i:=a) (C:=b);[try SLSolve | auto | try perm ];auto
                           end.
 
-Tactic Notation "init2" constr(a) := match goal with
+Tactic Notation "LLinit2" constr(a) := match goal with
     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_init2' with (i:=a)
    | [|- MLLN _ _ _ _ _] => eapply @tri_init2 with (i:=a) 
                           end.
                           
-Tactic Notation "init2" := match goal with
+Tactic Notation "LLinit2" := match goal with
      | [ |- MLLS _ _ _ _ ] =>  eapply @tri_init2'
     | [|- MLLN _ _ _ _ _] => eapply @tri_init2
                           end.
 
-Tactic Notation "LLOne"  := match goal with
+Tactic Notation "LLone"  := match goal with
                           | [ |- MLLS _ _ _ _ ] =>  apply tri_one';SLSolve
                           | [|- MLLN _ _ _ _ _] => apply tri_one;SLSolve
                           end.
 
-Tactic Notation "LLTop"  := match goal with
+Tactic Notation "LLtop"  := match goal with
                           | [ |- MLLS _ _ _ _ ] =>  apply tri_top'
                           | [|- MLLN _ _ _ _ _] => apply tri_top
                           end.
 
 (* Others rules *)
-Tactic Notation "LLBot"  := match goal with
+Tactic Notation "LLbot"  := match goal with
                           | [ |- MLLS _ _ _ _ ] =>  apply tri_bot';sauto
                           | [|- MLLN _ _ _ _ _] => apply tri_bot;sauto
                           end.
                           
-Tactic Notation "LLBang"  := match goal with
+Tactic Notation "LLbang"  := match goal with
                           | [ |- MLLS _ _ _ _ ] =>  apply tri_bangL';sauto
                           | [|- MLLN _ _ _ _ _] => apply tri_bangL;sauto
                           end.
@@ -622,93 +622,93 @@ Tactic Notation "finishExp"  := match goal with
   
    Ltac negativePhaseReasoning :=
   try match goal with  
-  | [ |- MLLS _ _ _ (UP  ((AAnd _ _)::_))] => LLWith 
-  | [ |- MLLS _ _ _ (UP ((MOr ?F ?G)::_))] => LLPar
-  | [ |- MLLS _ _ _ (UP ((Quest ?i) ?F :: _))] => LLStoreC
-  | [ |- MLLS _ _ _ (UP (Bot :: _))] => LLBot
+  | [ |- MLLS _ _ _ (UP  ((AAnd _ _)::_))] => LLwith 
+  | [ |- MLLS _ _ _ (UP ((MOr ?F ?G)::_))] => LLpar
+  | [ |- MLLS _ _ _ (UP ((Quest ?i) ?F :: _))] => LLstorec
+  | [ |- MLLS _ _ _ (UP (Bot :: _))] => LLbot
   | [ |- MLLS _ _ _ (UP ( (All _) :: _)) ] => let x:= fresh "x" in
                                               let xp := fresh "properX" in
                                               apply tri_fx' ; try solveUniform ; intros x xp
 
  (* Storing formulas *)
-  | [H: positiveLFormula ?F |- MLLS _ _ _ (UP (?F :: ?M))] => LLStore
+  | [H: positiveLFormula ?F |- MLLS _ _ _ (UP (?F :: ?M))] => LLstore
     | [|- MLLS _ _ _ (UP  (?F::_))] =>
       match F with
-      | AOr _ _ => LLStore
-      | MAnd _ _  => LLStore
-      | Some _ =>LLStore
-      | (atom _)  => LLStore
-      | (perp _)  => LLStore
-      | One  => LLStore
-      | Zero => LLStore
+      | AOr _ _ => LLstore
+      | MAnd _ _  => LLstore
+      | Some _ =>LLstore
+      | (atom _)  => LLstore
+      | (perp _)  => LLstore
+      | One  => LLstore
+      | Zero => LLstore
       end
     end.
 
   Ltac negativePhaseReasoningN :=
   try match goal with  
-  | [ |- MLLN _ _ _ _ (UP  ((AAnd _ _)::_))] => LLWith 
-  | [ |- MLLN _ _ _ _ (UP ((MOr ?F ?G)::_))] => LLPar
-  | [ |- MLLN _ _ _ _ (UP ((Quest ?i) ?F :: _))] => LLStoreC
-  | [ |- MLLN _ _ _ _ (UP (Bot :: _))] => LLBot
+  | [ |- MLLN _ _ _ _ (UP  ((AAnd _ _)::_))] => LLwith 
+  | [ |- MLLN _ _ _ _ (UP ((MOr ?F ?G)::_))] => LLpar
+  | [ |- MLLN _ _ _ _ (UP ((Quest ?i) ?F :: _))] => LLstorec
+  | [ |- MLLN _ _ _ _ (UP (Bot :: _))] => LLbot
   | [ |- MLLN _ _ _ _ (UP ( (All _) :: _)) ] => let x:= fresh "x" in
                                               let xp := fresh "properX" in
                                               apply tri_fx' ; try solveUniform ; intros x xp
 
  (* Storing formulas *)
-  | [H: positiveLFormula ?F |- MLLN _ _ _ _ (UP (?F :: ?M))] => LLStore
+  | [H: positiveLFormula ?F |- MLLN _ _ _ _ (UP (?F :: ?M))] => LLstore
     | [|- MLLN _ _ _ _ (UP  (?F::_))] =>
       match F with
-      | AOr _ _ => LLStore
-      | MAnd _ _  => LLStore
-      | Some _ =>LLStore
-      | (atom _)  => LLStore
-      | (perp _)  => LLStore
-      | One  => LLStore
-      | Zero => LLStore
+      | AOr _ _ => LLstore
+      | MAnd _ _  => LLstore
+      | Some _ =>LLstore
+      | (atom _)  => LLstore
+      | (perp _)  => LLstore
+      | One  => LLstore
+      | Zero => LLstore
       end
     end.
 
   Ltac positivePhaseReasoning :=
   try match goal with  
-  | [USI : UNoDSigMMLL |- MLLS _ _ [] (DW  (MAnd _ _))] => LLTensor (@nil oo)  (@nil oo) 
-  | [H: MLLS ?th ?B ?L (DW ?F) |- MLLS ?th ?B ?L (DW (AOr ?F ?G))] => LLPlusL 
-  | [H: MLLS ?th ?B ?L (DW ?G) |- MLLS ?th ?B ?L (DW (AOr ?F ?G))] => LLPlusR 
+  | [USI : UNoDSigMMLL |- MLLS _ _ [] (DW  (MAnd _ _))] => LLtensor (@nil oo)  (@nil oo) 
+  | [H: MLLS ?th ?B ?L (DW ?F) |- MLLS ?th ?B ?L (DW (AOr ?F ?G))] => LLleft 
+  | [H: MLLS ?th ?B ?L (DW ?G) |- MLLS ?th ?B ?L (DW (AOr ?F ?G))] => LLright 
   | [ |- MLLS _ _ _ (DW (Bang loc _))] => apply tri_bangL';negativePhaseReasoning
  
      (* Change of polarity *)
-    | [H: negativeFormula ?F |- MLLS _ _ _ (DW  ?F)] => LLRelease;negativePhaseReasoning
+    | [H: negativeFormula ?F |- MLLS _ _ _ (DW  ?F)] => LLrelease;negativePhaseReasoning
     | [|- MLLS _ _ _ (DW  ?F)] =>
       match F with
-      | MOr _ _ => LLRelease;negativePhaseReasoning
-      | All _ =>LLRelease;negativePhaseReasoning
-      | Bot  => LLRelease;negativePhaseReasoning
-      | (atom _)  => LLRelease;negativePhaseReasoning
-      | Top  => LLRelease;negativePhaseReasoning
-      | AAnd _ _  => LLRelease;negativePhaseReasoning
-      | Quest _ _ => LLRelease;negativePhaseReasoning
+      | MOr _ _ => LLrelease;negativePhaseReasoning
+      | All _ =>LLrelease;negativePhaseReasoning
+      | Bot  => LLrelease;negativePhaseReasoning
+      | (atom _)  => LLrelease;negativePhaseReasoning
+      | Top  => LLrelease;negativePhaseReasoning
+      | AAnd _ _  => LLrelease;negativePhaseReasoning
+      | Quest _ _ => LLrelease;negativePhaseReasoning
       end
     end.
  
   Ltac positivePhaseReasoningN :=
   try match goal with  
-  | [USI : UNoDSigMMLL |- MLLN _ _ _ [] (DW  (MAnd _ _))] => LLTensor (@nil oo)  (@nil oo) 
-  | [H : SetU ?B |- MLLN _ _ ?B [] (DW  (MAnd _ _))] => LLTensor (@nil oo)  (@nil oo) 
+  | [USI : UNoDSigMMLL |- MLLN _ _ _ [] (DW  (MAnd _ _))] => LLtensor (@nil oo)  (@nil oo) 
+  | [H : SetU ?B |- MLLN _ _ ?B [] (DW  (MAnd _ _))] => LLtensor (@nil oo)  (@nil oo) 
 
-  | [H: MLLN _ ?th ?B ?L (DW ?F) |- MLLN _ ?th ?B ?L (DW (AOr ?F ?G))] => LLPlusL 
-  | [H: MLLN _ ?th ?B ?L (DW ?G) |- MLLN _ ?th ?B ?L (DW (AOr ?F ?G))] => LLPlusR 
+  | [H: MLLN _ ?th ?B ?L (DW ?F) |- MLLN _ ?th ?B ?L (DW (AOr ?F ?G))] => LLleft 
+  | [H: MLLN _ ?th ?B ?L (DW ?G) |- MLLN _ ?th ?B ?L (DW (AOr ?F ?G))] => LLright 
   | [ |- MLLN _ _ _ _ (DW (Bang loc _))] => apply tri_bangL;negativePhaseReasoningN
  
      (* Change of polarity *)
-    | [H: negativeFormula ?F |- MLLN _ _ _ _ (DW  ?F)] => LLRelease;negativePhaseReasoningN
+    | [H: negativeFormula ?F |- MLLN _ _ _ _ (DW  ?F)] => LLrelease;negativePhaseReasoningN
     | [|- MLLN _ _ _ _ (DW  ?F)] =>
       match F with
-      | MOr _ _ => LLRelease;negativePhaseReasoningN
-      | All _ =>LLRelease;negativePhaseReasoningN
-      | Bot  => LLRelease;negativePhaseReasoningN
-      | (atom _)  => LLRelease;negativePhaseReasoningN
-      | Top  => LLRelease;negativePhaseReasoningN
-      | AAnd _ _  => LLRelease;negativePhaseReasoningN
-      | Quest _ _ => LLRelease;negativePhaseReasoningN
+      | MOr _ _ => LLrelease;negativePhaseReasoningN
+      | All _ =>LLrelease;negativePhaseReasoningN
+      | Bot  => LLrelease;negativePhaseReasoningN
+      | (atom _)  => LLrelease;negativePhaseReasoningN
+      | Top  => LLrelease;negativePhaseReasoningN
+      | AAnd _ _  => LLrelease;negativePhaseReasoningN
+      | Quest _ _ => LLrelease;negativePhaseReasoningN
       end
     end.
  
@@ -721,37 +721,37 @@ In (i,atom A) L -> MLLS th L [] (DW (perp A)).
  intros.
  apply InPermutation in H1...
  rewrite H1 in H. 
- init2 i x. inversion H...
+ LLinit2 i x. inversion H...
  Qed.
 
   Ltac solveAxioms :=
   try
     match goal with
    | [H: MLLS _ _ _ (DW Zero) |- _ ] => inversion H;subst;solveF
-   | [ |- MLLS _ _ _ (DW One) ] => LLOne
-   | [ |- MLLS _ _ [One] (UP [])] => LFocus;solveAxioms   
-   | [ |- MLLS _ _ [] (UP [One]) ] => LLStore;LFocus;solveAxioms
+   | [ |- MLLS _ _ _ (DW One) ] => LLone
+   | [ |- MLLS _ _ [One] (UP [])] => LLfocus1;solveAxioms   
+   | [ |- MLLS _ _ [] (UP [One]) ] => LLstore;LLfocus1;solveAxioms
   
-   | [ |- MLLS _ _ [Top] (UP [])] => LFocus;LLRelease;solveAxioms   
-   | [ |- MLLS _ _ _ (UP (Top :: ?M))] => LLTop
+   | [ |- MLLS _ _ [Top] (UP [])] => LLfocus1;LLrelease;solveAxioms   
+   | [ |- MLLS _ _ _ (UP (Top :: ?M))] => LLtop
   (* initial rules *)
-   | [ |- MLLS _ _ [atom ?A] (DW (perp ?A))] => init1
-   | [ |- MLLS _ _ [perp ?A; atom ?A] (UP [])] => LFocus;solveAxioms   
-   | [ |- MLLS _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];solveAxioms   
+   | [ |- MLLS _ _ [atom ?A] (DW (perp ?A))] => LLinit1
+   | [ |- MLLS _ _ [perp ?A; atom ?A] (UP [])] => LLfocus1;solveAxioms   
+   | [ |- MLLS _ _ [atom ?A; perp ?A] (UP [])] => LLfocus1 (perp A) [atom A];solveAxioms   
 
-   | [ H: mt ?a = true |- MLLS _ ((?a,atom ?A)::?B) [] (DW (perp ?A))] => init2 a B
-    | [ H: mt ?a = true |- MLLS _ (?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => init2 a B
-    | [ H: mt ?a = true |- MLLS _ (?X::?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => init2 a (X::B)
-    | [ H: mt ?a = true |- MLLS _ (?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => init2 a (B++E)   
-    | [ H: mt ?a = true |- MLLS _ (?X::?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => init2 a (X::B++E)   
+   | [ H: mt ?a = true |- MLLS _ ((?a,atom ?A)::?B) [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: mt ?a = true |- MLLS _ (?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: mt ?a = true |- MLLS _ (?X::?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => LLinit2 a (X::B)
+    | [ H: mt ?a = true |- MLLS _ (?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => LLinit2 a (B++E)   
+    | [ H: mt ?a = true |- MLLS _ (?X::?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => LLinit2 a (X::B++E)   
   
-    | [ H: Permutation ((?a,atom _)::?B) ?D |- MLLS  _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation (?B++[(?a,atom ?A)]) ?D |- MLLS _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation (?B++(?a,atom ?A)::?E) ?D |- MLLS _ ?D [] (DW (perp ?A))] => init2 a (B++E)
+    | [ H: Permutation ((?a,atom _)::?B) ?D |- MLLS  _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation (?B++[(?a,atom ?A)]) ?D |- MLLS _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation (?B++(?a,atom ?A)::?E) ?D |- MLLS _ ?D [] (DW (perp ?A))] => LLinit2 a (B++E)
 
-    | [ H: Permutation ?D ((?a,atom ?A)::?B)  |- MLLS _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation ?D (?B++[(?a,atom ?A)])  |- MLLS _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation ?D (?B++(?a,atom ?A)::?E)  |- MLLS _ ?D [] (DW (perp ?A))] => init2 a (B++E)
+    | [ H: Permutation ?D ((?a,atom ?A)::?B)  |- MLLS _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation ?D (?B++[(?a,atom ?A)])  |- MLLS _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation ?D (?B++(?a,atom ?A)::?E)  |- MLLS _ ?D [] (DW (perp ?A))] => LLinit2 a (B++E)
  
     | [ H: SetU ?L, Hm: mt ?i = true, HIn: In (?i,atom ?A) ?L |- MLLS _ ?L [] (DW (perp ?A))] =>  try solve [refine (init2Cut i _ _ _ _ _);auto]
   
@@ -761,30 +761,30 @@ In (i,atom A) L -> MLLS th L [] (DW (perp A)).
   try
     match goal with
  
-   | [ |- MLLN _ _ _ _ (DW One) ] => LLOne
-   | [ |- MLLN _ _ _  [One] (UP [])] => LFocus;solveAxiomsN   
-   | [ |- MLLN _ _ _ _ (UP (Top :: ?M))] => LLTop
+   | [ |- MLLN _ _ _ _ (DW One) ] => LLone
+   | [ |- MLLN _ _ _  [One] (UP [])] => LLfocus1;solveAxiomsN   
+   | [ |- MLLN _ _ _ _ (UP (Top :: ?M))] => LLtop
  
      | [H: MLLN _ _ _ _ (DW Zero) |- _ ] => inversion H;subst;solveF
 
     (* initial rules *)
-   | [ |- MLLN _ _ _ [atom ?A] (DW (perp ?A))] => init1
-   | [ |- MLLN _ _ _ [perp ?A; atom ?A] (UP [])] => LFocus;solveAxiomsN   
-   | [ |- MLLN _ _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];solveAxiomsN   
+   | [ |- MLLN _ _ _ [atom ?A] (DW (perp ?A))] => LLinit1
+   | [ |- MLLN _ _ _ [perp ?A; atom ?A] (UP [])] => LLfocus1;solveAxiomsN   
+   | [ |- MLLN _ _ _ [atom ?A; perp ?A] (UP [])] => LLfocus1 (perp A) [atom A];solveAxiomsN   
 
-   | [ H: mt ?a = true |- MLLN _ _ ((?a,atom ?A)::?B) [] (DW (perp ?A))] => init2 a B
-    | [ H: mt ?a = true |- MLLN _ _ (?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => init2 a B
-    | [ H: mt ?a = true |- MLLN _ _ (?X::?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => init2 a (X::B)
-    | [ H: mt ?a = true |- MLLN _ _ (?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => init2 a (B++E)   
-    | [ H: mt ?a = true |- MLLN _ _ (?X::?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => init2 a (X::B++E)   
+   | [ H: mt ?a = true |- MLLN _ _ ((?a,atom ?A)::?B) [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: mt ?a = true |- MLLN _ _ (?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: mt ?a = true |- MLLN _ _ (?X::?B++[(?a,atom ?A)]) [] (DW (perp ?A))] => LLinit2 a (X::B)
+    | [ H: mt ?a = true |- MLLN _ _ (?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => LLinit2 a (B++E)   
+    | [ H: mt ?a = true |- MLLN _ _ (?X::?B++(?a,atom ?A)::?E) [] (DW (perp ?A))] => LLinit2 a (X::B++E)   
   
-    | [ H: Permutation ((?a,atom _)::?B) ?D |- MLLN _  _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation (?B++[(?a,atom ?A)]) ?D |- MLLN _ _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation (?B++(?a,atom ?A)::?E) ?D |- MLLN _ _ ?D [] (DW (perp ?A))] => init2 a (B++E)
+    | [ H: Permutation ((?a,atom _)::?B) ?D |- MLLN _  _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation (?B++[(?a,atom ?A)]) ?D |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation (?B++(?a,atom ?A)::?E) ?D |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a (B++E)
 
-    | [ H: Permutation ?D ((?a,atom ?A)::?B)  |- MLLN _ _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation ?D (?B++[(?a,atom ?A)])  |- MLLN _ _ ?D [] (DW (perp ?A))] => init2 a B
-    | [ H: Permutation ?D (?B++(?a,atom ?A)::?E)  |- MLLN _ _ ?D [] (DW (perp ?A))] => init2 a (B++E)
+    | [ H: Permutation ?D ((?a,atom ?A)::?B)  |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation ?D (?B++[(?a,atom ?A)])  |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a B
+    | [ H: Permutation ?D (?B++(?a,atom ?A)::?E)  |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a (B++E)
 
     | [H: tri_bangK4 _ 0 _ _ _ _ _ |- _ ] => inversion H 
     

@@ -153,97 +153,97 @@ Ltac solvePolarity :=
 
 (** Axioms *)
 
-Tactic Notation "FLLinit1"  := match goal with
+Tactic Notation "LLinit1"  := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_init1';auto
   | [|- flln _ _ _ _ _] => apply tri_init1;auto
   end.
 
-Tactic Notation "FLLinit2" := match goal with
+Tactic Notation "LLinit2" := match goal with
   | [ |- flls _ _ _ _ ] =>  eapply @tri_init2';sauto
   | [|- flln _ _ _ _ _] => eapply @tri_init2;sauto
   end.
 
-Tactic Notation "FLLone"  := match goal with
+Tactic Notation "LLone"  := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_one'
   | [|- flln _ _ _ _ _] => apply tri_one
   end.
 
-Tactic Notation "FLLtop"  := match goal with
+Tactic Notation "LLtop"  := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_top'
   | [|- flln _ _ _ _ _] => apply tri_top
   end.
 
 (** Additives *)
  
-Tactic Notation "FLLleft" := match goal with
+Tactic Notation "LLleft" := match goal with
   | [ |- flls _ _ _ _ ] =>   apply tri_plus1';sauto
   | [|- flln _ _ _ _ _] =>  apply tri_plus1;sauto
   end.
 
-Tactic Notation "FLLright" := match goal with
+Tactic Notation "LLright" := match goal with
   | [ |- flls _ _ _ _ ] =>   apply tri_plus2';sauto
   | [|- flln _ _ _ _ _] =>  apply tri_plus2;sauto
   end.         
 
-Tactic Notation "FLLwith" := match goal with
+Tactic Notation "LLwith" := match goal with
     | [ |- flls _ _ _ _ ] =>  eapply @tri_with';sauto
     | [|- flln _ _ _ _ _] => eapply @tri_with;sauto
 end. 
   
 (** Multiplicatives *)
 
-Tactic Notation "FLLbot"  := match goal with
+Tactic Notation "LLbot"  := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_bot';sauto
   | [|- flln _ _ _ _ _] => apply tri_bot;sauto
   end.
   
-Tactic Notation "FLLpar" := match goal with
+Tactic Notation "LLpar" := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_par';sauto
   | [|- flln _ _ _ _ _] => apply tri_par;sauto
   end.
 
-Tactic Notation "FLLsplit"  := match goal with
+Tactic Notation "LLtensor"  := match goal with
     | [ |- flls _ _ [] _ ] =>  eapply @tri_tensor' with (M:=nil) (N:=nil);sauto
     | [|- flln _ _ _ [] _] => eapply @tri_tensor with (M:=nil) (N:=nil);sauto
 end.
 
-Tactic Notation "FLLsplit"  constr(Ctx1) constr(Ctx2) := match goal with
+Tactic Notation "LLtensor"  constr(Ctx1) constr(Ctx2) := match goal with
     | [ |- flls _ _ _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2);sauto
     | [|- flln _ _ _ _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2);sauto
 end.
  
 (** Exponentials *)
 
-Tactic Notation "FLLstorec" := match goal with
+Tactic Notation "LLstorec" := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_quest';sauto
   | [|- flln _ _ _ _ _] => apply tri_quest;sauto
   end.              
 
-Tactic Notation "FLLbang"  := match goal with
+Tactic Notation "LLbang"  := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_bang';sauto
   | [|- flln _ _ _ _ _] => apply tri_bang;sauto
   end.
                           
 (** Quantifiers *)
   
-Tactic Notation "FLLexists" constr(tt) :=  match goal with
+Tactic Notation "LLexists" constr(tt) :=  match goal with
   | [ |- flls _ _ _ _ ] => eapply @tri_ex' with (t:=tt);try solveUniform;sauto
   | [|- flln _ _ _ _ _] => eapply @tri_ex with (t:=tt);try solveUniform;sauto
   end.
 
-Tactic Notation "FLLforall" := match goal with
+Tactic Notation "LLforall" := match goal with
   | [ |- flls _ _ _ _ ] => eapply @tri_fx'; intros;sauto
   | [|- flln _ _ _ _ _] => eapply @tri_fx; intros;sauto
   end.
   
 (** Reaction Rules *) 
 
-Tactic Notation "FLLrelease" := match goal with
+Tactic Notation "LLrelease" := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_rel';[solvePolarity | auto]
   | [|- flln _ _ _ _ _] => apply tri_rel;[solvePolarity | auto]
   end.
   
-Tactic Notation "FLLstore" := match goal with
+Tactic Notation "LLstore" := match goal with
   | [ |- flls _ _ _ _ ] =>  apply tri_store';[solvePolarity | auto]
   | [|- flln _ _ _ _ _] => apply tri_store;[solvePolarity | auto]
   end.
@@ -251,35 +251,35 @@ Tactic Notation "FLLstore" := match goal with
 (** Decision Rules *)  
 
 (* Focusing on a linear formula *)
-Tactic Notation "LFocus" := match goal with
+Tactic Notation "LLfocus1" := match goal with
     | [ |- flls _ _ (?P::?PL) _ ] =>  eapply @tri_dec1' with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
     | [|- flln _ _ _ (?P::?PL) _] => eapply @tri_dec1 with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
 end.
                               
-Tactic Notation "LFocus"  constr(R) := match goal with
+Tactic Notation "LLfocus1"  constr(R) := match goal with
     | [ |- flls _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R);[solvePolarity | sauto | sauto ]
     | [|- flln _ _ _ _ _] => eapply @tri_dec1 with (F:= R);[solvePolarity | sauto | sauto]
 end.
 
 
-Tactic Notation "LFocus"  constr(R) constr(T) := match goal with
+Tactic Notation "LLfocus1"  constr(R) constr(T) := match goal with
     | [ |- flls _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R) (L':=T);[solvePolarity | sauto | sauto ]
     | [|- flln _ _ _ _ _] => eapply @tri_dec1 with (F:= R) (L':=T);[solvePolarity | sauto | sauto]
 end.
 
 (* Focusing on a classical formula *)
-Tactic Notation "CFocus" := match goal with
+Tactic Notation "LLfocus2" := match goal with
     | [ |- flls _ (?P::_) _ _ ] =>  eapply @tri_dec2' with (F:= P);[solvePolarity | sauto | sauto]
     | [|- flln _ _ (?P::_) _ _] => eapply @tri_dec2 with (F:= P);[solvePolarity | sauto | sauto ]
 end.
                                                                              
-Tactic Notation "CFocus"  constr(S) := match goal with
+Tactic Notation "LLfocus2"  constr(S) := match goal with
     | [ |- flls _ _ _ _ ] =>  eapply @tri_dec2' with (F:= S);[solvePolarity | sauto | sauto]
     | [|- flln _ _ _ _ _] => eapply @tri_dec2 with (F:= S);[solvePolarity | sauto | sauto]
 end.
 
 (* Focusing on a theory *)
-Tactic Notation "TFocus"  constr(S) := match goal with
+Tactic Notation "LLtheory"  constr(S) := match goal with
     | [ |- flls _ _ _ _ ] =>  eapply @tri_dec3' with (F:= S);[solvePolarity | sauto | sauto]
     | [|- flln _ _ _ _ _] => eapply @tri_dec3 with (F:= S);[solvePolarity | sauto | sauto]
 end.
@@ -290,43 +290,43 @@ end.
 
 Ltac solveAxiom :=
  match goal with 
-  | [ |- flln _ _ _ [atom ?A] (DW (perp ?A))] => FLLinit1
-  | [ |- flln _ _ _ [perp ?A; atom ?A] (UP [])] => LFocus;FLLinit1
-  | [ |- flln _ _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];FLLinit1
+  | [ |- flln _ _ _ [atom ?A] (DW (perp ?A))] => LLinit1
+  | [ |- flln _ _ _ [perp ?A; atom ?A] (UP [])] => LLfocus1;LLinit1
+  | [ |- flln _ _ _ [atom ?A; perp ?A] (UP [])] => LLfocus1 (perp A) [atom A];LLinit1
 
-  | [ |- flln _ _ _ [] (DW (perp ?A))] => FLLinit2
-  | [ |- flln _ _ (atom ?A::_) [perp ?A] (UP [])] =>  LFocus;FLLinit2
-  | [ |- flln _ _ (perp ?A::atom ?A::_) [] (UP [])] =>  CFocus;FLLinit2
-  | [ |- flln _ _ (perp ?A::_) [atom ?A] (UP [])] =>  CFocus;FLLinit1
+  | [ |- flln _ _ _ [] (DW (perp ?A))] => LLinit2
+  | [ |- flln _ _ (atom ?A::_) [perp ?A] (UP [])] =>  LLfocus1;LLinit2
+  | [ |- flln _ _ (perp ?A::atom ?A::_) [] (UP [])] =>  LLfocus2;LLinit2
+  | [ |- flln _ _ (perp ?A::_) [atom ?A] (UP [])] =>  LLfocus2;LLinit1
 
-  | [ |- flln _ _ _ [] (DW (One))] => FLLone       
-  | [ |- flln _ _ _ [One] (UP [])] => LFocus;FLLone
-  | [ |- flln _ _ (One::_) [] (UP [])] => CFocus;FLLone
+  | [ |- flln _ _ _ [] (DW (One))] => LLone       
+  | [ |- flln _ _ _ [One] (UP [])] => LLfocus1;LLone
+  | [ |- flln _ _ (One::_) [] (UP [])] => LLfocus2;LLone
   
-  | [ |- flln _ _ _ _ (UP [Top])] => FLLtop       
-  | [ |- flln _ _ (Top::_) _ (UP [])] => CFocus;FLLrelease;FLLtop  
+  | [ |- flln _ _ _ _ (UP [Top])] => LLtop       
+  | [ |- flln _ _ (Top::_) _ (UP [])] => LLfocus2;LLrelease;LLtop  
   
   | _ => idtac   
 end. 
   
  Ltac solveAxiom' :=
  match goal with 
-  | [ |- flls  _ _ [atom ?A] (DW (perp ?A))] => FLLinit1
-  | [ |- flls  _ _ [perp ?A; atom ?A] (UP [])] => LFocus;FLLinit1
-  | [ |- flls _ _ [atom ?A; perp ?A] (UP [])] => LFocus (perp A) [atom A];FLLinit1
+  | [ |- flls  _ _ [atom ?A] (DW (perp ?A))] => LLinit1
+  | [ |- flls  _ _ [perp ?A; atom ?A] (UP [])] => LLfocus1;LLinit1
+  | [ |- flls _ _ [atom ?A; perp ?A] (UP [])] => LLfocus1 (perp A) [atom A];LLinit1
 
 
-  | [ |- flls _ _ [] (DW (perp ?A))] => FLLinit2
-  | [ |- flls _ (atom ?A::_) [perp ?A] (UP [])] =>  LFocus;FLLinit2
-  | [ |- flls _ (perp ?A::atom ?A::_) [] (UP [])] =>  CFocus;FLLinit2
-  | [ |- flls _ (perp ?A::_) [atom ?A] (UP [])] =>  CFocus;FLLinit1
+  | [ |- flls _ _ [] (DW (perp ?A))] => LLinit2
+  | [ |- flls _ (atom ?A::_) [perp ?A] (UP [])] =>  LLfocus1;LLinit2
+  | [ |- flls _ (perp ?A::atom ?A::_) [] (UP [])] =>  LLfocus2;LLinit2
+  | [ |- flls _ (perp ?A::_) [atom ?A] (UP [])] =>  LLfocus2;LLinit1
   
-  | [ |- flls _ _ [] (DW (One))] => FLLone       
-  | [ |- flls _ _ [One] (UP [])] => LFocus;FLLone
-  | [ |- flls _ (One::_) [] (UP [])] => CFocus;FLLone
+  | [ |- flls _ _ [] (DW (One))] => LLone       
+  | [ |- flls _ _ [One] (UP [])] => LLfocus1;LLone
+  | [ |- flls _ (One::_) [] (UP [])] => LLfocus2;LLone
   
-  | [ |- flls _ _ _ (UP [Top])] => FLLtop       
-  | [ |- flls _ (Top::_) _ (UP [])] => CFocus;FLLrelease;FLLtop  
+  | [ |- flls _ _ _ (UP [Top])] => LLtop       
+  | [ |- flls _ (Top::_) _ (UP [])] => LLfocus2;LLrelease;LLtop  
   
   | _ => idtac   
 end. 
@@ -335,47 +335,47 @@ Ltac reasoningLL :=
 solveAxiom;
  match goal with 
   (* Change of polarity *)
-  | [H:  negativeFormula ?F |- flln _ _ _ _ (DW  ?F)] => FLLrelease;reasoningLL
+  | [H:  negativeFormula ?F |- flln _ _ _ _ (DW  ?F)] => LLrelease;reasoningLL
   | [|- flln _ _ _ _ (DW ?F)] =>
       match F with
-      | Bot => FLLrelease ;reasoningLL
-      | One => FLLone
+      | Bot => LLrelease ;reasoningLL
+      | One => LLone
       | Zero  => idtac
-      | Top => FLLrelease ;reasoningLL
+      | Top => LLrelease ;reasoningLL
       
-      | atom _  => FLLrelease ;reasoningLL
+      | atom _  => LLrelease ;reasoningLL
       | perp _  => idtac
       
       | AOr _ _ => idtac
-      | MOr _ _ => FLLrelease ;reasoningLL
+      | MOr _ _ => LLrelease ;reasoningLL
       | MAnd _ _  => idtac 
-      | AAnd _ _  => FLLrelease ;reasoningLL
-      | Bang _ => FLLbang;reasoningLL
-      | Quest _ => FLLrelease ;reasoningLL
+      | AAnd _ _  => LLrelease ;reasoningLL
+      | Bang _ => LLbang;reasoningLL
+      | Quest _ => LLrelease ;reasoningLL
       | Some _ => idtac
-      | All _ => FLLrelease ;reasoningLL     
+      | All _ => LLrelease ;reasoningLL     
       end
   
     (* Negative Phase *)
-  | [ H: positiveLFormula ?F |- flln _ _ _ _ (UP (?F:: _ ))] => FLLstore;auto;reasoningLL
+  | [ H: positiveLFormula ?F |- flln _ _ _ _ (UP (?F:: _ ))] => LLstore;auto;reasoningLL
   
   | [|- flln _ _ _ _ (UP (?F::_))] =>
       match F with
-      | Bot => FLLbot ;reasoningLL
-      | One => FLLstore;reasoningLL
-      | Zero  => FLLstore;reasoningLL
-      | Top => FLLtop
+      | Bot => LLbot ;reasoningLL
+      | One => LLstore;reasoningLL
+      | Zero  => LLstore;reasoningLL
+      | Top => LLtop
       
-      | atom _  => FLLstore;reasoningLL
-      | perp _  =>  FLLstore;reasoningLL
+      | atom _  => LLstore;reasoningLL
+      | perp _  =>  LLstore;reasoningLL
       
-      | AOr _ _ => FLLstore;reasoningLL
-      | MOr _ _ => FLLpar ;reasoningLL
-      | MAnd _ _  => FLLstore;reasoningLL
-      | AAnd _ _  =>  FLLwith;reasoningLL
-      | Bang _ => FLLstore;reasoningLL
-      | Quest _ => FLLstorec;reasoningLL
-      | Some _ => FLLstore;reasoningLL
+      | AOr _ _ => LLstore;reasoningLL
+      | MOr _ _ => LLpar ;reasoningLL
+      | MAnd _ _  => LLstore;reasoningLL
+      | AAnd _ _  =>  LLwith;reasoningLL
+      | Bang _ => LLstore;reasoningLL
+      | Quest _ => LLstorec;reasoningLL
+      | Some _ => LLstore;reasoningLL
       | All _ => let x:= fresh "x" in
                  let xp := fresh "properX" in
                  apply tri_fx ;try solveUniform; intros x xp ; reasoningLL      
@@ -388,47 +388,47 @@ Ltac reasoningLL' :=
 solveAxiom';
  match goal with
   (* Change of polarity *)
-  | [H:  negativeFormula ?F |- flls _ _ _ (DW  ?F)] => FLLrelease;reasoningLL'
+  | [H:  negativeFormula ?F |- flls _ _ _ (DW  ?F)] => LLrelease;reasoningLL'
   | [|- flls _ _ _ (DW ?F)] =>
       match F with
-      | Bot => FLLrelease ;reasoningLL'
-      | One => FLLone
+      | Bot => LLrelease ;reasoningLL'
+      | One => LLone
       | Zero  => idtac
-      | Top => FLLrelease ;reasoningLL'
+      | Top => LLrelease ;reasoningLL'
       
-      | atom _  => FLLrelease ;reasoningLL'
+      | atom _  => LLrelease ;reasoningLL'
       | perp _  => idtac
       
       | AOr _ _ => idtac
-      | MOr _ _ => FLLrelease ;reasoningLL'
+      | MOr _ _ => LLrelease ;reasoningLL'
       | MAnd _ _  => idtac
-      | AAnd _ _  => FLLrelease ;reasoningLL'
-      | Bang _ => FLLbang;reasoningLL'
-      | Quest _ => FLLrelease ;reasoningLL'
+      | AAnd _ _  => LLrelease ;reasoningLL'
+      | Bang _ => LLbang;reasoningLL'
+      | Quest _ => LLrelease ;reasoningLL'
       | Some _ => idtac
-      | All _ => FLLrelease ;reasoningLL'     
+      | All _ => LLrelease ;reasoningLL'     
       end
   
     (* Negative Phase *)
-  | [ H: positiveLFormula ?F |- flls _ _ _ (UP (?F:: _ ))] => FLLstore;auto;reasoningLL'
+  | [ H: positiveLFormula ?F |- flls _ _ _ (UP (?F:: _ ))] => LLstore;auto;reasoningLL'
   
   | [|- flls _ _ _ (UP (?F::_))] =>
       match F with
-      | Bot => FLLbot;reasoningLL'
-      | One => FLLstore;reasoningLL'
-      | Zero  => FLLstore;reasoningLL'
-      | Top => FLLtop
+      | Bot => LLbot;reasoningLL'
+      | One => LLstore;reasoningLL'
+      | Zero  => LLstore;reasoningLL'
+      | Top => LLtop
       
-      | atom _  => FLLstore;reasoningLL'
-      | perp _  => FLLstore;reasoningLL'
+      | atom _  => LLstore;reasoningLL'
+      | perp _  => LLstore;reasoningLL'
       
-      | AOr _ _ => FLLstore;reasoningLL'
-      | MOr _ _ => FLLpar;reasoningLL'
-      | MAnd _ _  => FLLstore;reasoningLL'
-      | AAnd _ _  => FLLwith;reasoningLL'
-      | Bang _ => FLLstore;reasoningLL'
-      | Quest _ => FLLstorec;reasoningLL'
-      | Some _ => FLLstore;reasoningLL'
+      | AOr _ _ => LLstore;reasoningLL'
+      | MOr _ _ => LLpar;reasoningLL'
+      | MAnd _ _  => LLstore;reasoningLL'
+      | AAnd _ _  => LLwith;reasoningLL'
+      | Bang _ => LLstore;reasoningLL'
+      | Quest _ => LLstorec;reasoningLL'
+      | Some _ => LLstore;reasoningLL'
       | All _ => let x:= fresh "x" in
                  let xp := fresh "properX" in
                  apply tri_fx' ;try solveUniform; intros x xp ; reasoningLL'      

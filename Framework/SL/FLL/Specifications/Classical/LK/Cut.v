@@ -28,30 +28,30 @@ Proof with sauto.
     apply FocusingClause in H...
    - left. exists x0... simpl. solveLL.
      intros.
-      TFocus ((makeRRuleC TT )).
+      LLtheory ((makeRRuleC TT )).
      inversion H1.
-     FLLsplit [⌈ t_ccon TT ⌉] Delta1.
+     LLtensor [⌈ t_ccon TT ⌉] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
-      TFocus ((makeRRuleC TT )).
+      LLtheory ((makeRRuleC TT )).
      inversion H2.
-     FLLsplit (@nil oo) Delta1.
+     LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists BCAxiom.  
     do 3 intro.
     apply FocusingClause in H...
    - left. exists x0... simpl. solveLL.
      intros.
-      TFocus ((makeLRuleC FF )).
+      LLtheory ((makeLRuleC FF )).
      inversion H1.
-     FLLsplit [⌊ t_ccon FF ⌋] Delta1.
+     LLtensor [⌊ t_ccon FF ⌋] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
-      TFocus ((makeLRuleC FF )).
+      LLtheory ((makeLRuleC FF )).
      inversion H2.
-     FLLsplit (@nil oo) Delta1.
+     LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists BCFail.  
     do 2 intro.
@@ -85,9 +85,9 @@ Proof with sauto.
        1-2: HProof.
        lia.
        intros.
-       TFocus ((makeLRuleU NEG Fo1)).
+       LLtheory ((makeLRuleU NEG Fo1)).
       inversion H5.
-      FLLsplit [⌊ t_ucon NEG Fo1⌋ ] Delta1.
+      LLtensor [⌊ t_ucon NEG Fo1⌋ ] Delta1.
       simpl.  solveLL.
      LLExact H2.
      - inversion H4...
@@ -122,9 +122,9 @@ Proof with sauto.
        1-2: HProof.
        lia.
        intros.
-       TFocus ((makeRRuleU NEG Fo1)).
+       LLtheory ((makeRRuleU NEG Fo1)).
       inversion H5.
-      FLLsplit [⌈ t_ucon NEG Fo1 ⌉] Delta1.
+      LLtensor [⌈ t_ucon NEG Fo1 ⌉] Delta1.
       simpl.  solveLL.
      LLExact H2.
      - inversion H4...
@@ -164,15 +164,15 @@ Proof with sauto.
         left.
        exists x0...
        simpl.  
-       FLLleft; solveLL.
+       LLleft; solveLL.
        1-2: HProof.
        lia.
        intros.
-       TFocus ((makeLRuleB AND Fo1 Go1)).
+       LLtheory ((makeLRuleB AND Fo1 Go1)).
       inversion H4.
-      FLLsplit [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
+      LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
       simpl. 
-     FLLleft; solveLL.
+     LLleft; solveLL.
      LLExact H1.
         + exists [⌊ Go1 ⌋].
         exists x1, 4.
@@ -183,15 +183,15 @@ Proof with sauto.
         left.
        exists x0...
        simpl.  
-       FLLright; solveLL.
+       LLright; solveLL.
        1-2: HProof.
        lia.
        intros.
-       TFocus ((makeLRuleB AND Fo1 Go1)).
+       LLtheory ((makeLRuleB AND Fo1 Go1)).
       inversion H4.
-      FLLsplit [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
+      LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
       simpl. 
-     FLLright; solveLL.
+     LLright; solveLL.
      LLExact H1.
      -  apply FocusingPlus in H4...
         + exists [⌊ Fo1 ⌋].
@@ -203,12 +203,12 @@ Proof with sauto.
         right.
        split... 
        simpl.  
-       FLLleft; solveLL.
+       LLleft; solveLL.
        1-2: HProof.
        lia.
        intros.
        simpl. 
-     FLLleft; solveLL.
+     LLleft; solveLL.
      LLExact H.
         + exists [⌊ Go1 ⌋].
         exists x0, 4.
@@ -219,12 +219,12 @@ Proof with sauto.
         right.
        split... 
        simpl.  
-       FLLright; solveLL.
+       LLright; solveLL.
        1-2: HProof.
        lia.
        intros.
        simpl. 
-     FLLright; solveLL.
+     LLright; solveLL.
      LLExact H.
   * exists BTwoPA.
      do 3 intro. intros.    
@@ -244,9 +244,9 @@ Proof with sauto.
           LLExact H5.
           lia.
           intros.
-          TFocus ((makeRRuleB AND Fo1 Go1)).
+          LLtheory ((makeRRuleB AND Fo1 Go1)).
           inversion H6.
-          FLLsplit [⌈ t_bcon AND Fo1 Go1 ⌉] Delta12.
+          LLtensor [⌈ t_bcon AND Fo1 Go1 ⌉] Delta12.
          simpl... solveLL.
          LLExact H1.
          LLExact H4.
@@ -286,9 +286,9 @@ Proof with sauto.
           LLExact H5.
           lia.
           intros.
-          TFocus ((makeLRuleB OR Fo1 Go1)).
+          LLtheory ((makeLRuleB OR Fo1 Go1)).
           inversion H6.
-          FLLsplit [⌊ t_bcon OR Fo1 Go1 ⌋ ] Delta12.
+          LLtensor [⌊ t_bcon OR Fo1 Go1 ⌋ ] Delta12.
          simpl... solveLL.
          LLExact H1.
          LLExact H4.
@@ -323,15 +323,15 @@ Proof with sauto.
         left.
        exists x0...
        simpl.  
-       FLLleft; solveLL.
+       LLleft; solveLL.
        1-2: HProof.
        lia.
        intros.
-       TFocus ((makeRRuleB OR Fo1 Go1)).
+       LLtheory ((makeRRuleB OR Fo1 Go1)).
       inversion H4.
-      FLLsplit [⌈ t_bcon OR Fo1 Go1 ⌉ ] Delta1.
+      LLtensor [⌈ t_bcon OR Fo1 Go1 ⌉ ] Delta1.
       simpl. 
-     FLLleft; solveLL.
+     LLleft; solveLL.
      LLExact H1.
         + exists [⌈ Go1 ⌉ ].
         exists x1, 4.
@@ -342,15 +342,15 @@ Proof with sauto.
         left.
        exists x0...
        simpl.  
-       FLLright; solveLL.
+       LLright; solveLL.
        1-2: HProof.
        lia.
        intros.
-       TFocus ((makeRRuleB OR Fo1 Go1)).
+       LLtheory ((makeRRuleB OR Fo1 Go1)).
       inversion H4.
-      FLLsplit [⌈ t_bcon OR Fo1 Go1 ⌉] Delta1.
+      LLtensor [⌈ t_bcon OR Fo1 Go1 ⌉] Delta1.
       simpl. 
-     FLLright; solveLL.
+     LLright; solveLL.
      LLExact H1.
      -  apply FocusingPlus in H4...
         + exists [⌈ Fo1 ⌉ ].
@@ -362,12 +362,12 @@ Proof with sauto.
         right.
        split... 
        simpl.  
-       FLLleft; solveLL.
+       LLleft; solveLL.
        1-2: HProof.
        lia.
        intros.
        simpl. 
-     FLLleft; solveLL.
+     LLleft; solveLL.
      LLExact H.
         + exists [⌈ Go1 ⌉ ].
         exists x0, 4.
@@ -378,12 +378,12 @@ Proof with sauto.
         right.
        split... 
        simpl.  
-       FLLright; solveLL.
+       LLright; solveLL.
        1-2: HProof.
        lia.
        intros.
        simpl. 
-     FLLright; solveLL.
+     LLright; solveLL.
      LLExact H.
   * exists BTwoPM.
      do 3 intro. intros.    
@@ -398,17 +398,17 @@ Proof with sauto.
            left.
           split...
           simpl...
-          FLLsplit x2 x3.
+          LLtensor x2 x3.
           1-2: solveLL. 1-2:HProof.
           LLExact H1.
           LLExact H6.
           lia.
           intros.
-          TFocus ((makeLRuleB IMP Fo1 Go1)).
+          LLtheory ((makeLRuleB IMP Fo1 Go1)).
           inversion H7.
-          FLLsplit [⌊ t_bcon IMP Fo1 Go1 ⌋] ( Delta1 ++ Delta2).
+          LLtensor [⌊ t_bcon IMP Fo1 Go1 ⌋] ( Delta1 ++ Delta2).
          simpl...
-         FLLsplit Delta1 Delta2.
+         LLtensor Delta1 Delta2.
          1-2: solveLL.
          LLExact H4.
          LLExact H5.
@@ -422,13 +422,13 @@ Proof with sauto.
            right.
           split...
           simpl...
-          FLLsplit x1 x2.
+          LLtensor x1 x2.
           1-2: solveLL. 1-2:HProof.
           LLExact H1.
           LLExact H6.
           lia.
           intros.
-          FLLsplit Delta1 Delta2.
+          LLtensor Delta1 Delta2.
          1-2: solveLL.
          LLExact H.
          LLExact H4.
@@ -448,9 +448,9 @@ Proof with sauto.
        1-2: HProof.
        lia.
       intros.
-      TFocus ((makeRRuleB IMP Fo1 Go1)).
+      LLtheory ((makeRRuleB IMP Fo1 Go1)).
      inversion H4.
-     FLLsplit [⌈ t_bcon IMP Fo1 Go1 ⌉] Delta1.
+     LLtensor [⌈ t_bcon IMP Fo1 Go1 ⌉] Delta1.
     simpl. solveLL. 
     LLExact H2.
   - 
