@@ -94,16 +94,17 @@ Framework/SL/FLL/Specifications/Intuitionistic/LJ/Bipoles.v
 Framework/SL/FLL/Specifications/Intuitionistic/LJ/Cut.v
 
 # Linear Logic with Subexponentials
-#Framework/SL/SELLF/Signature.v
-#Framework/SL/SELLF/Syntax.v
-#Framework/SL/SELLF/Locations.v
-#Framework/SL/SELLF/Sequent.v
-#Framework/SL/SELLF/PreTactics.v
-#Framework/SL/SELLF/StructuralRules.v
-#Framework/SL/SELLF/Tactics.v
-#Framework/SL/SELLF/InvNegativePhase.v
-#Framework/SL/SELLF/InvPositivePhase.v
-#Framework/SL/SELLF/CutElimination.v
+Framework/SL/SELLF/Signature.v
+Framework/SL/SELLF/Syntax.v
+Framework/SL/SELLF/Locations.v
+Framework/SL/SELLF/Sequent.v
+Framework/SL/SELLF/PreTactics.v
+Framework/SL/SELLF/StructuralRules.v
+Framework/SL/SELLF/Tactics.v
+Framework/SL/SELLF/InvNegativePhase.v
+Framework/SL/SELLF/InvPositivePhase.v
+Framework/SL/SELLF/Reasoning.v
+Framework/SL/SELLF/CutElimination.v
 
 # Linear Logic with multi-modalities
 Framework/SL/MMLL/Signature.v
@@ -117,6 +118,7 @@ Framework/SL/MMLL/InvNegativePhase.v
 Framework/SL/MMLL/InvPositivePhase.v
 Framework/SL/MMLL/CutEliminationUnb.v
 Framework/SL/MMLL/Reasoning.v
+Framework/SL/MMLL/CutEliminationMMLL.v
 
 # Multi-modal System as Framework
 
