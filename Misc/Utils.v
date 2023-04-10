@@ -616,6 +616,9 @@ Definition first (L:list (S * F)) :=  map fst L.
 (* snd (split L) *)
 Definition second (L:list (S * F)) := map snd L.
 
+Lemma secondPerm C1 C2 : Permutation C1 C2 -> Permutation (second C1)  (second C2).
+Proof with subst;auto.
+  intros; apply Permutation_map... Qed.
          
 Lemma secondApp C1 C2 : second (C1 ++ C2) = second C1 ++ second C2.
 Proof.

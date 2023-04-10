@@ -11,6 +11,23 @@ Section FLLReasoning.
 
  Variable th : oo -> Prop.
 
+Lemma unRelease B M P: 
+ MLLS th B M (DW P) -> MLLS th B M (UP [P]).
+ Proof with sauto;solveLL.
+  intros.
+  inversion H...
+ all: try LLfocus1.
+ LLstore. LLfocus1.
+ LLstore. LLfocus1.
+Qed.
+ 
+ Lemma select B M L P: positiveLFormula P ->
+ MLLS th B M (UP (P::L)) -> MLLS th B (P::M) (UP L).
+ Proof with sauto;solvePolarity;solveLL.
+  intros.
+  inversion H0...
+Qed.
+
  Lemma unbInit i B A: SetU B ->
 mt i = true -> In (i, atom A) B ->
 MLLS th B [] (DW (perp A)).
@@ -108,7 +125,7 @@ Proof with sauto;try solveLL.
   apply exchangeCCN with (CC:=Gamma)...
   Qed.
 
- Lemma unRelease B M P: 
+(*  Lemma unRelease B M P: 
  MLLS th B M (DW P) -> MLLS th B M (UP [P]).
  Proof with sauto;solveLL.
   intros.
@@ -126,7 +143,7 @@ Qed.
   intros.
   inversion H0...
 Qed.
-
+ *)
 Lemma TensorCommN: forall n F G B M,
     (MLLN th n B M (DW (F ⊗ G))) -> (MLLN th n B M (DW (G ⊗ F))).
  Proof with sauto;solvePolarity;try solveLL.

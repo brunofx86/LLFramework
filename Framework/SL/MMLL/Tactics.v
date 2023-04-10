@@ -200,21 +200,23 @@ Ltac FLLInversionAll :=
     end.
   
 
-(* Check if the permutation P applies to the MLLSuent in H and rewrites it *)
+(* Check if the permutation P applies to the sequent in H and rewrites it *)
 Ltac LLPermH H LI :=
-  match goal with
-  | [ H : MLLN _ _ _ _ _ |- _] =>
+let G := type of H in
+  match G with
+  | MLLN _ _ _ _ _  =>
           first[ apply exchangeLCN with (LC' := LI) in H ;[|sauto]
                | apply exchangeCCN with (CC' := LI) in H ;[|sauto]]
-  | [ H : MLLS _ _ _ _ |- _] =>
+  | MLLS _ _ _ _  =>
           first[ apply exchangeLC with (LC' := LI) in H ;[|sauto]
                | apply exchangeCC with (CC' := LI) in H ;[|sauto]]
-  | [ H : tri_bangK4 _ _ _ _ _ _ _ |- _] =>
+  |  tri_bangK4 _ _ _ _ _ _ _ =>
           first[ apply exchangeCCNK4 with (CC' := LI) in H ;[|sauto]
                | apply exchangeCCNKK4 with (CC' := LI) in H ;[|sauto]]
-  | [ H : tri_bangK4' _ _ _ _ _ _ |- _] =>
+  |  tri_bangK4' _ _ _ _ _ _  =>
           first[ apply exchangeCCK4 with (CC' := LI) in H ;[|sauto]
                | apply exchangeCCKK4 with (CC' := LI) in H ;[|sauto]]
+  | _ => idtac H "is not a sequent"
   end.
 
 

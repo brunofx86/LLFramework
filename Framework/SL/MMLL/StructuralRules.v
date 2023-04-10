@@ -806,7 +806,8 @@ SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
     eapply GenK4' with (C4:=C4) (CK:=CK) (CN:= CN)...
     eapply tri_exp'...
   Qed.
-  
+ 
+ 
  Theorem GenK4RelU' a B D O L CK C4 CN : 
      a <> loc -> SetK4 C4 -> SetK CK -> LtX a C4 -> LtX a CK -> SetU CN -> (* NoLtX a CN -> *)
      Permutation B (C4++CK++CN) ->  SetU C4 -> SetU CK ->
