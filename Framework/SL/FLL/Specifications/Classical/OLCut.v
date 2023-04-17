@@ -373,7 +373,6 @@ Proof with sauto.
         cutOL H8 H14.
          OLSolve.
         LLtheory (makeRRuleU C F).
-        inversion H16.
         LLtensor (@nil oo) (M++N).
         apply H18...
         rewrite Permutation_assoc_comm... 
@@ -409,7 +408,6 @@ Proof with sauto.
         cutOL H9 H15.
         OLSolve.
         LLtheory (makeLRuleU C F).
-        inversion H17.
         LLtensor (@nil oo) (M++N).
         apply H19...
         rewrite Permutation_assoc_comm...  
@@ -488,7 +486,6 @@ Proof with sauto.
         cutOL H8 H14.
         OLSolve.
         LLtheory (makeRRuleB C F G).
-        inversion H16.
         LLtensor (@nil oo) (M++N). 
         apply H18...
         rewrite Permutation_assoc_comm...
@@ -519,7 +516,6 @@ Proof with sauto.
         rewrite H12.
         LLPerm ((x++N)++(x0++N)).
         LLtheory (makeRRuleB C F G).
-        inversion H19.
         LLtensor (@nil oo) ((x ++ N) ++ x0 ++ N). 
         apply H21...
         rewrite Permutation_assoc_comm...
@@ -539,7 +535,6 @@ Proof with sauto.
         cutOL H8 H16.
         OLSolve.
         LLtheory (makeRRuleB C F G).
-        inversion H18.
         LLtensor (@nil oo) (M ++ N). 
         apply H20...
         rewrite Permutation_assoc_comm...
@@ -577,7 +572,6 @@ Proof with sauto.
         cutOL H9 H15.
         OLSolve.
         LLtheory (makeLRuleB C F G).
-        inversion H17.
         LLtensor (@nil oo) (M++N).
         apply H19...
         rewrite Permutation_assoc_comm...
@@ -609,7 +603,6 @@ Proof with sauto.
         rewrite H13.
         LLPerm ((x++N)++(x0++N)).
         LLtheory (makeLRuleB C F G).
-        inversion H20.
         LLtensor (@nil oo) ((x++N)++(x0++N)).
         apply H22...
         rewrite Permutation_assoc_comm...
@@ -630,7 +623,6 @@ Proof with sauto.
         cutOL H9 H17.
         OLSolve.
         LLtheory (makeLRuleB C F G).
-        inversion H19.
         LLtensor (@nil oo) ((M++N)).
         apply H21...
         rewrite Permutation_assoc_comm...
@@ -665,7 +657,6 @@ Proof with sauto.
         cutOL H8 H14.
         OLSolve.
         LLtheory (makeRRuleQ C FX).
-        inversion H16.
         LLtensor (@nil oo) (M++N).
         apply H18...
         rewrite Permutation_assoc_comm...
@@ -701,7 +692,6 @@ Proof with sauto.
         cutOL H9 H15.
         OLSolve.
         LLtheory (makeLRuleQ C FX).
-        inversion H17.
         LLtensor (@nil oo) (M++N).
         apply H19...
         rewrite Permutation_assoc_comm...
@@ -815,7 +805,6 @@ Proof with sauto.
                cutOL Hseq1 H8.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H10.
                LLtensor (@nil oo) (M++N).
                apply H12...
                LLPerm ( (M ++ x) ++ N)...
@@ -839,7 +828,6 @@ Proof with sauto.
                cutOL Hseq1 H8.
                OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H10.
                LLtensor (@nil oo) (M++N).
                apply H12...
                LLPerm ( (M ++ x) ++ N)...
@@ -873,7 +861,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                rewrite Permutation_assoc_comm...
@@ -917,7 +904,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                rewrite Permutation_assoc_comm...
@@ -930,7 +916,6 @@ Proof with sauto.
          -    cutOL H3 Hseq2.
                OLSolve.
                LLtheory (makeRRuleC C).
-               inversion H5.
                LLtensor (@nil oo) (M++N).
                apply H7...
                rewrite app_assoc_reverse...
@@ -979,7 +964,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -997,7 +981,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -1031,7 +1014,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeLRuleU C0 F1).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -1042,7 +1024,6 @@ Proof with sauto.
          - cutOL H3 Hseq2.
             OLSolve.
             LLtheory (makeRRuleU C F).
-            inversion H5.
             LLtensor (@nil oo) (M++N).
             apply H7...
             LLPerm (M++N++x)...
@@ -1097,7 +1078,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -1115,7 +1095,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -1152,7 +1131,6 @@ Proof with sauto.
               cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)... }
@@ -1224,7 +1202,6 @@ Proof with sauto.
                rewrite H6...
                LLPerm ((x2++N)++(x3++N)).
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H14.
                LLtensor (@nil oo) ( (x2 ++ N) ++ x3 ++ N).
                apply H16...
                LLPerm ((x2 ++ x4) ++ N)...
@@ -1268,7 +1245,6 @@ Proof with sauto.
               cutOL Hseq1 H11.
                OLSolve.
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H13.
                LLtensor (@nil oo) ( M++ N).
                apply H15...
                LLPerm ((M ++ x3) ++ N)...
@@ -1279,7 +1255,6 @@ Proof with sauto.
          - cutOL H3 Hseq2.
             OLSolve.
             LLtheory (makeRRuleB C F G).
-            inversion H5.
             LLtensor (@nil oo) (M++N).
             apply H7...
             LLPerm (M++N++x)...
@@ -1320,7 +1295,6 @@ Proof with sauto.
                cutOL Hseq1 H12.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H14.
                LLtensor (@nil oo) (M++N).
                apply H16...
                LLPerm ( (M ++ x5) ++ N)...
@@ -1338,7 +1312,6 @@ Proof with sauto.
                cutOL Hseq1 H12.
                 OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H14.
                LLtensor (@nil oo) (M++N).
                apply H16...
                LLPerm ( (M ++ x5) ++ N)...
@@ -1380,7 +1353,6 @@ Proof with sauto.
                cutOL Hseq1 H12.
                OLSolve.
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H14.
                LLtensor (@nil oo) (M++N).
                apply H16...
                LLPerm ( (M ++ x5) ++ N)... }
@@ -1446,7 +1418,6 @@ Proof with sauto.
                rewrite H9...
                LLPerm ((x5++N)++(x6++N)).
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H17.
                LLtensor (@nil oo) ( (x5 ++ N) ++ x6 ++ N).
                apply H19...
                LLPerm ((x5 ++ x7) ++ N)...
@@ -1498,7 +1469,6 @@ Proof with sauto.
                do 2 OLSolve.
                
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H16.
                LLtensor (@nil oo) ( M++ N).
                apply H18...
                LLPerm ((M ++ x6) ++ N)...
@@ -1515,7 +1485,6 @@ Proof with sauto.
             rewrite H1.
             LLPerm ((M ++ x) ++ (M ++ x0))...
             LLtheory (makeRRuleB C F G).
-            inversion H8.
             LLtensor (@nil oo) ((M ++ x) ++ M ++ x0).
             apply H10...
             LLPerm (M ++ x ++ x1)... 
@@ -1547,7 +1516,6 @@ Proof with sauto.
                 cutOL Hseq1 H11.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H13.
                LLtensor (@nil oo) (M++N).
                apply H15...
                LLPerm ( (M ++ x) ++ N)...
@@ -1565,7 +1533,6 @@ Proof with sauto.
                cutOL Hseq1 H11.
                OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H13.
                LLtensor (@nil oo) (M++N).
                apply H15...
                LLPerm ( (M ++ x) ++ N)...
@@ -1604,7 +1571,6 @@ Proof with sauto.
                cutOL Hseq1 H11.
                OLSolve.
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H13.
                LLtensor (@nil oo) (M++N).
                apply H15...
                LLPerm ( (M ++ x) ++ N)... }
@@ -1666,7 +1632,6 @@ Proof with sauto.
                rewrite H8...
                LLPerm ((x++N)++(x4++N)).
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H16.
                LLtensor (@nil oo) ( (x ++ N) ++ x4 ++ N).
                apply H18...
                LLPerm ((x ++ x5) ++ N)...
@@ -1712,7 +1677,6 @@ Proof with sauto.
                cutOL Hseq1 H13.
                do 2 OLSolve.
                LLtheory (makeLRuleB C0 F1 G0).
-               inversion H15.
                LLtensor (@nil oo) ( M++ N).
                apply H17...
                LLPerm ((M ++ x4) ++ N)...
@@ -1725,7 +1689,6 @@ Proof with sauto.
             cutOL H5 Hseq2.
             do 2 OLSolve.
             LLtheory (makeRRuleB C F G).
-            inversion H7.
             LLtensor (@nil oo) ((M ++ N)).
             apply H9...
             LLPerm (M ++ N ++ x0)... 
@@ -1776,7 +1739,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeRRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -1794,7 +1756,6 @@ Proof with sauto.
                cutOL Hseq1 H9.
                OLSolve.
                LLtheory (makeLRuleC C0).
-               inversion H11.
                LLtensor (@nil oo) (M++N).
                apply H13...
                LLPerm ( (M ++ x2) ++ N)...
@@ -1805,13 +1766,13 @@ Proof with sauto.
            -- permuteQuantifier.           
            -- wellQuantifier Hseq2'. 
                Cases H5.
-               cutOL Hseq1 H8.
+               { cutOL Hseq1 H8.
                do 2 OLSolve.
                LLPerm ( (⌊t_qcon C0 FX0 ⌋) :: x5++ N).
                apply H14...
-               LLPerm ((x5 ++ x2) ++ N)...
+               LLPerm ((x5 ++ x2) ++ N)... }
                inversion H8...
-               inversion H5...
+               { inversion H5...
                cutOL Hseq1 H10.
                OLSolve.
                assert(flls (OLTheoryCut PN (pred n)) Gamma (M++N) (DW (rq_lftBody (rulesQ C0) FX0) )).
@@ -1827,18 +1788,16 @@ Proof with sauto.
                LLPerm ((N++N)++M).
                apply ContractionLinear...
                LLPerm((M++N)++(M++N)).
-               refine (QuantifierPrincipalCase H12 H13 _ _ _ _ _ _ HL')... 
+               refine (QuantifierPrincipalCase H12 H13 _ _ _ _ _ _ HL')... } 
               cutOL Hseq1 H10.
                OLSolve.
                LLtheory (makeLRuleQ C0 FX0).
-               inversion H12.
                LLtensor (@nil oo) (M++N).
                apply H14...
                LLPerm ((M ++ x2) ++ N)...
          - cutOL H3 Hseq2.
             OLSolve.
             LLtheory (makeRRuleQ C FX).
-            inversion H5.
             LLtensor (@nil oo) (M++N).
             apply H7...
             LLPerm (M++N++x)...
@@ -1875,7 +1834,6 @@ Proof with sauto.
          cutOL H3 Hseq2.
          OLSolve.
          LLtheory (makeLRuleC C).
-         inversion H5.
          LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
@@ -1908,7 +1866,6 @@ Proof with sauto.
          cutOL H3 Hseq2.
          OLSolve.
          LLtheory (makeLRuleU C F).
-         inversion H5.
          LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
@@ -1941,7 +1898,6 @@ Proof with sauto.
          cutOL H3 Hseq2.
          OLSolve.
          LLtheory (makeLRuleB C F G).
-         inversion H5.
          LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...
@@ -1978,7 +1934,6 @@ Proof with sauto.
          LLPerm(N++M).
          apply ContractionLinear...
          LLtheory (makeLRuleB C F G).
-         inversion H8.
          LLtensor (@nil oo) (M++M++N).
          rewrite H1.
          LLPerm ((M++x)++(M++x0)).
@@ -2008,7 +1963,6 @@ Proof with sauto.
                clearNotFormulas.
          OLSolve.
            LLtheory (makeLRuleB C F G).
-         inversion H7.
          LLtensor (@nil oo) (M++N).
          apply H9...
          LLPerm(M ++ N ++ x0)...
@@ -2042,7 +1996,6 @@ Proof with sauto.
          cutOL H3 Hseq2.
          OLSolve.
          LLtheory (makeLRuleQ C FX).
-         inversion H5.
          LLtensor (@nil oo) (M++N).
          apply H7... 
          LLPerm(M ++ N ++ x)...

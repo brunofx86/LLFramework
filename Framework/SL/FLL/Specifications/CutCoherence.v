@@ -75,7 +75,6 @@ flls (CutRuleN cutR1 n) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
   LLtheory (RCUT F).
-  inversion H1.
   eapply ctn with (m:=n)... firstorder. 
   LLtensor [⌈ F ⌉^]  [⌊ F ⌋^]  .
   all: solveLL.
@@ -96,7 +95,6 @@ flls (CutRuleN cutR1 n) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
   LLtheory (RCUT F).
-  inversion H1.
   eapply ctn with (m:=n)... firstorder. 
   LLtensor (@nil oo) [⌊ F ⌋^].   
   all: solveLL.
@@ -164,7 +162,6 @@ flls (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
   LLtheory (RCUTI F).
-  inversion H1.
   eapply ctni with (m:=n)...  
   LLtensor (@nil oo) [⌊ F ⌋^].   
   all: solveLL.
@@ -176,7 +173,6 @@ flls (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
   LLtheory (RCUTI F).
-  inversion H1.
   eapply ctni with (m:=m)...
   LLtensor (@nil oo) [⌊ F ⌋^].   
   all: solveLL.

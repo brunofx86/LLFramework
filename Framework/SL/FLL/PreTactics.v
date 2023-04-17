@@ -75,11 +75,11 @@ Ltac solvePolarity :=
   sauto;
   let H := fresh "H" in
     match goal with
-    | [|- ~ negativeFormula _] => intro H; solvePolarity 
-    | [|- ~ positiveFormula _] => intro H; solvePolarity
-    | [|- ~ positiveLFormula _] => intro H; solvePolarity
-    | [|- ~ IsPositiveAtom _ ] => intro H; solvePolarity
-    | [|- ~ IsNegativeAtom _ ] => intro H; solvePolarity
+    | [|- ~ negativeFormula _] => autounfold;intro H; solvePolarity 
+    | [|- ~ positiveFormula _] => autounfold;intro H; solvePolarity
+    | [|- ~ positiveLFormula _] => autounfold;intro H; solvePolarity
+    | [|- ~ IsPositiveAtom _ ] => autounfold;intro H; solvePolarity
+    | [|- ~ IsNegativeAtom _ ] => autounfold;intro H; solvePolarity
     
     | [H: negativeFormula ?F  |- _] =>
       match F with

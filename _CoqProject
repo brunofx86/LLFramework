@@ -81,9 +81,9 @@ Framework/SL/FLL/Specifications/Requirement1.v
 Framework/SL/FLL/Specifications/Requirement2.v
 Framework/SL/FLL/Specifications/OLTheory.v
 
-#Framework/SL/FLL/Specifications/Substructural/OLCut.v
-#Framework/SL/FLL/Specifications/Substructural/MALL/Bipoles.v
-#Framework/SL/FLL/Specifications/Substructural/MALL/Cut.v
+Framework/SL/FLL/Specifications/Substructural/OLCut.v
+Framework/SL/FLL/Specifications/Substructural/MALL/Bipoles.v
+Framework/SL/FLL/Specifications/Substructural/MALL/Cut.v
 
 Framework/SL/FLL/Specifications/Classical/OLCut.v
 Framework/SL/FLL/Specifications/Classical/LK/Bipoles.v
@@ -122,12 +122,12 @@ Framework/SL/MMLL/CutEliminationMMLL.v
 
 # Multi-modal System as Framework
 
-#Framework/SL/MMLL/Specifications/OL2MLL.v
-#Framework/SL/MMLL/Specifications/OL2MLLResults.v
-#Framework/SL/MMLL/Specifications/StructuralClauses.v
-#Framework/SL/MMLL/Specifications/Bipoles.v
-#Framework/SL/MMLL/Specifications/CutCoherence.v
-#Framework/SL/MMLL/Specifications/Requirement1.v
-#Framework/SL/MMLL/Specifications/Requirement2.v
-#Framework/SL/MMLL/Specifications/OLTheory.v
-#Framework/SL/MMLL/Specifications/Substructural/OLCut.v
+Framework/SL/MMLL/Specifications/OL2MLL.v
+Framework/SL/MMLL/Specifications/OL2MLLResults.v
+Framework/SL/MMLL/Specifications/StructuralClauses.v
+Framework/SL/MMLL/Specifications/Bipoles.v
+Framework/SL/MMLL/Specifications/CutCoherence.v
+Framework/SL/MMLL/Specifications/Requirement1.v
+Framework/SL/MMLL/Specifications/Requirement2.v
+Framework/SL/MMLL/Specifications/OLTheory.v
+Framework/SL/MMLL/Specifications/Substructural/OLCut.v

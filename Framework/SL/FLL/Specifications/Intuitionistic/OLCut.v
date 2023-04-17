@@ -588,7 +588,6 @@ Proof with sauto.
     +  rewrite <- LEncodeApp in H3.  
          cutOL H3 Hseq2.
          LLtheory (makeLRuleC C).
-         inversion H.
          LLtensor (@nil oo) (M++LEncode N).
          apply H7... 
         rewrite app_assoc_reverse.
@@ -630,7 +629,6 @@ Proof with sauto.
      + rewrite <- LEncodeApp in H3.
         cutOL H3 Hseq2.
          LLtheory (makeLRuleU C F).
-         inversion H.
          LLtensor (@nil oo) (M++LEncode N).
          apply H7... 
          rewrite app_assoc_reverse.
@@ -675,8 +673,7 @@ Proof with sauto.
      + rewrite <- LEncodeApp in H3.
          cutOL H3 Hseq2.
          LLtheory (makeLRuleB C F G).
-         inversion H.
-         LLtensor (@nil oo) (M++LEncode N).
+        LLtensor (@nil oo) (M++LEncode N).
          apply H7...
          rewrite app_assoc_reverse.
          rewrite <- LEncodeApp...
@@ -696,7 +693,6 @@ Proof with sauto.
      + cutOL H5 Hseq2.
         apply LEncodePermutation in H1... OLSolve.
          LLtheory (makeLRuleB C F G).
-         inversion H.
          LLtensor (@nil oo) (M++LEncode N).
         rewrite H1. simpl...
         apply H10...
@@ -727,7 +723,6 @@ Proof with sauto.
          cutOL H4 Hseq2.
          cutOL H5 Hseq2'.
         LLtheory (makeLRuleB C F G).
-         inversion H.
          LLtensor (@nil oo) (M++LEncode N).
          apply H9...
          rewrite app_assoc_reverse.
@@ -778,7 +773,6 @@ Proof with sauto.
      + rewrite <- LEncodeApp in H3. 
         cutOL H3 Hseq2.
          LLtheory (makeLRuleQ C FX).
-         inversion H.
          LLtensor (@nil oo) (M++LEncode N).
          apply H7...
          rewrite app_assoc_reverse.

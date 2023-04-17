@@ -31,13 +31,11 @@ Proof with sauto.
    - left. exists x0... simpl. solveLL.
      intros.
       LLtheory ((makeRRuleC TT )).
-     inversion H1.
      LLtensor [⌈ t_ccon TT ⌉] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
       LLtheory ((makeRRuleC TT )).
-     inversion H2.
      LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists Requirement1.BCAxiom.  
@@ -46,13 +44,11 @@ Proof with sauto.
    - left. exists x0... simpl. solveLL.
      intros.
       LLtheory ((makeLRuleC FF )).
-     inversion H1.
      LLtensor [⌊ t_ccon FF ⌋] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
       LLtheory ((makeLRuleC FF )).
-     inversion H2.
      LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists Requirement1.BCFail.  
@@ -72,12 +68,6 @@ Proof with sauto.
   unfold wellFormedU';intros.
   destruct lab.
 Qed.
-
-Ltac solveTF :=
-   match goal with
-| [H: IsPositiveAtom (makeLRuleB _ _ _) |- _ ] => inversion H 
-| [H: IsPositiveAtom (makeRRuleB _ _ _) |- _ ] => inversion H 
-end.
 
 
 (** *** Binary connectives *)
@@ -101,7 +91,7 @@ Proof with sauto.
       LLExact H5.
       lia. intros.
       LLtheory (makeLRuleB OR Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon OR Fo1 Go1 ⌋ ] Delta12. 
       simpl. solveLL. LLExact H1. LLExact H4.
     - apply FocusingWith in H4...
@@ -183,7 +173,7 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       LLExact H2.
       lia. intros.
       LLtheory (makeLRuleB AND Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋] Delta1. 
       LLleft. solveLL. LLExact H1.
       exists [⌊ Go1 ⌋], x1, 4.
@@ -195,7 +185,7 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       LLExact H2.
       lia. intros.
       LLtheory (makeLRuleB AND Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋] Delta1. 
       LLright. solveLL. LLExact H1.
     - apply FocusingPlus in H4...
@@ -239,7 +229,7 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       LLExact H5. 
       lia. intros.
       LLtheory (makeRRuleB AND Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌈ t_bcon AND Fo1 Go1 ⌉ ] Delta12.
      simpl. solveLL. LLExact H1. LLExact H4.  
     - apply FocusingWithPos in H4...
@@ -273,7 +263,7 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       LLExact H5.
       lia. intros.
       LLtheory (makeLRuleB IMP Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon IMP Fo1 Go1 ⌋ ] (Delta0). 
       simpl. LLtensor (@nil oo) (Delta0); solveLL.  LLExact H4.
     - apply FocusingTensorPos in H4...
@@ -307,7 +297,7 @@ exists [!⌈ Go1 ⌉], (S (S (S x1))), 1%nat.
       LLExact H1.
       lia. intros.
       LLtheory (makeRRuleB IMP Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌈ t_bcon IMP Fo1 Go1 ⌉] Delta1. 
       simpl. solveLL.  LLExact H2. 
     - apply FocusingParPos in H4...
@@ -374,13 +364,11 @@ Proof with sauto.
      exists x1... simpl. solveLL.
      intros.
       LLtheory ((makeLRuleC FF )).
-     inversion H3.
      LLtensor [⌊ t_ccon FF ⌋] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
       LLtheory ((makeLRuleC FF )).
-     inversion H2.
      LLtensor (@nil oo) Delta1.
     simpl. solveLL.
 Qed.
@@ -420,7 +408,7 @@ Proof with sauto.
       LLExact H5.  rewrite <- H1... rewrite LEncodeApp...
       lia. intros.
       LLtheory (makeLRuleB OR Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon OR Fo1 Go1 ⌋ ]  Delta12.
       simpl. solveLL. LLExact H4. LLExact H6.
     - apply FocusingWith in H4...
@@ -436,7 +424,7 @@ Proof with sauto.
       LLExact H5. simpl...
       lia. intros.
     (*   LLtheory (makeLRuleBin OR Fo1 Go1).
-      solveTF. 
+       
    LLtensor (@nil oo) (⌈ F ⌉ :: ⌞ Delta12 ⌟).       *) 
       simpl. solveLL. 
       LLExact H. LLExact H1.
@@ -456,7 +444,7 @@ Proof with sauto.
       LLExact H2. rewrite <- H1 ... rewrite LEncodeApp...
       lia. intros.
       LLtheory (makeLRuleB AND Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
       LLleft. solveLL. LLExact H4. 
 
@@ -472,7 +460,7 @@ Proof with sauto.
       LLExact H2.   rewrite <- H1 ... rewrite LEncodeApp...
       lia. intros.
       LLtheory (makeLRuleB AND Fo1 Go1).
-      solveTF. 
+       
       LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
       LLright. solveLL. LLExact H4. 
      - apply FocusingPlus in H4...

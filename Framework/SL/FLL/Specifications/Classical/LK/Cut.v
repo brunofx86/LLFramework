@@ -29,13 +29,11 @@ Proof with sauto.
    - left. exists x0... simpl. solveLL.
      intros.
       LLtheory ((makeRRuleC TT )).
-     inversion H1.
      LLtensor [⌈ t_ccon TT ⌉] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
       LLtheory ((makeRRuleC TT )).
-     inversion H2.
      LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists BCAxiom.  
@@ -44,13 +42,11 @@ Proof with sauto.
    - left. exists x0... simpl. solveLL.
      intros.
       LLtheory ((makeLRuleC FF )).
-     inversion H1.
      LLtensor [⌊ t_ccon FF ⌋] Delta1.
     simpl. solveLL.
    - right. split... simpl. solveLL.
      intros.
       LLtheory ((makeLRuleC FF )).
-     inversion H2.
      LLtensor (@nil oo) Delta1.
     simpl. solveLL.
  * exists BCFail.  
@@ -86,7 +82,6 @@ Proof with sauto.
        lia.
        intros.
        LLtheory ((makeLRuleU NEG Fo1)).
-      inversion H5.
       LLtensor [⌊ t_ucon NEG Fo1⌋ ] Delta1.
       simpl.  solveLL.
      LLExact H2.
@@ -123,7 +118,6 @@ Proof with sauto.
        lia.
        intros.
        LLtheory ((makeRRuleU NEG Fo1)).
-      inversion H5.
       LLtensor [⌈ t_ucon NEG Fo1 ⌉] Delta1.
       simpl.  solveLL.
      LLExact H2.
@@ -169,7 +163,6 @@ Proof with sauto.
        lia.
        intros.
        LLtheory ((makeLRuleB AND Fo1 Go1)).
-      inversion H4.
       LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
       simpl. 
      LLleft; solveLL.
@@ -188,7 +181,6 @@ Proof with sauto.
        lia.
        intros.
        LLtheory ((makeLRuleB AND Fo1 Go1)).
-      inversion H4.
       LLtensor [⌊ t_bcon AND Fo1 Go1 ⌋ ] Delta1.
       simpl. 
      LLright; solveLL.
@@ -245,7 +237,6 @@ Proof with sauto.
           lia.
           intros.
           LLtheory ((makeRRuleB AND Fo1 Go1)).
-          inversion H6.
           LLtensor [⌈ t_bcon AND Fo1 Go1 ⌉] Delta12.
          simpl... solveLL.
          LLExact H1.
@@ -287,7 +278,6 @@ Proof with sauto.
           lia.
           intros.
           LLtheory ((makeLRuleB OR Fo1 Go1)).
-          inversion H6.
           LLtensor [⌊ t_bcon OR Fo1 Go1 ⌋ ] Delta12.
          simpl... solveLL.
          LLExact H1.
@@ -328,7 +318,6 @@ Proof with sauto.
        lia.
        intros.
        LLtheory ((makeRRuleB OR Fo1 Go1)).
-      inversion H4.
       LLtensor [⌈ t_bcon OR Fo1 Go1 ⌉ ] Delta1.
       simpl. 
      LLleft; solveLL.
@@ -347,7 +336,6 @@ Proof with sauto.
        lia.
        intros.
        LLtheory ((makeRRuleB OR Fo1 Go1)).
-      inversion H4.
       LLtensor [⌈ t_bcon OR Fo1 Go1 ⌉] Delta1.
       simpl. 
      LLright; solveLL.
@@ -405,7 +393,6 @@ Proof with sauto.
           lia.
           intros.
           LLtheory ((makeLRuleB IMP Fo1 Go1)).
-          inversion H7.
           LLtensor [⌊ t_bcon IMP Fo1 Go1 ⌋] ( Delta1 ++ Delta2).
          simpl...
          LLtensor Delta1 Delta2.
@@ -449,7 +436,6 @@ Proof with sauto.
        lia.
       intros.
       LLtheory ((makeRRuleB IMP Fo1 Go1)).
-     inversion H4.
      LLtensor [⌈ t_bcon IMP Fo1 Go1 ⌉] Delta1.
     simpl. solveLL. 
     LLExact H2.
