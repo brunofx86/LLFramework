@@ -3,7 +3,7 @@ Require Import LL.Framework.SL.FLL.Specifications.Bipoles.
  
 (** ** Syntax *)
 Inductive LKC := TT | FF.
-Inductive LKU := NEG.
+Inductive LKU := CNEG.
 Inductive LKB := AND | OR | IMP .
 Inductive LKQ := EX | ALL .
 
@@ -32,7 +32,7 @@ Definition LKrulesC (c:ccon) :=
 (** *** Unary connectives *)
 Definition LKrulesU  (c:ucon) :=
   match c return ruleU with
- | NEG => {| ru_rgtBody := fun F => atom (down F);
+ | CNEG => {| ru_rgtBody := fun F => atom (down F);
                       ru_lftBody  := fun F =>  atom (up F) |}
   end.
 

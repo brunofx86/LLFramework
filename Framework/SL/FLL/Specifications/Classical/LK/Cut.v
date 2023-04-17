@@ -5,8 +5,8 @@ of propositional multiplicative additive linear logic.
  *)
 
 Require Import LL.Framework.SL.FLL.Reasoning.
-Require Import LL.Framework.SL.FLL.Specifications.Classical.OLCut.
-Require Import LL.Framework.SL.FLL.Specifications.Classical.LK.Bipoles.
+Require Export LL.Framework.SL.FLL.Specifications.Classical.OLCut.
+Require Export LL.Framework.SL.FLL.Specifications.Classical.LK.Bipoles.
 Set Implicit Arguments.
 
 (** ** Well-formedness conditions *)
@@ -81,8 +81,8 @@ Proof with sauto.
        1-2: HProof.
        lia.
        intros.
-       LLtheory ((makeLRuleU NEG Fo1)).
-      LLtensor [⌊ t_ucon NEG Fo1⌋ ] Delta1.
+       LLtheory ((makeLRuleU CNEG Fo1)).
+      LLtensor [⌊ t_ucon CNEG Fo1⌋ ] Delta1.
       simpl.  solveLL.
      LLExact H2.
      - inversion H4...
@@ -117,8 +117,8 @@ Proof with sauto.
        1-2: HProof.
        lia.
        intros.
-       LLtheory ((makeRRuleU NEG Fo1)).
-      LLtensor [⌈ t_ucon NEG Fo1 ⌉] Delta1.
+       LLtheory ((makeRRuleU CNEG Fo1)).
+      LLtensor [⌈ t_ucon CNEG Fo1 ⌉] Delta1.
       simpl.  solveLL.
      LLExact H2.
      - inversion H4...
@@ -548,7 +548,7 @@ Qed.
 
 Require Import SL.FLL.InvPositivePhase.
 
-Lemma CutCoherenceNEG: CutCoherenceU cutR1 (rulesU NEG).
+Lemma CutCoherenceNEG: CutCoherenceU cutR1 (rulesU CNEG).
 Proof with sauto; try solveLL.
   unfold CutCoherenceU;intros.
   simpl...

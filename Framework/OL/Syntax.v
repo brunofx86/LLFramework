@@ -61,16 +61,16 @@ Definition t_term (t:OLType)   :=  (CON (oo_term  t)) .
 Definition t_atom (id:nat) (A:uexp)  := APP (CON (oo_atom  id)) A. 
 
 (** Constants *)
-Definition t_ccon ct := CON (oo_ccon ct) .
+Definition t_ccon (ct : ccon) := CON (oo_ccon ct) .
   
 (** Unary connectives *)
-Definition t_ucon uc := fun F => APP (CON (oo_ucon uc)) F .
+Definition t_ucon (uc: ucon) : uexp -> uexp := fun F => APP (CON (oo_ucon uc)) F .
 
 (** Binnary connectives *)
-Definition t_bcon bc :=
+Definition t_bcon (bc: bcon) : uexp -> uexp -> uexp :=
     fun F G => APP (APP (CON (oo_bcon bc)) F) G.
 (** Quantifiers *)
-Definition t_qcon qc :=
+Definition t_qcon (qc: qcon) : (uexp -> uexp) -> uexp :=
     fun F => (APP (CON (oo_qcon qc)) (lambda F)).
   
 (** *** Well-formedness conditions *)
