@@ -5,8 +5,8 @@ of propositional multiplicative additive linear logic.
  *)
 
 Require Import LL.Framework.SL.FLL.Reasoning.
-Require Import LL.Framework.SL.FLL.Specifications.Substructural.OLCut.
-Require Import LL.Framework.SL.FLL.Specifications.Substructural.MALL.Bipoles.
+Require Export LL.Framework.SL.FLL.Specifications.Substructural.OLCut.
+Require Export LL.Framework.SL.FLL.Specifications.Substructural.MALL.Bipoles.
 Set Implicit Arguments.
 
 (** ** Well-formedness conditions *)
