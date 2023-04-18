@@ -23,6 +23,21 @@ Set Implicit Arguments.
 (** ** Cut Elimination Procedure *)
 Section CutElimination .
   Context `{OLR: OORules}.
+Lemma OLCutHasPos n: hasPos (OLTheoryCutI PnN n).
+Proof with sauto.
+   intro.
+   intros...  
+   constructor. apply ooth_strpos... firstorder.
+Qed.
+   
+ 
+ Lemma OLHasPos: hasPos (OLTheory PnN).
+Proof with sauto.
+   intro.
+   intros... apply ooth_strpos... firstorder.
+ Qed.
+   
+ #[local] Hint Resolve OLCutHasPos OLHasPos : core. 
 
   (** As a general hypothesis, we assume that the Object logic is cut-coherent *)
   Hypothesis LTWell1 : wellFormedTheory'.
@@ -249,21 +264,6 @@ Proof with sauto.
         rewrite Permutation_assoc_comm...
 Qed. 
   
-Lemma OLCutHasPos n: hasPos (OLTheoryCutI PnN n).
-Proof with sauto.
-   intro.
-   intros...  
-   constructor. apply ooth_strpos... firstorder.
-Qed.
-   
- 
- Lemma OLHasPos: hasPos (OLTheory PnN).
-Proof with sauto.
-   intro.
-   intros... apply ooth_strpos... firstorder.
- Qed.
-   
- #[local] Hint Resolve OLCutHasPos OLHasPos : core. 
 
 Ltac clearNotFormulas :=
 repeat

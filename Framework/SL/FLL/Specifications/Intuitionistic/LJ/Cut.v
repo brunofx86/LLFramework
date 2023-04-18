@@ -5,8 +5,8 @@ of propositional multiplicative additive linear logic.
  *)
 
 Require Import LL.Framework.SL.FLL.Reasoning.
-Require Import LL.Framework.SL.FLL.Specifications.Intuitionistic.OLCut.
-Require Import LL.Framework.SL.FLL.Specifications.Intuitionistic.LJ.Bipoles.
+Require Export LL.Framework.SL.FLL.Specifications.Intuitionistic.OLCut.
+Require Export LL.Framework.SL.FLL.Specifications.Intuitionistic.LJ.Bipoles.
 Require Import LL.Framework.SL.FLL.InvPositivePhase.
 Set Implicit Arguments.
 
@@ -321,7 +321,7 @@ Proof with sauto.
   destruct lab.
 Qed.
 
-Lemma wellFormedT : wellFormedTheory'.
+Lemma wellFormedLJ : wellFormedTheory'.
 Proof.
   split.
   apply wellBipoleLJC.
@@ -582,4 +582,4 @@ Proof.
   apply CutCoherenceIMP.
 Qed.
 
-Check OLCutElimination  wellFormedT CutCoherenceLJ wellFormedI . 
+Check OLCutElimination  wellFormedLJ CutCoherenceLJ wellFormedI . 
