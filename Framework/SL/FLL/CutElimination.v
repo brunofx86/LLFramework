@@ -197,7 +197,7 @@ Proof with sauto;solveLL.
  * rewrite perm_swap in H4. cut1H H4 Hb. 
  * checkPermutationCases H1.
     -  rewrite H3 in H5. 
-       rewrite (ng_involutive P) in H5...
+       rewrite (dualInvolutive P) in H5...
        LLPerm(N ++ M).
        cut2H Hb H5. 
     - rewrite H2 in H5. clear H2.
@@ -715,8 +715,8 @@ Proof with sauto;solveLL.
                   flln th (S x ) B M (DW ((F^)^)) ->
                       flls th B ([]++M) (UP [ ])) as Cut.
             eapply CW...
-            rewrite <- DualComplexity...
-            rewrite <- ng_involutive in Cut.
+            rewrite <- dualComplexity...
+            rewrite <- dualInvolutive in Cut.
             CleanContext.
             solvePolarity.
     + eapply @AbsorptionClassic with  (F:=F)...
@@ -849,7 +849,7 @@ Proof with sauto;solveLL.
       eapply exchangeLC with (LC:=N++M). perm.  
       eapply GeneralCut; try assumption.
       exact H8.
-      rewrite <- ng_involutive.
+      rewrite <- dualInvolutive.
       exact H.
     -
       inversion H;subst; try solve [inversion H2].

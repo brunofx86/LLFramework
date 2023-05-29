@@ -98,7 +98,7 @@ Ltac dualSimpl :=
  | H: ?C^ = ?F |- _ => 
    symmetry in H; apply dualSubst in H;subst    
  | H: context [((?C)^)^] |- _ => 
-    rewrite <- ng_involutive in H  
+    rewrite <- dualInvolutive in H  
 end;auto.    
 
  Ltac applyCutH := 

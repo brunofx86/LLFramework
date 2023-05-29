@@ -139,14 +139,13 @@ Proof with sauto.
      LLExact H.
 Qed.
 
-
 (** *** Binary connectives *)
 Lemma wellBipoleLKB : wellFormedB.
 Proof with sauto.
   unfold wellFormedB;intros.
   destruct lab;destruct s.
   * exists  BOneP.  
-     do 3 intro. intros.
+     do 3 intro. intros. autounfold in H.
      apply FocusingClause in H... 
      -  apply FocusingPlus in H4...
         + exists [⌊ Fo1 ⌋].

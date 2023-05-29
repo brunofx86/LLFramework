@@ -130,9 +130,8 @@ Lemma LL2NtoLL2S : forall n B L,
    specialize (H3 x H0).
     apply H in H3...
    LLcopy F.
-  Qed.    
+  Qed.
 
-  
 Axiom LL2StoLL2N : forall B L,
     LL2S B L -> exists n, LL2N n B L.
       

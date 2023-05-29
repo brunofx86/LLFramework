@@ -143,12 +143,12 @@ Qed.
     rewrite app_nil_r in CutC.
     assert(HCut1: flls (OLTheory nPnN) Gamma ([] ++ N)  ( UP [ (rc_lftBody (rulesC C)) ^])).
     eapply @GeneralCut with  (C:=  rc_rgtBody (rulesC C) ^);eauto. 
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
     
     
     apply seqtoSeqN in HCut1.  destruct HCut1 as [h2 HCut1].
     eapply @GeneralCut with  (C:= (rc_lftBody (rulesC C)) ^); eauto. 
-    rewrite <- ng_involutive;eauto.   Qed.
+    rewrite <- dualInvolutive;eauto.   Qed.
 
   (** This is the case when a unary connective is principal in both premises *)
   Theorem UConnectivePrincipalCase :
@@ -183,11 +183,11 @@ Qed.
     assert(Cut1': flls (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[(ru_lftBody (rulesU C) F) ^] )).
     eapply @GeneralCut with(C := (ru_rgtBody (rulesU C) F)  ^) ;eauto.
     
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
 
     apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
     eapply @GeneralCut with (C:= (ru_lftBody (rulesU C) F) ^); eauto.
-    rewrite <- ng_involutive;eauto. 
+    rewrite <- dualInvolutive;eauto. 
   Qed.
   
   (** This is the case when a binary connective is principal in both premises *)
@@ -222,10 +222,10 @@ Qed.
     
     assert(Cut1': flls (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[ (rb_lftBody (rulesB C) F G) ^] )).
     eapply @GeneralCut with (C := (rb_rgtBody (rulesB C) F G) ^) ;eauto.
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
  
     apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
-    eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- ng_involutive;eauto.
+    eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- dualInvolutive;eauto.
   Qed.
 
   (** This is the case when a quantifier is principal in both premises *)
@@ -273,14 +273,14 @@ Qed.
 
     assert(Cut1': flls (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[(rq_lftBody (rulesQ C) FX0) ^] )).
     eapply @GeneralCut with  (C := (rq_rgtBody (rulesQ C) FX) ^) ;eauto.
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
     simpl in Cut1'.
     apply seqtoSeqN in Cut1'.
     destruct Cut1' as [h4 Cut1']. 
 
     
     eapply @GeneralCut with (C := (rq_lftBody (rulesQ C) FX0) ^) ;eauto.
-    rewrite <- ng_involutive;eauto. 
+    rewrite <- dualInvolutive;eauto. 
   Qed.
 
  (** Inductive hypothesis in the theorem [OLCutElimStep]. This is
@@ -763,7 +763,7 @@ Ltac Cases' H := destruct H;sauto;SubCases.
  Proof with sauto.
  intros.
  rewrite H...
- rewrite <- ng_involutive...
+ rewrite <- dualInvolutive...
  Qed.
  
 Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:
@@ -1878,7 +1878,7 @@ Qed.
       (flls (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP [])) .
   Proof with sauto.
     intros h1 h2 n N M Gamma FCut n' HisF PosG PosN PosM Hseq1 Hseq2 HL HL'.
-    remember (plus h1 h2) as h.
+   remember (plus h1 h2) as h.
     generalize dependent Gamma.
     generalize dependent N.
     generalize dependent M.
@@ -2010,11 +2010,11 @@ cut(False);intros...
       flls  (OLTheoryCut nPnN 0) B N (UP[] ) .
   Proof with sauto;try OLSolve.
   induction n ; induction h using lt_wf_ind; intros *;intros isFB isFN Hh.
-    * eapply seqNtoSeq;eauto.
+    * eapply seqNtoSeq;eauto. 
     * inversion Hh...
-      apply onlyAtomsLinear in H1...
+       apply onlyAtomsLinear in H1...
       apply onlyAtomsClassical in H1...
-       inversion H1...
+      inversion H1...
        inversion H3...
        inversion H4...
       + (* constant *)
@@ -2205,8 +2205,8 @@ cut(False);intros...
         apply IHn in H7...
         apply WeakTheory with (theory' := OLTheory nPnN) in H7;auto;try apply  OOTheryCut0.
 Qed.
-         (** Cut-elimination theorem for Object Logics satisfying cut-]
-  coherence *)
+     
+         (** Cut-elimination theorem for Object Logics satisfying cut-coherence *)
   Theorem OLCutElimination :
     forall n h  B N ,
       IsPositiveAtomFormulaL B ->

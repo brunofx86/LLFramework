@@ -82,16 +82,16 @@ Section LLSyntax.
 
  
  (** Negation is involutive *)
-  Theorem ng_involutive: forall F: oo, F = dual (dual F).
+  Lemma dualInvolutive F : F = dual (dual F).
   Proof.
-    intro. 
+  
     induction F; simpl; auto;
       try( try(rewrite <- IHF1); try(rewrite <- IHF2); try(rewrite <- IHF);auto);
       try(assert (o = fun x =>  dual (dual (o x))) by
              (extensionality e; apply H); rewrite <- H0; auto).
   Qed.
  
-  Lemma DualComplexity F: complexity F = complexity (dual F) .
+  Lemma dualComplexity F : complexity F = complexity (dual F) .
  Proof with sauto.
   induction F...
   all: try solve [simpl;sauto].
@@ -101,19 +101,19 @@ Section LLSyntax.
 Lemma dualSubst F C : F = dual C -> C = dual F.
 Proof.
   intros.
-  rewrite H. rewrite <- ng_involutive;auto. Qed.
+  rewrite H. rewrite <- dualInvolutive;auto. Qed.
 
 Lemma dualInj : Injective dual.
 Proof with subst;auto.
  intros A B H.
  apply dualSubst in H...
- apply ng_involutive.
+ apply dualInvolutive.
 Qed.
 
 End LLSyntax.
 
 Global Hint Resolve Complexity0
-                    DualComplexity: core.
+                    dualComplexity: core.
 
 Module LLNotations .
   Notation "'⊥'" := Bot.

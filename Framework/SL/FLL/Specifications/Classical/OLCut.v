@@ -154,12 +154,12 @@ Ltac cutOL P1 P2 :=
     rewrite app_nil_r in CutC.
     assert(HCut1: flls (OLTheoryCut PN n) Gamma ([] ++ N)  ( UP [ (rc_lftBody (rulesC C)) ^])).
     eapply @GeneralCut with  (C:=  rc_rgtBody (rulesC C) ^);eauto. 
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
     (* end show *)
     
     apply seqtoSeqN in HCut1.  destruct HCut1 as [h2 HCut1].
     eapply @GeneralCut with  (C:= (rc_lftBody (rulesC C)) ^); eauto. 
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
   Qed.
   
   (** This is the case when a unary connective is principal in both premises *)
@@ -195,11 +195,11 @@ Ltac cutOL P1 P2 :=
     assert(Cut1': flls (OLTheoryCut PN n) Gamma ([] ++ N) ( UP[(ru_lftBody (rulesU C) F) ^] )).
     eapply @GeneralCut with(C := (ru_rgtBody (rulesU C) F)  ^) ;eauto.
     
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
 
     apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
     eapply @GeneralCut with (C:= (ru_lftBody (rulesU C) F) ^); eauto.
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
   Qed.
   
   (** This is the case when a binary connective is principal in both premises *)
@@ -234,10 +234,10 @@ Ltac cutOL P1 P2 :=
     
     assert(Cut1': flls (OLTheoryCut PN n) Gamma ([] ++ N) ( UP[ (rb_lftBody (rulesB C) F G) ^] )).
     eapply @GeneralCut with (C := (rb_rgtBody (rulesB C) F G) ^) ;eauto.
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
  
     apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
-    eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- ng_involutive;eauto.
+    eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- dualInvolutive;eauto.
   Qed.
 
 (*  Axiom OLSize: forall FX t t' n, uniform FX -> proper t -> proper t' -> lengthUexp (FX t) n -> lengthUexp (FX t') n . *)
@@ -287,14 +287,14 @@ Ltac cutOL P1 P2 :=
 
     assert(Cut1': flls (OLTheoryCut PN n) Gamma ([] ++ N) ( UP[(rq_lftBody (rulesQ C) FX0) ^] )).
     eapply @GeneralCut with  (C := (rq_rgtBody (rulesQ C) FX) ^) ;eauto.
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
     simpl in Cut1'.
     apply seqtoSeqN in Cut1'.
     destruct Cut1' as [h4 Cut1']. 
 
     
     eapply @GeneralCut with (C := (rq_lftBody (rulesQ C) FX0) ^) ;eauto.
-    rewrite <- ng_involutive;eauto.
+    rewrite <- dualInvolutive;eauto.
   Qed.
 
 
@@ -755,7 +755,7 @@ Ltac Cases' H := destruct H;sauto;SubCases.
  Proof with sauto.
  intros.
  rewrite H...
- rewrite <- ng_involutive...
+ rewrite <- dualInvolutive...
  Qed.
  
 Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:

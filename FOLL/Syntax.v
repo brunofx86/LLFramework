@@ -31,8 +31,6 @@ Section LLSyntax.
   | All : (expr con -> oo) -> oo 
   | Some : (expr con -> oo) -> oo.
 
-
-   
   (** Complexity of formulas *)
   Fixpoint complexity (X:oo) :=
     match X with
@@ -59,6 +57,7 @@ Section LLSyntax.
     | a :: L' => complexity a + complexityL L'
     end.
 
+  
   Lemma Complexity0 : forall F, complexity F > 0.
     induction F;simpl;lia.
   Qed.
@@ -88,20 +87,17 @@ Section LLSyntax.
     | Some X => All (fun x => dual  (X x))
     | All X => Some (fun x => dual (X x))
     end.
-
-
  
  (** Negation is involutive *)
-  Theorem ng_involutive: forall F: oo, F = dual (dual F).
+  Lemma dualInvolutive F :  F = dual (dual F).
   Proof.
-    intro. 
     induction F; simpl; auto;
       try( try(rewrite <- IHF1); try(rewrite <- IHF2); try(rewrite <- IHF);auto);
       try(assert (o = fun x =>  dual (dual (o x))) by
              (extensionality e; apply H); rewrite <- H0; auto).
   Qed.
  
-  Lemma DualComplexity F: complexity F = complexity (dual F) .
+  Lemma dualComplexity F: complexity F = complexity (dual F) .
  Proof with sauto.
   induction F...
   all: try solve [simpl;sauto].
@@ -111,13 +107,13 @@ Section LLSyntax.
 Lemma dualSubst F C : F = dual C -> C = dual F.
 Proof.
   intros.
-  rewrite H. rewrite <- ng_involutive;auto. Qed.
+  rewrite H. rewrite <- dualInvolutive;auto. Qed.
 
 Lemma dualInj : Injective dual.
 Proof with subst;auto.
  intros A B H.
  apply dualSubst in H...
- apply ng_involutive.
+ apply dualInvolutive.
 Qed.
 
   
@@ -209,7 +205,7 @@ End LLSyntax.
 
 Global Hint Constructors uniform_oo isFormula: core.
 Global Hint Resolve Complexity0
-                    DualComplexity: core.
+                    dualComplexity: core.
 
 Global Hint Unfold isFormulaL :core.
 
