@@ -143,21 +143,21 @@ Ltac cutOL P1 P2 :=
 (* begin show *)
      Proof with sauto.     
     intros.
-    apply seqtoSeqN in H... 
-    apply seqtoSeqN in H0...
+    apply FLLStoFLLN in H... 
+    apply FLLStoFLLN in H0...
     generalize(ctCutCo C);intro CutC.
     unfold CutCoherenceC in CutC.
     destruct CutC as [Hc CutC]. 
     apply EmptySubSet with (theory:= (OLTheoryCut PN n) ) in CutC.
     apply weakeningGen with (CC':= Gamma) in CutC .
-    apply seqtoSeqN in CutC.   destruct CutC as [h CutC].
+    apply FLLStoFLLN in CutC.   destruct CutC as [h CutC].
     rewrite app_nil_r in CutC.
     assert(HCut1: flls (OLTheoryCut PN n) Gamma ([] ++ N)  ( UP [ (rc_lftBody (rulesC C)) ^])).
     eapply @GeneralCut with  (C:=  rc_rgtBody (rulesC C) ^);eauto. 
     rewrite <- dualInvolutive;eauto.
     (* end show *)
     
-    apply seqtoSeqN in HCut1.  destruct HCut1 as [h2 HCut1].
+    apply FLLStoFLLN in HCut1.  destruct HCut1 as [h2 HCut1].
     eapply @GeneralCut with  (C:= (rc_lftBody (rulesC C)) ^); eauto. 
     rewrite <- dualInvolutive;eauto.
   Qed.
@@ -176,8 +176,8 @@ Ltac cutOL P1 P2 :=
     inversion H1;subst.
     inversion H2;subst. inversion H4.
     destruct n ;[ lia | simpl].
-    apply seqtoSeqN in H.     
-    apply seqtoSeqN in H0.
+    apply FLLStoFLLN in H.     
+    apply FLLStoFLLN in H0.
     destruct H as [h1 H].
     destruct H0 as [h2 H0].
 
@@ -186,7 +186,7 @@ Ltac cutOL P1 P2 :=
     
     generalize (CutC F n1);intro Cut1. clear CutC.
     apply CuteRuleNBound' with (m:= n) in Cut1...
-    apply seqtoSeqN in Cut1. destruct Cut1 as [hh  Cut1].
+    apply FLLStoFLLN in Cut1. destruct Cut1 as [hh  Cut1].
     apply WeakTheoryN with (theory' := OLTheoryCut PN n) in Cut1;auto using TheoryEmb2.
     apply weakeningGenN with (CC':= Gamma) in Cut1 .
     rewrite app_nil_r in Cut1.
@@ -197,7 +197,7 @@ Ltac cutOL P1 P2 :=
     
     rewrite <- dualInvolutive;eauto.
 
-    apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
+    apply FLLStoFLLN in Cut1'.  destruct Cut1' as [h3 Cut1'].
     eapply @GeneralCut with (C:= (ru_lftBody (rulesU C) F) ^); eauto.
     rewrite <- dualInvolutive;eauto.
   Qed.
@@ -216,7 +216,7 @@ Ltac cutOL P1 P2 :=
     inversion H1;subst.
     inversion H2;subst. inversion H4.
     destruct n ;[ lia | simpl].
-    apply seqtoSeqN in H.     apply seqtoSeqN in H0.
+    apply FLLStoFLLN in H.     apply FLLStoFLLN in H0.
     destruct H as [h1 H].
     destruct H0 as [h2 H0].
 
@@ -225,7 +225,7 @@ Ltac cutOL P1 P2 :=
     
     generalize (CutC F G n1 n2);intro Cut1. clear CutC.
     apply CuteRuleNBound' with (m:= n) in Cut1...
-    apply seqtoSeqN in Cut1. destruct Cut1 as [hh  Cut1].
+    apply FLLStoFLLN in Cut1. destruct Cut1 as [hh  Cut1].
     apply WeakTheoryN with (theory' := OLTheoryCut PN n) in Cut1;auto using TheoryEmb2.
     apply weakeningGenN with (CC':= Gamma) in Cut1 .
     rewrite app_nil_r in Cut1.
@@ -236,7 +236,7 @@ Ltac cutOL P1 P2 :=
     eapply @GeneralCut with (C := (rb_rgtBody (rulesB C) F G) ^) ;eauto.
     rewrite <- dualInvolutive;eauto.
  
-    apply seqtoSeqN in Cut1'.  destruct Cut1' as [h3 Cut1'].
+    apply FLLStoFLLN in Cut1'.  destruct Cut1' as [h3 Cut1'].
     eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- dualInvolutive;eauto.
   Qed.
 
@@ -280,7 +280,7 @@ Ltac cutOL P1 P2 :=
     apply WeakTheory with (theory' := OLTheoryCut PN n) in H;auto using TheoryEmb1.
     apply WeakTheory with (theory' := OLTheoryCut PN n) in H0;auto using TheoryEmb1.
    
-    apply seqtoSeqN in H.  apply seqtoSeqN in H0. apply seqtoSeqN in Cut1.
+    apply FLLStoFLLN in H.  apply FLLStoFLLN in H0. apply FLLStoFLLN in Cut1.
     destruct H as [h1 H]. 
     destruct H0 as [h2 H0]. destruct Cut1 as [h3 Cut1].
     
@@ -289,7 +289,7 @@ Ltac cutOL P1 P2 :=
     eapply @GeneralCut with  (C := (rq_rgtBody (rulesQ C) FX) ^) ;eauto.
     rewrite <- dualInvolutive;eauto.
     simpl in Cut1'.
-    apply seqtoSeqN in Cut1'.
+    apply FLLStoFLLN in Cut1'.
     destruct Cut1' as [h4 Cut1']. 
 
     
@@ -2111,7 +2111,7 @@ Qed.
           LLtensor [ (⌈ OO0 ⌉)] N.
           LLrelease.
           LLstorec.
-          apply seqNtoSeq in Hseq1...
+          apply FLLNtoFLLS in Hseq1...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq1;auto using TheoryEmb1.
           LLExact Hseq1.
           apply WeakeningLinear...
@@ -2128,7 +2128,7 @@ Qed.
           inversion H7. apply OLCutHasNeg...
           LLtensor (@nil oo) N.
           solveLL.
-          apply seqNtoSeq in Hseq1...
+          apply FLLNtoFLLS in Hseq1...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq1;auto using TheoryEmb1.
           LLExact Hseq1.
           LLPerm ([]++N).
@@ -2187,7 +2187,7 @@ Qed.
           inversion H2. apply OLCutHasPos...
           LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
@@ -2201,7 +2201,7 @@ Qed.
           inversion H2. apply OLCutHasPos...
           LLtensor (@nil oo) M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           inversion H7...
@@ -2226,7 +2226,7 @@ Qed.
           inversion H2. apply OLCutHasPos...
           LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
@@ -2240,7 +2240,7 @@ Qed.
           inversion H2. apply OLCutHasPos...
           LLtensor (@nil oo) M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           inversion H7...
@@ -2265,7 +2265,7 @@ Qed.
           inversion H2.
           LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
@@ -2279,7 +2279,7 @@ Qed.
           inversion H2.
           LLtensor (@nil oo) M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           inversion H7...
@@ -2304,7 +2304,7 @@ Qed.
           inversion H2.
           LLtensor  [ (⌊ OO ⌋)] M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           rewrite Permutation_app_comm.
@@ -2318,7 +2318,7 @@ Qed.
           inversion H2.
           LLtensor (@nil oo) M.
           solveLL.
-          apply seqNtoSeq in Hseq2...
+          apply FLLNtoFLLS in Hseq2...
           apply WeakTheory with (theory' := OLTheoryCut PN (pred n)) in Hseq2;auto using TheoryEmb1.
           LLExact Hseq2.
           inversion H7...
@@ -2492,7 +2492,7 @@ Qed.
       flls  (OLTheoryCut PN 0) B N (UP[] ) .
   Proof with sauto.
     induction n ; induction h using lt_wf_ind; intros *;intros isFB isFN Hh.
-    * eapply seqNtoSeq;eauto.
+    * eapply FLLNtoFLLS;eauto.
     * inversion Hh...
        cut(False);intros...
        refine (onlyAtomsLinear _ H0 H1)...
@@ -2714,12 +2714,12 @@ Qed.
          generalize(LengthFormula H4 H5);intro;lia.
          assert (flls (OLTheoryCut PN (pred  (S (n)))) B (x0 ++ x1) (UP [])) .
          rewrite Permutation_app_comm.
-         apply seqtoSeqN in H8...
-         apply seqtoSeqN in H11...
+         apply FLLStoFLLN in H8...
+         apply FLLStoFLLN in H11...
          apply absorptionLN in H11, H8.
          refine(OLCutElimStep _ _ _ _ H8 H11 H5 _)...  
          all: OLSolve.
-         apply seqtoSeqN in H2...
+         apply FLLStoFLLN in H2...
          apply IHn in H2...
          apply WeakTheory with (theory' := OLTheory PN) in H2;auto;try apply  OOTheryCut0.
          all:OLSolve.
@@ -2735,7 +2735,7 @@ Qed.
       flls (OLTheory PN) B N (UP [] ) .
   Proof with sauto.
     intros.
-    apply seqtoSeqN in H1...
+    apply FLLStoFLLN in H1...
     apply OLCutElimAux in H1 ...
     eapply WeakTheory with (theory':= OLTheory PN) in H1 ...
     apply OOTheryCut0.

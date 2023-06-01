@@ -52,16 +52,16 @@ Section FLLSequent.
       S n |-F- B ; L ; UP ((All FX) :: M)                                                                                                                           
  (* reaction rules *)
   | tri_rel : forall B F L n,
-      negativeFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
+      negFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
   | tri_store : forall B L M F n,
-      positiveLFormula F -> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
+      posLFormula F -> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
  (* decision rules *)
   | tri_dec1 : forall B L L' F n,
-      positiveFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
+      posFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec2 : forall B L F n,
-      ~ IsPositiveAtom F -> In F B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
+      ~ posAtom F -> In F B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec3 : forall B L F n,
-      ~ IsPositiveAtom F -> th F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []      
+      ~ posAtom F -> th F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []      
 
   where " n '|-F-' B ';' L ';' X " := (flln n B L X).
   
@@ -105,26 +105,25 @@ Section FLLSequent.
       |-f- B ; L ; UP ((All FX) :: M)                                                                                                                           
  (* reaction rules *)
   | tri_rel' : forall B F L,
-      negativeFormula F -> |-f- B ; L ; UP [F] ->  |-f- B ; L ; DW F
+      negFormula F -> |-f- B ; L ; UP [F] ->  |-f- B ; L ; DW F
   | tri_store' : forall B L M F,
-      positiveLFormula F -> |-f- B ; F::L ; UP M -> |-f- B ; L ; UP (F::M)
+      posLFormula F -> |-f- B ; F::L ; UP M -> |-f- B ; L ; UP (F::M)
  (* decision rules *)
   | tri_dec1' : forall B L L' F,
-      positiveFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F -> |-f- B ; L ; UP []
+      posFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F -> |-f- B ; L ; UP []
   | tri_dec2' : forall B L F,
-      ~IsPositiveAtom F -> In F B -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
+      ~posAtom F -> In F B -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
   | tri_dec3' : forall B L F,
-      ~IsPositiveAtom F -> th F -> |-f- B ; L ; DW F -> |-f- B ; L ; UP [] 
+      ~posAtom F -> th F -> |-f- B ; L ; DW F -> |-f- B ; L ; UP [] 
   where "'|-f-' B ';' L ';' X " := (flls B L X).
-  
- 
+   
 End FLLSequent .
 
 Global Hint Constructors flln : core.
 Global Hint Constructors flls : core.
 
 Declare Scope FLL.
-Declare Scope FLLTheory.
+Declare Scope FLLT.
 
 Notation "n ⊢ B ; L ⇕ X " := (flln _ n B L X)  (at level 80):FLL.
 Notation "n ⊢ B ; L ⇓ F " := (flln _ n B L (DW F))  (at level 80):FLL.
@@ -133,9 +132,9 @@ Notation "⊢ B ; L ⇕ X " := (flls _ B L X)  (at level 80):FLL.
 Notation "⊢ B ; L ⇓ F " := (flls _ B L (DW F))  (at level 80):FLL.
 Notation "⊢ B ; L ⇑ F " := (flls _ B L (UP F))  (at level 80):FLL.
 
-Notation "th - n ⊢ B ';' L ⇕ X " := (flln th n B L X)  (at level 80):FLLTheory.
-Notation "th - n ⊢ B ';' L ⇓ F " := (flln th n B L (DW F))  (at level 80):FLLTheory.
-Notation "th - n ⊢ B ';' L ⇑ F " := (flln th n B L (UP F))  (at level 80):FLLTheory.
-Notation "th - ⊢ B ';' L ⇕ X " := (flls th B L X)  (at level 80):FLLTheory.
-Notation "th - ⊢ B ';' L ⇓ F " := (flls th B L (DW F))  (at level 80):FLLTheory.
-Notation "th - ⊢ B ';' L ⇑ F " := (flls th B L (UP F))  (at level 80):FLLTheory.
+Notation "th - n ⊢ B ';' L ⇕ X " := (flln th n B L X)  (at level 80):FLLT.
+Notation "th - n ⊢ B ';' L ⇓ F " := (flln th n B L (DW F))  (at level 80):FLLT.
+Notation "th - n ⊢ B ';' L ⇑ F " := (flln th n B L (UP F))  (at level 80):FLLT.
+Notation "th - ⊢ B ';' L ⇕ X " := (flls th B L X)  (at level 80):FLLT.
+Notation "th - ⊢ B ';' L ⇓ F " := (flls th B L (DW F))  (at level 80):FLLT.
+Notation "th - ⊢ B ';' L ⇑ F " := (flls th B L (UP F))  (at level 80):FLLT.

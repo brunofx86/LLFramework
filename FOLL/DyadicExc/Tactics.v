@@ -11,9 +11,9 @@ Set Implicit Arguments.
       unfold Proper; unfold respectful.
       intros.
       split; intro;subst.
-      +  refine (LL3exchangeNC H _);auto.
+      +  refine (exchangeLL3N H _);auto.
       + apply Permutation_sym in H.
-        refine (LL3exchangeNC H _);auto.
+        refine (exchangeLL3N H _);auto.
     Qed.
   
   Global Instance LL3S_morphism {OLS : OLSig}:
@@ -23,10 +23,10 @@ Set Implicit Arguments.
       unfold Proper; unfold respectful.
       intros.
       split; intro;subst.
-      + refine (LL3exchangeC H _);auto.
+      + refine (exchangeLL3S H _);auto.
         LL3exchangeL x0.
       + apply Permutation_sym in H.
-        refine (LL3exchangeC H _);auto.
+        refine (exchangeLL3S H _);auto.
         apply Permutation_sym in H0.
          LL3exchangeL y0. 
     Qed.
@@ -43,7 +43,7 @@ Ltac llExact H :=
   | (LL3N ?x ?Gamma ?Delta) => 
     match goal with
     | [ |- LL3N ?x ?Gamma' ?Delta'] => 
-      eapply @LL3exchangeNC with (CC:=Gamma);  try perm
+      eapply @exchangeLL3N with (B1:=Gamma);  try perm
     end 
   end;auto.
  
@@ -52,7 +52,7 @@ Ltac llExact H :=
   | (LL3N ?x ?Gamma ?Delta) => 
     match goal with
     | [ |- LL3N x ?Gamma' Delta] => 
-      eapply @LL3exchangeNC with (CC:=Gamma);  try perm
+      eapply @exchangeLL3N with (B1:=Gamma);  try perm
     | _ => idtac "The conclusion is not a sequent." 
     end   
   | _ => idtac H "is not a sequent." 
@@ -64,7 +64,7 @@ Ltac llExact' H :=
   | (LL3S ?Gamma ?Delta) =>
     match goal with
     | [ |- LL3S ?Gamma' ?Delta] =>
-      eapply @LL3exchangeC with (CC:=Gamma);try perm
+      eapply @exchangeLL3S with (B1:=Gamma);try perm
     | [ |- LL3S ?Gamma ?Delta'] =>
        LL3exchangeL Delta
     end 
@@ -110,7 +110,6 @@ end;auto.
          LL3N ?y _ _ -> 
          LL3S _ _ ] => eapply H
   | _ => idtac end.
-
 
 Ltac applyCutW :=
   match goal with
@@ -181,6 +180,3 @@ Tactic Notation "cutCW" constr(P1) constr(P2) :=
                            applyCutW
                     | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end;sauto.    
-
-
-     

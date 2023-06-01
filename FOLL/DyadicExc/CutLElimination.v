@@ -218,7 +218,7 @@ Proof with sauto; try dualSimpl.
       LLtensor;try solvell3. 
       rewrite H2.
       LL3exchangeL (M ++ (G :: x0) ++ x1).
-   * apply @LL3weakeningN with (F:=F) in Ha.
+   * apply @weakeningLL3N with (F:=F) in Ha.
      cutLH Ha H2.
    * rewrite app_comm_cons in H5.
      cutLH Ha H5.

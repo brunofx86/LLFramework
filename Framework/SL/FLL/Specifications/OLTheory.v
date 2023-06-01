@@ -117,8 +117,46 @@ Proof.
 Qed.
 
 
+Lemma PnNTheory  : hasPos (OLTheory PnN).
+Proof with auto.
+  unfold hasPos;intros. 
+  apply ooth_strpos...
+  simpl...
+Qed.
+
+Lemma PNTheory1 : hasPos (OLTheory PN).
+Proof with auto.
+  unfold hasPos;intros. 
+  apply ooth_strpos...
+  simpl...
+Qed.
+
+Lemma PNTheory2 : hasNeg (OLTheory PN).
+Proof with auto.
+  unfold hasNeg;intros. 
+  apply ooth_strneg...
+  simpl...
+Qed.
+
+Lemma PNTheoryCut n: hasNeg (OLTheoryCut PN n).
+Proof with auto.
+  unfold hasNeg;intros. 
+  apply oothc_theory. 
+  apply ooth_strneg...
+  simpl...
+Qed.
+
+Lemma PnNTheoryCutI  n: hasPos (OLTheoryCutI PnN n).
+Proof with auto.
+  unfold hasPos;intros.
+  apply oothc_theoryi. 
+  apply ooth_strpos...
+  simpl...
+Qed.
 
 End OLTheory.
 
 Global Hint Resolve weakOLTheory: core.
 Global Hint Constructors  buildTheory OLTheoryCut OLTheoryCutI OLTheory : core.
+Global Hint Resolve PnNTheory PNTheory1 PNTheory2: core.
+Global Hint Resolve PNTheoryCut PnNTheoryCutI: core.

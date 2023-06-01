@@ -1,4 +1,3 @@
-
 Require Export LL.Misc.Utils.
 Require Export LL.Misc.Hybrid.
 Require Export LL.Misc.UtilsTactics.
@@ -7,47 +6,33 @@ Require Import Coq.Logic.FunctionalExtensionality.
 Require Import RelationClasses.
 Require Import Coq.Logic.FinFun.
 
-
 Export ListNotations.
 Set Implicit Arguments.
 
 Section LLSyntax.
   Context `{OLS: OLSig}.
   
-  (** Connectives of the logic *)
+ (** Syntax of formulas in classical first-order linear logic *)
   Inductive oo : Set :=
-  | atom : atm -> oo
-  | perp : atm -> oo
-  | Top : oo
-  | One : oo
-  | Zero : oo
-  | Bot : oo 
-  | AAnd : oo -> oo -> oo
-  | MAnd : oo -> oo -> oo
-  | AOr : oo -> oo -> oo
-  | MOr : oo -> oo -> oo 
-  | Bang : oo -> oo
-  | Quest : oo -> oo 
-  | All : (expr con -> oo) -> oo 
-  | Some : (expr con -> oo) -> oo.
+  | atom (A: atm)  | perp (A: atm)
+  | Top | Bot | Zero | One
+  | MAnd (F G: oo)
+  | MOr (F G: oo)
+  | AAnd (F G: oo) 
+  | AOr (F G: oo) 
+  | Quest (F: oo) 
+  | Bang (F: oo) 
+  | All  (FX: expr con -> oo)
+  | Some  (FX: expr con -> oo).
 
   (** Complexity of formulas *)
-  Fixpoint complexity (X:oo) :=
-    match X with
-    | atom A   => 1
-    | perp A   => 1
-    | One => 1
-    | Bot => 1
-    | Zero => 1
-    | Top => 1
-    | MAnd F G => 1+ complexity F + complexity G
-    | AAnd F G => 1+ complexity F + complexity G
-    | MOr F G => 1+ complexity F + complexity G
-    | AOr F G => 1+ complexity F + complexity G
-    | Bang F   => 1+ complexity F
-    | Quest F  => 1+ complexity F
-    | Some FX => 1+ complexity (FX (VAR con 0))
-    | All FX => 1+ complexity (FX (VAR con 0))
+  Fixpoint complexity P :=
+    match P with
+    | atom _  | perp _  | Top | Bot | Zero | One => 1
+    | MAnd F G | MOr F G => 1+ complexity F + complexity G
+    | AAnd F G | AOr F G => 1+ complexity F + complexity G
+    | Quest F  | Bang F  => 1+ complexity F
+    | Some FX | All FX => 1+ complexity (FX (VAR con 0))
     end.
     
   (** Complexity on list of formulas *)
@@ -57,33 +42,27 @@ Section LLSyntax.
     | a :: L' => complexity a + complexityL L'
     end.
 
-  
-  Lemma Complexity0 : forall F, complexity F > 0.
-    induction F;simpl;lia.
-  Qed.
+  Lemma Complexity0 F : complexity F > 0.
+  Proof.  induction F;simpl;lia. Qed.
 
-  Lemma ComplexityL0 : forall L, complexityL L =0 -> L = [].
-    intros;destruct L;simpl;auto.
+  Lemma ComplexityL0 L :  complexityL L =0 -> L = [].
+  Proof.
+     intro H;destruct L;simpl;auto.
     simpl in H.
     generalize (Complexity0 o);intros.
     lia.
   Qed.
   
   (** Classical linear logic dualities *)
-  Fixpoint dual (X: oo) :=
-    match X with
-    | atom A   => perp A
-    | perp A   => atom A
-    | One => Bot
-    | Bot => One
-    | Zero => Top
-    | Top => Zero
-    | MAnd F G => MOr (dual  F) (dual G)
-    | AAnd F G => AOr (dual  F) (dual G)
-    | MOr F G => MAnd (dual  F) (dual G)
+  Fixpoint dual P :=
+    match P with
+    | atom A  => perp A  | perp A  => atom A
+    | One => Bot  | Bot => One | Zero => Top | Top => Zero
     | AOr F G => AAnd (dual  F) (dual G)
-    | Bang F   => Quest (dual F)
-    | Quest F  => Bang (dual   F)
+    | AAnd F G => AOr (dual  F) (dual G)
+    | MAnd F G => MOr (dual  F) (dual G)
+    | MOr F G => MAnd (dual  F) (dual G)
+    | Bang F   => Quest (dual F)  | Quest F  => Bang (dual  F)
     | Some X => All (fun x => dual  (X x))
     | All X => Some (fun x => dual (X x))
     end.
@@ -93,16 +72,16 @@ Section LLSyntax.
   Proof.
     induction F; simpl; auto;
       try( try(rewrite <- IHF1); try(rewrite <- IHF2); try(rewrite <- IHF);auto);
-      try(assert (o = fun x =>  dual (dual (o x))) by
+      try(assert (FX = fun x =>  dual (dual (FX x))) by
              (extensionality e; apply H); rewrite <- H0; auto).
   Qed.
  
+ (** The compexity of a formula is equal to the complexity of its dual *)
   Lemma dualComplexity F: complexity F = complexity (dual F) .
  Proof with sauto.
   induction F...
   all: try solve [simpl;sauto].
   Qed.
-
 
 Lemma dualSubst F C : F = dual C -> C = dual F.
 Proof.
@@ -116,7 +95,6 @@ Proof with subst;auto.
  apply dualInvolutive.
 Qed.
 
-  
   (** Uniform Predicate (ruling out exotic terms) *)
   Inductive uniform_oo: (expr con -> oo) -> Prop := 
   | uniform_atom: forall (a: expr con -> atm),
@@ -146,15 +124,15 @@ Qed.
       (forall y:expr con, uniform_oo (fun x => (A y x))) ->
       uniform_oo (fun x => (Some (fun y => (A y x)))).
 
- 
-  Lemma ComplexityUniformEq : forall FX x y , uniform_oo FX ->
-                                            proper x -> proper y ->
-                                            complexity (FX x) =  complexity (FX y).
-    intros.
+  Lemma ComplexityUniformEq FX x y: 
+        uniform_oo FX -> proper x -> proper y ->
+        complexity (FX x) =  complexity (FX y).
+ Proof.
+    intros H Hx Hy.
     induction H;subst;simpl;firstorder.
   Qed.
 
- (** Well formedness condition  *)
+ (** Well formedness condition  for formulas *)
   Inductive isFormula: oo -> Prop  :=
   | wf_atm : forall (P1:atm), isFormula (atom P1)
   | wf_perp : forall (P1:atm), isFormula (perp P1)
@@ -171,7 +149,7 @@ Qed.
   | wf_All : forall (A : expr con -> oo), uniform_oo A -> (forall t: expr con, isFormula (A t)) -> isFormula (All A)
   | wf_Some : forall (A : expr con -> oo), uniform_oo A -> (forall t: expr con, isFormula (A t)) -> isFormula (Some A).
   
-  (** Well formendness conditions for lists and arrows *)
+  (** Well formendness condition for lists of formulas *)
   Definition isFormulaL  (L:list oo)  := Forall isFormula L. 
  
   Lemma isFormulaIn F L: 
@@ -181,14 +159,12 @@ Qed.
     eapply @ForallIn with (F:=F) in H;auto.
   Qed.
 
-
 Lemma isFormulaInP F L L': 
       isFormulaL L -> Permutation L (F::L') -> isFormula F. 
   Proof.
  intros.
     eapply @ForallInP with (F:=F) in H;auto.
   Qed.
- 
  
   Generalizable All Variables.
   Global Instance isFormulaL_morph : 
@@ -200,7 +176,6 @@ Lemma isFormulaInP F L L':
     rewrite <- H;auto.
   Qed.  
 
- 
 End LLSyntax.
 
 Global Hint Constructors uniform_oo isFormula: core.

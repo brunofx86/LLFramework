@@ -74,7 +74,7 @@ Proof with sauto; try dualSimpl.
    rewrite H2.
    LLstore F (M++x);try solvell2.
    rewrite H in H0.
-   apply @LL2weakeningN with (F:=F) in Hi.
+   apply @weakeningLL2N with (F:=F) in Hi.
    rewrite perm_swap in Hi.
    cutH' Hi H0...   
  * inversion Hi...
@@ -104,7 +104,7 @@ Proof with sauto; try dualSimpl.
    - rewrite H.
      LLstore F M0;try solvell2.
      rewrite perm_swap in H0.
-     apply @LL2weakeningN with (F:=F) in Hj.
+     apply @weakeningLL2N with (F:=F) in Hj.
      cutH' H0 Hj...
    - eapply ll2_bang'. 
      cutH' H Hj...

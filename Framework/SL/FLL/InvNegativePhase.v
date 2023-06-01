@@ -67,9 +67,8 @@ Lemma EquivAuxWith :  forall F G CC LC M M',
     intros.
     remember (complexityL M) as SizeM.
     revert dependent CC.
-    revert dependent LC.
     revert dependent M.
-    revert dependent M'.
+    revert LC M'.
     induction SizeM using strongind;intros ...
     solveComplexity.
   
@@ -111,7 +110,7 @@ Proof with  sauto;solveLL.
   Qed.
   
 Lemma EquivAuxStore :
-    forall F CC LC M M', positiveLFormula F ->
+    forall F CC LC M M', posLFormula F ->
   flls th CC  (F::LC) (UP (M ++ M') ) ->
   flls th CC  LC  (UP (M ++ F :: M') ) .
   Proof with  sauto;solveLL.
@@ -132,15 +131,8 @@ Lemma EquivAuxStore :
       |  [ |- flls _ _ _ (UP (?M ++ _ :: _)) ] =>
          eapply H0 with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveLL;try lia
       end.
-    LLExact H7.
-     LLExact H7.
-      LLExact H7.
-       LLExact H7.
-        LLExact H7.
-         LLExact H7.
-          LLExact H7.
+    1-7,9: LLExact H7.
     generalize (ComplexityUniformEq H6 properX (proper_VAR con 0%nat));intro...
-    LLExact H7.
    Qed.
   
   
@@ -193,20 +185,18 @@ Lemma EquivAuxTop :  forall CC LC M M',
                eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveLL; inversion H0;subst;sauto
             end].
     
-    eapply H with (m:= complexityL (a1 ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;sauto. 
+    eapply H with (m:= complexityL (a1 :: a2 ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;sauto.
+    inversion H4;subst...
+eapply H with (m:= complexityL (a1 ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;sauto. 
     inversion H4;subst...
     eapply H with (m:= complexityL (a2 ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;sauto.
     inversion H4;subst...
-    eapply H with (m:= complexityL (a1 :: a2 ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;sauto.
-    inversion H4;subst...
-
+    
     inversion H0... inversion H3...
     
     rewrite <- app_comm_cons.
     solveLL.
-    eapply H with (M:= o x :: M) (m:= complexityL (o x ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;auto.
-
-    
+    eapply H with (M:= FX x :: M) (m:= complexityL (FX x ::M));simpl in * ; inversion HeqSizeM; solveLL; inversion H0;subst;auto.
     rewrite (ComplexityUniformEq  H2 properX (proper_VAR con 0%nat));auto.
   Qed.
 
@@ -230,26 +220,23 @@ Lemma EquivAuxForAll : forall FX CC LC M M' ,
       try solve [eapply H with (m:= complexityL M);inversion HeqSizeM;subst;solveLL;intros;solveLL; inversion H1;subst;sauto;
                  generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL].
 
-  - eapply H with (M:= a1 :: M) (m:= complexityL (a1 :: M));intros...
-     inversion HeqSizeM;simpl... 
-     inversion H1;subst;sauto.
-     inversion H5;auto. 
-     generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL.
-     
-  - eapply H with (M:= a2 :: M) (m:= complexityL (a2 :: M));intros...
-     inversion HeqSizeM;simpl... 
-     inversion H1;subst;sauto.
-     inversion H5;auto. 
-     generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL.
-     
   - eapply H with (M:= a1 :: a2 :: M) (m:= complexityL (a1 :: a2 :: M));intros...
      inversion HeqSizeM;simpl... 
      inversion H1;subst;sauto.
      inversion H5;auto. 
      generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL.
-    
+  - eapply H with (M:= a1 :: M) (m:= complexityL (a1 :: M));intros...
+     inversion HeqSizeM;simpl... 
+     inversion H1;subst;sauto.
+     inversion H5;auto. 
+     generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL.     
+  - eapply H with (M:= a2 :: M) (m:= complexityL (a2 :: M));intros...
+     inversion HeqSizeM;simpl... 
+     inversion H1;subst;sauto.
+     inversion H5;auto. 
+     generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL.
   -  inversion H1... inversion H5...
-     solveLL. eapply H with (M:= o x :: M) (m:= complexityL (o x :: M));intros...
+     solveLL. eapply H with (M:= FX0 x :: M) (m:= complexityL (FX0 x :: M));intros...
      inversion HeqSizeM;simpl... 
      generalize (ComplexityUniformEq H4 properX (proper_VAR con 0%nat));intro...
      generalize (H2 _ H3);intros Hs;invTri' Hs ;solveLL.
@@ -272,88 +259,76 @@ Proof with sauto;solveLL.
     apply EquivAuxTop.
     SLFormulaSolve.
   - inversion H0...
-    +
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxTop.
-    SLFormulaSolve.
-    +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxWith.
-    refine(IHn _ _ _ _ _ H4 _).
-    inversion H... 
-    SLFormulaSolve.
-    rewrite H3...
-    refine(IHn _ _ _ _ _ H7 _).
-    inversion H... 
-    SLFormulaSolve.
-    rewrite H3... 
-     +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxBot.
-    refine(IHn _ _ _ _ _ H6 H3).
-    rewrite H3 in H.
-    inversion H...
-    +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxPar.
-    refine(IHn _ _ _ _ _ H6 _).
-    rewrite H3 in H.
-    inversion H...
-    apply Forall_app...
-    2:{
-    inversion H4...
-    apply Forall_cons...
-     apply Forall_cons...
-     apply Forall_app in H5...
-     }
-     apply Forall_app in H5...
-     rewrite H3...
-
-    +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxQuest.
-    LLPerm (F::B).
-    refine(IHn _ _ _ _ _ H6 _)...
-    inversion H... 
-    SLFormulaSolve.
-    + 
-    rewrite <- H1 in H.
-    symmetry in H1.
-    inversion H... 
-    inversion H5... 
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxForAll;intros...
-    SLFormulaSolve.
-    apply H7 in H1.
-    refine(IHn _ _ _ _ _ H1 _)...
-    SLFormulaSolve.
-    rewrite H4...
-     +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxStore...
-    refine(IHn _ _ _ _ _ H7 _)...
-    inversion H... 
-    SLFormulaSolve.
-    +
-    LLfocus1 F L'0. 
-    HProof. 
-    +
-    LLfocus2 F. 
-    HProof.
-    +
-    LLtheory F. 
-    HProof.
+    + symmetry in H1.
+       apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxTop.
+        SLFormulaSolve.
+    + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxWith.
+        refine(IHn _ _ _ _ _ H4 _).
+        inversion H... 
+        SLFormulaSolve.
+        rewrite H3...
+        refine(IHn _ _ _ _ _ H7 _).
+        inversion H... 
+        SLFormulaSolve.
+        rewrite H3... 
+     + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxBot.
+        refine(IHn _ _ _ _ _ H6 H3).
+        rewrite H3 in H.
+        inversion H...
+    + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxPar.
+        refine(IHn _ _ _ _ _ H6 _).
+        rewrite H3 in H.
+        inversion H...
+        apply Forall_app...
+        2:{
+        inversion H4...
+        repeat apply Forall_cons...
+        apply Forall_app in H5...
+         }
+         apply Forall_app in H5...
+         rewrite H3...
+    + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxQuest.
+        LLPerm (F::B).
+        refine(IHn _ _ _ _ _ H6 _)...
+        inversion H... 
+        SLFormulaSolve.
+    + rewrite <- H1 in H.
+        symmetry in H1.
+        inversion H... 
+        inversion H5... 
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxForAll;intros...
+        SLFormulaSolve.
+        apply H7 in H1.
+        refine(IHn _ _ _ _ _ H1 _)...
+        SLFormulaSolve.
+        rewrite H4...
+     + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxStore...
+        refine(IHn _ _ _ _ _ H7 _)...
+        inversion H... 
+        SLFormulaSolve.
+    + LLfocus1 F L'0. 
+       HProof. 
+    + LLfocus2 F. 
+       HProof.
+    + LLtheory F. 
+       HProof.
  Qed.
 
 Theorem EquivUpArrow2' : forall B L L' M ,
@@ -364,76 +339,64 @@ Theorem EquivUpArrow2' : forall B L L' M ,
     intros.
     revert dependent L'.
     dependent induction H0;intros...
-    +
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxTop.
-    SLFormulaSolve.
-     +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxWith.
-    eapply IHflls1...
-    inversion H... 
-    SLFormulaSolve.
-    rewrite H2...
-    eapply IHflls2...
-    inversion H... 
-    SLFormulaSolve.
-    rewrite H2...
-       +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxBot.
-    refine(IHflls _ _ _ _ H3)...
-    inversion H... 
-    SLFormulaSolve.
-    +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxPar.
-    eapply IHflls...
-    inversion H... 
-    SLFormulaSolve.
-    rewrite H3...
-
-    +
-    rewrite <- H1 in H.
-    symmetry in H1.
-    apply Permutation_vs_cons_inv' in H1...
-    apply EquivAuxQuest.
-    eapply IHflls...
-    inversion H... 
-    SLFormulaSolve.
-    + 
-    symmetry in H3.
-    apply Permutation_vs_cons_inv' in H3...
-    apply EquivAuxForAll;intros...
-    SLFormulaSolve.
-    specialize (H0 t  H3).
-    eapply H1 with (x:=t)...
-    rewrite Permutation_midle in H2.
-    inversion H2...
+    + symmetry in H1.
+      apply Permutation_vs_cons_inv' in H1...
+      apply EquivAuxTop.
+      SLFormulaSolve.
+   + rewrite <- H1 in H.
+      symmetry in H1.
+      apply Permutation_vs_cons_inv' in H1...
+      apply EquivAuxWith.
+      eapply IHflls1...
+      inversion H... 
+      SLFormulaSolve.
+      rewrite H2...
+      eapply IHflls2...
+      inversion H... 
+      SLFormulaSolve.
+      rewrite H2...
+   + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxBot.
+        refine(IHflls _ _ _ _ H3)...
+        inversion H... 
+        SLFormulaSolve.
+   + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxPar.
+        eapply IHflls...
+        inversion H... 
+        SLFormulaSolve.
+        rewrite H3...
+   + rewrite <- H1 in H.
+        symmetry in H1.
+        apply Permutation_vs_cons_inv' in H1...
+        apply EquivAuxQuest.
+        eapply IHflls...
+        inversion H... 
+        SLFormulaSolve.
+   + symmetry in H3.
+        apply Permutation_vs_cons_inv' in H3...
+        apply EquivAuxForAll;intros...
+        SLFormulaSolve.
+        specialize (H0 t  H3).
+        eapply H1 with (x:=t)...
+        rewrite Permutation_midle in H2.
+        inversion H2...
     
-    SLFormulaSolve.
-    rewrite H5...
-        +
-    symmetry in H2.
-    apply Permutation_vs_cons_inv' in H2...
-    apply EquivAuxStore...
-    eapply IHflls...
-    rewrite Permutation_cons_append in H1.
-    SLFormulaSolve.
-    +
-    LLfocus1 F L'. 
-    +
-    LLfocus2 F. 
-    +
-    LLtheory F. 
-
+        SLFormulaSolve.
+        rewrite H5...
+   + symmetry in H2.
+        apply Permutation_vs_cons_inv' in H2...
+        apply EquivAuxStore...
+        eapply IHflls...
+        rewrite Permutation_cons_append in H1.
+        SLFormulaSolve.
+   + LLfocus1 F L'. 
+   + LLfocus2 F. 
+   + LLtheory F. 
  Qed.
    
 Theorem EquivUpArrow2 : forall B L L' M ,
@@ -442,13 +405,13 @@ Theorem EquivUpArrow2 : forall B L L' M ,
  flls th B M  (UP L').
  Proof.
     intros.
-    apply seqtoSeqN in H0.
+    apply FLLStoFLLN in H0.
     destruct H0.
     eapply EquivUpArrow in H0;eauto.
   Qed.
 
 Lemma UpExtension: forall B M L F n,
-  positiveLFormula F ->
+  posLFormula F ->
   flln th n B (F::M) (UP L) ->
   exists m, m<= S n /\ flln th m B M (UP (L ++ [F])).
   Proof with subst;auto.
@@ -475,39 +438,32 @@ Lemma UpExtension: forall B M L F n,
       inversion Heqw.
       rewrite <- app_comm_cons.
       inversion H0;auto;subst;inversion Heqw;subst.
-      ++ (* top *)
-        exists 0%nat.
+      - exists 0%nat.
         firstorder; try lia. 
-      ++ (* with *)
-        apply IH with (m:= complexity  F0 + complexityL  L) in H6;try lia;auto.
+      - apply IH with (m:= complexity  F0 + complexityL  L) in H6;try lia;auto.
         apply IH with (m:= complexity  G + complexityL L) in H7;try lia;auto.
         destruct H6 as [n'  [IHn IHd]].
         destruct H7 as [m'  [IHn' IHd']].
         simpl.
         exists (S (S n0)).
         firstorder; eapply tri_with;auto.
-        eapply HeightGeq with (n:=n');try firstorder.  
-       eapply HeightGeq with (n:=m');try firstorder.       
-        ++ (* bot *)
-        apply IH with (m:= complexityL L) in H5;auto.
+        eapply heightGeqFLLN with (n:=n');try firstorder.  
+       eapply heightGeqFLLN with (n:=m');try firstorder.       
+       - apply IH with (m:= complexityL L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
         firstorder; try lia. 
-      ++  (* PAR *)
-        apply IH with (m:= complexity F0 + complexity  G + complexityL  L) in H5;auto.
+      - apply IH with (m:= complexity F0 + complexity  G + complexityL  L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
         firstorder ; simpl;try lia. 
         simpl. lia.
-
-      ++  (* quest *)
-        apply IH with (m:= complexityL  L) in H5;auto.
+      - apply IH with (m:= complexityL  L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
         firstorder ; try lia. 
         lia.
-     ++  (* FORALL *)
-        assert(forall x, proper x -> exists m, m <= S n0 /\ flln th m B M (UP ((FX x :: L)  ++ [F]))).
+     - assert(forall x, proper x -> exists m, m <= S n0 /\ flln th m B M (UP ((FX x :: L)  ++ [F]))).
         intros.
         generalize (H7 x H1);intro.
         eapply IH with (m:=complexity (FX x) + complexityL L);auto.
@@ -526,9 +482,8 @@ Lemma UpExtension: forall B M L F n,
         
         destruct H3 as [n H3].
         destruct H3 as [H3 H3'].
-        eapply @HeightGeq with (n:=n);try firstorder.   
-              ++ (* Store *)
-        assert(exists m0 : nat, m0 <= S n0 /\ flln th m0 B (M ++ [o]) (UP (L ++ [F]))).
+        eapply @heightGeqFLLN with (n:=n);try firstorder.   
+       - assert(exists m0 : nat, m0 <= S n0 /\ flln th m0 B (M ++ [o]) (UP (L ++ [F]))).
         apply IH with (m:= complexityL L);auto.
         assert (complexity o > 0) by (apply Complexity0);lia.
         eapply exchangeLCN;[|exact H7].
@@ -542,9 +497,9 @@ Lemma UpExtension: forall B M L F n,
  Qed.
   
 Lemma UpExtension2': forall B M L F,
-  positiveLFormula F ->
- flls th B (F::M) (UP L) -> flls th B M (UP (L ++ [F])).
-  Proof with sauto.
+    posLFormula F ->
+   flls th B (F::M) (UP L) -> flls th B M (UP (L ++ [F])).
+Proof with sauto.
   intros.
     remember (complexityL L) as w.
     generalize dependent L .
@@ -567,19 +522,14 @@ Lemma UpExtension2': forall B M L F,
       inversion Heqw.
       rewrite <- app_comm_cons.
       inversion H0;auto;subst;inversion Heqw;subst.
-      ++ (* with *)
-        apply IH with (m:= complexity  F0 + complexityL  L) in H5;try lia;auto.
+      - apply IH with (m:= complexity  F0 + complexityL  L) in H5;try lia;auto.
         apply IH with (m:= complexity  G + complexityL L) in H6;try lia;auto.
-     ++ (* bot *)
-        apply IH with (m:= complexityL L) in H4;auto.
-      ++  (* PAR *)
-        apply IH with (m:= complexity F0 + complexity  G + complexityL  L) in H4;auto.
+      - apply IH with (m:= complexityL L) in H4;auto.
+      - apply IH with (m:= complexity F0 + complexity  G + complexityL  L) in H4;auto.
         simpl. lia.
-       ++  (* quest *)
-        apply IH with (m:= complexityL  L) in H4;auto.
+      - apply IH with (m:= complexityL  L) in H4;auto.
         lia.
-       ++  (* FORALL *)
-        LLforall.
+     - LLforall.
         specialize (H6 x H1). 
         eapply IH with (m:=complexity (FX x) + complexityL L) in H6;auto.
         assert(complexity (FX (VAR con 0%nat)) = complexity (FX x) ).
@@ -587,28 +537,27 @@ Lemma UpExtension2': forall B M L F,
         apply ComplexityUniformEq;auto. 
         
         constructor.
-        lia.    ++ (* Store *)
-      rewrite perm_swap in H6.
+        lia.    
+     -  rewrite perm_swap in H6.
       apply IH with (m:= complexityL  L) in H6;try lia;auto.
         assert (complexity o > 0) by (apply Complexity0);lia.
-
   Qed.
   
 
 Lemma UpExtension': forall B M L F,
-  positiveLFormula F ->
- flls th B (F::M) (UP L) -> flls th B M (UP (L ++ [F])).
-  Proof with sauto.
+  posLFormula F ->
+  flls th B (F::M) (UP L) -> flls th B M (UP (L ++ [F])).
+Proof with sauto.
   intros.
-  apply seqtoSeqN in H0.
+  apply FLLStoFLLN in H0.
   destruct H0.
   apply UpExtension in H0...
-  apply seqNtoSeq in H2...
+  apply FLLNtoFLLS in H2...
   Qed.
   
   
 Lemma UpExtensionInv n F B M L :
-   positiveLFormula F ->  flln th n B M (UP (L++[F])) -> 
+   posLFormula F ->  flln th n B M (UP (L++[F])) -> 
    flls th B  (F::M) (UP L).
   Proof with sauto; solvePolarity;solveLL.
   intros.
@@ -619,43 +568,31 @@ Lemma UpExtensionInv n F B M L :
   + inversion H0...
     apply ListConsApp in H5... 
   + inversion H1... 
-    -
-    apply ListConsApp in H6...
-    -
-    apply ListConsApp in H3...
-    rewrite app_comm_cons in H4. 
-    eapply H in H4...    
-    rewrite app_comm_cons in H7.
-    eapply H in H7...
- 
-    -
-    apply ListConsApp in H3...
-    eapply H in H6...
-    -
-    apply ListConsApp in H3...
-    rewrite app_comm_cons in H6.
-    rewrite app_comm_cons in H6. 
-    eapply H in H6...
-    -
-    apply ListConsApp in H3...
-    eapply H in H6...
-    LLPerm (F0::B)...
-    - 
-    apply ListConsApp in H3...
-    solveLL. 
-    apply H7 in properX...
-    rewrite app_comm_cons in properX.
-    eapply H in properX...
-    -
-    apply ListConsApp in H3...
-    HProof.
-    eapply H in H7...
-    solveLL.
-    LLExact H7.          
+     all: try match goal with 
+          [H: _ :: _ = _ ++ [_] |- _ ] => apply ListConsApp in H
+           end...
+     - rewrite app_comm_cons in H4. 
+        eapply H in H4...    
+     - rewrite app_comm_cons in H7.
+        eapply H in H7...
+     - eapply H in H6...
+     - rewrite app_comm_cons in H6.
+       rewrite app_comm_cons in H6. 
+       eapply H in H6...
+     - eapply H in H6...
+       LLPerm (F0::B)...
+     - solveLL. 
+       apply H7 in properX...
+       rewrite app_comm_cons in properX.
+       eapply H in properX...
+    - HProof.
+    -  eapply H in H7...
+      solveLL.
+      LLExact H7.          
  Qed. 
   
 Lemma UpExtensionInv2' F B M L : 
-  positiveLFormula F -> 
+  posLFormula F -> 
   flls th B M (UP (L++[F])) -> flls th B (F::M) (UP L).
   Proof with sauto.
   intros.
@@ -679,43 +616,37 @@ Lemma UpExtensionInv2' F B M L :
       destruct L. (* L cannot be empty *)
       inversion Heqw.
       inversion H0;auto;subst;inversion Heqw;subst.
-      ++ (* with *)
-       rewrite app_comm_cons in H5. 
+      - rewrite app_comm_cons in H5. 
         apply IH with (m:= complexity  F0 + complexityL  L) in H5;try lia;auto.
         rewrite app_comm_cons in H6. 
         apply IH with (m:= complexity  G + complexityL L) in H6;try lia;auto.
-         ++ (* bot *)
-        apply IH with (m:= complexityL L) in H4;auto.
-      ++  (* PAR *)
-       do 2 rewrite app_comm_cons in H4. 
+     - apply IH with (m:= complexityL L) in H4;auto.
+     - do 2 rewrite app_comm_cons in H4. 
         apply IH with (m:= complexity F0 + complexity  G + complexityL  L) in H4;auto.
         simpl. lia.
-   ++  (* quest *)
-        apply IH with (m:= complexityL  L) in H4;auto.
+    - apply IH with (m:= complexityL  L) in H4;auto.
         lia.
-     ++  (* FORALL *)
-        LLforall.
-        specialize (H6 x H1).
-        rewrite app_comm_cons in H6.  
-        eapply IH with (m:=complexity (FX x) + complexityL L) in H6;auto.
-        assert(complexity (FX (VAR con 0%nat)) = complexity (FX x) ).
+    - LLforall.
+      specialize (H6 x H1).
+      rewrite app_comm_cons in H6.  
+      eapply IH with (m:=complexity (FX x) + complexityL L) in H6;auto.
+      assert(complexity (FX (VAR con 0%nat)) = complexity (FX x) ).
+      apply ComplexityUniformEq;auto. 
         
-        apply ComplexityUniformEq;auto. 
-        
-        constructor.
-        lia.     ++ (* Store *)
+      constructor.
+      lia. 
+    -       
       apply IH with (m:= complexityL  L) in H6;try lia;auto.
       LLstore. LLExact H6.
-        assert (complexity o > 0) by (apply Complexity0);lia.
- 
+      assert (complexity o > 0) by (apply Complexity0);lia.
   Qed.
   
 Lemma UpExtensionInv' F B M L : 
-  positiveLFormula F -> 
+  posLFormula F -> 
   flls th B M (UP (L++[F])) -> flls th B (F::M) (UP L).
   Proof with sauto.
   intros.
-  apply seqtoSeqN in H0.
+  apply FLLStoFLLN in H0.
   destruct H0.
   apply UpExtensionInv in H0... 
   Qed. 

@@ -17,7 +17,7 @@ Section FLLReasoning.
   all:LLfocus1.
 Qed.
  
- Lemma select B M L P: positiveLFormula P ->
+ Lemma select B M L P: posLFormula P ->
  flls th B M (UP (P::L)) -> flls th B (P::M) (UP L).
  Proof with sauto;solvePolarity;solveLL.
   intros.
@@ -108,8 +108,6 @@ Proof.
       apply weakeningGenN;auto.
 Qed.
 
-
-
 Theorem weakening_swap (C LC : list oo) F G X:
    flls th (F::C) LC X -> flls th (F :: G:: C) LC X.
 Proof with sauto;solveLL. 
@@ -174,11 +172,11 @@ Proof.
      apply weakeningGen;auto.
 Qed.
 
-Lemma contraction : forall CC LC  F X ,
+Lemma contrac : forall CC LC  F X ,
   flls th  (F :: F::CC) LC X -> flls th (F::CC) LC X.
 Proof with sauto.
 intros.
-  apply contract with (F:=F)...
+  apply contraction with (F:=F)...
 Qed.
 
 
@@ -186,7 +184,7 @@ Lemma contraction_middle : forall C1 C2 LC  F X ,
   flls th  (C1++F::F::C2) LC X -> flls th (C1++F::C2) LC X.
 Proof with sauto.
 intros.
-  apply contract with (F:=F)...
+  apply contraction with (F:=F)...
   apply exchangeCC with (CC:= C1 ++ F :: F :: C2)...
 Qed.
 
@@ -206,9 +204,9 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
       flls  th (C ++ Gamma) Delta  X.
   Proof with sauto.
   intros.
-  apply seqtoSeqN in H...
+  apply FLLStoFLLN in H...
   apply AbsorptionCSet in H...
-  apply seqNtoSeq in H...
+  apply FLLNtoFLLS in H...
   Qed. 
   
  Lemma AbsorptionCSet_rev : forall C Gamma Delta X,
@@ -216,10 +214,10 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
       flls  th (Gamma++C) Delta  X.
   Proof with sauto.
   intros.
-  apply seqtoSeqN in H...
+  apply FLLStoFLLN in H...
   LLPermH H1 (C++Gamma).
   eapply AbsorptionCSet in H...
-  apply seqNtoSeq in H...
+  apply FLLNtoFLLS in H...
   LLPermH H1 (Gamma++C).
   auto.
   Qed.
@@ -241,9 +239,9 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
       flls th (C ++ Gamma) Delta  X.
   Proof with sauto.
   intros.
-  apply seqtoSeqN in H...
+  apply FLLStoFLLN in H...
   apply AbsorptionLSet in H...
-  apply seqNtoSeq in H...
+  apply FLLNtoFLLS in H...
   Qed. 
     
 
@@ -266,12 +264,10 @@ Theorem FocusAtom: forall n Gamma Delta A,
                 flln th m B D  (DW F)).
   Proof with sauto.
   intros.
-  InvTriAll.
-  - left.
-    eexists. exists N...
-  - right.
-    eexists. 
-    split...  HProof.
+  InvTriAll;[left | right].
+  - eexists n0, N... 
+  - eexists n0... 
+    HProof.
  Qed.
 
  
@@ -284,8 +280,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
   Proof with sauto.
     intros.
     InvTriAll.
-    right. right.
-    right...
+    repeat right...
     Qed.
     
    Theorem FocusingStruct : forall n D B A F,
@@ -297,12 +292,11 @@ Theorem FocusAtom: forall n Gamma Delta A,
                 flln th m (B++[F]) D  (UP [] )).            
    Proof with sauto.
    intros.
-   InvTriAll.
-   left.
-  exists n0. exists N... 
-  HProof. right.
-  exists n0... 
-  HProof.
+   InvTriAll; [left | right].
+   -  exists n0, N...
+       HProof. 
+  - exists n0... 
+      HProof.
  Qed.
 
   Theorem FocusingPar :
@@ -313,12 +307,11 @@ Theorem FocusAtom: forall n Gamma Delta A,
   Proof with sauto.
     intros.
     InvTriAll.  
-    eexists n.
-    split;eauto.
+    eexists n...
   Qed.
 
   Theorem FocusingParPos :
-    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    forall n A B D G, posLFormula A -> posLFormula B ->
     flln th n G D (DW (A ⅋ B)) ->
       exists m , n =  S (S(S(S m)))  /\
                  flln th m G (B::A::D) (UP []).
@@ -327,8 +320,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
     InvTriAll.
     inversion H5;solvePolarity. 
     inversion H8;solvePolarity. 
-    eexists n.
-    split;eauto.
+    eexists n...
   Qed.
   
   Theorem FocusingPlus:
@@ -340,13 +332,9 @@ Theorem FocusAtom: forall n Gamma Delta A,
                  flln th m G (atom B::D) (UP []) ).
   Proof with sauto.
     intros.
-    InvTriAll.
-    left.
-    eexists n0.
-    split;eauto.
-    right.
-    eexists n0.
-    split;eauto.
+    InvTriAll;[left | right].
+    - eexists n0...
+    - eexists n0...
   Qed.
 
   Theorem FocusingPlusPos:
@@ -358,13 +346,9 @@ Theorem FocusAtom: forall n Gamma Delta A,
                  flln th m G [atom B] (UP []) ).
   Proof with sauto.
     intros.
-    InvTriAll.
-    left.
-    eexists n0.
-    split;eauto.
-    right.
-    eexists n0.
-    split;eauto.
+    InvTriAll;[left | right].
+    - eexists n0...
+    - eexists n0...
   Qed.
 
   Theorem FocusingWith :
@@ -376,13 +360,12 @@ Theorem FocusAtom: forall n Gamma Delta A,
   Proof with sauto.
     intros.
     InvTriAll.
-    eexists n0.
-    split;eauto.
+    eexists n0...
   Qed.
 
 
   Theorem FocusingWithPos :
-    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    forall n A B D G, posLFormula A -> posLFormula B ->
       flln th n G D (DW ( A & B)) ->
       exists m , n = S(S(S m))  /\
                  ( (flln th m G (A::D) (UP []) ) /\
@@ -392,8 +375,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
     InvTriAll.
     inversion H6;solvePolarity. 
     inversion H9;solvePolarity. 
-    eexists n0.
-    split;eauto.
+    eexists n0...
   Qed.
   
   
@@ -406,10 +388,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
    Proof with sauto.
     intros.
     InvTriAll.
-    eexists n0.
-    eexists M.
-    eexists N.
-    split;eauto.
+    eexists n0, M, N...
    Qed. 
 
   Theorem FocusingTensorPos :
@@ -421,9 +400,8 @@ Theorem FocusAtom: forall n Gamma Delta A,
    Proof with sauto.
     intros.
     InvTriAll.
-    eexists n0.
-    split;eauto.
-split;eauto. rewrite H2...
+    eexists n0...
+    rewrite H2...
    Qed. 
    
    Theorem FocusingClauseL : forall B D A F,

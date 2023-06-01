@@ -15,7 +15,7 @@ Ltac llExact H :=
   | (LL2N ?x ?Gamma ?Delta) =>
     match goal with
     | [ |- LL2N ?x ?Gamma' ?Delta'] =>
-      eapply @LL2N_compat with (B1:=Gamma) (L1:=Delta); try perm
+      eapply @exchangeLL2N with (B1:=Gamma) (L1:=Delta); try perm
     end 
   end;auto.
  
@@ -25,7 +25,7 @@ Ltac llExact' H :=
   | (LL2S ?Gamma ?Delta) =>
     match goal with
     | [ |- LL2S ?Gamma' ?Delta'] =>
-      eapply @LL2S_compat with (B1:=Gamma) (L1:=Delta); try perm
+      eapply @exchangeLL2S with (B1:=Gamma) (L1:=Delta); try perm
     end 
   end;auto.
 
@@ -66,10 +66,10 @@ end;auto.
 Ltac putFirst H TT :=
 match type of H with
 | LL2N ?x ?BB (?FF::TT::?XX) => 
-    eapply LL2N_compat with 
+    eapply exchangeLL2N with 
      (B2:=BB) (L2:= TT::FF::XX) in H;try perm
  | LL2N ?x ?BB (?FF::?GG::TT::?XX) => 
-   eapply LL2N_compat with 
+   eapply exchangeLL2N with 
      (B2:=BB) (L2:= TT::FF::GG::XX) in H;try perm
 end.
 
@@ -149,6 +149,3 @@ Tactic Notation "cutW'" constr(P1) constr(P2) :=
                            applyCutW; try rewrite app_nil_r in H'
                     | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end.    
-
-
-     

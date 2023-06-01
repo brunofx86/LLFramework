@@ -1,4 +1,3 @@
-
 Require Export LL.FOLL.Dyadic.PreTactics.
 Require Import Coq.Program.Equality.
 
@@ -7,17 +6,16 @@ Import DyadicTactics.
 
 Set Implicit Arguments.
 
-
 Section LL2BasicTheory.
   Context `{OLS: OLSig}.
   
 Section StructuralProperties.
     
-Lemma LL2N_compat : forall n B1 B2 L1 L2, 
+Lemma exchangeLL2N : forall n B1 B2 L1 L2,  
      Permutation B1 B2 -> Permutation L1 L2 -> 
      LL2 n |-- B1 ; L1 -> LL2 n |-- B2 ; L2.
 Proof with sauto.
-  intros n B1 B2 L1 L2 PB PL H.
+  intros *. intros PB PL H.
   revert L1 L2 PL B1 B2 PB H;
   induction n using lt_wf_ind; intros...
   inversion H0...
@@ -57,18 +55,18 @@ Proof.
   unfold Proper; unfold respectful. 
   intros B1 B2 PB L1 L2 PL.
   split; intro H.
-  refine (LL2N_compat PB PL H).
-  refine (LL2N_compat (symmetry PB) (symmetry PL) H).
+  refine (exchangeLL2N PB PL H).
+  refine (exchangeLL2N (symmetry PB) (symmetry PL) H).
 Qed.
 
-Lemma LL2S_compat : forall B1 B2 L1 L2, 
+Lemma exchangeLL2S : forall B1 B2 L1 L2,  
      Permutation B1 B2 -> Permutation L1 L2 -> 
      LL2 |-- B1 ; L1 -> LL2 |-- B2 ; L2.
 Proof with sauto.
-  intros B1 B2 L1 L2 PB PL H.
+  intros *. intros PB PL H.
   revert dependent B2.
   revert dependent L2. 
-  induction H;intros L2 PL B2 PB...
+  induction H;intros L2 PL B2 PB... 
   LLinit A.
   all: try rewrite PL in H.
   LLtop M.   
@@ -92,8 +90,8 @@ Proof.
   unfold Proper; unfold respectful. 
   intros B1 B2 PB L1 L2 PL.
   split; intro H.
-  refine (LL2S_compat PB PL H).
-  refine (LL2S_compat (symmetry PB) (symmetry PL) H).
+  refine (exchangeLL2S PB PL H).
+  refine (exchangeLL2S (symmetry PB) (symmetry PL) H).
 Qed.
 
 Instance LL2S_morphism' B:
@@ -104,6 +102,100 @@ Proof.
   rewrite PL;auto.
  Qed.
 
+Theorem weakeningLL2N : forall n F B L,
+        (LL2N n B L) -> LL2N n (F::B) L.
+ Proof with sauto.
+    induction n using lt_wf_ind;intros.
+      inversion H0...
+      LLinit A.
+      LLtop M.
+      LLleft F0 G M.
+      LLright F0 G M.
+      LLwith F0 G M.
+      LLbot M.
+      LLpar F0 G M.
+      LLtensor F0 G M N.
+      LLstore F0 M.
+      rewrite perm_swap;auto.
+      LLexists t FX M.
+      LLforall FX M.
+      LLcopy F0.
+      firstorder.
+  Qed.
+
+Theorem weakeningLL2S : forall F B L,
+    LL2S B L -> LL2S (F::B) L.
+   Proof with sauto. 
+    intros.
+    revert dependent F.
+    induction H;intros...
+    LLinit A.
+    LLtop M.
+    LLleft F G M.
+    LLright F G M.
+    LLwith F G M.
+    LLbot M.
+    LLpar F G M.
+    LLtensor F G M N.
+    LLstore F M.
+    rewrite perm_swap;auto.
+    LLexists t FX M.
+    LLforall FX M.
+    LLcopy F.
+    firstorder.
+ Qed.     
+
+Theorem contractionLL2N  : forall n F B L,
+    In F B ->  LL2N n (F::B) L -> LL2N n B L.
+  Proof with sauto.
+  do 2 intro.
+  induction n using lt_wf_ind;intros... 
+    inversion H1...
+    LLinit A.
+    LLtop M.
+    LLleft F0 G M.
+    LLright F0 G M.
+    LLwith F0 G M.
+    LLbot M.
+    LLpar F0 G M.
+    LLtensor F0 G M N.
+    LLstore F0 M.
+    rewrite perm_swap in H3... 
+    apply H in H3...
+    LLexists t FX M.
+    LLforall FX M.
+    LLcopy F0.
+    inversion H2...
+Qed.
+
+Theorem contractionLL2S  : forall F B L,
+    LL2S (B++[F]) L -> In F B -> LL2S B L.
+  Proof with sauto.
+  intros.
+  dependent induction H generalizing B... 
+    LLinit A.
+    LLtop M.
+    LLleft F0 G M.
+    LLright F0 G M.
+    LLwith F0 G M.
+    LLbot M.
+    LLpar F0 G M.
+    LLtensor F0 G M N.
+    LLstore F0 M.
+    apply IHLL2S...
+    LLexists t FX M.
+    LLforall FX M.
+    apply in_app_or in H...
+    LLcopy F0.
+    inversion H2...
+    LLcopy F0.
+Qed.
+
+End StructuralProperties.
+ 
+(** Adequacy relating the system with and without inductive meassures *)
+Section Adequacy.
+ 
 Lemma LL2NtoLL2S : forall n B L,
     LL2N n B L -> LL2S B L.
  Proof with sauto. 
@@ -134,189 +226,97 @@ Lemma LL2NtoLL2S : forall n B L,
 
 Axiom LL2StoLL2N : forall B L,
     LL2S B L -> exists n, LL2N n B L.
-      
-Theorem LL2weakeningN : forall n CC LC F ,
-        (LL2N n CC LC) -> LL2N n (F::CC) LC.
- Proof with sauto.
-    induction n using lt_wf_ind;intros.
-      inversion H0...
-      LLinit A.
-      LLtop M.
-      LLleft F0 G M.
-      LLright F0 G M.
-      LLwith F0 G M.
-      LLbot M.
-      LLpar F0 G M.
-      LLtensor F0 G M N.
-      LLstore F0 M.
-      rewrite perm_swap;auto.
-      LLexists t FX M.
-      LLforall FX M.
-      LLcopy F0.
-      firstorder.
-  Qed.
 
-    
-Theorem LL2weakening (CC LC : multiset oo) F:
-    LL2S CC LC -> LL2S (F :: CC) LC.
+End Adequacy.
+
+Section GeneralResults.
+
+Theorem weakeningLL2SGen : forall B1 B2 L,
+    LL2S B2 L -> LL2S (B1 ++ B2) L.
    Proof with sauto. 
     intros.
-    revert dependent F.
-    induction H;intros...
-    LLinit A.
-    LLtop M.
-    LLleft F G M.
-    LLright F G M.
-    LLwith F G M.
-    LLbot M.
-    LLpar F G M.
-    LLtensor F G M N.
-    LLstore F M.
-    rewrite perm_swap;auto.
-    LLexists t FX M.
-    LLforall FX M.
-    LLcopy F.
-    firstorder.
- Qed.     
-
-Theorem LL2weakeningGen (CC' CC LC : multiset oo):
-    LL2S CC LC -> LL2S (CC' ++ CC) LC.
-   Proof with sauto. 
-    intros.
-    revert dependent CC. 
-    revert LC.
-    induction CC';intros...
+    revert dependent B2. 
+    revert L.
+    induction B1;intros...
     rewrite <- app_comm_cons.
-    apply LL2weakening...
+    apply weakeningLL2S...
  Qed.   
 
-Theorem LLstoreGen (CC' CC LC : multiset oo):
-    LL2S (CC'++CC) LC -> LL2S CC (map Quest CC' ++ LC).
+Theorem storeGenLL2S : forall B1 B2 L,
+    LL2S (B1++B2) L -> LL2S B2 (map Quest B1 ++ L).
    Proof with sauto. 
     intros.
-    revert dependent CC. 
-    revert LC.
-    induction CC';intros...
+    revert dependent B2. 
+    revert L.
+    induction B1;intros...
     simpl...
-    LLstore a (map Quest CC' ++ LC).
-    eapply IHCC'. 
+    LLstore a (map Quest B1 ++ L).
+    eapply IHB1. 
     rewrite <- Permutation_middle...
  Qed.   
 
-Theorem LLcopyGen (CC' CC LC : multiset oo):
-   LL2S CC (CC' ++ LC) ->  LL2S (CC'++CC) LC.
+Theorem copyGenLL2S : forall B1 B2 L,
+   LL2S B2 (B1 ++ L) ->  LL2S (B1++B2) L.
    Proof with sauto. 
     intros.
-    revert dependent CC. 
-    revert LC.
-    induction CC';intros...
+    revert dependent B2. 
+    revert L.
+    induction B1;intros...
     simpl...
     LLcopy a...
-    apply LL2weakening...
-    eapply IHCC'. 
+    apply weakeningLL2S...
+    eapply IHB1. 
     rewrite <- Permutation_middle...
  Qed.   
     
-Theorem LL2contractionN  : forall n F CC LC,
-    LL2N n (F :: CC) LC -> In F CC -> LL2N n CC LC.
-  Proof with sauto.
-  do 2 intro.
-  induction n using lt_wf_ind;intros... 
-    inversion H0...
-    LLinit A.
-    LLtop M.
-    LLleft F0 G M.
-    LLright F0 G M.
-    LLwith F0 G M.
-    LLbot M.
-    LLpar F0 G M.
-    LLtensor F0 G M N.
-    LLstore F0 M.
-    rewrite perm_swap in H3... 
-    apply H in H3...
-    LLexists t FX M.
-    LLforall FX M.
-    LLcopy F0.
-    inversion H2...
-Qed.
-
-Theorem LL2contraction  : forall F CC LC,
-    LL2S (CC++[F]) LC -> In F CC -> LL2S CC LC.
-  Proof with sauto.
-  intros.
-  dependent induction H generalizing CC... 
-    LLinit A.
-    LLtop M.
-    LLleft F0 G M.
-    LLright F0 G M.
-    LLwith F0 G M.
-    LLbot M.
-    LLpar F0 G M.
-    LLtensor F0 G M N.
-    LLstore F0 M.
-    apply IHLL2S...
-    LLexists t FX M.
-    LLforall FX M.
-    apply in_app_or in H...
-    LLcopy F0.
-    inversion H2...
-    LLcopy F0.
-Qed.
-
-Theorem LLinitGen : forall B F, isFormula F -> isFormula (dual F) ->  LL2S B [F; dual F].
+Theorem initGenLL2S : forall B F, isFormula F -> isFormula (dual F) ->  LL2S B [F; dual F].
 Proof with simpl;sauto.
    induction F;intros isF1 isF2. 
-   1-2: LLinit a.
+   1-2: LLinit A.
    1,3: LLtop [0].
    1-2: LLbot ['1].
-   - LLwith F1 F2 [F1 ^ ⊕ F2 ^].
-     LLleft (dual F1) (dual F2) [F1].
-     rewrite perm_takeit_8... inversion isF1... inversion isF2...
-     LLright (dual F1) (dual F2) [F2]...
-     rewrite perm_takeit_8... inversion isF1... inversion isF2...
    - LLpar (dual F1) (dual F2) [F1 ⊗ F2].
       LLtensor F1 F2 [dual F1] [dual F2]. 
-      1-2: inversion isF1; inversion isF2...  
-   - LLwith (dual F1) (dual F2) [F1 ⊕ F2 ].
-     LLleft F1 F2 [dual F1]. inversion isF1... inversion isF2...
-     LLright F1 F2 [dual F2]. inversion isF1... inversion isF2...
+      1-2: inversion isF1; inversion isF2...
    - LLpar F1 F2 [dual F1 ⊗ dual F2].
       LLtensor (dual F1) (dual F2) [F1] [F2].
      1-2: rewrite perm_takeit_8...
      1-2: inversion isF1; inversion isF2... 
-   - LLstore (dual F) [! F].
-     constructor.
-     LLcopy (dual F)...
-    apply LL2weakening.
-     rewrite perm_takeit_8...
-    inversion isF1... inversion isF2...
+   - LLwith F1 F2 [F1 ^ ⊕ F2 ^].
+     LLleft (dual F1) (dual F2) [F1].
+     rewrite perm_takeit_8... inversion isF1... inversion isF2...
+     LLright (dual F1) (dual F2) [F2]...
+     rewrite perm_takeit_8... inversion isF1... inversion isF2...  
+   - LLwith (dual F1) (dual F2) [F1 ⊕ F2 ].
+     LLleft F1 F2 [dual F1]. inversion isF1... inversion isF2...
+     LLright F1 F2 [dual F2]. inversion isF1... inversion isF2...
    - LLstore F [! (dual F)].
      constructor.
      LLcopy F...
-     apply LL2weakening...
+     apply weakeningLL2S...
      inversion isF1... inversion isF2...
+   - LLstore (dual F) [! F].
+     constructor.
+     LLcopy (dual F)...
+    apply weakeningLL2S.
+     rewrite perm_takeit_8...
+    inversion isF1... inversion isF2...
    - inversion isF1... inversion isF2...
-    LLforall o [∃{ fun x : expr con => (o x) ^}]...
+    LLforall FX [∃{ fun x : expr con => (FX x) ^}]...
     pose proof (H2 x).
    pose proof (H4 x).
     pose proof (H x H5 H6).
    rewrite perm_takeit_8 in H7...
-   eapply ll2_ex' with (t:=x) (FX:=fun x0 : expr con => (o x0) ^) (M:=[o x])...
+   eapply ll2_ex' with (t:=x) (FX:=fun x0 : expr con => (FX x0) ^) (M:=[FX x])...
    - inversion isF1... inversion isF2...
-    LLforall (fun x : expr con => (o x) ^) [∃{ o}]...
+    LLforall (fun x : expr con => (FX x) ^) [∃{ FX}]...
     pose proof (H2 x).
    pose proof (H4 x).
     pose proof (H x H5 H6).
-   eapply ll2_ex' with (t:=x) (FX:=o) (M:=[dual (o x)])...
+   eapply ll2_ex' with (t:=x) (FX:=FX) (M:=[dual (FX x)])...
 Qed.
 
-End StructuralProperties.
- 
- 
-Section GeneralResults.
-  
-  
-  Lemma LL2_HeightGeq : forall m n  B L,
+  Lemma heightGeqLL2N : forall m n  B L,
         LL2N n B L ->
         m>=n -> LL2N m B L.
     Proof with sauto.
@@ -353,6 +353,5 @@ Section GeneralResults.
      apply IHm in H3...
  Qed.
  
-  End GeneralResults.
-
+ End GeneralResults.
  End LL2BasicTheory.

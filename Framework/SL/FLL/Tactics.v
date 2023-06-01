@@ -16,7 +16,7 @@ Require Export LL.Framework.SL.FLL.PreTactics.
 
 Set Implicit Arguments.
 
-Global Hint Constructors isFormula Remove flln IsPositiveAtom : core .
+Global Hint Constructors isFormula Remove flln posAtom : core .
 
 
 Ltac llExact H :=
@@ -26,7 +26,7 @@ Ltac llExact H :=
     match goal with
     | [ |- flln _ ?y ?Gamma' ?Delta' ?X ] =>
       assert( x <= y) by lia;
-      eapply @HeightGeqEx with (n:=x) (CC':=Gamma) (LC':=Delta);
+      eapply @heightGeqFLLNEx with (n:=x) (CC':=Gamma) (LC':=Delta);
       [try perm | try perm | auto | lia ]
 
     end 
@@ -56,15 +56,15 @@ auto; try
   match goal with
  | [ H : flln _ ?y ?G ?M ?X |- flln _ ?x ?G ?M ?X ] =>
     assert( y <= x) by lia;
-    eapply @HeightGeq  with (m:=x) in H;auto
+    eapply @heightGeqFLLN  with (m:=x) in H;auto
  | [ H : flln _ ?y ?G ?M ?X |- flln _ ?x ?G' ?M' ?X ] =>
     LLExact H
  | [ H : flls _ ?y ?G ?M ?X |- flls _ ?G' ?M' ?X ] =>
     LLExact H
  | [ H : flln _ ?n ?G ?M ?X |-  flls _ ?G ?M ?X ] =>
-    eapply seqNtoSeq in H;exact H
+    eapply FLLNtoFLLS in H;exact H
  | [ H : flln _ ?n ?G ?M ?X |-  flls _ ?G' ?M' ?X ] =>
-    eapply seqNtoSeq in H; LLExact H  
+    eapply FLLNtoFLLS in H; LLExact H  
   end.
 
 Ltac solveLinearLogic :=

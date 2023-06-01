@@ -143,7 +143,7 @@ Section Adequacy.
 
 
  
-Theorem seqNtoSeq : forall n Gamma Delta X , 
+Theorem FLLNtoFLLS : forall n Gamma Delta X , 
 flln th n Gamma Delta X -> flls  th Gamma Delta X.
 Proof.
   induction n using strongind;intros;eauto.
@@ -152,7 +152,7 @@ Proof.
     pose proof (exchangeCCN (Permutation_cons_append Gamma F) H2);eauto... 
 Qed.
 
-Axiom seqtoSeqN : forall Gamma Delta X ,
+Axiom FLLStoFLLN : forall Gamma Delta X ,
    flls th Gamma Delta X -> exists n, flln th n Gamma Delta X.
 
 End Adequacy.
@@ -193,7 +193,7 @@ Proof with sauto;solveLL.
   LLfocus2 F.
 Qed.     
 
-Lemma contract : forall CC LC  F X ,
+Lemma contraction : forall CC LC  F X ,
   flls th  (F :: CC) LC X -> In F CC -> flls th CC LC X.
 Proof with sauto;solveLL.
   intros.
@@ -220,14 +220,12 @@ Global Instance seq_morphismN  n:
               (flln th n).
 Proof.
   unfold Proper; unfold respectful.
-  intros.
+  intros B1 L1 HP1 B2 L2 HP2.
   split; intro;subst.
-  * refine (exchangeCCN H _);auto.
-     refine (exchangeLCN H0 _);auto.
-  * apply Permutation_sym in H.
-     apply Permutation_sym in H0.
-     refine (exchangeCCN H _);auto.
-     refine (exchangeLCN H0 _);auto.
+  * refine (exchangeCCN HP1 _);auto.
+     refine (exchangeLCN HP2 _);auto.
+  * refine (exchangeCCN (symmetry HP1) _);auto.
+     refine (exchangeLCN (symmetry HP2) _);auto.
 Qed.
    
 Global Instance seq_morphism  :
@@ -235,14 +233,12 @@ Global Instance seq_morphism  :
               (flls th).
 Proof.
   unfold Proper; unfold respectful.
-  intros.
+  intros B1 L1 HP1 B2 L2 HP2.
   split; intro;subst.
-  * refine (exchangeCC H _);auto.
-     refine (exchangeLC H0 _);auto.
-  * apply Permutation_sym in H.
-     apply Permutation_sym in H0.
-     refine (exchangeCC H _);auto.
-     refine (exchangeLC H0 _);auto.
+  * refine (exchangeCC HP1 _);auto.
+     refine (exchangeLC HP2 _);auto.
+  * refine (exchangeCC (symmetry HP1) _);auto.
+     refine (exchangeLC (symmetry HP2) _);auto.
 Qed.
 
  (**  Weakening on the theory [theory] *)
@@ -276,8 +272,8 @@ Lemma EmptySubSetN : forall (theory : oo-> Prop) CC LC X n,
 Proof.    
   intros.
   apply WeakTheoryN with (theory:= EmptyTheory);auto.
-  intros.
-  inversion H0.
+  intros F HeT.
+  inversion HeT.
 Qed.
   
 Lemma EmptySubSet : forall (theory : oo-> Prop) CC LC X,
@@ -285,14 +281,14 @@ Lemma EmptySubSet : forall (theory : oo-> Prop) CC LC X,
 Proof.
   intros.
   apply WeakTheory with (theory:= EmptyTheory);auto.
-  intros.
-  inversion H0.
+  intros F HeT.
+  inversion HeT.
 Qed.
  
 Section GeneralResults.
     
 (** Measure of derivations *)
-Theorem HeightGeq : forall n Gamma Delta X,
+Theorem heightGeqFLLN : forall n Gamma Delta X,
   flln th n Gamma Delta X ->
         forall m, m>=n -> flln th m Gamma Delta X.
 Proof with sauto.
@@ -306,45 +302,45 @@ Proof with sauto.
      LLtheory F;eapply IHn;try lia...
 Qed.
 
- (** HeightGeq with Exchange Classic Context *)
-Theorem HeightGeqCEx : forall n CC LC CC' X, 
+ (** heightGeqFLLN with Exchange Classic Context *)
+Theorem heightGeqFLLNCEx : forall n CC LC CC' X, 
   Permutation CC' CC ->
   flln th n CC LC X ->
         forall m, m>=n -> (flln th m CC' LC X).
 Proof with eauto.
   intros.
-  eapply HeightGeq with (n:=n);auto...
+  eapply heightGeqFLLN with (n:=n);auto...
   symmetry in H.
   eapply exchangeCCN;eauto.
 Qed.
 
-(** HeightGeq with Exchange Linear Context *)
-Theorem HeightGeqLEx : forall n CC LC LC' X, 
+(** heightGeqFLLN with Exchange Linear Context *)
+Theorem heightGeqFLLNLEx : forall n CC LC LC' X, 
   Permutation LC LC' ->
   flln th n CC LC' X ->
         forall m, m>=n -> (flln th m CC LC X).
 Proof with eauto.
   intros.
-  eapply HeightGeq with (n:=n);auto.
+  eapply heightGeqFLLN with (n:=n);auto.
   symmetry in H.
   eapply exchangeLCN;eauto.
 Qed.
     
-Theorem HeightGeqEx : forall n CC CC' LC LC' X, 
+Theorem heightGeqFLLNEx : forall n CC CC' LC LC' X, 
   Permutation CC CC' ->
   Permutation LC LC' ->
   flln th n CC' LC' X ->
         forall m, m>=n -> (flln th m CC LC X).
 Proof with eauto.
   intros.
-  eapply HeightGeq with (n:=n);auto...
+  eapply heightGeqFLLN with (n:=n);auto...
   symmetry in H.
   symmetry in H0.
   eapply exchangeLCN;eauto.
   eapply exchangeCCN;eauto.
 Qed.  
  
-Theorem BangCon: forall n F Gamma Delta X , positiveLFormula F ->
+Theorem BangCon: forall n F Gamma Delta X , posLFormula F ->
 flln th n Gamma (Bang F::Delta) X -> flls  th Gamma (F::Delta) X.
 Proof with sauto.
   induction n using strongind;intros;eauto.
@@ -355,10 +351,10 @@ Proof with sauto.
      rewrite <- H6...
      eapply H with (m:=n)...
      rewrite <- H3...
-     apply seqNtoSeq in H5...
+     apply FLLNtoFLLS in H5...
      LLtensor M (F::x).
      rewrite <- H6...
-     apply seqNtoSeq in H4...    
+     apply FLLNtoFLLS in H4...    
      eapply H with (m:=n)...
      rewrite <- H3...
  + apply H in H3... solveLL. 
@@ -370,7 +366,7 @@ Proof with sauto.
    + checkPermutationCases H4.
      - inversion H5...
        2:{ inversion H4... }
-       apply seqNtoSeq in H9.
+       apply FLLNtoFLLS in H9.
        inversion H9;inversion H0...
      - LLfocus1 F0 (F::x).
        rewrite H4...
@@ -378,7 +374,7 @@ Proof with sauto.
        rewrite <- H6...
  Qed.      
 
-Theorem BangConN: forall n F Gamma Delta X , positiveLFormula F -> 
+Theorem BangConN: forall n F Gamma Delta X , posLFormula F -> 
 flln th n Gamma (Bang F::Delta) X -> flln  th n Gamma (F::Delta) X.
 Proof with sauto.
   induction n using strongind;intros;eauto.
@@ -401,7 +397,7 @@ Proof with sauto.
      - inversion H5...
        2:{ inversion H4... }
        inversion H9; solvePolarity. 
-      eapply HeightGeq. exact H11.
+      eapply heightGeqFLLN. exact H11.
        lia.
      - rewrite H6 in H5. 
        apply H in H5... 

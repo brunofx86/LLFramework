@@ -47,7 +47,7 @@ Context `{OLS: OLSig}.
           cutCH H0 Hb.
         + LLstore.
           rewrite perm_swap in H...
-          eapply @LL3weakeningN with (F:=F) in Hb...
+          eapply @weakeningLL3N with (F:=F) in Hb...
           putFirst Hb. 
           cutCH H Hb.
         + LLbang.
@@ -115,7 +115,7 @@ Context `{OLS: OLSig}.
       LLtensor;try solvell3. 
       rewrite H2.
       LL3exchangeL (M ++ (G :: x0) ++ x1).
-   + apply @LL3weakeningN with (F:=F) in Ha.
+   + apply @weakeningLL3N with (F:=F) in Ha.
      rewrite perm_swap in Ha. cutCH Ha H2.
    + rewrite app_comm_cons in H5.
      cutCH Ha H5.

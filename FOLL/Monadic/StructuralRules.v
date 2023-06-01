@@ -9,7 +9,7 @@ Section LL1BasicTheory.
   
 Section StructuralProperties.
     
-Lemma LL1N_compat : forall n L1 L2, 
+Lemma exchangeLL1N : forall n L1 L2, 
      Permutation L1 L2 -> 
      LL1 n |-- L1 -> LL1 n |-- L2.
 Proof with sauto.
@@ -41,11 +41,11 @@ Proof.
   unfold Proper; unfold respectful. 
   intros L1 L2 PL.
   split; intro H.
-  refine (LL1N_compat  PL H).
-  refine (LL1N_compat  (symmetry PL) H).
+  refine (exchangeLL1N  PL H).
+  refine (exchangeLL1N  (symmetry PL) H).
 Qed.
 
-Lemma LL1S_compat : forall L1 L2, 
+Lemma exchangeLL1S : forall L1 L2, 
      Permutation L1 L2 -> 
      LL1 |-- L1 -> LL1 |--  L2.
 Proof with sauto.
@@ -75,8 +75,8 @@ Proof.
   unfold Proper; unfold respectful. 
   intros L1 L2 PL.
   split; intro H.
-  refine (LL1S_compat PL H).
-  refine (LL1S_compat  (symmetry PL) H).
+  refine (exchangeLL1S PL H).
+  refine (exchangeLL1S  (symmetry PL) H).
 Qed.
 
 Instance LL1S_morphism' :
@@ -121,7 +121,7 @@ Lemma LL1NtoLL1S : forall n L,
 Axiom LL1StoLL1N : forall L,
     LL1S L -> exists n, LL1N n L.
 
- Theorem LL1weakening B M L:
+ Theorem weakeningLL1S B M L:
     Permutation L ((map Quest B) ++ M) -> 
     LL1 |-- M -> LL1 |-- L.
    Proof with sauto. 
@@ -137,7 +137,7 @@ Axiom LL1StoLL1N : forall L,
     eapply IHB with (M:=M)...
   Qed.
      
- Theorem LL1weakeningN n L M B:
+ Theorem weakeningLL1N n L M B:
     Permutation L ((map Quest B) ++ M) ->
     n>= length B -> LL1 (n-length B) |-- M -> LL1 n |-- L.
    Proof with sauto. 
@@ -165,7 +165,7 @@ Axiom LL1StoLL1N : forall L,
     LL1weak a M.
     Qed.
  
- Theorem LL1contraction : forall B L M,
+ Theorem contractionLL1S : forall B L M,
 Permutation L (map Quest B ++ M) ->
        LL1 |-- map Quest B ++ L -> LL1 |-- L.
   Proof with sauto.
@@ -180,7 +180,7 @@ Permutation L (map Quest B ++ M) ->
   rewrite H...  
   Qed.
 
- Theorem LL1contractionN : forall n B L M,
+ Theorem contractionLL1N : forall n B L M,
 Permutation L (map Quest B ++ M) ->  n >= length B ->
        LL1 (n - length B) |-- map Quest B ++ L -> LL1 n |-- L.
   Proof with sauto.
@@ -216,7 +216,7 @@ End StructuralProperties.
 Section GeneralResults.
   
   
-  Lemma LL1_HeightGeq : forall m n L,
+  Lemma heightGeqLL1N : forall m n L,
         LL1N n L ->
         m>=n -> LL1N m L.
     Proof with sauto.

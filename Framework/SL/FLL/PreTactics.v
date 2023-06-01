@@ -29,44 +29,44 @@ Set Implicit Arguments.
 Ltac clearPolarity :=
  repeat
  match goal with
- | [H: negativeFormula Top  |- _] => clear H
- | [H: negativeFormula Bot  |- _] => clear H
- | [H: negativeFormula (MOr _ _)  |- _] => clear H
- | [H: negativeFormula (atom _)  |- _] => clear H
- | [H: negativeFormula (All _)  |- _] => clear H
- | [H: negativeFormula (AAnd _ _)  |- _] => clear H
- | [H: negativeFormula (Quest _)  |- _] => clear H
+ | [H: negFormula Top  |- _] => clear H
+ | [H: negFormula Bot  |- _] => clear H
+ | [H: negFormula (MOr _ _)  |- _] => clear H
+ | [H: negFormula (atom _)  |- _] => clear H
+ | [H: negFormula (All _)  |- _] => clear H
+ | [H: negFormula (AAnd _ _)  |- _] => clear H
+ | [H: negFormula (Quest _)  |- _] => clear H
  
- | [H: positiveFormula (perp _)  |- _] => clear H
- | [H: positiveFormula Zero  |- _] => clear H
- | [H: positiveFormula One  |- _] => clear H
- | [H: positiveFormula (MAnd _ _)  |- _] => clear H
- | [H: positiveFormula (Some _)  |- _] => clear H
- | [H: positiveFormula (AOr _ _)  |- _] => clear H
- | [H: positiveFormula (Bang _ )  |- _] => clear H 
+ | [H: posFormula (perp _)  |- _] => clear H
+ | [H: posFormula Zero  |- _] => clear H
+ | [H: posFormula One  |- _] => clear H
+ | [H: posFormula (MAnd _ _)  |- _] => clear H
+ | [H: posFormula (Some _)  |- _] => clear H
+ | [H: posFormula (AOr _ _)  |- _] => clear H
+ | [H: posFormula (Bang _ )  |- _] => clear H 
 
- | [H: positiveLFormula (atom _)  |- _] => clear H
- | [H: positiveLFormula (perp _)  |- _] => clear H
- | [H: positiveLFormula Zero  |- _] => clear H
- | [H: positiveLFormula One  |- _] => clear H
- | [H: positiveLFormula (MAnd _ _)  |- _] => clear H
- | [H: positiveLFormula (Some _)  |- _] => clear H
- | [H: positiveLFormula (AOr _ _)  |- _] => clear H
- | [H: positiveLFormula (Bang _ )  |- _] => clear H 
+ | [H: posLFormula (atom _)  |- _] => clear H
+ | [H: posLFormula (perp _)  |- _] => clear H
+ | [H: posLFormula Zero  |- _] => clear H
+ | [H: posLFormula One  |- _] => clear H
+ | [H: posLFormula (MAnd _ _)  |- _] => clear H
+ | [H: posLFormula (Some _)  |- _] => clear H
+ | [H: posLFormula (AOr _ _)  |- _] => clear H
+ | [H: posLFormula (Bang _ )  |- _] => clear H 
 
- | [H : ~ IsPositiveAtom (perp _ ) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom (MOr _ _ ) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom (MAnd _ _) |- _ ] => clear H   
- | [H : ~ IsPositiveAtom (AAnd _ _ ) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom (AOr _ _) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom (Bang _ ) |- _ ] => clear H    
- | [H : ~ IsPositiveAtom (Quest _ ) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom (All _ ) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom (Some _ ) |- _ ] => clear H 
- | [H : ~ IsPositiveAtom Top |- _ ] => clear H    
- | [H : ~ IsPositiveAtom Bot |- _ ] => clear H 
- | [H : ~ IsPositiveAtom One |- _ ] => clear H 
- | [H : ~ IsPositiveAtom Zero |- _ ] => clear H  
+ | [H : ~ posAtom (perp _ ) |- _ ] => clear H 
+ | [H : ~ posAtom (MOr _ _ ) |- _ ] => clear H 
+ | [H : ~ posAtom (MAnd _ _) |- _ ] => clear H   
+ | [H : ~ posAtom (AAnd _ _ ) |- _ ] => clear H 
+ | [H : ~ posAtom (AOr _ _) |- _ ] => clear H 
+ | [H : ~ posAtom (Bang _ ) |- _ ] => clear H    
+ | [H : ~ posAtom (Quest _ ) |- _ ] => clear H 
+ | [H : ~ posAtom (All _ ) |- _ ] => clear H 
+ | [H : ~ posAtom (Some _ ) |- _ ] => clear H 
+ | [H : ~ posAtom Top |- _ ] => clear H    
+ | [H : ~ posAtom Bot |- _ ] => clear H 
+ | [H : ~ posAtom One |- _ ] => clear H 
+ | [H : ~ posAtom Zero |- _ ] => clear H  
  end.
       
 (** Proving goals about polarity *)
@@ -75,13 +75,13 @@ Ltac solvePolarity :=
   sauto;
   let H := fresh "H" in
     match goal with
-    | [|- ~ negativeFormula _] => autounfold;intro H; solvePolarity 
-    | [|- ~ positiveFormula _] => autounfold;intro H; solvePolarity
-    | [|- ~ positiveLFormula _] => autounfold;intro H; solvePolarity
-    | [|- ~ IsPositiveAtom _ ] => autounfold;intro H; solvePolarity
-    | [|- ~ IsNegativeAtom _ ] => autounfold;intro H; solvePolarity
+    | [|- ~ negFormula _] => autounfold;intro H; solvePolarity 
+    | [|- ~ posFormula _] => autounfold;intro H; solvePolarity
+    | [|- ~ posLFormula _] => autounfold;intro H; solvePolarity
+    | [|- ~ posAtom _ ] => autounfold;intro H; solvePolarity
+    | [|- ~ negAtom _ ] => autounfold;intro H; solvePolarity
     
-    | [H: negativeFormula ?F  |- _] =>
+    | [H: negFormula ?F  |- _] =>
       match F with
       | perp _ => inversion H      
       | MAnd _ _ => inversion H
@@ -91,7 +91,7 @@ Ltac solvePolarity :=
       | Zero => inversion H
       | One => inversion H
       end
-    | [H : positiveFormula ?F |- _ ] =>
+    | [H : posFormula ?F |- _ ] =>
       match F with
       | atom _ => inversion H
       | AAnd _ _ => inversion H
@@ -101,7 +101,7 @@ Ltac solvePolarity :=
       | Bot => inversion H
       | Top => inversion H
       end
-    | [H : positiveLFormula ?F |- _ ] =>
+    | [H : posLFormula ?F |- _ ] =>
       match F with
       | AAnd _ _ => inversion H
       | MOr _ _ => inversion H
@@ -110,7 +110,7 @@ Ltac solvePolarity :=
       | Bot => inversion H
       | Top => inversion H
     end
-    | [H : IsPositiveAtom ?F |- _ ] =>
+    | [H : posAtom ?F |- _ ] =>
       match F with
       | MAnd _ _ => inversion H
       | AAnd _ _ => inversion H
@@ -126,7 +126,7 @@ Ltac solvePolarity :=
       | Bot => inversion H
       | Top => inversion H
       end
-    | [H : IsNegativeAtom ?F |- _ ] =>
+    | [H : negAtom ?F |- _ ] =>
       match F with
       | MAnd _ _ => inversion H
       | AAnd _ _ => inversion H
@@ -142,10 +142,10 @@ Ltac solvePolarity :=
       | Bot => inversion H
       | Top => inversion H
       end
-    | [H : ~ IsPositiveAtom _ |- _ ] => try solve[contradict H;auto]
-    | [H : ~ positiveLFormula _ |- _ ] => try solve[contradict H;auto]
-    | [H : ~ positiveFormula _ |- _ ] => try solve[contradict H;auto]
-     | [H : ~ negativeFormula _ |- _ ] => try solve[contradict H;auto] 
+    | [H : ~ posAtom _ |- _ ] => try solve[contradict H;auto]
+    | [H : ~ posLFormula _ |- _ ] => try solve[contradict H;auto]
+    | [H : ~ posFormula _ |- _ ] => try solve[contradict H;auto]
+     | [H : ~ negFormula _ |- _ ] => try solve[contradict H;auto] 
     | _  => idtac
     end;auto.
  
@@ -335,7 +335,7 @@ Ltac reasoningLL :=
 solveAxiom;
  match goal with 
   (* Change of polarity *)
-  | [H:  negativeFormula ?F |- flln _ _ _ _ (DW  ?F)] => LLrelease;reasoningLL
+  | [H:  negFormula ?F |- flln _ _ _ _ (DW  ?F)] => LLrelease;reasoningLL
   | [|- flln _ _ _ _ (DW ?F)] =>
       match F with
       | Bot => LLrelease ;reasoningLL
@@ -357,7 +357,7 @@ solveAxiom;
       end
   
     (* Negative Phase *)
-  | [ H: positiveLFormula ?F |- flln _ _ _ _ (UP (?F:: _ ))] => LLstore;auto;reasoningLL
+  | [ H: posLFormula ?F |- flln _ _ _ _ (UP (?F:: _ ))] => LLstore;auto;reasoningLL
   
   | [|- flln _ _ _ _ (UP (?F::_))] =>
       match F with
@@ -388,7 +388,7 @@ Ltac reasoningLL' :=
 solveAxiom';
  match goal with
   (* Change of polarity *)
-  | [H:  negativeFormula ?F |- flls _ _ _ (DW  ?F)] => LLrelease;reasoningLL'
+  | [H:  negFormula ?F |- flls _ _ _ (DW  ?F)] => LLrelease;reasoningLL'
   | [|- flls _ _ _ (DW ?F)] =>
       match F with
       | Bot => LLrelease ;reasoningLL'
@@ -410,7 +410,7 @@ solveAxiom';
       end
   
     (* Negative Phase *)
-  | [ H: positiveLFormula ?F |- flls _ _ _ (UP (?F:: _ ))] => LLstore;auto;reasoningLL'
+  | [ H: posLFormula ?F |- flls _ _ _ (UP (?F:: _ ))] => LLstore;auto;reasoningLL'
   
   | [|- flls _ _ _ (UP (?F::_))] =>
       match F with
