@@ -20,7 +20,7 @@ Set Implicit Arguments.
 Section InvNPhase .
     Context `{SI : SigMMLL}.
   Context `{OLS: OLSig}.
-  Hint Constructors isFormula  MLLN IsPositiveAtom : core .
+  Hint Constructors isFormula  MLLN posAtom : core .
 
   Variable theory : oo -> Prop .
   Notation " n '|---' B ';' L ';' X " := (MLLN theory n B L X) (at level 80).
@@ -120,7 +120,7 @@ Section InvNPhase .
   Qed.
   
   Theorem EquivAuxStore :
-    forall F CC LC M M', positiveLFormula  F ->
+    forall F CC LC M M', posLFormula  F ->
                          |-- CC ; (LC ++ [F]) ;(UP (M ++ M') ) ->
                          |-- CC ; LC ; (UP (M ++ F :: M') ) .
   Proof with sauto.
@@ -582,7 +582,7 @@ solveForall.
 
   Generalizable All Variables.
   Global Instance Forall_morph : 
-    Proper ((@Permutation oo) ==> Basics.impl) (Forall positiveLFormula).
+    Proper ((@Permutation oo) ==> Basics.impl) (Forall posLFormula).
   Proof.
     unfold Proper; unfold respectful; unfold Basics.impl.
     intros.
@@ -592,7 +592,7 @@ solveForall.
   
   
   Lemma UpExtension: forall B M L F n,
-      positiveLFormula F ->
+      posLFormula F ->
       (n |--- B; F::M ; UP L) ->
       exists m, m<= S n /\ m |--- B; M ; UP (L ++ [F]).
   Proof with subst;auto.
@@ -683,7 +683,7 @@ solveForall.
   Qed.
   
     Lemma UpExtension': forall B M L F,
-      positiveLFormula F ->
+      posLFormula F ->
       (|-- B; F::M ; UP L) -> |-- B; M ; UP (L ++ [F]).
   Proof with sauto.
   intros.
@@ -703,7 +703,7 @@ solveForall.
   induction n using strongind;intros...
   + inversion H...
     apply ListConsApp in H4...
-    LLfocus1. Print positiveFormula. constructor. 
+    LLfocus1. Print posFormula. constructor. 
   + inversion H0... 
     -
     apply ListConsApp in H5...
@@ -797,7 +797,7 @@ Lemma UpExtensionInvN n F B M L :
  *)
 
 (* Lemma UpExtensionInv2 n F B M L1 L2 :
-   positiveLFormula F ->  n |---  B ; M ; (UP (L1++[F]++L2)) -> |-- B ; F::M; (UP (L1++L2)).
+   posLFormula F ->  n |---  B ; M ; (UP (L1++[F]++L2)) -> |-- B ; F::M; (UP (L1++L2)).
   Proof with sauto;solveF;try solveLL.
   intros.
   apply UpExtensionInv'.

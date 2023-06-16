@@ -30,7 +30,7 @@ Tactic Notation "LLstore" := match goal with
  LLstore. LLfocus1. 
 Qed.
  
- Lemma select B M L P: positiveLFormula P ->
+ Lemma select B M L P: posLFormula P ->
  seq th B M (UP (P::L)) -> seq th B (P::M) (UP L).
  Proof with sauto;solvePolarity;solveLL.
   intros.
@@ -333,7 +333,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
   Qed.
 
   Theorem FocusingParPos :
-    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    forall n A B D G, posLFormula A -> posLFormula B ->
     seqN th n G D (DW (A ⅋ B)) ->
       exists m , n =  S (S(S(S m)))  /\
                  seqN th m G (B::A::D) (UP []).
@@ -397,7 +397,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
 
   Theorem FocusingWithPos :
-    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    forall n A B D G, posLFormula A -> posLFormula B ->
       seqN th n G D (DW ( A & B)) ->
       exists m , n = S(S(S m))  /\
                  ( (seqN th m G (A::D) (UP []) ) /\

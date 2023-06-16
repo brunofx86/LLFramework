@@ -12,7 +12,7 @@ Context `{SI:SigMMLL}.
 
 Section PositiveAtoms.
 
-Lemma  positiveIsAtom A: IsPositiveAtomFormula A -> IsPositiveAtom A. 
+Lemma  positiveIsAtom A: IsPositiveAtomFormula A -> posAtom A. 
 Proof with subst;auto. 
   intros.
   inversion H...  
@@ -827,21 +827,21 @@ Theorem REncodeBPermutation: forall i L M,
   apply OLInPermutationB' in H...
 Qed.  
 
-Lemma LEncodePositiveAtom F L : In (F) (LEncode L) -> IsPositiveAtom F.
+Lemma LEncodePositiveAtom F L : In (F) (LEncode L) -> posAtom F.
 Proof with sauto.
   induction L;intros... 
   inversion H. 
   inversion H...
 Qed.
 
-Lemma REncodePositiveAtom F L : In (F) (REncode L) -> IsPositiveAtom F.
+Lemma REncodePositiveAtom F L : In (F) (REncode L) -> posAtom F.
 Proof with sauto.
   induction L;intros... 
   inversion H. 
   inversion H...
 Qed.
   
-Lemma InIsPositive : forall F L L', In F (LEncode L ++ REncode L') -> IsPositiveAtom F.
+Lemma InIsPositive : forall F L L', In F (LEncode L ++ REncode L') -> posAtom F.
   Proof with sauto.
   intros.
   apply in_app_or in H...
@@ -920,7 +920,7 @@ Qed.
 
 Lemma onlyAtomsLinear M L F :
      IsPositiveAtomFormulaL M ->
-     positiveFormula F ->
+     posFormula F ->
      Permutation (F :: L) M -> False.
 Proof with sauto;solvePolarity.
   intros HM HF HP.
@@ -931,7 +931,7 @@ Qed.
 
 Lemma onlyAtomsLinearB  M L F :
      IsPositiveAtomBFormulaL M ->
-     positiveFormula F ->
+     posFormula F ->
      Permutation (F :: L) M -> exists A a, isOLFormula A /\ F= (Bang a (⌈ A ⌉)).
 Proof with sauto;solvePolarity.
   intros HM HF HP.
@@ -942,7 +942,7 @@ Qed.
 
 Lemma onlyAtomsClassical i (B:list (subexp*oo)) F:
      IsPositiveAtomFormulaL (second B) ->
-     ~ IsPositiveAtom F ->
+     ~ posAtom F ->
      In (i,F) B
  -> False.
 Proof with sauto;solvePolarity.
@@ -958,7 +958,7 @@ Qed.
 
 Lemma onlyAtomsClassical2 i (B:list (subexp*oo)) B' F:
      IsPositiveAtomFormulaL (second B) ->
-     ~ IsPositiveAtom F ->
+     ~ posAtom F ->
      Permutation ((i,F)::B') B -> False.
 Proof with sauto;solvePolarity.
   intros HM HF HP.

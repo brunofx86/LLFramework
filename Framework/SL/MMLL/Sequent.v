@@ -44,7 +44,7 @@ Section LLSequent.
   | tri_plus2 : forall B M F G n,
       n |-F- B ; M ; DW G -> S n |-F- B ; M ; DW (AOr F G)
   | tri_rel : forall B F L n,
-      negativeFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
+      negFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
   | tri_top : forall B L M n,
       n |-F- B ; L ; UP (Top :: M)
   | tri_bot : forall B L M n,
@@ -57,15 +57,15 @@ Section LLSequent.
   | tri_quest : forall B L M F n i,
       n |-F- (i,F)::B ; L ; UP M -> S n  |-F- B ; L ; UP ((Quest i F) :: M)         
   | tri_store : forall B L M F n,
-      positiveLFormula  F-> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
+      posLFormula  F-> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
   | tri_dec1 : forall B L L' F n,
-      positiveFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
+      posFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec2u : forall B L F n i,
-     u i = true -> mt i = true -> ~IsPositiveAtom F -> In (i,F) B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
+     u i = true -> mt i = true -> ~posAtom F -> In (i,F) B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec2l : forall B B' L F n i,
-     u i = false -> mt i = true -> ~IsPositiveAtom F -> Permutation ((i,F)::B') B -> n |-F- B' ; L ; DW F -> S n |-F- B ; L ; UP []
+     u i = false -> mt i = true -> ~posAtom F -> Permutation ((i,F)::B') B -> n |-F- B' ; L ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec3 : forall B L F n,
-      theory F -> ~IsPositiveAtom F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
+      theory F -> ~posAtom F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
   | tri_ex  : forall B FX M t n,
       uniform_oo FX -> proper t -> n |-F- B; M ; DW (FX t) -> S n|-F- B; M ; DW (Some  FX)
   | tri_fx  : forall B L FX M n,
@@ -120,7 +120,7 @@ Section LLSequent.
   | tri_plus2' : forall B M F G,
       |-f- B ; M ; DW G -> |-f- B ; M ; DW (AOr F G)
   | tri_rel' : forall B F L,
-      negativeFormula F -> |-f- B ; L ; UP [F] ->  |-f- B ; L ; DW F
+      negFormula F -> |-f- B ; L ; UP [F] ->  |-f- B ; L ; DW F
   | tri_top' : forall B L M,
       |-f- B ; L ; UP (Top :: M)
   | tri_bot' : forall B L M,
@@ -133,16 +133,16 @@ Section LLSequent.
   | tri_quest' : forall B L M F i,
       |-f- (i,F)::B ; L ; UP M -> |-f- B ; L ; UP ((Quest i F) :: M)         
   | tri_store' : forall B L M F,
-      positiveLFormula  F-> |-f- B ; F::L; UP M -> |-f- B ; L ; UP (F::M)
+      posLFormula  F-> |-f- B ; F::L; UP M -> |-f- B ; L ; UP (F::M)
   | tri_dec1' : forall B L L' F,
-      positiveFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F -> |-f- B ; L ; UP []
+      posFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F -> |-f- B ; L ; UP []
   | tri_dec2u' : forall B L F i,
-     u i = true -> mt i = true -> ~IsPositiveAtom F -> In (i,F) B -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
+     u i = true -> mt i = true -> ~posAtom F -> In (i,F) B -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
   | tri_dec2l' : forall B B' L F i,
-     u i = false -> mt i = true -> ~IsPositiveAtom F -> Permutation ((i,F)::B') B -> |-f- B' ; L ; DW F -> |-f- B ; L ; UP []
+     u i = false -> mt i = true -> ~posAtom F -> Permutation ((i,F)::B') B -> |-f- B' ; L ; DW F -> |-f- B ; L ; UP []
 
   | tri_dec3' : forall B L F ,
-      theory F -> ~IsPositiveAtom F -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
+      theory F -> ~posAtom F -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
   | tri_ex'  : forall B FX M t,
       uniform_oo FX -> proper t -> |-f- B; M ; DW (FX t) -> |-f- B; M ; DW (Some  FX)
   | tri_fx'  : forall B L FX M ,

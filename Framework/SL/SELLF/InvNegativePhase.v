@@ -19,7 +19,7 @@ Set Implicit Arguments.
 Section InvNPhase .
     Context `{SI : SigSELL}.
   Context `{OLS: OLSig}.
-  Hint Constructors isFormula  seqN IsPositiveAtom : core .
+  Hint Constructors isFormula  seqN posAtom : core .
 
   Variable theory : oo -> Prop .
   Notation " n '|---' B ';' L ';' X " := (seqN theory n B L X) (at level 80).
@@ -120,7 +120,7 @@ Section InvNPhase .
   Qed.
   
   Theorem EquivAuxStore :
-    forall F CC LC M M', positiveLFormula  F ->
+    forall F CC LC M M', posLFormula  F ->
                          |-- CC ; (LC ++ [F]) ;(UP (M ++ M') ) ->
                          |-- CC ; LC ; (UP (M ++ F :: M') ) .
   Proof with sauto.
@@ -586,7 +586,7 @@ Section InvNPhase .
 
   Generalizable All Variables.
   Global Instance Forall_morph : 
-    Proper ((@Permutation oo) ==> Basics.impl) (Forall positiveLFormula).
+    Proper ((@Permutation oo) ==> Basics.impl) (Forall posLFormula).
   Proof.
     unfold Proper; unfold respectful; unfold Basics.impl.
     intros.
@@ -596,7 +596,7 @@ Section InvNPhase .
   
   
   Lemma UpExtension: forall B M L F n,
-      positiveLFormula F ->
+      posLFormula F ->
       (n |--- B; F::M ; UP L) ->
       exists m, m<= S n /\ m |--- B; M ; UP (L ++ [F]).
   Proof with subst;auto.
@@ -687,7 +687,7 @@ Section InvNPhase .
   Qed.
   
     Lemma UpExtension': forall B M L F,
-      positiveLFormula F ->
+      posLFormula F ->
       (|-- B; F::M ; UP L) -> |-- B; M ; UP (L ++ [F]).
   Proof with sauto.
   intros.

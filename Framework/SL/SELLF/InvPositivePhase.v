@@ -386,11 +386,11 @@ Section InvPosPhase.
       inversion H. inversion H1. Qed.
       
     Definition RUpTheory (n:nat) := forall B L  F  M , 
-        theory F -> ~ IsPositiveAtom F -> ~ IsNegativeAtom F ->
+        theory F -> ~ posAtom F -> ~ negAtom F ->
         n |--- B ;M ; UP (L ++ [F])  -> |-- B ; M ; UP (L ).
 
     Definition RDownTheory (n:nat) := forall B  F  M  H, 
-         positiveFormula F ->  ~ IsPositiveAtom F -> ~ IsNegativeAtom F -> theory F -> 
+         posFormula F ->  ~ posAtom F -> ~ negAtom F -> theory F -> 
         n |--- B ; F::M ; DW H -> |-- B ; M  ; DW H.
 
     Definition RIndTheory (n:nat) := RUpTheory n /\ RDownTheory (n -1). 
@@ -548,7 +548,7 @@ Section InvPosPhase.
     (* MAIN INVERTIBILITY THEOREM *)
     (* =============================================== *)   
     Theorem AbsorptionTheory : forall B L F  M,   
-        theory F -> ~ IsPositiveAtom F -> ~ IsNegativeAtom F  -> 
+        theory F -> ~ posAtom F -> ~ negAtom F  -> 
         |-- B ; M ; UP (L++[F]) -> |-- B; M  ; UP L .
     Proof.
       intros.
@@ -568,7 +568,7 @@ Section InvPosPhase.
       u i = true -> In (i,F) B -> n |--- B ;M ; UP (L ++ [F])  -> |-- B ; M ; UP (L ).  
 
     Definition RDown (n:nat) := forall i B F  M  H, 
-        positiveLFormula F ->
+        posLFormula F ->
     u i = true ->  In (i,F) B -> n |--- B ; F::M ; DW H -> |-- B ; M  ; DW H.
 
     Definition RInd (n:nat) := RUp n /\ RDown (n -1). 
@@ -811,7 +811,7 @@ Section AbsorptionLinear.
       u i = false ->  Permutation ((i,F)::B') B -> n |--- B' ;M ; UP (L ++ [F])  -> |-- B ; M ; UP (L ).  
 
     Definition RLDown (n:nat) := forall i B B' F  M  H, 
-       positiveLFormula F ->
+       posLFormula F ->
     u i = false ->  Permutation ((i,F)::B') B -> n |--- B' ; F::M ; DW H -> |-- B ; M  ; DW H.
 
     Definition RLInd (n:nat) := RLUp n /\ RLDown (n -1). 
@@ -1045,7 +1045,7 @@ Section AbsorptionLinear.
       n |--- B ;M ; UP (L ++ [FX t])  -> |-- B ; (Some FX):: M; UP L.
 
     Definition RDownExists (n:nat) := forall B M H FX t, 
-        ~ IsPositiveAtom (FX t) -> positiveLFormula (FX t) -> uniform_oo FX -> proper t ->
+        ~ posAtom (FX t) -> posLFormula (FX t) -> uniform_oo FX -> proper t ->
         n |--- B ; (FX t)::M; DW H -> |-- B ;Some FX :: M; DW H.
 
 
@@ -1129,7 +1129,7 @@ Section AbsorptionLinear.
           LFocus...
           LLExists t.
           HProof.  
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           
           LFocus F ((∃{ FX})::x).
           rewrite H0...
@@ -1147,7 +1147,7 @@ Section AbsorptionLinear.
           HProof.
         
         *
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
             LFocus (Some FX) M1... 
             LLExists t.
@@ -1157,7 +1157,7 @@ Section AbsorptionLinear.
           UFocus i F.
           eauto. 
         *
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
             LFocus (Some FX) M1... 
             LLExists t.
@@ -1168,7 +1168,7 @@ Section AbsorptionLinear.
           BFocus i F B'.
           eauto.
          *
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
             LFocus (Some FX) M1... 
             LLExists t.
@@ -1323,7 +1323,7 @@ Section AbsorptionLinear.
       n |--- B ;M ; UP (L ++ [F])  -> |-- B ; (AOr F G)::M; UP L.
 
     Definition RDownPlus (n:nat) := forall B M H F G, 
-        positiveFormula F ->
+        posFormula F ->
         n |--- B ; F::M  ; DW H -> |-- B ; (AOr F G)::M; DW H.
 
     Definition RIndPlus (n:nat) := RUpPlus n /\ RDownPlus (n -1). 
@@ -1394,7 +1394,7 @@ Section AbsorptionLinear.
           rewrite <- H6.
           apply seqNtoSeq in H1;auto.
 
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
             LFocus (AOr F G) M1...
             LLPlusL.
@@ -1405,7 +1405,7 @@ Section AbsorptionLinear.
           LFocus F0 ((AOr F G)::x)...
           rewrite H0...
         * 
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
             LFocus (AOr F G) M1...
             LLPlusL.
@@ -1414,7 +1414,7 @@ Section AbsorptionLinear.
           eapply HDown in H3 ...
           UFocus i F0. 
         * 
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
            LFocus (AOr F G) M1...
             LLPlusL.
@@ -1423,7 +1423,7 @@ Section AbsorptionLinear.
           eapply HDown in H3 ...
           BFocus i F0 B'. 
          * 
-          destruct (NotAsynchronousPosAtoms H4).
+          destruct (posLDestruct H4).
           2:{
            LFocus (AOr F G) M1...
             LLPlusL.
@@ -1664,7 +1664,7 @@ Section AbsorptionLinear.
         |-- B++C++D ; (MAnd F  G) :: M ++ M'; UP (L ++ L').
 
     Definition RDownTensor (nm:nat) := forall B C D M M' H F G n m, 
-        nm = n + m -> positiveFormula F -> 
+        nm = n + m -> posFormula F -> 
         SetU B ->
         SetL C ->
         SetL D ->
@@ -1898,8 +1898,8 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
 
     Lemma ITCaseAsyncAsync:
       forall n m B C D M1 M2 F G, 
-      negativeFormula F -> 
-      negativeFormula G -> 
+      negFormula F -> 
+      negFormula G -> 
        SetU B ->
        SetL C ->
        SetL D ->
@@ -1922,7 +1922,7 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
 
     Lemma ITAsyncSync  :
       forall nm n m B C D M1 M2 F G,
-        negativeFormula F ->  positiveLFormula G ->         
+        negFormula F ->  posLFormula G ->         
         (forall m : nat, m <= nm -> RIndTensor m) -> nm = n + m -> 
        SetU B ->
        SetL C ->
@@ -1932,7 +1932,7 @@ Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m
           |-- B++C++D; (MAnd F G) :: M1 ++ M2; UP [].
     Proof with subst;auto;auto;solveF;try solveLL.
       intros. 
-      apply NotAsynchronousPosAtoms in H0; destruct H0 as [AG | AG].
+      apply posLDestruct in H0; destruct H0 as [AG | AG].
        
       2:{
         (* G is a positive atom... then, LLRelease works (Lemma  ITCaseAsyncAsync) *)
@@ -2010,7 +2010,7 @@ Qed.
     (* Case when Both formulas are not Async *)
     (* =============================================== *)
     Lemma ITSyncSync : forall nm n m B C D M1 M2 F G, 
-   positiveLFormula F -> positiveLFormula G ->  
+   posLFormula F -> posLFormula G ->  
     (forall m : nat, m <= nm -> RIndTensor m) -> S nm = S n + S m -> 
        SetU B ->
        SetL C ->
@@ -2021,18 +2021,18 @@ Qed.
     Proof with subst;auto;solveF;try solveLL.
       intros * . 
       intros AF AG IH Hnm P1 P2 P3 HD1 HD2. 
-      apply NotAsynchronousPosAtoms in AF; destruct AF as [AF | AF];
-        apply NotAsynchronousPosAtoms in AG; destruct AG as [AG | AG].
+      apply posLDestruct in AF; destruct AF as [AF | AF];
+        apply posLDestruct in AG; destruct AG as [AG | AG].
               4:{  (* Both are positive atoms *)
         eapply ITCaseAsyncAsync with (B:=B) (D:=D);eauto. }
       3:{  (* F is a positive atom *)
-        assert(positiveLFormula G)...
-        assert(positiveLFormula F)...
+        assert(posLFormula G)...
+        assert(posLFormula F)...
           inversion HD2...
         eapply ITAsyncSync with (nm:=nm) (n:= S n) (m:= m) (B:=B) (D:=D)... lia. }
         2:{ (* G is a positive atom *) 
-        assert(positiveLFormula G)...
-        assert(positiveLFormula F)...
+        assert(posLFormula G)...
+        assert(posLFormula F)...
           inversion HD1...
             apply TensorComm'.
             rewrite (Permutation_app_comm M1).  
@@ -2158,7 +2158,7 @@ Qed.
           try(
               match goal with
               | [  |- |-- ?B++?C++?D; (MAnd ?F ?G)::?M1 ++ ?M2; UP [] ]
-                => tryif (assert(HAFG : negativeFormula F /\ negativeFormula G) by (split;constructor;auto))
+                => tryif (assert(HAFG : negFormula F /\ negFormula G) by (split;constructor;auto))
                 then
                   eapply ITCaseAsyncAsync;eauto
                 else idtac

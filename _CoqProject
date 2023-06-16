@@ -90,8 +90,8 @@ Framework/SL/FLL/Specifications/Classical/LK/Bipoles.v
 Framework/SL/FLL/Specifications/Classical/LK/Cut.v
 
 Framework/SL/FLL/Specifications/Intuitionistic/OLCut.v
-Framework/SL/FLL/Specifications/Intuitionistic/LJ/Bipoles.v
-Framework/SL/FLL/Specifications/Intuitionistic/LJ/Cut.v
+Framework/SL/FLL/Specifications/Intuitionistic/LM/Bipoles.v
+Framework/SL/FLL/Specifications/Intuitionistic/LM/Cut.v
 
 # Linear Logic with Subexponentials
 Framework/SL/SELLF/Signature.v

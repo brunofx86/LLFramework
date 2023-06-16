@@ -2833,7 +2833,7 @@ Lemma Loc_Unb' : forall  B C L X,
  MLLS theory D M (DW F) -> MLLS theory D M (UP [F]).
  Proof with sauto.
  intros.
- destruct(PositiveOrNegative F).
+ destruct(posOrNeg F).
  LLstore...
  LLfocus1 F.  
  inversion H0;inversion H...
@@ -2882,7 +2882,7 @@ End GeneralResults.
     Variable theory : oo -> Prop .
     
     Theorem WeakLinearTheoryN : forall n CC LC F X ,
-        ~ IsPositiveAtom F ->
+        ~ posAtom F ->
         (MLLN theory n CC (F::LC) X) -> theory F ->
         MLLN theory n CC LC X.
     Proof with sauto.
@@ -2935,7 +2935,7 @@ End GeneralResults.
  Qed.         
      
   Theorem WeakLinearTheory : forall CC LC F X,
-        ~ IsPositiveAtom F ->
+        ~ posAtom F ->
         (MLLS theory CC (F::LC) X) -> theory F -> MLLS theory CC LC X.
       intros.
       apply MLLStoSeqN in H0.

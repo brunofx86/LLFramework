@@ -21,7 +21,7 @@ Lemma unRelease B M P:
  LLstore. LLfocus1.
 Qed.
  
- Lemma select B M L P: positiveLFormula P ->
+ Lemma select B M L P: posLFormula P ->
  MLLS th B M (UP (P::L)) -> MLLS th B (P::M) (UP L).
  Proof with sauto;solvePolarity;solveLL.
   intros.
@@ -45,15 +45,15 @@ Qed.
   (exists F G X' m, X = F ⅋ G::X' /\ S m = n /\ MLLN th m B M (UP (F::G::X'))) \/ 
   (exists F G X' m, X = F & G::X' /\ S m = n /\ MLLN th m B M (UP (F::X'))/\ MLLN th m B M (UP (G::X'))) \/ 
   (exists i F X' m, X = Quest i F::X' /\ S m = n /\ MLLN th m ((i,F)::B) M (UP X')) \/ 
-  (exists F X' m, positiveLFormula F /\ X = F::X' /\ S m = n /\  MLLN th m B (F::M) (UP X')) \/ 
-  (exists F L' m, positiveFormula F /\ Permutation (F :: L') M /\ S m = n /\  X = [] /\ MLLN th m B L' (DW F)) \/ 
-  (exists i F m, ~ IsPositiveAtom F /\ mt i = true /\ In (i, F) B /\ S m = n /\  X = [] /\ MLLN th m B M (DW F)) \/ 
-  (exists F m, ~ IsPositiveAtom F /\  th F /\ S m = n /\  X = [] /\ MLLN th m B M (DW F)) \/ 
+  (exists F X' m, posLFormula F /\ X = F::X' /\ S m = n /\  MLLN th m B (F::M) (UP X')) \/ 
+  (exists F L' m, posFormula F /\ Permutation (F :: L') M /\ S m = n /\  X = [] /\ MLLN th m B L' (DW F)) \/ 
+  (exists i F m, ~ posAtom F /\ mt i = true /\ In (i, F) B /\ S m = n /\  X = [] /\ MLLN th m B M (DW F)) \/ 
+  (exists F m, ~ posAtom F /\  th F /\ S m = n /\  X = [] /\ MLLN th m B M (DW F)) \/ 
   (exists FX X' m, X = ∀{ FX}::X' /\ uniform_oo FX /\ S m = n /\ (forall x : expr con,
      proper x ->
      MLLN th m B M (UP (FX x :: X'))))
  \/ 
-  exists F X', positiveLFormula F /\ X = F::X' /\ MLLN th n B (F::M) (UP X').
+  exists F X', posLFormula F /\ X = F::X' /\ MLLN th n B (F::M) (UP X').
 
  Proof with sauto.
   intros.
@@ -80,7 +80,7 @@ Qed.
   (exists P Q M N m, F= (P ⊗ Q) /\ Permutation L (M ++ N) /\ S m = n /\ MLLN th m B M (DW P) /\ MLLN th m B N (DW Q)) \/
  (exists P Q m, F= (P ⊕ Q) /\ S m = n /\ MLLN th m B L (DW P)) \/
   (exists P Q m, F= (P ⊕ Q) /\ S m = n /\ MLLN th m B L (DW Q)) \/
- (exists m, negativeFormula F /\ S m = n /\ MLLN th m B L (UP [F])) \/
+ (exists m, negFormula F /\ S m = n /\ MLLN th m B L (UP [F])) \/
   (exists FX t m, F= ∃{ FX} /\ uniform_oo FX /\  proper t /\  S m = n /\ MLLN th m B L (DW (FX t))) \/
   (exists P m , F= Bang loc P /\  S m = n /\ L = [] /\ MLLN th m B L (UP [P]))  \/ 
   (exists P m , F= Bang loc P /\  S m = n /\ L = [] /\ MLLN th m B L (UP [P])) .
@@ -137,7 +137,7 @@ Proof with sauto;try solveLL.
   LLfocus1.
 Qed.
  
- Lemma select B M L P: positiveLFormula P ->
+ Lemma select B M L P: posLFormula P ->
  MLLS th B M (UP (P::L)) -> MLLS th B (P::M) (UP L).
  Proof with sauto;solvePolarity;solveLL.
   intros.
@@ -469,7 +469,7 @@ FLLInversion H7.
   Qed.
 
   Theorem FocusingParPos :
-    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    forall n A B D G, posLFormula A -> posLFormula B ->
     MLLN th n G D (DW (A ⅋ B)) ->
       exists m , n =  S (S(S(S m)))  /\
                  MLLN th m G (B::A::D) (UP []).
@@ -546,7 +546,7 @@ FLLInversion H8.
 
 (*
   Theorem FocusingWithPos :
-    forall n A B D G, positiveLFormula A -> positiveLFormula B ->
+    forall n A B D G, posLFormula A -> posLFormula B ->
       MLLN th n G D (DW ( A & B)) ->
       exists m , n = S(S(S m))  /\
                  ( (MLLN th m G (A::D) (UP []) ) /\

@@ -1,7 +1,7 @@
-(** * Syntax of MMLL
-This file defines the syntax of formulas in MMLL
+(** * Syntax of SELL
+This file defines the syntax of formulas in SELL
 (type [oo]). Predicate [isFormula] determines when a term is a valid
-MMLL formula (ruling out exotic terms). Proofs usually proceed by
+SELL formula (ruling out exotic terms). Proofs usually proceed by
 induction on the fact that a term satisfies this property.
  *)
 
@@ -97,7 +97,7 @@ Section LLSyntax.
     end.
 
   (** Negation is involutive *)
-  Theorem ng_involutive: forall F: oo, F = dual (dual F).
+  Theorem dualInvolutive: forall F: oo, F = dual (dual F).
   Proof.
     intro. 
     induction F; simpl; auto;
@@ -106,7 +106,7 @@ Section LLSyntax.
              (extensionality e; apply H); rewrite <- H0; auto).
   Qed.
 
-  Lemma DualComplexity : forall F, complexity F = complexity (dual F) .
+  Lemma dualComplexity : forall F, complexity F = complexity (dual F) .
     intros.
     induction F;intros;auto;
       try solve
@@ -224,56 +224,56 @@ Section LLSyntax.
     end.
 
   (** Checking when a formulas has to lose focusing *)
-  Inductive negativeFormula : oo -> Prop :=
-  | RelNA1 : forall A,  negativeFormula (atom A)
-  | RelTop : negativeFormula Top
-  | RelBot : negativeFormula Bot
-  | RelPar : forall F G, negativeFormula (MOr F G)
-  | RelWith : forall F G, negativeFormula (AAnd F G)
-  | RelQuest : forall F a, negativeFormula (Quest a F)
-  | RelForall : forall FX, negativeFormula (All FX).
+  Inductive negFormula : oo -> Prop :=
+  | RelNA1 : forall A,  negFormula (atom A)
+  | RelTop : negFormula Top
+  | RelBot : negFormula Bot
+  | RelPar : forall F G, negFormula (MOr F G)
+  | RelWith : forall F G, negFormula (AAnd F G)
+  | RelQuest : forall F a, negFormula (Quest a F)
+  | RelForall : forall FX, negFormula (All FX).
 
   (** Positive formulas (focusing persists *)
-  Inductive positiveFormula : oo -> Prop :=
-  | PosAt : forall A,  positiveFormula (perp A)
-  | PosOne : positiveFormula One
-  | PosZero : positiveFormula Zero
-  | PosTensor : forall F G, positiveFormula (MAnd F G)
-  | PosPlus : forall F G, positiveFormula (AOr F G)
-  | PosBang : forall F a, positiveFormula (Bang a F)
-  | PosEx : forall FX, positiveFormula (Some FX).
+  Inductive posFormula : oo -> Prop :=
+  | PosAt : forall A,  posFormula (perp A)
+  | PosOne : posFormula One
+  | PosZero : posFormula Zero
+  | PosTensor : forall F G, posFormula (MAnd F G)
+  | PosPlus : forall F G, posFormula (AOr F G)
+  | PosBang : forall F a, posFormula (Bang a F)
+  | PosEx : forall FX, posFormula (Some FX).
 
   (** Checking when a formulas has to be stored *)
-  Inductive positiveLFormula : oo -> Prop :=
-  | PosLAt : forall A,  positiveLFormula (atom A)
-  | PosLPe : forall A,  positiveLFormula (perp A)
-  | PosLOne : positiveLFormula One
-  | PosLZero : positiveLFormula Zero
-  | PosLTensor : forall F G, positiveLFormula (MAnd F G)
-  | PosLPlus : forall F G, positiveLFormula (AOr F G)
-  | PosLBang : forall F a, positiveLFormula (Bang a F)
-  | PosLEx : forall FX, positiveLFormula (Some FX).
+  Inductive posLFormula : oo -> Prop :=
+  | PosLAt : forall A,  posLFormula (atom A)
+  | PosLPe : forall A,  posLFormula (perp A)
+  | PosLOne : posLFormula One
+  | PosLZero : posLFormula Zero
+  | PosLTensor : forall F G, posLFormula (MAnd F G)
+  | PosLPlus : forall F G, posLFormula (AOr F G)
+  | PosLBang : forall F a, posLFormula (Bang a F)
+  | PosLEx : forall FX, posLFormula (Some FX).
 
-Theorem PositiveToLPositive : forall F,
-      positiveFormula F -> positiveLFormula F.
+Theorem posPosL : forall F,
+      posFormula F -> posLFormula F.
     intros.
     inversion H;constructor.
   Qed.
 
   (** Every formula is either  a positive formula, or it must be released *)
-  Theorem PositiveOrNegative : forall F,
-      positiveFormula F \/ negativeFormula F.
+  Theorem posOrNeg : forall F,
+      posFormula F \/ negFormula F.
     intros.
     destruct F;try (left;constructor);try(right;constructor).
   Qed.
 
-Theorem PositiveNegativeSplit : forall M, exists M1 M2, 
-    Forall positiveFormula M1 /\ Forall negativeFormula M2 /\ Permutation M (M1++M2).
+Theorem PosNegSplit : forall M, exists M1 M2, 
+    Forall posFormula M1 /\ Forall negFormula M2 /\ Permutation M (M1++M2).
   Proof with sauto. 
     induction M; intros...
     - exists nil. 
       exists nil...
-    - destruct (PositiveOrNegative a)...
+    - destruct (posOrNeg a)...
       { exists (a::x). 
         exists x0...
         rewrite H2... }
@@ -283,81 +283,81 @@ Theorem PositiveNegativeSplit : forall M, exists M1 M2,
   Qed.      
   
   (** Positive formulas cannot be released *)
-   Theorem PositiveNotNegative: forall F,
-      positiveFormula F -> ~ negativeFormula F.
+   Theorem posNotNeg: forall F,
+      posFormula F -> ~ negFormula F.
     intros F H Hneg.
     inversion H;subst;inversion Hneg.
   Qed.
   
   
- Theorem NegativeNotPositive : forall F,
-      negativeFormula F -> ~ positiveFormula F.
+ Theorem negNotPos : forall F,
+      negFormula F -> ~ posFormula F.
     intros F H Hneg.
     inversion H;subst;inversion Hneg.
   Qed.
   
   (** The dual of a positive formula is a release formula *)
-Theorem PositiveDualNegative : forall F,
-      positiveFormula F -> negativeFormula (dual F).
+Theorem posDualNeg : forall F,
+      posFormula F -> negFormula (dual F).
     intros F Hpos.
     inversion Hpos;subst;constructor.
   Qed.
 
-  Theorem NegativeDualPositive : forall F, negativeFormula F -> positiveFormula (dual F).
+  Theorem negDualPos : forall F, negFormula F -> posFormula (dual F).
     intros F Hrel.
     inversion Hrel;subst;constructor.
   Qed.
   
   (** Postive atoms *)
-  Inductive IsPositiveAtom : oo -> Prop :=
-  | IsPAP : forall A, IsPositiveAtom (atom A).
+  Inductive posAtom : oo -> Prop :=
+  | IsPAP : forall A, posAtom (atom A).
 
   (** Negative atoms *)
-  Inductive IsNegativeAtom : oo -> Prop :=
-  | IsNAP : forall A, IsNegativeAtom (perp A).
+  Inductive negAtom : oo -> Prop :=
+  | IsNAP : forall A, negAtom (perp A).
   
-Local Hint Constructors IsPositiveAtom IsNegativeAtom : core.
+Local Hint Constructors posAtom negAtom : core.
   
-  Theorem NegativeAtomDec : forall F,
-      IsNegativeAtom F \/ ~ IsNegativeAtom F.
+  Theorem negAtomDec : forall F,
+      negAtom F \/ ~ negAtom F.
     induction F;auto; try solve[right;intro H'; inversion H'].
   Qed.
 
   
-  Theorem PositiveAtomDec : forall F,
-      IsPositiveAtom F \/ ~ IsPositiveAtom F.
+  Theorem posAtomDec : forall F,
+      posAtom F \/ ~ posAtom F.
     destruct F;auto;right;intro H';inversion H'.
   Qed.
 
   (** List of positive atoms *)
-  Definition IsPositiveAtomL  L : Prop := Forall IsPositiveAtom L.
+  Definition posAtomL  L : Prop := Forall posAtom L.
 
- Lemma NotAsynchronousPosAtoms :
-    forall F, positiveLFormula F -> positiveFormula F \/ IsPositiveAtom F.
+ Lemma posLDestruct :
+    forall F, posLFormula F -> posFormula F \/ posAtom F.
     intros.
     inversion H;auto; first [left;constructor
                              | right;constructor ].
   Qed.
 
-Theorem PositiveAtomToNegativeFormula : forall F,
-      IsPositiveAtom F -> negativeFormula F.
+Theorem posAtomNeg : forall F,
+      posAtom F -> negFormula F.
     intros.
     inversion H;constructor.
   Qed.
  
-Theorem NetagiveAtomToPositiveFormula : forall F,
-      IsNegativeAtom F -> positiveFormula F.
+Theorem negAtomPos : forall F,
+      negAtom F -> posFormula F.
     intros.
     inversion H;constructor.
   Qed.
  
-Theorem PositiveAtomToPositiveLFormula : forall F,
-      IsPositiveAtom F -> positiveLFormula F.
+Theorem posAtomPosL : forall F,
+      posAtom F -> posLFormula F.
     intros.
     inversion H;constructor.
   Qed.
 
-Theorem positiveNotAtom F: positiveFormula F -> IsPositiveAtom F -> False.
+Theorem posPosAtom F: posFormula F -> posAtom F -> False.
 Proof.
   intros.
   inversion H0;subst.
@@ -369,7 +369,7 @@ Proof.
  
 Global Hint Constructors uniform_oo : core.
 Global Hint Resolve Complexity0
-                    DualComplexity: core.
+                    dualComplexity: core.
 
 Module LLNotations .
   Notation "'⊥'" := Bot.
@@ -387,21 +387,21 @@ Module LLNotations .
   Notation "'∃{' FX '}'" := (Some FX) (at level 10) .
 End LLNotations .
 
-Global Hint Constructors IsPositiveAtom : core.
+Global Hint Constructors posAtom : core.
 
 Global Hint Constructors 
-    negativeFormula 
-    positiveFormula
-    positiveLFormula 
-    uniform_oo isFormula IsPositiveAtom
-    IsNegativeAtom: core.
+    negFormula 
+    posFormula
+    posLFormula 
+    uniform_oo isFormula posAtom
+    negAtom: core.
     
 Global Hint Resolve 
-     PositiveToLPositive
-     PositiveAtomToNegativeFormula
-     PositiveAtomToPositiveLFormula
-     NetagiveAtomToPositiveFormula 
-     positiveNotAtom: core.    
+     posPosL
+     posAtomNeg
+     posAtomPosL
+     negAtomPos 
+     posPosAtom: core.    
 
 Global Hint Unfold isFormulaL :core.
 

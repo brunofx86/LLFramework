@@ -236,7 +236,7 @@ Proof with sauto;try solveLL.
     cut1H H4 Hb. 
  * checkPermutationCases H1.
     -  rewrite H3 in H5. 
-       rewrite (ng_involutive P) in H5...
+       rewrite (dualInvolutive P) in H5...
        LLPerm(N ++ M).
        cut2H Hb H5.
       LLPerm(B++D++C)... 
@@ -247,7 +247,7 @@ Proof with sauto;try solveLL.
          apply weakeningGen_rev...
          HProof.
         apply Forall_app in H4...
-       +  destruct(PositiveOrNegative F0).   
+       +  destruct(posOrNeg F0).   
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
@@ -269,7 +269,7 @@ Proof with sauto;try solveLL.
                  cut1H H9 Hb. 
                }
  
-  +    destruct(PositiveOrNegative G).   
+  +    destruct(posOrNeg G).   
        {         rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
@@ -290,7 +290,7 @@ Proof with sauto;try solveLL.
                }
 +           checkPermutationCases H2.
     {   pose proof (unformUnb  stB stC H4 H6 H7 H3)...
-              destruct(PositiveOrNegative F0).
+              destruct(posOrNeg F0).
               * (* first *) 
                 assert(seqN th (S n0) (B++C0) (P::(F0::x0)) (UP [])).
               LFocus F0 (P::x0)...
@@ -328,7 +328,7 @@ Proof with sauto;try solveLL.
                 rewrite H2 in H18.
                  cut1H H18 Hb. }
   {   pose proof (unformUnb  stB stC H4 H6 H7 H3)...
-              destruct(PositiveOrNegative G).
+              destruct(posOrNeg G).
               * (* first *) 
                 assert(seqN th (S n0) (B++D0) (P::(G::x0)) (UP [])).
               LFocus G (P::x0)...
@@ -363,7 +363,7 @@ LLPerm(F0⊗ G::M0++(x0++N)).
                  rewrite <- H10 in H18.
                 rewrite H2 in H18.
                  cut1H H18 Hb. }
-   +   destruct(PositiveOrNegative (FX t)).   
+   +   destruct(posOrNeg (FX t)).   
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
@@ -377,26 +377,26 @@ LLPerm(F0⊗ G::M0++(x0++N)).
                  LFocus (FX t) (P::x).  }
              {   inversion H8;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end. 
                  rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
                  cut1H H11 Hb.  }
-       +  apply PositiveNotNegative in H0. contradiction. 
+       +  apply posNotNeg in H0. contradiction. 
            
 *  assert (In (i,F) B).
     apply in_app_or in H2... 
     pose proof (SETUNotIn i F C H0 stC H)...
     clear H2. 
-  destruct(PositiveOrNegative F).
+  destruct(posOrNeg F).
 - inversion H6...
        + apply Forall_app in H7... 
           pose proof (SETXempty C H4 stC)... 
 apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
           inversion Hb...
           HProof.
-  +  destruct(PositiveOrNegative F0).   
+  +  destruct(posOrNeg F0).   
      {  eapply @InvPlusC with (F:=F0) (G:=G) (i:=i)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
@@ -412,7 +412,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
         eapply @InvPlusC with (F:=F0) (G:=G) (i:=i)...
                  cut1H H11 Hb. 
 }
-  +  destruct(PositiveOrNegative G).   
+  +  destruct(posOrNeg G).   
      {  eapply @InvPlusCComm with (F:=F0) (G:=G) (i:=i)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
@@ -430,7 +430,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
 
       + pose proof (unformUnb  stB stC H7 H8 H9 H5)...
         checkPermutationCases H4.
-          {  destruct(PositiveOrNegative F0).
+          {  destruct(posOrNeg F0).
              * (* first *) 
                rewrite <- H13.
                rewrite H12.
@@ -468,7 +468,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
                rewrite H11.
                 HProof.
               } 
-          {  destruct(PositiveOrNegative G).
+          {  destruct(posOrNeg G).
              * (* first *) 
                rewrite <- H13.
                rewrite H12.
@@ -504,7 +504,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
      rewrite  H4 in H20.
                rewrite <- H11 in H20.
                  cut1H H20 Hb. } 
-  +  destruct(PositiveOrNegative (FX t)).   
+  +  destruct(posOrNeg (FX t)).   
      { eapply @InvExC with  (t:=t) (FX:=FX) (i:=i)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
@@ -517,12 +517,12 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
         LFocus (FX t) (P::M).  }
      {  inversion H10;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end.             
         eapply @InvExC with (t:=t) (FX:=FX) (i:=i)...
                  cut1H H13 Hb. 
 }
-    +  apply PositiveNotNegative in H2. contradiction. 
+    +  apply posNotNeg in H2. contradiction. 
  -  inversion H6;CleanContext... 
        apply @AbsorptionClassic' with (F:=F) (i:=i)...
         cut1H H9 Hb. 
@@ -532,7 +532,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
   inversion stB...
   assert(stX: SetL x).
  rewrite H2 in stC. inversion stC... 
- destruct(PositiveOrNegative F).
+ destruct(posOrNeg F).
 - inversion H6...
        +  
           rewrite H2. 
@@ -541,7 +541,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
           inversion Hb...
           apply weakeningGen... rewrite <- H3 in H8. apply Forall_app in H8...
           HProof.
-  +  destruct(PositiveOrNegative F0).   
+  +  destruct(posOrNeg F0).   
      {  eapply @InvPlusL with (F:=F0) (G:=G) (i:=i) (B':=B++x++D)...
         rewrite H2...
         rewrite <- (app_nil_l [F0]).
@@ -561,7 +561,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
           rewrite <- H3 in H12.
          cut1H H12 Hb. 
 }
-  +  destruct(PositiveOrNegative G).   
+  +  destruct(posOrNeg G).   
      {  eapply @InvPlusLComm with (F:=F0) (G:=G) (i:=i) (B':=B++x++D)...
          rewrite H2...
         rewrite <- (app_nil_l [G]).
@@ -583,7 +583,7 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
       + rewrite <- H3 in H7. 
 pose proof (unformUnb  stB stX H8 H9 H10 H7)...
         checkPermutationCases H5.
-          {  destruct(PositiveOrNegative F0).
+          {  destruct(posOrNeg F0).
              * (* first *) 
                rewrite <- H14.
                rewrite H12.
@@ -626,7 +626,7 @@ rewrite H2, H13.
                apply unRelease.
                 HProof.
               } 
-          {  destruct(PositiveOrNegative G).
+          {  destruct(posOrNeg G).
              * (* first *) 
                rewrite <- H14.
                rewrite H12.
@@ -668,7 +668,7 @@ rewrite H2, H13.
                 rewrite H5 in H21.
                  cut1H H21 Hb. } 
  
-  +  destruct(PositiveOrNegative (FX t)).   
+  +  destruct(posOrNeg (FX t)).   
      { eapply @InvExL with  (t:=t) (FX:=FX) (i:=i) (B':=B++x++D)...
         rewrite H2...
         rewrite <- (app_nil_l [FX t]).
@@ -682,14 +682,14 @@ rewrite H2, H13.
         LFocus (FX t) (P::M). rewrite H3...  }
      {  inversion H11;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end.             
         eapply @InvExL with (t:=t) (FX:=FX) (i:=i) (B':=B++x++D)...
         rewrite H2...
          rewrite <- H3 in H14.
                  cut1H H14 Hb. 
 }
-    +  apply PositiveNotNegative in H. contradiction. 
+    +  apply posNotNeg in H. contradiction. 
  -  inversion H6;CleanContext...
     rewrite H2.
      LLPerm ( (i, F) :: x ++ (B ++ D)).
@@ -703,7 +703,7 @@ rewrite H2, H13.
     eapply @AbsorptionPerp' with (A:=A)...
         inversion Hb...
         HProof.
-  + destruct(PositiveOrNegative F0).   
+  + destruct(posOrNeg F0).   
      {  eapply @InvPlusT with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
@@ -719,7 +719,7 @@ rewrite H2, H13.
         eapply @InvPlusT with (F:=F0) (G:=G) ...
                  cut1H H9 Hb. 
 }
-  +  destruct(PositiveOrNegative G).   
+  +  destruct(posOrNeg G).   
      {  eapply @InvPlusTComm with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
@@ -739,7 +739,7 @@ rewrite H2, H13.
       + 
 pose proof (unformUnb  stB stC H4 H6 H7 H3)...
         checkPermutationCases H2.
-          {  destruct(PositiveOrNegative F0).
+          {  destruct(posOrNeg F0).
              * (* first *) 
                rewrite <- H11.
                rewrite H9.
@@ -780,7 +780,7 @@ rewrite H10.
                apply unRelease.
                 HProof.
               } 
-          {  destruct(PositiveOrNegative G).
+          {  destruct(posOrNeg G).
              * (* first *) 
                rewrite <- H11.
                rewrite H10.
@@ -819,7 +819,7 @@ rewrite H10.
                 rewrite H2 in H18.
                  cut1H H18 Hb. } 
 
-  +  destruct(PositiveOrNegative (FX t)).   
+  +  destruct(posOrNeg (FX t)).   
      {  eapply @InvExT with  (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
@@ -831,7 +831,7 @@ rewrite H10.
        LFocus (FX t) (P::M). }
           {  inversion H8;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end.             
         eapply @InvExT with (t:=t) (FX:=FX)...
                  cut1H H11 Hb. 
@@ -890,12 +890,12 @@ Proof with sauto;try solveLL.
             subst.
             erewrite ComplexityUniformEq...
           
- *  apply NotAsynchronousPosAtoms in H4...
-   assert(negativeFormula (P ^)).
-   apply PositiveDualNegative in H...
+ *  apply posLDestruct in H4...
+   assert(negFormula (P ^)).
+   apply posDualNeg in H...
  
      inversion Hb;subst; try match goal with
-       [ H: _= dual ?C , H2: negativeFormula (dual ?C) |- _ ] => rewrite <- H in H2
+       [ H: _= dual ?C , H2: negFormula (dual ?C) |- _ ] => rewrite <- H in H2
      end;CleanContext.
     cut1H H5 H7.
    inversion H...
@@ -1261,7 +1261,7 @@ Lemma unReleaseN n
        seqN th n B M (DW P) -> exists m, (n = m +1 \/ n <= m) /\ seqN th m B M (UP [P]).
 Proof with sauto.
   intros. 
-  destruct (PositiveOrNegative P).
+  destruct (posOrNeg P).
   exists (S (S n))... 
   apply tri_store... 
   LFocus.
@@ -1313,7 +1313,7 @@ Proof with sauto; try solveLL.
        LLPerm (B ++ ((i, F) :: C) ++ D) ... 
   * apply H4 in properX. cut4H properX Hb.
   * cut4H H4 Hb.
-  * destruct (PositiveOrNegative F).
+  * destruct (posOrNeg F).
      cut3H H5 Hb. 
      assert( seq th (B++C++D) L' (UP [F]))...
      inversion H0;subst;try solve [inversion H].
@@ -1333,9 +1333,9 @@ Proof with sauto; try solveLL.
             apply Forall_app in Hb... }
           pose proof (InvBangT H0 Hb).
           apply seqtoSeqN in H2...
-            destruct(PositiveOrNegative F).
-         {   assert(negativeFormula (F ^)).
-            apply PositiveDualNegative...
+            destruct(posOrNeg F).
+         {   assert(negFormula (F ^)).
+            apply posDualNeg...
             assert( seqN th x (B++C) M  (UP [F]) -> 
                     seqN th (S x0) (B++D) [] (DW (F ^)) ->
                       seq th (B++C++D) (M++[])  (UP [ ])) as Cut1.
@@ -1348,8 +1348,8 @@ Proof with sauto; try solveLL.
                   seqN th (S x ) (B++C) M (DW ((F^)^)) ->
                       seq th (B++D++C) ([]++M) (UP [ ])) as Cut2.
             eapply CW...
-            rewrite <- DualComplexity...
-            rewrite <- ng_involutive in Cut2.
+            rewrite <- dualComplexity...
+            rewrite <- dualInvolutive in Cut2.
             CleanContext.
             LLPerm (B++D++C). 
             apply Cut2...
@@ -1373,11 +1373,11 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
              apply Forall_app... 
           rewrite confBang...
         assert( seqN th n (B ++ C) M (DW (dual (dual Q)))).
-       rewrite <- ng_involutive...
+       rewrite <- dualInvolutive...
           assert( seqN th n0 (B ++ D) [] (UP [dual Q]) ->
                      seqN th n (B ++ C) M (DW (dual (dual Q ))) -> seq th (B++D++C) M (UP [])).
         eapply CW...
-        rewrite <- DualComplexity...
+        rewrite <- dualComplexity...
          LLPerm (B++D++C)...
   + checkPermutationCases H2.
      rewrite H2 in stB. inversion stB...
@@ -1385,7 +1385,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
     rewrite H3 in H6.
      eapply @AbsorptionLinear with  (F:=F) (i:=i) (B':= x0++D++B)...
      rewrite H2...
-       destruct(PositiveOrNegative F).
+       destruct(posOrNeg F).
        2:{ inversion H6;solvePolarity... inversion H.
              cut4H H11 Hb. rewrite H2 in stC. inversion stC...
             LLPerm (B++x0++D)... } 
@@ -1426,7 +1426,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
              apply Forall_app in Hb, H7... 
               apply Forall_app... apply Forall_app... 
          - rewrite H2 in stC. inversion stC...
-           destruct(PositiveOrNegative F0).
+           destruct(posOrNeg F0).
        {        apply InvPlus...
                  LLStore.
                 assert( seqN th (S n0) ((q,Q)::(B++x0)) (F0::M) (UP [ ])).
@@ -1440,7 +1440,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
                 LLPerm(B++x0++D). HProof.  
                }
          - rewrite H2 in stC. inversion stC...
-           destruct(PositiveOrNegative G).
+           destruct(posOrNeg G).
        {        apply InvPlusComm...
                  LLStore.
                 assert( seqN th (S n0) ((q,Q)::(B++x0)) (G::M) (UP [ ])).
@@ -1459,7 +1459,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
         assert(SetU D). 
         apply BangUnb in Hb...   apply Forall_app in Hb...
            pose proof (unformUnb  stB H13 H16 H8 H9 (symmetry H11))...
-              destruct(PositiveOrNegative F0).
+              destruct(posOrNeg F0).
               * (* first *) 
                 assert(seqN th (S n0) (B0++C0) (F0::M0) (UP [])).
               LFocus F0.
@@ -1475,7 +1475,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
               eapply @InvTensor...
               apply Forall_app...
 
-destruct(PositiveOrNegative G).
+destruct(posOrNeg G).
 2:{     inversion H14;solvePolarity...  inversion H20.  
 assert( seqN th n ((q, Q) :: (B ++ D0)) N (UP [G]) ->
         seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
@@ -1503,7 +1503,7 @@ assert( seqN th (S n0) ((q, Q) :: (B ++ D0)) (G::N) (UP []) ->
               eapply @InvTensor...
               apply Forall_app...
 
-destruct(PositiveOrNegative G).
+destruct(posOrNeg G).
 2:{     inversion H14;solvePolarity...  inversion H12.  
 assert( seqN th n ((q, Q) :: (B ++ D0)) N (UP [G]) ->
         seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
@@ -1525,7 +1525,7 @@ rewrite H5 in H8. inversion H8...
 apply SetULPerm in H11...
 2:{ rewrite <- H12... 
     apply Forall_app... }
-destruct(PositiveOrNegative F0).
+destruct(posOrNeg F0).
 2:{     inversion H10;solvePolarity...  inversion H11.  
        rewrite H3, H5 in H23.
        LLPermH H23  ((q, Q) ::  B ++ x1).
@@ -1555,7 +1555,7 @@ rewrite H5 in H9. inversion H9...
 apply SetULPerm in H11...
 2:{ rewrite <- H12... 
     apply Forall_app... }
-destruct(PositiveOrNegative G).
+destruct(posOrNeg G).
 2:{     inversion H14;solvePolarity...  inversion H11.  
        rewrite H3, H5 in H23.
        LLPermH H23  ((q, Q) ::  B ++ x1).
@@ -1632,7 +1632,7 @@ rewrite( SetU_then_empty B)...
 rewrite confBang... 
 HProof. rewrite H2 in stC. inversion stC...
          - rewrite H2 in stC. inversion stC...
-           destruct(PositiveOrNegative (FX t)).
+           destruct(posOrNeg (FX t)).
        {        apply InvEx with (t:=t)...
                  LLStore.
                 assert( seqN th (S n0) ((q,Q)::(B++x0)) (FX t::M) (UP [ ])).
@@ -1642,16 +1642,16 @@ HProof. rewrite H2 in stC. inversion stC...
               apply OLCut... }
              {  inversion H10;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end. 
                  apply @InvEx with (t:=t)...
                  cut4H H14 Hb. 
                LLPerm(B++x0++D)... }
-- apply PositiveNotNegative in H... }
+- apply posNotNeg in H... }
 
 * cut3H H5 Hb. 
         assert(Hs:seq th (B++C++D) M (UP [F]))...
-             destruct (NegativeAtomDec F).
+             destruct (negAtomDec F).
               2:{  eapply @AbsorptionTheory with (F:=F)... }
              inversion H...
              eapply @AbsorptionPerp' with (A:=A)...

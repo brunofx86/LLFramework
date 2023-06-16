@@ -238,10 +238,10 @@ Proof with sauto;try solveLL.
        eapply CH with (m:=n + j)...
         
        lia.
-       rewrite <- ng_involutive...
+       rewrite <- dualInvolutive...
        LLPerm(N ++ L')... }
        
-   destruct(PositiveOrNegative F).
+   destruct(posOrNeg F).
    2:{ inversion H5;CleanContext... 
        rewrite H1.
        rewrite <- app_comm_cons.
@@ -261,7 +261,7 @@ Proof with sauto;try solveLL.
               rewrite H4 in H2.
               checkPermutationCases H2.
               - 
-              destruct(PositiveOrNegative F0).
+              destruct(posOrNeg F0).
               { (* first *) 
               assert(S n0 |--- B; (F0::x0)++[C]; (UP [])).
               LLfocus1 F0 (x0++[C])...
@@ -308,7 +308,7 @@ LLPerm(B++[]++[]).
                 inversion H10;solveF... 
                 LLExact H16. } 
              - 
-              destruct(PositiveOrNegative G).
+              destruct(posOrNeg G).
               { (* first *) 
               assert(S n0 |--- B; (G::x0)++[C]; (UP [])).
               LLfocus1 G (x0++[C])...
@@ -350,7 +350,7 @@ LLPerm(B++[]++[]).
                 inversion H14;solveF...
                 apply Cut... LLExact H16. }   
                 }
-    -   destruct(PositiveOrNegative F0).   
+    -   destruct(posOrNeg F0).   
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
@@ -374,7 +374,7 @@ LLPerm(B++[]++[]).
                 eapply CH with (m:= n + j)...
                apply Cut... LLExact H10. 
                } 
-  -    destruct(PositiveOrNegative G).   
+  -    destruct(posOrNeg G).   
        {         rewrite H1.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
@@ -399,8 +399,8 @@ LLPerm(B++[]++[]).
                 eapply CH with (m:= n + j)...
                apply Cut... LLExact H10. 
                }
-   -  apply PositiveNotNegative in H. contradiction. 
-   -   destruct(PositiveOrNegative (FX t)).   
+   -  apply posNotNeg in H. contradiction. 
+   -   destruct(posOrNeg (FX t)).   
        { rewrite H1. 
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
@@ -416,7 +416,7 @@ LLPerm(B++[]++[]).
                LLExact H10. }
              {   inversion H10;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end. 
                  rewrite H1.
                  rewrite <- app_comm_cons. 
@@ -426,7 +426,7 @@ LLPerm(B++[]++[]).
                          |-- B; x ++ N; (UP [FX t])) as Cut.
                 eapply CH with (m:= n + j)...
                apply Cut... LLExact H12. }
-*  destruct(PositiveOrNegative F).
+*  destruct(posOrNeg F).
    2:{ inversion H7;CleanContext...
        apply @AbsorptionClassic' with (i:=i0) (F:=F)...
         assert(n0 |--- B; M ++ [C]; (UP [F]) ->
@@ -440,7 +440,7 @@ LLPerm(B++[]++[]).
           apply MLLNtoSeq in H12...  
        - apply SETXempty in H9, H10... 
          checkPermutationCases H5.
-          {  destruct(PositiveOrNegative F0).
+          {  destruct(posOrNeg F0).
              { (* first *) 
                rewrite <- H9.
                LLPerm((x ++ N) ++ N0).
@@ -476,7 +476,7 @@ LLPerm(B++[]++[]).
                 LLExact H17.
                apply Derivation1.
                apply MLLNtoSeq in H15... LLExact H15. } }
-          {  destruct(PositiveOrNegative G).
+          {  destruct(posOrNeg G).
              { (* first *) 
                rewrite <- H9.
                LLPerm(M0++(x ++ N)).
@@ -514,7 +514,7 @@ LLPerm(B++[]++[]).
                 eapply CH with (m:=n+j)...
                 apply Cut...
                 LLExact H17. } }
-  -  destruct(PositiveOrNegative F0).   
+  -  destruct(posOrNeg F0).   
      {  eapply @InvPlusC with (F:=F0) (G:=G) (i:=i0)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'.
@@ -535,7 +535,7 @@ LLPerm(B++[]++[]).
                  |-- B; M ++ N; (UP [F0])) as Cut.
                 eapply CH with (m:=n + j)...
                 apply Cut... }
-  -  destruct(PositiveOrNegative G).   
+  -  destruct(posOrNeg G).   
      {  eapply @InvPlusCComm with (F:=F0) (G:=G) (i:=i0)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'.
@@ -557,8 +557,8 @@ LLPerm(B++[]++[]).
                 eapply CH with (m:=n + j)...
                 apply Cut... }
 
-  -  apply PositiveNotNegative in H. contradiction. 
-  -  destruct(PositiveOrNegative (FX t)).   
+  -  apply posNotNeg in H. contradiction. 
+  -  destruct(posOrNeg (FX t)).   
      {  eapply @InvExC with  (i:=i0) (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'.
@@ -573,7 +573,7 @@ LLPerm(B++[]++[]).
         LLfocus1 (FX t).      }
      {  inversion H11;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end.             
         eapply @InvExC with  (i:=i0) (t:=t) (FX:=FX)...
         assert( n |--- B; M ++ [C]; (UP [FX t]) ->
@@ -582,9 +582,9 @@ LLPerm(B++[]++[]).
                 eapply CH with (m:=n + j)...
                 apply Cut... }
  * rewrite allU in H0... 
- *  destruct(PositiveOrNegative F).
+ *  destruct(posOrNeg F).
     2:{ inversion H5;CleanContext...
-        destruct (NegativeAtomDec F).
+        destruct (negAtomDec F).
         assert(False). 
         inversion H;subst... inversion H3. 
         contradiction.
@@ -602,7 +602,7 @@ LLPerm(B++[]++[]).
         apply MLLNtoSeq in H10...  
     -  apply SETXempty in H7, H8... 
        checkPermutationCases H3.
-          {  destruct(PositiveOrNegative F0).
+          {  destruct(posOrNeg F0).
              { (* first *) 
                rewrite <- H7.
                LLPerm((x ++ N) ++ N0).
@@ -638,7 +638,7 @@ LLPerm(B++[]++[]).
                 LLExact H15.
                apply Derivation1.
                apply MLLNtoSeq in H13... LLExact H13. } }
-          {  destruct(PositiveOrNegative G).
+          {  destruct(posOrNeg G).
              { (* first *) 
                rewrite <- H7.
                LLPerm(M0++(x ++ N)).
@@ -676,7 +676,7 @@ LLPerm (B++[]++[]).
                 eapply CH with (m:=n+j)...
                 apply Cut...
                 LLExact H15. } }
-  -  destruct(PositiveOrNegative F0).   
+  -  destruct(posOrNeg F0).   
      {  eapply @InvPlusT with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'.
@@ -697,7 +697,7 @@ LLPerm (B++[]++[]).
                  |-- B; M ++ N; (UP [F0])) as Cut.
                 eapply CH with (m:=n + j)...
                 apply Cut... }
-  -  destruct(PositiveOrNegative G).   
+  -  destruct(posOrNeg G).   
      {  eapply @InvPlusTComm with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'.
@@ -719,8 +719,8 @@ LLPerm (B++[]++[]).
                 eapply CH with (m:=n + j)...
                 apply Cut... }
 
-  -  apply PositiveNotNegative in H. contradiction. 
-  -  destruct(PositiveOrNegative (FX t)).   
+  -  apply posNotNeg in H. contradiction. 
+  -  destruct(posOrNeg (FX t)).   
      {  eapply @InvExT with (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'.
@@ -735,7 +735,7 @@ LLPerm (B++[]++[]).
         LLfocus1 (FX t).      }
      {  inversion H9;subst;auto;
                try match goal with 
-               [ H1: _ = FX t, H2: negativeFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
+               [ H1: _ = FX t, H2: negFormula (FX t) |- _] => rewrite <- H1 in H2;inversion H2
                 end.             
         eapply @InvExT with (t:=t) (FX:=FX)...
         assert( n |--- B; M ++ [C]; (UP [FX t]) ->
@@ -806,10 +806,10 @@ Proof with sauto;try solveLL.
      simpl... 
     rewrite app_nil_r...
     apply UCCut... LLExact H3.
- *  apply NotAsynchronousPosAtoms in H4...
-   apply PositiveDualNegative in H.
+ *  apply posLDestruct in H4...
+   apply posDualNeg in H.
      inversion Hj;subst; try match goal with
-       [ H: _= dual ?C , H2: negativeFormula (dual ?C) |- _ ] => rewrite <- H in H2
+       [ H: _= dual ?C , H2: negFormula (dual ?C) |- _ ] => rewrite <- H in H2
      end;CleanContext.
     assert( n |--- B; M ++ [C]; (UP L) -> 
             n0 |--- B; N; (UP [dual C]) -> 
@@ -1237,9 +1237,9 @@ Proof with sauto;try solveLL.
          apply MLLStoSeqN in Hj.
           destruct Hj as [y Hj].
            
-            destruct(PositiveOrNegative F).
-            assert(negativeFormula (F ^)).
-            apply PositiveDualNegative...
+            destruct(posOrNeg F).
+            assert(negFormula (F ^)).
+            apply posDualNeg...
              
             assert( x |--- B; M ; (UP [F]) -> 
                     S y |--- B; []; (DW (dual F)) ->
@@ -1258,7 +1258,7 @@ Proof with sauto;try solveLL.
                 assert(complexity F > 0) by apply Complexity0.
                 simpl...
        
-            rewrite <- ng_involutive...
+            rewrite <- dualInvolutive...
             CleanContext.
    -- rewrite allU in H0...
    -- assert(n |--- B ++ [(a, A)]; M; (DW F) ->
@@ -1271,7 +1271,7 @@ Proof with sauto;try solveLL.
          
            assert(Hs:|--B; M; (UP [F])).
            apply Cut... 
-             destruct (NegativeAtomDec F).
+             destruct (negAtomDec F).
               2:{  eapply @AbsorptionTheory with (F:=F)... }
              
              inversion H...
@@ -1353,7 +1353,7 @@ Proof with sauto;try solveLL.
           eapply CutH with (m:=m)...
            unfold CutElimination.CutW; intros.
           eapply CutW with (m:=m)...
-          rewrite (DualComplexity C)...
+          rewrite (dualComplexity C)...
               rewrite H0...
           simpl...    
         * eapply (@CutUPC i j w h a A L M B)... 
@@ -1361,7 +1361,7 @@ Proof with sauto;try solveLL.
           eapply CutH with (m:=m)...
            unfold CutElimination.CutW; intros.
           eapply CutW with (m:=m)...
-                  rewrite (DualComplexity C)...
+                  rewrite (dualComplexity C)...
               rewrite H0...
           simpl...    
  Qed.              

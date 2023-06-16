@@ -66,18 +66,18 @@ Section LLSequent.
       S n |-F- B ; L ; UP ((All FX) :: M)                                                                                                                           
  (* reaction rules *)
   | tri_rel : forall B F L n,
-      negativeFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
+      negFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
   | tri_store : forall B L M F n,
-      positiveLFormula  F-> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
+      posLFormula  F-> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
  (* decision rules *)
   | tri_dec1 : forall B L L' F n,
-      positiveFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
+      posFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec2u : forall B L F n i,
-     u i = true -> ~IsPositiveAtom F -> In (i,F) B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
+     u i = true -> ~posAtom F -> In (i,F) B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec2l : forall B B' L F n i,
-     u i = false -> ~IsPositiveAtom F -> Permutation ((i,F)::B') B -> n |-F- B' ; L ; DW F -> S n |-F- B ; L ; UP []
+     u i = false -> ~posAtom F -> Permutation ((i,F)::B') B -> n |-F- B' ; L ; DW F -> S n |-F- B ; L ; UP []
   | tri_dec3 : forall B L F n,
-      theory F -> ~IsPositiveAtom F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
+      theory F -> ~posAtom F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
  
   where " n '|-F-' B ';' L ';' X " := (seqN n B L X).
 
@@ -129,18 +129,18 @@ Section LLSequent.
        |-f- B ; L ; UP ((All FX) :: M)                                                                                                                           
  (* reaction rules *)
   | tri_rel' : forall B F L,
-      negativeFormula F -> |-f- B ; L ; UP [F] ->   |-f- B ; L ; DW F
+      negFormula F -> |-f- B ; L ; UP [F] ->   |-f- B ; L ; DW F
   | tri_store' : forall B L M F,
-      positiveLFormula  F-> |-f- B ; F::L ; UP M ->  |-f- B ; L ; UP (F::M)
+      posLFormula  F-> |-f- B ; F::L ; UP M ->  |-f- B ; L ; UP (F::M)
  (* decision rules *)
   | tri_dec1' : forall B L L' F,
-      positiveFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F ->  |-f- B ; L ; UP []
+      posFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F ->  |-f- B ; L ; UP []
   | tri_dec2u' : forall B L F i,
-     u i = true -> ~IsPositiveAtom F -> In (i,F) B -> |-f- B ; L ; DW F ->  |-f- B ; L ; UP []
+     u i = true -> ~posAtom F -> In (i,F) B -> |-f- B ; L ; DW F ->  |-f- B ; L ; UP []
   | tri_dec2l' : forall B B' L F  i,
-     u i = false -> ~IsPositiveAtom F -> Permutation ((i,F)::B') B ->  |-f- B' ; L ; DW F ->  |-f- B ; L ; UP []
+     u i = false -> ~posAtom F -> Permutation ((i,F)::B') B ->  |-f- B' ; L ; DW F ->  |-f- B ; L ; UP []
   | tri_dec3' : forall B L F ,
-      theory F -> ~IsPositiveAtom F -> |-f- B ; L ; DW F ->  |-f- B ; L ; UP []
+      theory F -> ~posAtom F -> |-f- B ; L ; DW F ->  |-f- B ; L ; UP []
                                                                                             
   where "'|-f-' B ';' L ';' X " := (seq B L X).
 

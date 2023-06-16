@@ -5,7 +5,7 @@ of propositional multiplicative additive linear logic.
  *)
 
 Require Import LL.Framework.SL.FLL.Reasoning.
-Require Export LL.Framework.SL.FLL.Specifications.Intuitionistic.OLCutLM.
+Require Export LL.Framework.SL.FLL.Specifications.Intuitionistic.OLCut.
 Require Export LL.Framework.SL.FLL.Specifications.Intuitionistic.LM.Bipoles.
 Require Import LL.Framework.SL.FLL.InvPositivePhase.
 Set Implicit Arguments.

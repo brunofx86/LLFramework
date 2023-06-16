@@ -807,7 +807,7 @@ inversion H6...
  seq theory D M (DW F) -> seq theory D M (UP [F]).
  Proof with sauto.
  intros.
- destruct(PositiveOrNegative F).
+ destruct(posOrNeg F).
  LLStore...
  LFocus F.  
  inversion H0;inversion H...
@@ -845,7 +845,7 @@ End GeneralResults.
     Variable theory : oo -> Prop .
     
     Theorem WeakLinearTheoryN : forall n CC LC F X ,
-        ~ IsPositiveAtom F ->
+        ~ posAtom F ->
         (seqN theory n CC (F::LC) X) -> theory F ->
         seqN theory n CC LC X.
     Proof with sauto.
@@ -898,7 +898,7 @@ End GeneralResults.
  Qed.         
      
   Theorem WeakLinearTheory : forall CC LC F X,
-        ~ IsPositiveAtom F ->
+        ~ posAtom F ->
         (seq theory CC (F::LC) X) -> theory F -> seq theory CC LC X.
       intros.
       apply seqtoSeqN in H0.
