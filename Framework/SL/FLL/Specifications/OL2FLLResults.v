@@ -11,19 +11,19 @@ Context `{OL:OLSyntax}.
 
 Section PositiveAtoms.
 
-Lemma  positiveIsAtom A: IsPositiveAtomFormula A -> posAtom A. 
+Lemma  positiveIsAtom A: posAtomFormula A -> posAtom A. 
 Proof with subst;auto. 
   intros.
   inversion H...  
 Qed.  
 
-Lemma  OLFormula2PosUPFormulaL A: isOLFormula A ->IsPositiveAtomFormulaL [atom (up A)]. 
+Lemma  OLFormula2PosUPFormulaL A: isOLFormula A ->posAtomFormulaL [atom (up A)]. 
 Proof with subst;auto. 
   intros.
   constructor...
 Qed.  
   
-Lemma  OLFormula2PosDWFormulaL A: isOLFormula A ->IsPositiveAtomFormulaL [atom (down A)]. 
+Lemma  OLFormula2PosDWFormulaL A: isOLFormula A ->posAtomFormulaL [atom (down A)]. 
 Proof with subst;auto. 
   intros.
   constructor...
@@ -31,23 +31,23 @@ Qed.
 
 
 
-Global Instance perm_IsPositiveAtomFormulaL  :
+Global Instance perm_posAtomFormulaL  :
       Proper (@Permutation oo ==> Basics.impl)
-             (IsPositiveAtomFormulaL ).
+             (posAtomFormulaL ).
 Proof.
   unfold Proper; unfold respectful; unfold Basics.impl.
   intros.
-  unfold IsPositiveAtomFormulaL.
+  unfold posAtomFormulaL.
   rewrite <- H;auto.
 Qed.
 
-Global Instance perm_IsPositiveAtomBFormulaL  :
+Global Instance perm_posAtomBFormulaL  :
       Proper (@Permutation oo ==> Basics.impl)
-             (IsPositiveAtomBFormulaL ).
+             (posAtomBFormulaL ).
 Proof.
   unfold Proper; unfold respectful; unfold Basics.impl.
   intros.
-  unfold IsPositiveAtomBFormulaL.
+  unfold posAtomBFormulaL.
   rewrite <- H;auto.
 Qed.
 
@@ -101,7 +101,7 @@ Proof.
    apply Permutation_map;auto.
 Qed.                 
 
- Theorem posDestruct' K: IsPositiveAtomFormulaL K -> exists K1 K2, Permutation K (LEncode K1 ++ REncode K2).
+ Theorem posDestruct' K: posAtomFormulaL K -> exists K1 K2, Permutation K (LEncode K1 ++ REncode K2).
  Proof with sauto.
  induction K;intros...
  exists [], [].
@@ -117,7 +117,7 @@ Qed.
    rewrite H1...
  Qed.  
 
-(*  Theorem posDestructB' K: IsPositiveAtomBFormulaL K -> exists K1 K2, Permutation K (LEncode K1 ++ REncodeB K2).
+(*  Theorem posDestructB' K: posAtomBFormulaL K -> exists K1 K2, Permutation K (LEncode K1 ++ REncodeB K2).
  Proof with sauto.
  induction K;intros...
  exists [], [].
@@ -265,7 +265,7 @@ Proof with sauto.
        rewrite H2...
  Qed.          
 
-Lemma PositiveAtomREOLFormula L : IsPositiveAtomFormulaL (REncode L) -> isOLFormulaL L.
+Lemma PositiveAtomREOLFormula L : posAtomFormulaL (REncode L) -> isOLFormulaL L.
 Proof with sauto.
   intros.
   induction L;intros... 
@@ -275,7 +275,7 @@ Proof with sauto.
   inversion H2... 
 Qed.
 
-Lemma PositiveAtomREOLFormulaB L : IsPositiveAtomFormulaL (REncodeB L) -> isOLFormulaL L.
+Lemma PositiveAtomREOLFormulaB L : posAtomFormulaL (REncodeB L) -> isOLFormulaL L.
 Proof with sauto.
   intros.
   induction L;intros... 
@@ -285,7 +285,7 @@ Proof with sauto.
   inversion H2... 
 Qed.
 
-Lemma PositiveAtomLEOLFormula L : IsPositiveAtomFormulaL (LEncode L) -> isOLFormulaL L.
+Lemma PositiveAtomLEOLFormula L : posAtomFormulaL (LEncode L) -> isOLFormulaL L.
 Proof with sauto.
   intros.
   induction L;intros... 
@@ -295,7 +295,7 @@ Proof with sauto.
   inversion H2... 
 Qed.
 
-Lemma PositiveAtomLEOLFormulaB L : IsPositiveAtomBFormulaL (LEncode L) -> isOLFormulaL L.
+Lemma PositiveAtomLEOLFormulaB L : posAtomBFormulaL (LEncode L) -> isOLFormulaL L.
 Proof with sauto.
   intros.
   induction L;intros... 
@@ -305,7 +305,7 @@ Proof with sauto.
   inversion H2... 
 Qed.
    
-Lemma isOLLEncode : forall L, isOLFormulaL L -> IsPositiveAtomFormulaL (LEncode L).
+Lemma isOLLEncode : forall L, isOLFormulaL L -> posAtomFormulaL (LEncode L).
 Proof with subst;auto.
   intros.
   induction L; simpl...
@@ -315,7 +315,7 @@ Proof with subst;auto.
   inversion H...
 Qed.
 
-Lemma isOLLEncodeB : forall L, isOLFormulaL L -> IsPositiveAtomBFormulaL (LEncode L).
+Lemma isOLLEncodeB : forall L, isOLFormulaL L -> posAtomBFormulaL (LEncode L).
 Proof with subst;auto.
   intros.
   induction L; simpl...
@@ -325,7 +325,7 @@ Proof with subst;auto.
   inversion H...
 Qed.
   
-Lemma isOLREncode : forall L, isOLFormulaL L -> IsPositiveAtomFormulaL (REncode L).
+Lemma isOLREncode : forall L, isOLFormulaL L -> posAtomFormulaL (REncode L).
 Proof with sauto.
   intros.
   induction L; simpl...
@@ -335,7 +335,7 @@ Proof with sauto.
   inversion H...
 Qed.
   
-Lemma isOLREncodeB : forall L, isOLFormulaL L -> IsPositiveAtomBFormulaL (REncodeB L).
+Lemma isOLREncodeB : forall L, isOLFormulaL L -> posAtomBFormulaL (REncodeB L).
 Proof with sauto.
   intros.
   induction L; simpl... 
@@ -888,7 +888,7 @@ Proof with sauto.
  
   Lemma IsOLPositiveLREnc : forall L L',
       isOLFormulaL L -> isOLFormulaL L' -> 
-      IsPositiveAtomFormulaL (LEncode L ++ REncode L').
+      posAtomFormulaL (LEncode L ++ REncode L').
 Proof.      
   intros L L' HisL HisL'.
   apply isOLLEncode in HisL.
@@ -911,7 +911,7 @@ Proof with sauto.
 Qed.
 
 Lemma onlyAtomsLinear M L F :
-     IsPositiveAtomFormulaL M ->
+     posAtomFormulaL M ->
      posFormula F ->
      Permutation (F :: L) M -> False.
 Proof with sauto;solvePolarity.
@@ -922,7 +922,7 @@ Proof with sauto;solvePolarity.
 Qed.
 
 Lemma onlyAtomsLinearB M L F :
-     IsPositiveAtomBFormulaL M ->
+     posAtomBFormulaL M ->
      posFormula F ->
      Permutation (F :: L) M -> exists A, isOLFormula A /\ F= (! ⌈ A ⌉).
 Proof with sauto;solvePolarity.
@@ -933,7 +933,7 @@ Proof with sauto;solvePolarity.
 Qed.
 
 Lemma onlyAtomsClassical M F:
-     IsPositiveAtomFormulaL M ->
+     posAtomFormulaL M ->
      ~ posAtom F ->
      In F M
  -> False.
@@ -946,7 +946,7 @@ Proof with sauto;solvePolarity.
 Qed.
 
 Lemma AtomFtoAtomB M:
-     IsPositiveAtomFormulaL M -> IsPositiveAtomBFormulaL M.
+     posAtomFormulaL M -> posAtomBFormulaL M.
 Proof with sauto.
   intros.
   induction H...
@@ -955,5 +955,5 @@ Qed.
 End OLEncodings.
 End OLSyntax.
 
-Ltac OLSolve :=   solveFoldFALL1 IsPositiveAtomFormulaL.
-Ltac OLSolveB :=   solveFoldFALL1 IsPositiveAtomBFormulaL.
+Ltac OLSolve :=   solveFoldFALL1 posAtomFormulaL.
+Ltac OLSolveB :=   solveFoldFALL1 posAtomBFormulaL.

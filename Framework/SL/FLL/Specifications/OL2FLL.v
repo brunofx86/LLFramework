@@ -15,18 +15,18 @@ Context `{OL: OLSyntax}.
 
  (** Positive atoms are only [down] and [up] atoms. The linear and the classical context of the encoding must contain only formulas of this kind *)
 
-Inductive IsPositiveAtomFormula : oo -> Prop :=
-  | IsFPA_dw : forall A, isOLFormula A -> IsPositiveAtomFormula (atom (down (A)))
-  | IsFPA_up : forall A, isOLFormula A -> IsPositiveAtomFormula (atom (up (A))).
+Inductive posAtomFormula : oo -> Prop :=
+  | IsFPA_dw : forall A, isOLFormula A -> posAtomFormula (atom (down (A)))
+  | IsFPA_up : forall A, isOLFormula A -> posAtomFormula (atom (up (A))).
 
 
-Inductive IsPositiveAtomBFormula : oo -> Prop :=
-  | IsFBPA_dw : forall A, isOLFormula A -> IsPositiveAtomBFormula (atom (down (A)))
- | IsFBPA_up : forall A, isOLFormula A -> IsPositiveAtomBFormula  (atom (up (A))) 
- | IsFBPA_up' : forall A, isOLFormula A -> IsPositiveAtomBFormula (Bang (atom (up (A)))).
+Inductive posAtomBFormula : oo -> Prop :=
+  | IsFBPA_dw : forall A, isOLFormula A -> posAtomBFormula (atom (down (A)))
+ | IsFBPA_up : forall A, isOLFormula A -> posAtomBFormula  (atom (up (A))) 
+ | IsFBPA_up' : forall A, isOLFormula A -> posAtomBFormula (Bang (atom (up (A)))).
 
-Definition IsPositiveAtomFormulaL L : Prop := Forall IsPositiveAtomFormula L.
-Definition IsPositiveAtomBFormulaL L : Prop := Forall IsPositiveAtomBFormula L.
+Definition posAtomFormulaL L : Prop := Forall posAtomFormula L.
+Definition posAtomBFormulaL L : Prop := Forall posAtomBFormula L.
 
 (** Embedding OL formulas in LL formulas *)
 Definition LEncode L:= 
@@ -38,9 +38,9 @@ Definition REncodeB L:=
 
 End OLSyntax.
 
-Global Hint Constructors IsPositiveAtomFormula IsPositiveAtomBFormula : core.
+Global Hint Constructors posAtomFormula posAtomBFormula : core.
 
-Global Hint Unfold LEncode REncode REncodeB IsPositiveAtomFormulaL IsPositiveAtomBFormulaL: core.
+Global Hint Unfold LEncode REncode REncodeB posAtomFormulaL posAtomBFormulaL: core.
 
 Notation "⌈ A ⌉" := ( atom (up A)) (at level 10) .
 Notation "⌊ A ⌋" := ( atom (down A)) (at level 10) .

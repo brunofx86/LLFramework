@@ -121,7 +121,7 @@ Proof with sauto.
           n' <= n ->
             isOLFormula FCut ->
             lengthUexp FCut n' ->
-            IsPositiveAtomBFormulaL M ->
+            posAtomBFormulaL M ->
             isOLFormulaL Gamma ->
             isOLFormulaL N ->
             FLLN (OLTheory PnN) h1 (LEncode Gamma) (atom (up FCut)::LEncode N) (UP [] ) ->
@@ -205,7 +205,7 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_ucon C F) ->
-IsPositiveAtomBFormulaL M ->
+posAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeRRuleU C F) ->
@@ -235,7 +235,7 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_ucon C F) ->
-IsPositiveAtomBFormulaL M ->
+posAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeLRuleU C F) ->
@@ -268,12 +268,12 @@ Qed.
 Ltac clearNotFormulas :=
 repeat
 multimatch goal with
-| [ H: _ |- IsPositiveAtomFormulaL _] => 
+| [ H: _ |- posAtomFormulaL _] => 
     let tH := type of H in 
     match tH with
      | Permutation _ _ => idtac
-     | IsPositiveAtomFormula _ => idtac
-     | IsPositiveAtomFormulaL _ => idtac
+     | posAtomFormula _ => idtac
+     | posAtomFormulaL _ => idtac
      | _ => clear H
     end 
 end.
@@ -286,7 +286,7 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_bcon C F G) ->
-IsPositiveAtomBFormulaL M ->
+posAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeRRuleB C F G) ->
@@ -340,7 +340,7 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_bcon C F G) ->
-IsPositiveAtomBFormulaL M ->
+posAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeLRuleB C F G) ->
@@ -419,7 +419,7 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_qcon C FX) ->
-IsPositiveAtomBFormulaL M ->
+posAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeRRuleQ C FX) ->
@@ -449,7 +449,7 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_qcon C FX) ->
-IsPositiveAtomBFormulaL M ->
+posAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeLRuleQ C FX) ->
@@ -563,7 +563,7 @@ Definition ctWellFormed2 := proj1 LTWell2.
   isOLFormula (t_ccon C) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
@@ -607,7 +607,7 @@ Qed.
   isOLFormula (t_ucon C F) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
@@ -651,7 +651,7 @@ Qed.
   isOLFormula (t_bcon C F G) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
@@ -748,7 +748,7 @@ Qed.
   isOLFormula (t_qcon C FX) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) ::LEncode Gamma) M (UP []) ->
@@ -1081,7 +1081,7 @@ Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:
   isOLFormula (t_ccon C) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL Gamma ->
   isOLFormulaL N ->
   FLLN (OLTheory PnN) (S n0)  (LEncode Gamma) (⌈ FCut ⌉ :: LEncode N) (UP []) ->
@@ -1228,7 +1228,7 @@ Lemma UnaryRIGHT n n' n0 n1  C F FCut M N Gamma F0:
   isOLFormula (t_ucon C F) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
@@ -1323,7 +1323,7 @@ Lemma BinaryRIGHT n n' n0 n1  C F G FCut M N Gamma F0:
   isOLFormula (t_bcon C F G) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n0) ( LEncode Gamma) (⌈ FCut ⌉ :: LEncode N) (UP []) ->
@@ -1733,7 +1733,7 @@ Lemma QuantifierRIGHT n n' n0 n1  C FX FCut M N Gamma F0:
   isOLFormula (t_qcon C FX) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomBFormulaL M ->
+  posAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
   FLLN (OLTheory PnN) (S n0) (LEncode Gamma)  (⌈ FCut ⌉ :: LEncode N) (UP []) ->
@@ -1825,7 +1825,7 @@ Qed.
       isOLFormula FCut ->
       isOLFormulaL Gamma ->
       isOLFormulaL N ->
-      IsPositiveAtomBFormulaL M ->
+      posAtomBFormulaL M ->
       FLLN (OLTheory PnN) h1 (LEncode Gamma) (atom (up FCut)::LEncode N) (UP []) ->
       FLLN (OLTheory PnN) h2 (atom (down FCut)::LEncode Gamma) M (UP []) ->
       lengthUexp FCut n' -> n'<=n ->
@@ -2086,7 +2086,7 @@ apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H5;auto using Th
   Theorem OLCutElimAux:
       forall n h B N,
       isOLFormulaL B ->
-      IsPositiveAtomBFormulaL N ->
+      posAtomBFormulaL N ->
       FLLN  (OLTheoryCutI PnN n) h  (LEncode B) N (UP[] ) ->
       FLLS  (OLTheoryCutI PnN 0) (LEncode B) N (UP[] ) .
   Proof with sauto;try OLSolve.
@@ -2289,7 +2289,7 @@ assert (FLLS (OLTheoryCutI PnN (pred  (S (n)))) (LEncode B) (N0 ++ LEncode []) (
   Theorem OLCutElimination :
     forall n  B N ,
       isOLFormulaL B ->
-      IsPositiveAtomBFormulaL N ->
+      posAtomBFormulaL N ->
       FLLS (OLTheoryCutI PnN n) (LEncode B) N (UP [] ) ->
       FLLS (OLTheory PnN) (LEncode B) N (UP [] ) .
   Proof with sauto.

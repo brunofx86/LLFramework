@@ -291,9 +291,9 @@ Qed.
           n' <= n ->
             isOLFormula FCut ->
             lengthUexp FCut n' ->
-              IsPositiveAtomFormulaL M ->
-                IsPositiveAtomFormulaL N ->
-                  IsPositiveAtomFormulaL Gamma ->
+              posAtomFormulaL M ->
+                posAtomFormulaL N ->
+                  posAtomFormulaL Gamma ->
                   FLLN (OLTheory nPnN) h1 Gamma (atom (up FCut)::N) (UP [] ) ->
                   FLLN (OLTheory nPnN) h2 Gamma (atom (down FCut)::M) (UP []) -> FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
                   
@@ -378,9 +378,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_ucon C F) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL Gamma ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL Gamma ->
 buildTheory (makeRRuleU C F) ->
 FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 FLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
@@ -412,9 +412,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_ucon C F) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL Gamma ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL Gamma ->
 buildTheory (makeLRuleU C F) ->
 FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -445,9 +445,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_bcon C F G) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL Gamma ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL Gamma ->
 buildTheory (makeRRuleB C F G) ->
 FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -545,9 +545,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_bcon C F G) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL Gamma ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL Gamma ->
 buildTheory (makeLRuleB C F G) ->
 FLLN (OLTheory nPnN) (S n0) Gamma ((⌈ FCut ⌉) :: N) (UP []) ->
 FLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
@@ -644,9 +644,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_qcon C FX) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL Gamma ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL Gamma ->
 buildTheory (makeRRuleQ C FX) ->
 FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -679,9 +679,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_qcon C FX) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL Gamma ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL Gamma ->
 buildTheory (makeLRuleQ C FX) ->
 FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -766,24 +766,27 @@ Ltac Cases' H := destruct H;sauto;SubCases.
  rewrite <- dualInvolutive...
  Qed.
  
-Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:
-  n' <= n ->
-  isOLFormula (t_ccon C) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ((⌈ FCut ⌉) :: N) (DW (makeRRuleC C)) ->
-  FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M) (DW F0) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleC C) ->
-  buildTheory F0 ->
+ Definition ConnectiveRight conn Rule := forall n n' h1 h2  FCut M N Gamma Rule',
+ n' <= n ->
+ isOLFormula conn ->
+ isOLFormula FCut ->
+ lengthUexp FCut n' ->
+ posAtomFormulaL M ->
+ posAtomFormulaL N ->
+ posAtomFormulaL Gamma ->
+ FLLN (OLTheory nPnN) (S h1) Gamma ((⌈ FCut ⌉) :: N) (UP [])  ->
+ FLLN (OLTheory nPnN) (S h2) Gamma ((⌊ FCut ⌋) :: M) (UP [])  ->
+ FLLN (OLTheory nPnN) h1 Gamma ((⌈ FCut ⌉) :: N) (DW Rule)  ->
+ FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule')  ->
+ OOCut n' (S h1 + S h2) ->
+ buildTheory Rule ->
+ buildTheory Rule' ->
   FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+
+Lemma ConstantRIGHT  C : ConnectiveRight (t_ccon C) (makeRRuleC C).
 Proof with sauto.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
+  unfold ConnectiveRight; intros *.
+   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
   wellConstant Hseq1'.
   * Cases H. 
@@ -910,24 +913,10 @@ Proof with sauto.
  Qed.        
                        
 
-Lemma UnaryRIGHT n n' n0 n1  C F FCut M N Gamma F0:
-  n' <= n ->
-  isOLFormula (t_ucon C F) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n0) Gamma  ( (⌈ FCut ⌉) ::N) (UP []) ->
-  FLLN (OLTheory nPnN) (S n1)  Gamma ( (⌊ FCut ⌋) ::M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleU C F)) ->
-  FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M) (DW F0) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleU C F) ->
-  buildTheory F0 ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+Lemma UnaryRIGHT C F : ConnectiveRight (t_ucon C F) (makeRRuleU C F).
 Proof with sauto.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
+  unfold ConnectiveRight; intros *.
+   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
   wellUnary Hseq1'.
   * Cases H.
@@ -995,7 +984,7 @@ Proof with sauto.
               
 PermuteLeft.
               cutOL Hseq1 H10.
-                 LLtheory (makeLRuleU C0 F1).
+                 LLtheory (makeLRuleU C0 F0).
              LLtensor (@nil oo) (M++N). eauto.
                apply H14...  
                rewrite Permutation_assoc_comm... 
@@ -1009,24 +998,10 @@ Ltac doubleH H :=
 let tH := type of H in
    let H := fresh H in assert(H:tH) by auto.
 
-Lemma BinaryRIGHT n n' n0 n1  C F G FCut M N Gamma F0:
-  n' <= n ->
-  isOLFormula (t_bcon C F G) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleB C F G)) ->
-  FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) ::M) (DW F0) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleB C F G) ->
-  buildTheory F0 ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+Lemma BinaryRIGHT C F G : ConnectiveRight (t_bcon C F G) (makeRRuleB C F G).
 Proof with sauto.
-   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
+   unfold ConnectiveRight; intros *.
+    intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
   wellBinary Hseq1'.
   * Cases H. 
@@ -1042,8 +1017,7 @@ Proof with sauto.
          OLSolve.
         LLtheory (makeRRuleB C F G).
                LLtensor (@nil oo) (M++N).
-               apply H7...
-               rewrite app_assoc_reverse... }
+               apply H7...  rewrite app_assoc_reverse... }
          inversion Hth'...
          - wellConstant Hseq2'.
            -- Cases H2. 
@@ -1100,7 +1074,7 @@ Proof with sauto.
               
               rewrite <- app_comm_cons in H10.
               cutOL Hseq1 H10.
-                 LLtheory (makeLRuleB C0 F1 G0).
+                 LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M++N).
                apply H14...  
                rewrite Permutation_assoc_comm... }
@@ -1118,7 +1092,7 @@ Proof with sauto.
              rewrite H14 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x10 ++ N) ++ x4).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: (x10 ++ N) ++ x4).
               apply H16...
               rewrite Permutation_assoc_comm...
                
@@ -1131,7 +1105,7 @@ Proof with sauto.
              rewrite H14 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: x3++(x10 ++ N)).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: x3++(x10 ++ N)).
               apply H16...
               apply FLLNtoFLLS in H11...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1141,7 +1115,7 @@ Proof with sauto.
                cutOL Hseq1 H12. 
                rewrite <- H15 in PosM.
                OLSolve.
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) ( ((x9 ++ N) ++ x4)).
                apply H17...  
                rewrite Permutation_assoc_comm...
@@ -1151,7 +1125,7 @@ Proof with sauto.
                cutOL Hseq1 H13. 
                rewrite <- H15 in PosM.
                OLSolve.
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (x3++(x9 ++ N) ).
                apply H17...
                apply FLLNtoFLLS in H12...
@@ -1174,7 +1148,7 @@ Proof with sauto.
              rewrite H14 in PosM.
              inversion PosM...
              OLSolve.
-  LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x8 ++ N) ).
+  LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: (x8 ++ N) ).
               apply H16...
             1-2:  rewrite Permutation_assoc_comm...
  
@@ -1182,7 +1156,7 @@ Proof with sauto.
                PermuteLeft.
             cutOL Hseq1 H11.
             cutOL Hseq1 H12.
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M++N).
                apply H16...  
                1-2: rewrite Permutation_assoc_comm... }
@@ -1296,7 +1270,7 @@ Proof with sauto.
              
               rewrite <- app_comm_cons in H12.
               cutOL Hseq1 H12.
-                 LLtheory (makeLRuleB C0 F1 G0).
+                 LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M++N).
                apply H16...  
                rewrite Permutation_assoc_comm... }
@@ -1314,7 +1288,7 @@ Proof with sauto.
              rewrite H16 in PosM.
              inversion PosM...
              OLSolve.     
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x12 ++ N) ++ x6).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: (x12 ++ N) ++ x6).
               apply H18...
               rewrite Permutation_assoc_comm...
                
@@ -1327,7 +1301,7 @@ Proof with sauto.
              rewrite H16 in PosM.
              inversion PosM...
              OLSolve.     
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: x5++(x12 ++ N)).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: x5++(x12 ++ N)).
               apply H18...
               apply FLLNtoFLLS in H13...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1337,7 +1311,7 @@ Proof with sauto.
                cutOL Hseq1 H14. 
                           rewrite <- H17 in PosM.
              OLSolve.     
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) ( ((x11 ++ N) ++ x6)).
                apply H19...  
                rewrite Permutation_assoc_comm...
@@ -1347,7 +1321,7 @@ Proof with sauto.
                cutOL Hseq1 H15. 
                rewrite <- H17 in PosM.
                OLSolve.
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (x5++(x11 ++ N) ).
                apply H19...
                apply FLLNtoFLLS in H14...
@@ -1367,7 +1341,7 @@ Proof with sauto.
             OLSolve.
             cutOL Hseq1 H14.
             OLSolve.
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x10 ++ N) ).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: (x10 ++ N) ).
               apply H18...
             1-2:  rewrite Permutation_assoc_comm...
  
@@ -1376,7 +1350,7 @@ Proof with sauto.
             OLSolve.
             cutOL Hseq1 H14.
             OLSolve.
-             LLtheory (makeLRuleB C0 F1 G0).
+             LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M ++ N).
                apply H18...
             1-2:  rewrite Permutation_assoc_comm... }
@@ -1463,7 +1437,7 @@ Proof with sauto.
               
               PermuteLeft.
               cutOL Hseq1 H12.
-                 LLtheory (makeLRuleB C0 F1 G0).
+                 LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M++N).
                apply H16...  
                rewrite Permutation_assoc_comm... }
@@ -1481,7 +1455,7 @@ Proof with sauto.
              rewrite H16 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: (x11 ++ N) ++ x5).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: (x11 ++ N) ++ x5).
               apply H18...
               rewrite Permutation_assoc_comm...
                
@@ -1494,7 +1468,7 @@ Proof with sauto.
              rewrite H16 in PosM.
              inversion PosM...
              OLSolve.   
-            LLPerm ( (⌊ t_bcon C0 F1 G0 ⌋) :: x4++(x11 ++ N)).
+            LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: x4++(x11 ++ N)).
               apply H18...
               apply FLLNtoFLLS in H13...
                apply WeakTheory with (theory := OLTheory nPnN )... auto using TheoryEmb1.
@@ -1504,7 +1478,7 @@ Proof with sauto.
                cutOL Hseq1 H14. 
                 rewrite <- H17 in PosM.
              OLSolve.   
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) ( ((x10 ++ N) ++ x5)).
                apply H19...  
                rewrite Permutation_assoc_comm...
@@ -1514,7 +1488,7 @@ Proof with sauto.
                cutOL Hseq1 H15. 
                 rewrite <- H17 in PosM.
              OLSolve.   
-                LLtheory (makeLRuleB C0 F1 G0).
+                LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (x4++(x10 ++ N) ).
                apply H19...
                apply FLLNtoFLLS in H14...
@@ -1534,14 +1508,14 @@ Proof with sauto.
             OLSolve.
             cutOL Hseq1 H14.
             OLSolve.
-            LLPerm ((⌊ t_bcon C0 F1 G0 ⌋) :: (x9 ++ N) ).
+            LLPerm ((⌊ t_bcon C0 F0 G0 ⌋) :: (x9 ++ N) ).
               apply H18...
             1-2:  rewrite Permutation_assoc_comm...
  
              PermuteLeft.
             cutOL Hseq1 H13.
             cutOL Hseq1 H14.
-             LLtheory (makeLRuleB C0 F1 G0).
+             LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M ++ N).
                apply H18...
             1-2:  rewrite Permutation_assoc_comm... }
@@ -1551,26 +1525,12 @@ Proof with sauto.
   Qed.                        
    
 
-Lemma QuantifierRIGHT n n' n0 n1  C FX FCut M N Gamma F0:
-  n' <= n ->
-  isOLFormula (t_qcon C FX) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n0)  Gamma ( (⌈ FCut ⌉) ::N) (UP []) ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleQ C FX)) ->
-  FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M) (DW F0) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeRRuleQ C FX) ->
-  buildTheory F0 ->
-  uniform FX ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+Lemma QuantifierRIGHT C FX : uniform FX -> ConnectiveRight (t_qcon C FX) (makeRRuleQ C FX).
 Proof with sauto.
+  intro Hu.
+ unfold ConnectiveRight ; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
-  intros Hseq1' Hseq2' OLCut Hth Hth' Hu.
+  intros Hseq1' Hseq2' OLCut Hth Hth'.
   wellQuantifier Hseq1'.
   Cases H. 
   2:{ PermuteLeft. 
@@ -1646,14 +1606,14 @@ Proof with sauto.
                LLPerm ((M ++ x3) ++ N)...
      Qed.         
              
-Definition ConnectiveLeft connective rule := forall n n' n0 n1  FCut M N Gamma,
+Definition ConnectiveLeft conn rule := forall n n' n0 n1  FCut M N Gamma,
   n' <= n ->
-  isOLFormula connective ->
+  isOLFormula conn ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL Gamma ->
   FLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
   FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW rule) ->
   OOCut n' (S n0 + S n1) ->
@@ -1661,21 +1621,9 @@ Definition ConnectiveLeft connective rule := forall n n' n0 n1  FCut M N Gamma,
   FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
      
 
-             
-Lemma ConstantLEFT n n' n0 n1  C FCut M N Gamma:
-  n' <= n ->
-  isOLFormula (t_ccon C) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleC C)) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleC C) ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+Lemma ConstantLEFT C : ConnectiveLeft (t_ccon C) (makeLRuleC C).
 Proof with sauto.
+  unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
   wellConstant Hseq1'.
@@ -1696,20 +1644,9 @@ Proof with sauto.
          LLPerm(M ++ N ++ x)...
 Qed.                  
          
- Lemma UnaryLEFT n n' n0 n1 C F FCut M N Gamma:
-  n' <= n ->
-  isOLFormula (t_ucon C F) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n1) Gamma  ( (⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleU C F)) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleU C F) ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+ Lemma UnaryLEFT C F : ConnectiveLeft (t_ucon C F) (makeLRuleU C F).
 Proof with sauto.
+  unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
   wellUnary Hseq1'.
@@ -1728,20 +1665,9 @@ Proof with sauto.
          LLPerm(M ++ N ++ x)...
 Qed.       
 
- Lemma BinaryLEFT n n' n0 n1 C F G FCut M N Gamma:
-  n' <= n ->
-  isOLFormula (t_bcon C F G) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleB C F G)) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleB C F G) ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+ Lemma BinaryLEFT C F G : ConnectiveLeft (t_bcon C F G) (makeLRuleB C F G).
 Proof with sauto.
+  unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
   wellBinary Hseq1'.
@@ -1832,20 +1758,9 @@ Proof with sauto.
          1-2: rewrite app_assoc_reverse... 
 Qed.         
  
-Lemma QuantifierLEFT n n' n0 n1 C FX FCut M N Gamma:
-  n' <= n ->
-  isOLFormula (t_qcon C FX) ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleQ C FX)) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory (makeLRuleQ C FX) ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+Lemma QuantifierLEFT  C FX : ConnectiveLeft (t_qcon C FX) (makeLRuleQ C FX). 
 Proof with sauto.
+  unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
   wellQuantifier Hseq1'.
@@ -1869,9 +1784,9 @@ Qed.
   Theorem OLCutElimStep :
     forall h1 h2 n N M Gamma FCut n',
       isOLFormula FCut ->
-      IsPositiveAtomFormulaL Gamma ->
-      IsPositiveAtomFormulaL N ->
-      IsPositiveAtomFormulaL M ->
+      posAtomFormulaL Gamma ->
+      posAtomFormulaL N ->
+      posAtomFormulaL M ->
       FLLN (OLTheory nPnN) h1 Gamma ( atom(up FCut)::N) (UP []) ->
       FLLN (OLTheory nPnN) h2 Gamma (atom (down FCut)::M) (UP []) ->
       lengthUexp FCut n' -> n'<=n ->
@@ -2004,8 +1919,8 @@ cut(False);intros...
          
   Theorem OLCutElimAux :
     forall n h  B N ,
-      IsPositiveAtomFormulaL B ->
-      IsPositiveAtomFormulaL N ->
+      posAtomFormulaL B ->
+      posAtomFormulaL N ->
       FLLN  (OLTheoryCut nPnN n) h  B N (UP[] ) ->
       FLLS  (OLTheoryCut nPnN 0) B N (UP[] ) .
   Proof with sauto;try OLSolve.
@@ -2209,8 +2124,8 @@ Qed.
          (** Cut-elimination theorem for Object Logics satisfying cut-coherence *)
   Theorem OLCutElimination :
     forall n h  B N ,
-      IsPositiveAtomFormulaL B ->
-      IsPositiveAtomFormulaL N ->
+      posAtomFormulaL B ->
+      posAtomFormulaL N ->
       FLLN (OLTheoryCut nPnN n) h  B N (UP [] ) ->
       FLLS (OLTheory nPnN) B N (UP [] ) .
   Proof with sauto.
