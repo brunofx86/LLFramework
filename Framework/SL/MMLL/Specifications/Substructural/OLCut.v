@@ -293,9 +293,9 @@ sauto.
           n' <= n ->
             isOLFormula FCut ->
             lengthUexp FCut n' ->
-              IsPositiveAtomFormulaL M ->
-                IsPositiveAtomFormulaL N ->
-                  IsPositiveAtomFormulaL (second Gamma) ->
+              posAtomFormulaL M ->
+                posAtomFormulaL N ->
+                  posAtomFormulaL (second Gamma) ->
                   MLLN (OLTheory nPnN) h1 Gamma (atom (up FCut)::N) (UP [] ) ->
                   MLLN (OLTheory nPnN) h2 Gamma (atom (down FCut)::M) (UP []) -> MLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
                   
@@ -380,9 +380,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_ucon C F) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL (second Gamma) ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL (second Gamma) ->
 buildTheory (makeRRuleU C F) ->
 MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 MLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
@@ -415,9 +415,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_ucon C F) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL (second Gamma) ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL (second Gamma) ->
 buildTheory (makeLRuleU C F) ->
 MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 MLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -449,9 +449,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_bcon C F G) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL (second Gamma) ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL (second Gamma) ->
 buildTheory (makeRRuleB C F G) ->
 MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 MLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -554,9 +554,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_bcon C F G) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL (second Gamma) ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL (second Gamma) ->
 buildTheory (makeLRuleB C F G) ->
 MLLN (OLTheory nPnN) (S n0) Gamma ((⌈ FCut ⌉) :: N) (UP []) ->
 MLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
@@ -657,9 +657,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_qcon C FX) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL (second Gamma) ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL (second Gamma) ->
 buildTheory (makeRRuleQ C FX) ->
 MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 MLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -693,9 +693,9 @@ OOCut n' (S n0 + S n1) ->
 lengthUexp FCut n' ->
 isOLFormula FCut ->
 isOLFormula (t_qcon C FX) ->
-IsPositiveAtomFormulaL M ->
-IsPositiveAtomFormulaL N ->
-IsPositiveAtomFormulaL (second Gamma) ->
+posAtomFormulaL M ->
+posAtomFormulaL N ->
+posAtomFormulaL (second Gamma) ->
 buildTheory (makeLRuleQ C FX) ->
 MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
 MLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
@@ -786,9 +786,9 @@ Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:
   isOLFormula (t_ccon C) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ((⌈ FCut ⌉) :: N) (DW (makeRRuleC C)) ->
@@ -943,9 +943,9 @@ Lemma UnaryRIGHT n n' n0 n1  C F FCut M N Gamma F0:
   isOLFormula (t_ucon C F) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n0) Gamma  ( (⌈ FCut ⌉) ::N) (UP []) ->
   MLLN (OLTheory nPnN) (S n1)  Gamma ( (⌊ FCut ⌋) ::M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleU C F)) ->
@@ -1049,9 +1049,9 @@ Lemma BinaryRIGHT n n' n0 n1  C F G FCut M N Gamma F0:
   isOLFormula (t_bcon C F G) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleB C F G)) ->
@@ -1687,9 +1687,9 @@ Lemma QuantifierRIGHT n n' n0 n1  C FX FCut M N Gamma F0:
   isOLFormula (t_qcon C FX) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n0)  Gamma ( (⌈ FCut ⌉) ::N) (UP []) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeRRuleQ C FX)) ->
@@ -1787,9 +1787,9 @@ Definition ConnectiveLeft connective rule := forall n n' n0 n1  FCut M N Gamma,
   isOLFormula connective ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW rule) ->
   OOCut n' (S n0 + S n1) ->
@@ -1803,9 +1803,9 @@ Lemma ConstantLEFT n n' n0 n1  C FCut M N Gamma:
   isOLFormula (t_ccon C) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleC C)) ->
   OOCut n' (S n0 + S n1) ->
@@ -1839,9 +1839,9 @@ Qed.
   isOLFormula (t_ucon C F) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n1) Gamma  ( (⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleU C F)) ->
   OOCut n' (S n0 + S n1) ->
@@ -1872,9 +1872,9 @@ Qed.
   isOLFormula (t_bcon C F G) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleB C F G)) ->
   OOCut n' (S n0 + S n1) ->
@@ -2007,9 +2007,9 @@ Lemma QuantifierLEFT n n' n0 n1 C FX FCut M N Gamma:
   isOLFormula (t_qcon C FX) ->
   isOLFormula FCut ->
   lengthUexp FCut n' ->
-  IsPositiveAtomFormulaL M ->
-  IsPositiveAtomFormulaL N ->
-  IsPositiveAtomFormulaL (second Gamma) ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL (second Gamma) ->
   MLLN (OLTheory nPnN) (S n1) Gamma ( (⌊ FCut ⌋) :: M) (UP []) ->
   MLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW (makeLRuleQ C FX)) ->
   OOCut n' (S n0 + S n1) ->
@@ -2040,9 +2040,9 @@ Qed.
   Theorem OLCutElimStep :
     forall h1 h2 n N M Gamma FCut n',
       isOLFormula FCut ->
-      IsPositiveAtomFormulaL (second Gamma) ->
-      IsPositiveAtomFormulaL N ->
-      IsPositiveAtomFormulaL M ->
+      posAtomFormulaL (second Gamma) ->
+      posAtomFormulaL N ->
+      posAtomFormulaL M ->
       MLLN (OLTheory nPnN) h1 Gamma ( atom(up FCut)::N) (UP []) ->
       MLLN (OLTheory nPnN) h2 Gamma (atom (down FCut)::M) (UP []) ->
       lengthUexp FCut n' -> n'<=n ->
@@ -2183,8 +2183,8 @@ cut(False);intros...
          
   Theorem OLCutElimAux :
     forall n h  B N ,
-      IsPositiveAtomFormulaL (second B) ->
-      IsPositiveAtomFormulaL N ->
+      posAtomFormulaL (second B) ->
+      posAtomFormulaL N ->
       MLLN  (OLTheoryCut nPnN n) h  B N (UP[] ) ->
       MLLS  (OLTheoryCut nPnN 0) B N (UP[] ) .
   Proof with sauto;try OLSolve.
@@ -2395,8 +2395,8 @@ Qed.
   coherence *)
   Theorem OLCutElimination :
     forall n h  B N ,
-      IsPositiveAtomFormulaL (second B) ->
-      IsPositiveAtomFormulaL N ->
+      posAtomFormulaL (second B) ->
+      posAtomFormulaL N ->
       MLLN (OLTheoryCut nPnN n) h  B N (UP [] ) ->
       MLLS (OLTheory nPnN) B N (UP [] ) .
   Proof with sauto.

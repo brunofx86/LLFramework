@@ -102,7 +102,7 @@ Proof with sauto; try dualSimpl.
     putFirst H2.
     cutLW H4 H2. 
     simpl...
-    assert(LL3 |-- B; N ++ [F ^] ++ O)...
+    assert(LL3 |-- B; N ++ [dual F] ++ O)...
     apply LL3StoLL3N in H...
     simpl in H.
     cutLW H3 H.
@@ -233,7 +233,7 @@ Proof with sauto; try dualSimpl.
      cutLH Ha H0.
      LLcopy F.
      LL3exchangeL (M ++ (F :: o :: N) ++ O).
-   * assert(Permutation  (o :: N ++ C ^ :: O)  (C ^ :: o :: N ++ O)) by perm.
+   * assert(Permutation  (o :: N ++ dual C :: O)  (dual C :: o :: N ++ O)) by perm.
      rewrite H1 in H. clear H1.
      apply Permutation_vs_cons_inv' in H...
      cutLH Ha H0. 

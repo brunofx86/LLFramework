@@ -160,8 +160,8 @@ Definition GenericBiPole1P
   seqN theory n Gamma Delta ( DW Rule) ->
   isOLFormula connective ->
   exists D1' B1' n' n'',    
-  IsPositiveAtomFormulaL D1' /\ 
-  IsPositiveAtomFormulaL B1' /\
+  posAtomFormulaL D1' /\ 
+  posAtomFormulaL B1' /\
     (
       ( exists D1,
         Permutation Delta ((atom (predicate connective))::D1) /\ 
@@ -194,10 +194,10 @@ Definition GenericBiPole2PM
   seqN theory n Gamma Delta ( DW Rule) ->
   isOLFormula connective ->
   exists D1 D2 D1' D2' B1' B2'  n' n'',
-  IsPositiveAtomFormulaL D1' /\
-  IsPositiveAtomFormulaL D2' /\
-  IsPositiveAtomFormulaL B1' /\
-  IsPositiveAtomFormulaL B2' /\
+  posAtomFormulaL D1' /\
+  posAtomFormulaL D2' /\
+  posAtomFormulaL B1' /\
+  posAtomFormulaL B2' /\
   ( 
     ( Permutation Delta (atom ((predicate connective )) :: (D1 ++ D2)) /\
        seq theory  Gamma (D1 ++ D2) (DW RBody) /\
@@ -233,10 +233,10 @@ Definition GenericBiPole2PA
   seqN theory n Gamma Delta (DW Rule) ->
   isOLFormula connective ->
   exists D12 D1' D2' B1' B2'  n' n'',
-  IsPositiveAtomFormulaL D1' /\
-  IsPositiveAtomFormulaL D2' /\
-  IsPositiveAtomFormulaL B1' /\
-  IsPositiveAtomFormulaL B2' /\
+  posAtomFormulaL D1' /\
+  posAtomFormulaL D2' /\
+  posAtomFormulaL B1' /\
+  posAtomFormulaL B2' /\
   ( 
      ( Permutation Delta (atom ((predicate connective )) :: D12) /\
        seq theory  Gamma D12 (DW RBody) /\

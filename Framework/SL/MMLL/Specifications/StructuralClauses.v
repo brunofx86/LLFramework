@@ -122,13 +122,13 @@ Qed.
 (* Lemma PosNegSetT' (SIU: UNoDSigMMLL): forall (th:oo->Prop) a b D L1 L2,  
 hasPos th a ->
 hasNeg th b ->
-IsPositiveAtomFormulaL L1 -> IsPositiveAtomFormulaL L2 ->
+posAtomFormulaL L1 -> posAtomFormulaL L2 ->
 MLLS th (CEncode a L1++CEncode a L2 ++D) [] (UP []) ->
 MLLS th D (L1++L2) (UP []).
 Proof with sauto.
   intros.
-  assert(IsPositiveAtomFormulaL L1) by auto.
-  assert(IsPositiveAtomFormulaL L2) by auto.
+  assert(posAtomFormulaL L1) by auto.
+  assert(posAtomFormulaL L2) by auto.
   apply posDestruct' in H2.
   apply posDestruct' in H3...
   assert(isOLFormulaL x1).
@@ -166,13 +166,13 @@ Qed.
 
 Lemma ContractionLinear (SIU: UNoDSigMMLL): forall (th:oo->Prop) a b D M N,  
 mt a  = true -> mt b =  true -> hasPos th a -> hasNeg th b -> 
-IsPositiveAtomFormulaL N -> 
+posAtomFormulaL N -> 
 MLLS th D (M++N++N) (UP []) ->
 MLLS th D (M++N) (UP []).
 Proof with sauto.
   intros *. intros mtA mtB.
   intros.
-  assert(IsPositiveAtomFormulaL N) by auto.
+  assert(posAtomFormulaL N) by auto.
   apply posDestruct' in H1...
   assert(isOLFormulaL x).
   apply PositiveAtomLEOLFormula.
@@ -216,12 +216,12 @@ Proof with sauto.
 
 Lemma WeakeningLinear (SIU: UNoDSigMMLL): forall (th:oo->Prop) a b D M N,  
 hasPos th a -> hasNeg th b -> 
-IsPositiveAtomFormulaL N -> 
+posAtomFormulaL N -> 
 MLLS th D M (UP []) ->
 MLLS th D (M++N) (UP []).
 Proof with sauto.
   intros.
-  assert(IsPositiveAtomFormulaL N) by auto.
+  assert(posAtomFormulaL N) by auto.
   apply posDestruct' in H1...
   assert(isOLFormulaL x).
   apply PositiveAtomLEOLFormula.
@@ -252,12 +252,12 @@ Qed.
 
 Lemma LinearToClassic: forall (th:oo->Prop) D L,  
 hasPos th -> hasNeg th -> 
-IsPositiveAtomFormulaL L -> 
+posAtomFormulaL L -> 
 MLLS th (L++D) [] (UP []) ->
 MLLS th D (L) (UP []).
 Proof with sauto.
   intros.
-  assert(IsPositiveAtomFormulaL L) by auto.
+  assert(posAtomFormulaL L) by auto.
   apply posDestruct' in H1...
   assert(isOLFormulaL x).
   apply PositiveAtomLEOLFormula.

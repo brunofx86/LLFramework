@@ -109,7 +109,7 @@ Proof with sauto.
 lia.
 Qed.
 
-Lemma weakOLTheory n m B L X P: flln (OLTheory P) m B L X -> flls (OLTheoryCut P n) B L X.
+Lemma weakOLTheory n m B L X P: FLLN (OLTheory P) m B L X -> FLLS (OLTheoryCut P n) B L X.
 Proof.
    intros.
    apply WeakTheory with (theory := OLTheory P). auto using TheoryEmb1.

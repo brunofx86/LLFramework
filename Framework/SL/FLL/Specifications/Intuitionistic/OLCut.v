@@ -58,7 +58,7 @@ Proof with sauto.
    Ltac wellConstant HSeq :=
     let HS := type of HSeq in
     match HS with
-    | flln ?Rules ?n ?Gamma ?M (DW (?Side ?C)) =>
+    | FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C)) =>
       let Side' :=
           match Side with 
           makeRRuleC => Right
@@ -75,7 +75,7 @@ Proof with sauto.
    Ltac wellUnary HSeq  :=
     let HS := type of HSeq in
     match HS with
-    | (flln ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
+    | (FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
       let Side' :=
           match Side with 
           makeRRuleU => Right 
@@ -90,7 +90,7 @@ Proof with sauto.
   Ltac wellBinary HSeq :=
     let HS := type of HSeq in
     match HS with
-    | (flln ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F ?G))) =>
+    | (FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F ?G))) =>
       let Side' :=
           match Side with makeRRuleB => Right | makeLRuleB => Left end in
         let LTWell' := fresh "LTWell'" in
@@ -103,7 +103,7 @@ Proof with sauto.
   Ltac wellQuantifier HSeq :=
     let HS := type of HSeq in
     match HS with
-    | (flln ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
+    | (FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
       let Side' :=
           match Side with makeRRuleQ => Right | makeLRuleQ => Left end in
         let LTWell' := fresh "LTWell'" in
@@ -124,16 +124,16 @@ Proof with sauto.
             IsPositiveAtomBFormulaL M ->
             isOLFormulaL Gamma ->
             isOLFormulaL N ->
-            flln (OLTheory PnN) h1 (LEncode Gamma) (atom (up FCut)::LEncode N) (UP [] ) ->
-            flln (OLTheory PnN) h2 (atom (down FCut)::LEncode Gamma) M (UP []) -> 
-            flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+            FLLN (OLTheory PnN) h1 (LEncode Gamma) (atom (up FCut)::LEncode N) (UP [] ) ->
+            FLLN (OLTheory PnN) h2 (atom (down FCut)::LEncode Gamma) M (UP []) -> 
+            FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
                   
  Ltac applyOOCut := 
   match goal with
   | [ H: OOCut _ _ |- 
-         flln ?th ?x ?BX (?FF::?N) (UP []) -> 
-         flln ?th ?y (?GG::?BX) ?M (UP [])-> 
-         flls ?thc ?BX (?M++?N) (UP []) ] => eapply H; try OLSolve
+         FLLN ?th ?x ?BX (?FF::?N) (UP []) -> 
+         FLLN ?th ?y (?GG::?BX) ?M (UP [])-> 
+         FLLS ?thc ?BX (?M++?N) (UP []) ] => eapply H; try OLSolve
   | _ => idtac end.
   
 Ltac cutOL P1 P2 :=
@@ -141,12 +141,12 @@ Ltac cutOL P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 ?B (atom (up ?FC) :: ?N) (UP []) => 
+   | FLLN ?th ?h1 ?B (atom (up ?FC) :: ?N) (UP []) => 
           match tP2 with 
-          | flln ?th ?h2 (atom (down ?FC) :: ?B) ?M (UP []) =>  
+          | FLLN ?th ?h2 (atom (down ?FC) :: ?B) ?M (UP []) =>  
            match goal with
            | [ H: OOCut ?n' _, Hn: ?n' <= ?n  |- _ ] =>   
-                 assert(H': tP1 -> tP2 -> flls (OLTheoryCutI PnN (pred n)) B (M++ N) (UP []));applyOOCut
+                 assert(H': tP1 -> tP2 -> FLLS (OLTheoryCutI PnN (pred n)) B (M++ N) (UP []));applyOOCut
            end
            | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end;sauto.
@@ -172,28 +172,28 @@ end
  
 Ltac PermuteLeft :=    
   match goal with 
-       |[ Hr: flln _ ?x ( (⌊ ?F ⌋)::?G) (?X1 ++ _) (UP []),  
-       Hr': flln _ ?x ( (⌊ ?F ⌋)::?G)  (?X2 ++ _) (UP []),              
-       Hl: flln ?th ?n ?G ((⌈ ?F ⌉) ::?N) (UP []) |- _] =>
-   assert(Hl': flln th n G ((⌈ F ⌉) :: N) (UP []) ) by auto; 
+       |[ Hr: FLLN _ ?x ( (⌊ ?F ⌋)::?G) (?X1 ++ _) (UP []),  
+       Hr': FLLN _ ?x ( (⌊ ?F ⌋)::?G)  (?X2 ++ _) (UP []),              
+       Hl: FLLN ?th ?n ?G ((⌈ ?F ⌉) ::?N) (UP []) |- _] =>
+   assert(Hl': FLLN th n G ((⌈ F ⌉) :: N) (UP []) ) by auto; 
    try rewrite <- app_comm_cons in Hr, Hr' 
- (*   |[ Hr: flln _ ?x (?G ++ ?Y1) (?X ++ _) (UP []),   
-        Hr': flln _ ?x (?G ++ ?Y2) (?X ++ _) (UP []),             
-       Hl: flln ?th ?n ?G ( (⌈ ?F ⌉) :: ?N) (UP []),
+ (*   |[ Hr: FLLN _ ?x (?G ++ ?Y1) (?X ++ _) (UP []),   
+        Hr': FLLN _ ?x (?G ++ ?Y2) (?X ++ _) (UP []),             
+       Hl: FLLN ?th ?n ?G ( (⌈ ?F ⌉) :: ?N) (UP []),
        Hp: Permutation ( (⌊ ?F ⌋) :: _) ?X |- _] =>
-   assert(Hl': flln th n G ( (⌈ F ⌉) :: N) (UP [])) by auto; 
+   assert(Hl': FLLN th n G ( (⌈ F ⌉) :: N) (UP [])) by auto; 
    apply weakeningGenN_rev with (CC':= Y1) in Hl;
    apply weakeningGenN_rev with (CC':= Y2) in Hl';
    rewrite <- Hp in Hr, Hr';
     rewrite <- app_comm_cons in Hr, Hr'    
   *)
-  (*     |[ Hr: flln _ ?x (( (⌊ ?F ⌋)::?G) ++ ?Y) (?X ++ _) (UP []),               
-       Hl: flln _ ?n ?G ((⌈ ?F ⌉) :: LEncode ?N) (UP []) |- _] =>
+  (*     |[ Hr: FLLN _ ?x (( (⌊ ?F ⌋)::?G) ++ ?Y) (?X ++ _) (UP []),               
+       Hl: FLLN _ ?n ?G ((⌈ ?F ⌉) :: LEncode ?N) (UP []) |- _] =>
        apply weakeningGenN_rev with (CC':= Y) in Hl;
        rewrite <- app_comm_cons in Hr,Hl
   *)
-  |[ Hr: flln _ ?x ((⌊ ?F ⌋::?G)) (?X ++ _) (UP []),               
-       Hl: flln _ ?n ?G ( (⌈ ?F ⌉) ::?N) (UP []) |- _] =>
+  |[ Hr: FLLN _ ?x ((⌊ ?F ⌋::?G)) (?X ++ _) (UP []),               
+       Hl: FLLN _ ?n ?G ( (⌈ ?F ⌉) ::?N) (UP []) |- _] =>
        rewrite <- app_comm_cons in Hr       
 
        end.
@@ -209,10 +209,10 @@ IsPositiveAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeRRuleU C F) ->
-flln (OLTheory PnN) (S n0) (LEncode Gamma) ((⌈ FCut ⌉) ::  LEncode N) (UP []) ->
-flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
+FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ((⌈ FCut ⌉) ::  LEncode N) (UP []) ->
+FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
      (DW (makeRRuleU C F)) ->
-flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros Hn Hc Hl HFCut HF HM HGamma HN.
   intros Hth Hseq1 Hseq2.
@@ -239,10 +239,10 @@ IsPositiveAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeLRuleU C F) ->
-flln (OLTheory PnN) (S n0) (LEncode Gamma) ((⌈ FCut ⌉) :: LEncode N) (UP []) ->
-flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
+FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ((⌈ FCut ⌉) :: LEncode N) (UP []) ->
+FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
      (DW (makeLRuleU C F)) ->
-flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros Hd Hn Hc Hl HFCut HF HM HGamma HN.
   intros Hth Hseq1 Hseq2.
@@ -290,10 +290,10 @@ IsPositiveAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeRRuleB C F G) ->
-flln (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
-flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
+FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
+FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
      (DW (makeRRuleB C F G)) ->
-flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros Hn Hc Hl HFCut HF HM HGamma HN.
   intros Hth Hseq1 Hseq2.
@@ -344,10 +344,10 @@ IsPositiveAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeLRuleB C F G) ->
-flln (OLTheory PnN) (S n0)  (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
-flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode  Gamma) M
+FLLN (OLTheory PnN) (S n0)  (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
+FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode  Gamma) M
      (DW (makeLRuleB C F G)) ->
-flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros Hd Hn Hc Hl HFCut HF HM HGamma HN.
   intros Hth Hseq1 Hseq2.
@@ -423,10 +423,10 @@ IsPositiveAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeRRuleQ C FX) ->
-flln (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) ::LEncode N) (UP []) ->
-flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
+FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) ::LEncode N) (UP []) ->
+FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
      (DW (makeRRuleQ C FX)) ->
-flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros Hn Hc Hl HFCut HF HM HGamma HN.
   intros Hth Hseq1 Hseq2.
@@ -453,10 +453,10 @@ IsPositiveAtomBFormulaL M ->
 isOLFormulaL Gamma ->
 isOLFormulaL N ->
 buildTheory (makeLRuleQ C FX) ->
-flln (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
-flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
+FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
+FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M
      (DW (makeLRuleQ C FX)) ->
-flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros Hd Hn Hc Hl HFCut HF HM HGamma HN.
   intros Hth Hseq1 Hseq2.
@@ -481,15 +481,15 @@ Qed.
 Ltac permuteUnary :=
 match goal with
 | [H: ?n' <= ?n,
-   Hl: flln _ _ ?G (_::LEncode ?N) (UP []) ,
-   Hr : flln _ _ (_ :: ?G) ?M (DW (makeRRuleU _ _))
-  |-  flls _ ?G (?M ++ LEncode ?N) (UP []) ] =>
+   Hl: FLLN _ _ ?G (_::LEncode ?N) (UP []) ,
+   Hr : FLLN _ _ (_ :: ?G) ?M (DW (makeRRuleU _ _))
+  |-  FLLS _ ?G (?M ++ LEncode ?N) (UP []) ] =>
    refine (UnaryRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
       
 | [H: ?n' <= ?n,
-   Hl: flln _ _ ?G (_::LEncode ?N) (UP []) ,
-   Hr : flln _ _ (_ :: ?G) ?M (DW (makeLRuleU _ _))
-  |-  flls _ ?G (?M ++ LEncode ?N) (UP []) ] =>
+   Hl: FLLN _ _ ?G (_::LEncode ?N) (UP []) ,
+   Hr : FLLN _ _ (_ :: ?G) ?M (DW (makeLRuleU _ _))
+  |-  FLLS _ ?G (?M ++ LEncode ?N) (UP []) ] =>
 refine (UnaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
@@ -500,14 +500,14 @@ refine (UnaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
 Ltac permuteBinary :=
 match goal with
 | [H: ?n' <= ?n,
-   Hl: flln _ _ ?G (_::LEncode ?N) (UP []) ,
-   Hr : flln _ _ (_ :: ?G) ?M (DW (makeRRuleB _ _ _))
-  |-  flls _ ?G (?M ++ LEncode ?N) (UP []) ] =>
+   Hl: FLLN _ _ ?G (_::LEncode ?N) (UP []) ,
+   Hr : FLLN _ _ (_ :: ?G) ?M (DW (makeRRuleB _ _ _))
+  |-  FLLS _ ?G (?M ++ LEncode ?N) (UP []) ] =>
    refine (BinaryRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
 | [H: ?n' <= ?n,
-   Hl: flln _ _ ?G (_::LEncode ?N) (UP []) ,
-   Hr : flln _ _ (_ :: ?G) ?M (DW (makeLRuleB _ _ _))
-  |-  flls _ ?G (?M ++ LEncode ?N) (UP []) ] =>
+   Hl: FLLN _ _ ?G (_::LEncode ?N) (UP []) ,
+   Hr : FLLN _ _ (_ :: ?G) ?M (DW (makeLRuleB _ _ _))
+  |-  FLLS _ ?G (?M ++ LEncode ?N) (UP []) ] =>
 refine (BinaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
@@ -516,14 +516,14 @@ refine (BinaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
  Ltac permuteQuantifier :=
 match goal with
 | [H: ?n' <= ?n,
-   Hl: flln _ _ ?G (_::LEncode ?N) (UP []) ,
-   Hr : flln _ _ (_ :: ?G) ?M (DW (makeRRuleQ _ _))
-  |-  flls _ ?G (?M ++ LEncode ?N) (UP []) ] =>
+   Hl: FLLN _ _ ?G (_::LEncode ?N) (UP []) ,
+   Hr : FLLN _ _ (_ :: ?G) ?M (DW (makeRRuleQ _ _))
+  |-  FLLS _ ?G (?M ++ LEncode ?N) (UP []) ] =>
    refine (QuantifierRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
 | [H: ?n' <= ?n,
-   Hl: flln _ _ ?G (_::LEncode ?N) (UP []) ,
-   Hr : flln _ _ (_ :: ?G) ?M (DW (makeLRuleQ _ _))
-  |-  flls _ ?G (?M ++ LEncode ?N) (UP []) ] =>
+   Hl: FLLN _ _ ?G (_::LEncode ?N) (UP []) ,
+   Hr : FLLN _ _ (_ :: ?G) ?M (DW (makeLRuleQ _ _))
+  |-  FLLS _ ?G (?M ++ LEncode ?N) (UP []) ] =>
 refine (QuantifierLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
@@ -547,7 +547,7 @@ Definition ctWellFormed2 := proj1 LTWell2.
   Ltac wellConstant2 HSeq :=
     let HS := type of HSeq in
     match HS with
-    | flln ?Rules ?n ?Gamma (atom (up ?H)::LEncode ?N) (DW (makeLRuleC ?C)) =>
+    | FLLN ?Rules ?n ?Gamma (atom (up ?H)::LEncode ?N) (DW (makeLRuleC ?C)) =>
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
         generalize (ctWellFormed2 Rules Gamma N H C);intro LTWell';
@@ -566,11 +566,11 @@ Definition ctWellFormed2 := proj1 LTWell2.
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 ( LEncode Gamma) ((⌈ FCut ⌉) :: LEncode N) (DW (makeLRuleC C)) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 ( LEncode Gamma) ((⌈ FCut ⌉) :: LEncode N) (DW (makeLRuleC C)) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeLRuleC C) ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
@@ -597,7 +597,7 @@ Qed.
   Ltac wellUnary2 HSeq  :=
     let HS := type of HSeq in
     match HS with
-    | (flln ?Rules ?n ?Gamma ?M (DW (makeLRuleU ?C ?F))) =>
+    | (FLLN ?Rules ?n ?Gamma ?M (DW (makeLRuleU ?C ?F))) =>
         generalize  (unWellFormed2  HSeq);
         intro
     end.
@@ -610,11 +610,11 @@ Qed.
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 ( LEncode Gamma) ((⌈ FCut ⌉) :: LEncode N) (DW (makeLRuleU C F)) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 ( LEncode Gamma) ((⌈ FCut ⌉) :: LEncode N) (DW (makeLRuleU C F)) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeLRuleU C F) ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
@@ -638,7 +638,7 @@ Qed.
   Ltac wellBinary2 HSeq  :=
     let HS := type of HSeq in
     match HS with
-    | (flln ?Rules ?n ?Gamma (atom( up ?H)::LEncode ?M) (DW (makeLRuleB ?C ?F ?G))) =>
+    | (FLLN ?Rules ?n ?Gamma (atom( up ?H)::LEncode ?M) (DW (makeLRuleB ?C ?F ?G))) =>
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
         generalize  (biWellFormed2  Rules Gamma M H C);intro LTWell';
@@ -654,11 +654,11 @@ Qed.
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 (LEncode Gamma) ((⌈ FCut ⌉) ::LEncode N) (DW (makeLRuleB C F G)) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 (LEncode Gamma) ((⌈ FCut ⌉) ::LEncode N) (DW (makeLRuleB C F G)) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeLRuleB C F G) ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
@@ -701,7 +701,7 @@ Proof with sauto.
          apply WeakTheoryN with (theory' := OLTheoryCutI PnN (pred n)) in H6...
          apply FLLNtoFLLS in H6...
   * Cases H. 
-     + assert(Hseq2': flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP [])) by auto.
+     + assert(Hseq2': FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP [])) by auto.
          cutOL H4 Hseq2.
          apply OLInPermutationL' in H3. 
          rewrite H3 in PosN.
@@ -718,7 +718,7 @@ Proof with sauto.
          rewrite <- LEncodeApp...
          rewrite app_assoc_reverse.
          rewrite <- LEncodeApp...
-     + assert(Hseq2': flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP [])) by auto.
+     + assert(Hseq2': FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP [])) by auto.
          rewrite <- LEncodeApp in H4, H5. 
          cutOL H4 Hseq2.
          cutOL H5 Hseq2'.
@@ -734,7 +734,7 @@ Qed.
   Ltac wellQuantifier2 HSeq :=
     let HS := type of HSeq in
     match HS with
-    | (flln ?Rules ?n ?Gamma (atom (up ?H)::?N) (DW (makeLRuleQ ?C ?F))) =>
+    | (FLLN ?Rules ?n ?Gamma (atom (up ?H)::?N) (DW (makeLRuleQ ?C ?F))) =>
         let LTWell' := fresh "LTWell'" in
         let bpEnum := fresh "bpEnum" in 
          let HUniform := fresh "HUniform" in
@@ -751,11 +751,11 @@ Qed.
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) ::LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (DW (makeLRuleQ C FX)) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) ::LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (DW (makeLRuleQ C FX)) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeLRuleQ C FX) ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
@@ -781,9 +781,9 @@ Qed.
  
 Theorem ConstantPrincipalCase :
     forall n Gamma M N C,
-      (flls (OLTheoryCutI PnN n) Gamma M (DW (rc_lftBody (rulesC C)))) ->
-      (flls (OLTheoryCutI PnN n) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
-      flls (OLTheoryCutI PnN n) Gamma (M ++ N) (UP []).
+      (FLLS (OLTheoryCutI PnN n) Gamma M (DW (rc_lftBody (rulesC C)))) ->
+      (FLLS (OLTheoryCutI PnN n) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
+      FLLS (OLTheoryCutI PnN n) Gamma (M ++ N) (UP []).
      Proof with sauto.     
     intros.  LLPerm (N++M).
     apply FLLStoFLLN in H, H0... 
@@ -794,20 +794,20 @@ Theorem ConstantPrincipalCase :
     apply weakeningGen with (CC':= Gamma) in CutC .
     apply FLLStoFLLN in CutC.   destruct CutC as [h CutC].
     rewrite app_nil_r in CutC.
-    assert(HCut1: flls (OLTheoryCutI PnN n) Gamma ([] ++ N)  ( UP [ (rc_lftBody (rulesC C)) ^])).
-    eapply @GeneralCut with  (C:=  rc_rgtBody (rulesC C) ^);eauto. 
+    assert(HCut1: FLLS (OLTheoryCutI PnN n) Gamma ([] ++ N)  ( UP [dual (rc_lftBody (rulesC C)) ])).
+    eapply @GeneralCut with  (C:=  dual(rc_rgtBody (rulesC C) ));eauto. 
     rewrite <- dualInvolutive;eauto.
     
     apply FLLStoFLLN in HCut1.  destruct HCut1 as [h2 HCut1].
-    eapply @GeneralCut with  (C:= (rc_lftBody (rulesC C)) ^); eauto. 
+    eapply @GeneralCut with  (C:= dual(rc_lftBody (rulesC C)) ); eauto. 
     rewrite <- dualInvolutive;eauto.
   Qed.
 
 Theorem ConstantPrincipalCaseUP :
     forall n Gamma M N C,
-      (flls (OLTheoryCutI PnN n) Gamma M (UP [rc_lftBody (rulesC C)])) ->
-      (flls (OLTheoryCutI PnN n) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
-      flls (OLTheoryCutI PnN n) Gamma (M ++ N) (UP []).
+      (FLLS (OLTheoryCutI PnN n) Gamma M (UP [rc_lftBody (rulesC C)])) ->
+      (FLLS (OLTheoryCutI PnN n) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
+      FLLS (OLTheoryCutI PnN n) Gamma (M ++ N) (UP []).
      Proof with sauto.
      intros. 
     destruct (posOrNeg (rc_lftBody (rulesC C))).              
@@ -820,8 +820,8 @@ Theorem ConstantPrincipalCaseUP :
     apply EmptySubSet with (theory:= (OLTheoryCutI PnN n) ) in CutC.
     apply weakeningGen with (CC':= Gamma) in CutC .
     rewrite app_nil_r in CutC.
-    assert(HCut1: flls (OLTheoryCutI PnN n) Gamma ([] ++ N)  ( UP [ (rc_lftBody (rulesC C)) ^])).
-    eapply @GeneralCut' with  (C:=  rc_rgtBody (rulesC C) ^);eauto. 
+    assert(HCut1: FLLS (OLTheoryCutI PnN n) Gamma ([] ++ N)  ( UP [ dual(rc_lftBody (rulesC C)) ])).
+    eapply @GeneralCut' with  (C:=  dual(rc_rgtBody (rulesC C) ));eauto. 
     rewrite <- dualInvolutive;eauto.
     eapply @GeneralCut' with  (C:= (rc_lftBody (rulesC C))); eauto. 
   Qed.
@@ -829,12 +829,12 @@ Theorem ConstantPrincipalCaseUP :
   (** This is the case when a unary connective is principal in both premises *)
   Theorem UConnectivePrincipalCase :
     forall Gamma M N C F n n',
-      (flls (OLTheoryCutI PnN (pred n)) Gamma M (DW (ru_lftBody (rulesU C) F))) ->
-      (flls (OLTheoryCutI PnN (pred n)) Gamma N (DW (ru_rgtBody (rulesU C) F))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma M (DW (ru_lftBody (rulesU C) F))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma N (DW (ru_rgtBody (rulesU C) F))) ->
       (lengthUexp (t_ucon C F) n') ->
       isOLFormula (t_ucon C F) ->
       n' <= n ->
-      flls (OLTheoryCutI PnN (pred n)) Gamma (M++N) (UP []).
+      FLLS (OLTheoryCutI PnN (pred n)) Gamma (M++N) (UP []).
   Proof with sauto.
     intros. LLPerm (N++M).
     inversion H1;subst.
@@ -856,24 +856,24 @@ Theorem ConstantPrincipalCaseUP :
     rewrite app_nil_r in Cut1.
     apply WeakTheoryN with (theory' := OLTheoryCutI PnN n) in H;auto using TheoryEmb1.
     apply WeakTheoryN with (theory' := OLTheoryCutI PnN n) in H0;auto using TheoryEmb1.
-    assert(Cut1': flls (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[(ru_lftBody (rulesU C) F) ^] )).
-    eapply @GeneralCut with(C := (ru_rgtBody (rulesU C) F)  ^) ;eauto.
+    assert(Cut1': FLLS (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[dual(ru_lftBody (rulesU C) F) ] )).
+    eapply @GeneralCut with(C :=dual (ru_rgtBody (rulesU C) F) ) ;eauto.
     
     rewrite <- dualInvolutive;eauto.
 
     apply FLLStoFLLN in Cut1'.  destruct Cut1' as [h3 Cut1'].
-    eapply @GeneralCut with (C:= (ru_lftBody (rulesU C) F) ^); eauto.
+    eapply @GeneralCut with (C:=dual (ru_lftBody (rulesU C) F) ); eauto.
     rewrite <- dualInvolutive;eauto.
   Qed.
 
   Theorem UConnectivePrincipalCaseUP :
     forall Gamma M N C F n n',
-      (flls (OLTheoryCutI PnN (pred n)) Gamma M (UP [ru_lftBody (rulesU C) F])) ->
-      (flls (OLTheoryCutI PnN (pred n)) Gamma N (DW (ru_rgtBody (rulesU C) F))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma M (UP [ru_lftBody (rulesU C) F])) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma N (DW (ru_rgtBody (rulesU C) F))) ->
       (lengthUexp (t_ucon C F) n') ->
       isOLFormula (t_ucon C F) ->
       n' <= n ->
-      flls (OLTheoryCutI PnN (pred n)) Gamma (M++N) (UP []).
+      FLLS (OLTheoryCutI PnN (pred n)) Gamma (M++N) (UP []).
   Proof with sauto.
       intros. 
     destruct (posOrNeg (ru_lftBody (rulesU C) F)).              
@@ -893,8 +893,8 @@ Theorem ConstantPrincipalCaseUP :
     rewrite app_nil_r in Cut1.
     apply WeakTheory with (theory' := OLTheoryCutI PnN n) in H;auto using TheoryEmb1.
     apply WeakTheory with (theory' := OLTheoryCutI PnN n) in H0;auto using TheoryEmb1.
-    assert(Cut1': flls (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[(ru_lftBody (rulesU C) F) ^] )).
-    eapply @GeneralCut' with(C := (ru_rgtBody (rulesU C) F)  ^) ;eauto.
+    assert(Cut1': FLLS (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[dual(ru_lftBody (rulesU C) F) ] )).
+    eapply @GeneralCut' with(C :=dual(ru_rgtBody (rulesU C) F) ) ;eauto.
     
     rewrite <- dualInvolutive;eauto.
     eapply @GeneralCut' with (C:= (ru_lftBody (rulesU C) F) ); eauto.
@@ -903,12 +903,12 @@ Theorem ConstantPrincipalCaseUP :
   (** This is the case when a binary connective is principal in both premises *)
   Theorem BinConnectivePrincipalCase :
     forall Gamma M N C F G n n',
-      (flls (OLTheoryCutI PnN (pred n)) Gamma M (DW (rb_lftBody (rulesB C) F G))) ->
-      (flls (OLTheoryCutI PnN (pred n)) Gamma N (DW (rb_rgtBody (rulesB C) F G))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma M (DW (rb_lftBody (rulesB C) F G))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma N (DW (rb_rgtBody (rulesB C) F G))) ->
       lengthUexp (t_bcon C F G) n' ->
       isOLFormula (t_bcon C F G) ->
       n' <= n ->
-      flls (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
+      FLLS (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
   Proof with sauto.
     intros.  LLPerm (N++M).
     inversion H1;subst.
@@ -930,22 +930,22 @@ Theorem ConstantPrincipalCaseUP :
     apply WeakTheoryN with (theory' := OLTheoryCutI PnN n) in H;auto using TheoryEmb1.
     apply WeakTheoryN with (theory' := OLTheoryCutI PnN n) in H0;auto using TheoryEmb1.
     
-    assert(Cut1': flls (OLTheoryCutI PnN n) Gamma ([] ++ N) ( UP[ (rb_lftBody (rulesB C) F G) ^] )).
-    eapply @GeneralCut with (C := (rb_rgtBody (rulesB C) F G) ^) ;eauto.
+    assert(Cut1': FLLS (OLTheoryCutI PnN n) Gamma ([] ++ N) ( UP[dual (rb_lftBody (rulesB C) F G) ] )).
+    eapply @GeneralCut with (C :=dual (rb_rgtBody (rulesB C) F G) ) ;eauto.
     rewrite <- dualInvolutive;eauto.
  
     apply FLLStoFLLN in Cut1'.  destruct Cut1' as [h3 Cut1'].
-    eapply @GeneralCut with (C:= (rb_lftBody (rulesB C) F G) ^); eauto.     rewrite <- dualInvolutive;eauto.
+    eapply @GeneralCut with (C:=dual (rb_lftBody (rulesB C) F G) ); eauto.     rewrite <- dualInvolutive;eauto.
   Qed.
 
   Theorem BinConnectivePrincipalCaseUP :
     forall Gamma M N C F G n n',
-      (flls (OLTheoryCutI PnN (pred n)) Gamma M (UP [rb_lftBody (rulesB C) F G])) ->
-      (flls (OLTheoryCutI PnN (pred n)) Gamma N (DW (rb_rgtBody (rulesB C) F G))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma M (UP [rb_lftBody (rulesB C) F G])) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma N (DW (rb_rgtBody (rulesB C) F G))) ->
       lengthUexp (t_bcon C F G) n' ->
       isOLFormula (t_bcon C F G) ->
       n' <= n ->
-      flls (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
+      FLLS (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
   Proof with sauto.
         intros. 
     destruct (posOrNeg (rb_lftBody (rulesB C) F G)).              
@@ -966,8 +966,8 @@ Theorem ConstantPrincipalCaseUP :
     apply WeakTheory with (theory' := OLTheoryCutI PnN n) in H;auto using TheoryEmb1.
     apply WeakTheory with (theory' := OLTheoryCutI PnN n) in H0;auto using TheoryEmb1.
     
-    assert(Cut1': flls (OLTheoryCutI PnN n) Gamma ([] ++ N) ( UP[ (rb_lftBody (rulesB C) F G) ^] )).
-    eapply @GeneralCut' with (C := (rb_rgtBody (rulesB C) F G) ^) ;eauto.
+    assert(Cut1': FLLS (OLTheoryCutI PnN n) Gamma ([] ++ N) ( UP[ dual(rb_lftBody (rulesB C) F G) ] )).
+    eapply @GeneralCut' with (C := dual(rb_rgtBody (rulesB C) F G) ) ;eauto.
     rewrite <- dualInvolutive;eauto.
     eapply @GeneralCut' with (C:= (rb_lftBody (rulesB C) F G)); eauto.    
   Qed.
@@ -975,15 +975,15 @@ Theorem ConstantPrincipalCaseUP :
   (** This is the case when a quantifier is principal in both premises *)
   Theorem QuantifierPrincipalCase :
     forall Gamma M N C FX FX0 n n',
-      (flls (OLTheoryCutI PnN (pred n)) Gamma M (DW (rq_lftBody (rulesQ C) FX0))) ->
-      (flls (OLTheoryCutI PnN (pred n)) Gamma  N (DW (rq_rgtBody (rulesQ C) FX))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma M (DW (rq_lftBody (rulesQ C) FX0))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma  N (DW (rq_rgtBody (rulesQ C) FX))) ->
       isOLFormula (t_qcon C FX) ->
       isOLFormula (t_qcon C FX0) ->
       lengthUexp (t_qcon C FX) n' ->
       uniform FX -> uniform FX0 ->
       lbind 0%nat FX0 = lbind 0%nat FX ->
       n' <= n ->
-      flls (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
+      FLLS (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
   Proof with sauto.
     intros.  LLPerm (N++M).
     inversion H1. inversion H8.
@@ -1015,29 +1015,29 @@ Theorem ConstantPrincipalCaseUP :
     destruct H0 as [h2 H0]. destruct Cut1 as [h3 Cut1].
     
 
-    assert(Cut1': flls (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[(rq_lftBody (rulesQ C) FX0) ^] )).
-    eapply @GeneralCut with  (C := (rq_rgtBody (rulesQ C) FX) ^) ;eauto.
+    assert(Cut1': FLLS (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[dual(rq_lftBody (rulesQ C) FX0) ] )).
+    eapply @GeneralCut with  (C :=dual (rq_rgtBody (rulesQ C) FX) ) ;eauto.
     rewrite <- dualInvolutive;eauto.
     simpl in Cut1'.
     apply FLLStoFLLN in Cut1'.
     destruct Cut1' as [h4 Cut1']. 
 
     
-    eapply @GeneralCut with (C := (rq_lftBody (rulesQ C) FX0) ^) ;eauto.
+    eapply @GeneralCut with (C := dual(rq_lftBody (rulesQ C) FX0) ) ;eauto.
     rewrite <- dualInvolutive;eauto.
   Qed.
 
   Theorem QuantifierPrincipalCaseUP :
     forall Gamma M N C FX FX0 n n',
-      (flls (OLTheoryCutI PnN (pred n)) Gamma M (UP [rq_lftBody (rulesQ C) FX0])) ->
-      (flls (OLTheoryCutI PnN (pred n)) Gamma  N (DW (rq_rgtBody (rulesQ C) FX))) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma M (UP [rq_lftBody (rulesQ C) FX0])) ->
+      (FLLS (OLTheoryCutI PnN (pred n)) Gamma  N (DW (rq_rgtBody (rulesQ C) FX))) ->
       isOLFormula (t_qcon C FX) ->
       isOLFormula (t_qcon C FX0) ->
       lengthUexp (t_qcon C FX) n' ->
       uniform FX -> uniform FX0 ->
       lbind 0%nat FX0 = lbind 0%nat FX ->
       n' <= n ->
-      flls (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
+      FLLS (OLTheoryCutI PnN (pred n)) Gamma (M ++ N) (UP []).
   Proof with sauto.
         intros. 
     destruct (posOrNeg (rq_lftBody (rulesQ C) FX0)).              
@@ -1068,8 +1068,8 @@ Theorem ConstantPrincipalCaseUP :
     apply WeakTheory with (theory' := OLTheoryCutI PnN n) in H;auto using TheoryEmb1.
     apply WeakTheory with (theory' := OLTheoryCutI PnN n) in H0;auto using TheoryEmb1.
  
-    assert(Cut1': flls (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[(rq_lftBody (rulesQ C) FX0) ^] )).
-    eapply @GeneralCut' with  (C := (rq_rgtBody (rulesQ C) FX) ^) ;eauto.
+    assert(Cut1': FLLS (OLTheoryCutI PnN n) Gamma ([] ++N) ( UP[dual(rq_lftBody (rulesQ C) FX0) ] )).
+    eapply @GeneralCut' with  (C := dual(rq_rgtBody (rulesQ C) FX) ) ;eauto.
     rewrite <- dualInvolutive;eauto.
     
     eapply @GeneralCut' with (C := (rq_lftBody (rulesQ C) FX0) ) ;eauto.
@@ -1084,14 +1084,14 @@ Lemma ConstantRIGHT n n' n0 n1  C FCut M N Gamma F0:
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL Gamma ->
   isOLFormulaL N ->
-  flln (OLTheory PnN) (S n0)  (LEncode Gamma) (⌈ FCut ⌉ :: LEncode N) (UP []) ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 (LEncode Gamma) (⌈ FCut ⌉ ::LEncode N) (DW (makeRRuleC C)) ->
-  flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
+  FLLN (OLTheory PnN) (S n0)  (LEncode Gamma) (⌈ FCut ⌉ :: LEncode N) (UP []) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 (LEncode Gamma) (⌈ FCut ⌉ ::LEncode N) (DW (makeRRuleC C)) ->
+  FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeRRuleC C) ->
   buildTheory F0 ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
@@ -1138,7 +1138,7 @@ Proof with sauto.
                inversion H0...
                cutOL Hseq1 H6.
 
-                assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rc_lftBody (rulesC C0)])). 
+                assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rc_lftBody (rulesC C0)])). 
                apply H10...
                LLPerm ( (M ++ x) ++ LEncode N)...
                apply ContractionLinearPos...
@@ -1200,7 +1200,7 @@ apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H2;auto using Th
                inversion H6...
                inversion H2...
                cutOL Hseq1 H9.
-               assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rc_lftBody (rulesC C0)])).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rc_lftBody (rulesC C0)])).
                apply H13...
                LLPerm ( (M ++ x2) ++ LEncode N)...
                apply ContractionLinearPos...
@@ -1231,14 +1231,14 @@ Lemma UnaryRIGHT n n' n0 n1  C F FCut M N Gamma F0:
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (DW (makeRRuleU C F)) ->
-  flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
+  FLLN (OLTheory PnN) (S n0) (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (UP []) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 (LEncode Gamma) ( (⌈ FCut ⌉) :: LEncode N) (DW (makeRRuleU C F)) ->
+  FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeRRuleU C F) ->
   buildTheory F0 ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
@@ -1290,7 +1290,7 @@ Proof with sauto.
                inversion H6...
                inversion H2...
                cutOL Hseq1 H9.
-               assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [ru_lftBody (rulesU C0) F1] )).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [ru_lftBody (rulesU C0) F1] )).
                apply H13...
                LLPerm ((M ++ x2) ++ LEncode N)...
                apply ContractionLinearPos...
@@ -1326,14 +1326,14 @@ Lemma BinaryRIGHT n n' n0 n1  C F G FCut M N Gamma F0:
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n0) ( LEncode Gamma) (⌈ FCut ⌉ :: LEncode N) (UP []) ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) ::LEncode  Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 (LEncode  Gamma) (⌈ FCut ⌉ :: LEncode N) (DW (makeRRuleB C F G)) ->
-  flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
+  FLLN (OLTheory PnN) (S n0) ( LEncode Gamma) (⌈ FCut ⌉ :: LEncode N) (UP []) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) ::LEncode  Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 (LEncode  Gamma) (⌈ FCut ⌉ :: LEncode N) (DW (makeRRuleB C F G)) ->
+  FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeRRuleB C F G) ->
   buildTheory F0 ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
@@ -1386,7 +1386,7 @@ Proof with sauto.
                inversion H6...
                inversion H2...
                cutOL Hseq1 H9.
-               assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0] )).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0] )).
                apply H13...
                 LLPerm ((M ++ x2) ++ LEncode N)...               
                apply ContractionLinearPos...
@@ -1414,7 +1414,7 @@ Proof with sauto.
                cutOL Hseq1 H10.
               cutOL Hseq1 H11.
  
-          assert(flls (OLTheoryCutI PnN (pred n)) (LEncode N ++ ⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])).
+          assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode N ++ ⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H15... 1-2: apply AbsorptionLSet'...
               apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H3;auto using TheoryEmb1.
              apply ContractionLinearPos... rewrite app_assoc.
@@ -1446,7 +1446,7 @@ apply PosSetP...
                inversion H2...
                cutOL Hseq1 H10.
               cutOL Hseq1 H11.
-               assert(flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H15...
               LLPerm ((M ++ x3) ++ ⌞ N ⌟)...
               LLPerm ((M ++ x4) ++ ⌞ N ⌟)...
@@ -1456,7 +1456,7 @@ apply PosSetP...
              refine (BinConnectivePrincipalCaseUP H2 H3 _ _ HL' )...
                cutOL Hseq1 H10.
               cutOL Hseq1 H11.
-              assert(flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
+              assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H15...
               LLPerm ((M ++ x3) ++ ⌞ N ⌟)...
               LLPerm ((M ++ x4) ++ ⌞ N ⌟)...
@@ -1518,7 +1518,7 @@ assert (mTh: (OLTheoryCutI PnN (pred n)) (makeLRuleC C0))...
                inversion H5...
                inversion H3...
                cutOL Hseq1 H8.
-               assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0] )).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0] )).
                apply H12...
                 LLPerm ((M ++ x) ++ LEncode N)...               
                apply ContractionLinearPos...
@@ -1544,7 +1544,7 @@ assert (mTh: (OLTheoryCutI PnN (pred n)) (makeLRuleB C0 F1 G0))...
                inversion H3...
                cutOL Hseq1 H10.
               cutOL Hseq1 H9.
-assert(flls (OLTheoryCutI PnN (pred n)) (LEncode N++ ⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])).
+assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode N++ ⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H14...
               1-2: apply AbsorptionLSet'...
              apply ContractionLinearPos... rewrite app_assoc.
@@ -1577,7 +1577,7 @@ apply PosSetP...
                inversion H3...
                cutOL Hseq1 H9.
               cutOL Hseq1 H10.
-               assert(flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H14...
               1-2: rewrite Permutation_assoc_comm... 
               apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H1;auto using TheoryEmb1.
@@ -1586,7 +1586,7 @@ apply PosSetP...
              refine (BinConnectivePrincipalCaseUP H3 _ _ _ HL' )...
                cutOL Hseq1 H9.
               cutOL Hseq1 H10.
-              assert(flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
+              assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H14...
 1-2: rewrite Permutation_assoc_comm...
    assert (mTh: (OLTheoryCutI PnN (pred n)) (makeLRuleB C0 F1 G0))...
@@ -1646,7 +1646,7 @@ apply PosSetP...
                inversion H5...
                inversion H3...
                cutOL Hseq1 H8.
-               assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0] )).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0] )).
                apply H12...
                 LLPerm ((M ++ x) ++ LEncode N)...               
                apply ContractionLinearPos...
@@ -1675,7 +1675,7 @@ apply PosSetP...
                cutOL Hseq1 H10.
               cutOL Hseq1 H9.
               
-assert(flls (OLTheoryCutI PnN (pred n)) ( LEncode N++⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])).
+assert(FLLS (OLTheoryCutI PnN (pred n)) ( LEncode N++⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H14... 1-2: apply AbsorptionLSet'... 
               apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H1;auto using TheoryEmb1.
               apply ContractionLinearPos...
@@ -1686,7 +1686,7 @@ assert(flls (OLTheoryCutI PnN (pred n)) ( LEncode N++⌞ Gamma ⌟) M (UP [rb_lf
                cutOL Hseq1 H10.
               cutOL Hseq1 H9.
        
-assert(flls (OLTheoryCutI PnN (pred n)) (LEncode N++ ⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])). 
+assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode N++ ⌞ Gamma ⌟) M (UP [rb_lftBody (rulesB C0) F1 G0])). 
                apply H14... 1-2: apply AbsorptionLSet'...
  assert (mTh: (OLTheoryCutI PnN (pred n)) (makeLRuleB C0 F1 G0))...
           apply PosSetP...
@@ -1708,7 +1708,7 @@ assert(flls (OLTheoryCutI PnN (pred n)) (LEncode N++ ⌞ Gamma ⌟) M (UP [rb_lf
                inversion H3...
                cutOL Hseq1 H9.
               cutOL Hseq1 H10.
-               assert(flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H14...
 1-2: rewrite Permutation_assoc_comm...
               apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H1;auto using TheoryEmb1.
@@ -1717,7 +1717,7 @@ assert(flls (OLTheoryCutI PnN (pred n)) (LEncode N++ ⌞ Gamma ⌟) M (UP [rb_lf
              refine (BinConnectivePrincipalCaseUP H3 _ _ _ HL' )...
                cutOL Hseq1 H9.
               cutOL Hseq1 H10.
-              assert(flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
+              assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) (M++ LEncode N) (UP [rb_lftBody (rulesB C0) F1 G0])).
                apply H14... 1-2: rewrite Permutation_assoc_comm...
  assert (mTh: (OLTheoryCutI PnN (pred n)) (makeLRuleB C0 F1 G0))...
         LLPerm ([]++M++LEncode N).
@@ -1736,14 +1736,14 @@ Lemma QuantifierRIGHT n n' n0 n1  C FX FCut M N Gamma F0:
   IsPositiveAtomBFormulaL M ->
   isOLFormulaL N ->
   isOLFormulaL Gamma ->
-  flln (OLTheory PnN) (S n0) (LEncode Gamma)  (⌈ FCut ⌉ :: LEncode N) (UP []) ->
-  flln (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
-  flln (OLTheory PnN) n0 ( LEncode Gamma) (⌈ FCut ⌉ ::LEncode N) (DW (makeRRuleQ C FX)) ->
-  flln (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
+  FLLN (OLTheory PnN) (S n0) (LEncode Gamma)  (⌈ FCut ⌉ :: LEncode N) (UP []) ->
+  FLLN (OLTheory PnN) (S n1) ( (⌊ FCut ⌋) :: LEncode Gamma) M (UP []) ->
+  FLLN (OLTheory PnN) n0 ( LEncode Gamma) (⌈ FCut ⌉ ::LEncode N) (DW (makeRRuleQ C FX)) ->
+  FLLN (OLTheory PnN) n1 ( (⌊ FCut ⌋) :: LEncode Gamma) M (DW F0) ->
   OOCut n' (S n0 + S n1) ->
   buildTheory (makeRRuleQ C FX) ->
   buildTheory F0 ->
-  flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
+  FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP []).
 Proof with sauto.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
@@ -1799,7 +1799,7 @@ Proof with sauto.
                inversion H8...
                inversion H...
                cutOL Hseq1 H10.
-               assert(flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rq_lftBody (rulesQ C0) FX0] )).
+               assert(FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M++LEncode N) (UP [rq_lftBody (rulesQ C0) FX0] )).
                apply H14... 
                LLPerm ((M ++ x2) ++ LEncode N)...
                 apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H3;auto using TheoryEmb1. 
@@ -1826,10 +1826,10 @@ Qed.
       isOLFormulaL Gamma ->
       isOLFormulaL N ->
       IsPositiveAtomBFormulaL M ->
-      flln (OLTheory PnN) h1 (LEncode Gamma) (atom (up FCut)::LEncode N) (UP []) ->
-      flln (OLTheory PnN) h2 (atom (down FCut)::LEncode Gamma) M (UP []) ->
+      FLLN (OLTheory PnN) h1 (LEncode Gamma) (atom (up FCut)::LEncode N) (UP []) ->
+      FLLN (OLTheory PnN) h2 (atom (down FCut)::LEncode Gamma) M (UP []) ->
       lengthUexp FCut n' -> n'<=n ->
-      (flls (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP [])) .
+      (FLLS (OLTheoryCutI PnN (pred n)) (LEncode Gamma) (M ++ LEncode N) (UP [])) .
   Proof with sauto.
     intros h1 h2 n N M Gamma FCut n' HisF PosG PosN PosM Hseq1 Hseq2 HL HL'.
     remember (plus h1 h2) as h.
@@ -1858,9 +1858,9 @@ Qed.
    inversion H11... 
    apply PosSetP... LLfocus1. solveLL.
    apply  AbsorptionLSet'.
-assert( Hc:   flln (OLTheory PnN) (S n0) (⌞ Gamma ⌟) (⌈ FCut ⌉ :: ⌞ N ⌟) (UP []) ->
-    flln (OLTheory PnN) n1 (⌊ FCut ⌋ :: ⌞ Gamma ⌟) ([⌈ x ⌉]) (UP []) ->
-    flls (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) ([⌈ x ⌉] ++ ⌞ N ⌟) (UP [])).
+assert( Hc:   FLLN (OLTheory PnN) (S n0) (⌞ Gamma ⌟) (⌈ FCut ⌉ :: ⌞ N ⌟) (UP []) ->
+    FLLN (OLTheory PnN) n1 (⌊ FCut ⌋ :: ⌞ Gamma ⌟) ([⌈ x ⌉]) (UP []) ->
+    FLLS (OLTheoryCutI PnN (pred n)) (⌞ Gamma ⌟) ([⌈ x ⌉] ++ ⌞ N ⌟) (UP [])).
    eapply H with (m:=S n0 + n1)...
 apply Hc... 
   
@@ -1952,13 +1952,13 @@ cut(False);intros...
        - inversion H9...
           apply NoUinL in H5...
     * apply FocusingStruct in H5...
-      assert(flln (OLTheory PnN) x (⌊ FCut ⌋ :: ⌞ [OO0]++Gamma ⌟ )
+      assert(FLLN (OLTheory PnN) x (⌊ FCut ⌋ :: ⌞ [OO0]++Gamma ⌟ )
         x0 (UP []))... simpl... LLExact H11.
        clear H11. 
         apply weakeningGenN with (CC':= LEncode [OO0]) in Hseq1.
          rewrite <- LEncodeApp in Hseq1.         
         cutOL Hseq1 H5.
-        assert(flls (OLTheoryCutI PnN (pred n)) (⌞ [OO0] ++ Gamma ⌟)
+        assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ [OO0] ++ Gamma ⌟)
           (x0 ++ ⌞ N ⌟) (UP []))... 
          rewrite H10.
         rewrite <- app_comm_cons. 
@@ -2002,13 +2002,13 @@ apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H5;auto using Th
        - inversion H9...
           apply NoUinL in H5...
     * apply FocusingStruct in H5...
-      assert(flln (OLTheory PnN) x (⌊ FCut ⌋ :: ⌞ [OO0]++Gamma ⌟ )
+      assert(FLLN (OLTheory PnN) x (⌊ FCut ⌋ :: ⌞ [OO0]++Gamma ⌟ )
         x0 (UP []))... simpl... LLExact H11.
        clear H11. 
         apply weakeningGenN with (CC':= LEncode [OO0]) in Hseq1.
          rewrite <- LEncodeApp in Hseq1.         
         cutOL Hseq1 H5.
-        assert(flls (OLTheoryCutI PnN (pred n)) (⌞ [OO0] ++ Gamma ⌟)
+        assert(FLLS (OLTheoryCutI PnN (pred n)) (⌞ [OO0] ++ Gamma ⌟)
           (x0 ++ ⌞ N ⌟) (UP []))... 
          rewrite H10.
         rewrite <- app_comm_cons. 
@@ -2087,8 +2087,8 @@ apply WeakTheory with (theory' := OLTheoryCutI PnN (pred n)) in H5;auto using Th
       forall n h B N,
       isOLFormulaL B ->
       IsPositiveAtomBFormulaL N ->
-      flln  (OLTheoryCutI PnN n) h  (LEncode B) N (UP[] ) ->
-      flls  (OLTheoryCutI PnN 0) (LEncode B) N (UP[] ) .
+      FLLN  (OLTheoryCutI PnN n) h  (LEncode B) N (UP[] ) ->
+      FLLS  (OLTheoryCutI PnN 0) (LEncode B) N (UP[] ) .
   Proof with sauto;try OLSolve.
     induction n ; induction h using lt_wf_ind; intros *;intros isFB isFN Hh.
     * eapply FLLNtoFLLS;eauto.
@@ -2274,7 +2274,7 @@ assert (mTh: (OLTheoryCutI PnN 0) (makeLRuleB C F0 G))...
          apply FLLStoFLLN in H14...
          apply absorptionLN in H14.
                  
-assert (flls (OLTheoryCutI PnN (pred  (S (n)))) (LEncode B) (N0 ++ LEncode []) (UP [])) .
+assert (FLLS (OLTheoryCutI PnN (pred  (S (n)))) (LEncode B) (N0 ++ LEncode []) (UP [])) .
          
          refine(OLCutElimStep _ _ _ _ _ _ H5 _)... 
         simpl. exact H16. exact H14.   
@@ -2290,8 +2290,8 @@ assert (flls (OLTheoryCutI PnN (pred  (S (n)))) (LEncode B) (N0 ++ LEncode []) (
     forall n  B N ,
       isOLFormulaL B ->
       IsPositiveAtomBFormulaL N ->
-      flls (OLTheoryCutI PnN n) (LEncode B) N (UP [] ) ->
-      flls (OLTheory PnN) (LEncode B) N (UP [] ) .
+      FLLS (OLTheoryCutI PnN n) (LEncode B) N (UP [] ) ->
+      FLLS (OLTheory PnN) (LEncode B) N (UP [] ) .
   Proof with sauto.
     intros.
     apply FLLStoFLLN in H1...

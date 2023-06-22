@@ -25,16 +25,16 @@ Record cutrule := {
 
   Hint Constructors CutRuleN : core.
 
-Lemma CuteRuleNBound : forall h n B L X P ,  flln (CutRuleN P n) h B L X ->
-                                             forall m, n<=m -> flls (CutRuleN P m) B L X .
+Lemma CuteRuleNBound : forall h n B L X P ,  FLLN (CutRuleN P n) h B L X ->
+                                             forall m, n<=m -> FLLS (CutRuleN P m) B L X .
 Proof with sauto;solveLL.
   induction h using strongind ; intros.
   inversion H ...
   inversion H0;solveLL;
   repeat match goal with
-    | [ Hs : flln (CutRuleN n) h ?B1 ?N1 ?X1 |- _] =>
+    | [ Hs : FLLN (CutRuleN n) h ?B1 ?N1 ?X1 |- _] =>
       let Hs1 := fresh in
-        assert (Hs1 : flls (CutRuleN P m) B1 N1 X1) by
+        assert (Hs1 : FLLS (CutRuleN P m) B1 N1 X1) by
                    (eapply H  with (m:= h) (n:= n)  (m0:=m) (B:= B1);solveLL );clear Hs
              end...
   1-15:eauto.
@@ -47,8 +47,8 @@ Proof with sauto;solveLL.
 Qed.
 
 Lemma CuteRuleNBound' : forall n B L X P ,
-      flls (CutRuleN P n)  B L X ->
-      forall m, n<=m -> flls (CutRuleN P m) B L X .
+      FLLS (CutRuleN P n)  B L X ->
+      forall m, n<=m -> FLLS (CutRuleN P m) B L X .
 Proof with sauto.    
   intros.
   apply FLLStoFLLN in H...
@@ -71,7 +71,7 @@ Definition cutR2 := {| cutC:= False |}.
 
 Lemma CutBaseL n F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR1 n) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR1 n) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
   LLtheory (RCUT F).
@@ -82,7 +82,7 @@ Qed.
 
 Lemma CutBaseL' n F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR1 n) [] [⌊ F ⌋^;⌈ F ⌉^] (UP []).
+FLLS (CutRuleN cutR1 n) [] [⌊ F ⌋^;⌈ F ⌉^] (UP []).
 Proof with sauto.
   intros.
   LLPerm [⌈ F ⌉^;⌊ F ⌋^].
@@ -91,7 +91,7 @@ Proof with sauto.
 
 Lemma CutBaseC n F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR1 n) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR1 n) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
   LLtheory (RCUT F).
@@ -102,7 +102,7 @@ Qed.
 
 Lemma CutBaseLMAX n m F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR1 (Nat.max n m)) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR1 (Nat.max n m)) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
   eapply CuteRuleNBound' with (n:=n)...
@@ -111,7 +111,7 @@ Qed.
 
 Lemma CutBaseLMAX' n m F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR1 (Nat.max n m)) [] [⌊ F ⌋^;⌈ F ⌉^] (UP []).
+FLLS (CutRuleN cutR1 (Nat.max n m)) [] [⌊ F ⌋^;⌈ F ⌉^] (UP []).
 Proof with sauto.
   intros.
   LLPerm [⌈ F ⌉^;⌊ F ⌋^].
@@ -120,7 +120,7 @@ Proof with sauto.
 
 Lemma CutBaseRMAX n m F:   
 lengthUexp F m -> isOLFormula F ->
-flls (CutRuleN cutR1 (Nat.max n m)) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR1 (Nat.max n m)) [] [⌈ F ⌉^;⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
   eapply CuteRuleNBound' with (n:=m)...
@@ -129,7 +129,7 @@ Qed.
 
 Lemma CutBaseRMAX' n m F:   
 lengthUexp F m -> isOLFormula F ->
-flls (CutRuleN cutR1 (Nat.max n m)) [] [⌊ F ⌋^;⌈ F ⌉^] (UP []).
+FLLS (CutRuleN cutR1 (Nat.max n m)) [] [⌊ F ⌋^;⌈ F ⌉^] (UP []).
 Proof with sauto.
   intros...
   LLPerm [⌈ F ⌉^;⌊ F ⌋^].
@@ -138,7 +138,7 @@ Qed.
 
 Lemma CutBaseCMAX n m F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR1 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR1 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
   eapply CuteRuleNBound' with (n:=n)...
@@ -148,7 +148,7 @@ Qed.
 
 Lemma CutBaseCMAX' n m F:   
 lengthUexp F m -> isOLFormula F ->
-flls (CutRuleN cutR1 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR1 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros...
   eapply CuteRuleNBound' with (n:=m)...
@@ -158,7 +158,7 @@ Qed.
 
 Lemma CutBaseI n m F:   
 lengthUexp F n -> isOLFormula F ->
-flls (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
   LLtheory (RCUTI F).
@@ -169,7 +169,7 @@ Qed.
 
 Lemma CutBaseI' n m F:   
 lengthUexp F m -> isOLFormula F ->
-flls (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
+FLLS (CutRuleN cutR2 (Nat.max n m)) [⌈ F ⌉^] [⌊ F ⌋^] (UP []).
 Proof with sauto.
   intros... 
   LLtheory (RCUTI F).
@@ -187,13 +187,13 @@ Context `{OLR: OORules}.
 
 Definition CutCoherenceC (R: ruleC) :=
   R.(rc_rgtBody) = dual (R.(rc_lftBody))  /\  
-  flls EmptyTheory [] [] (UP [dual ( R.(rc_rgtBody) ) ; dual (R.(rc_lftBody)  )]). 
+  FLLS EmptyTheory [] [] (UP [dual ( R.(rc_rgtBody) ) ; dual (R.(rc_lftBody)  )]). 
   
 Definition CutCoherenceU P (R: ruleU) :=
   forall F n,  
     lengthUexp F n ->
     isOLFormula F ->
-    flls (CutRuleN P n) [] [] (UP [dual ( R.(ru_rgtBody) F ) ; dual (R.(ru_lftBody) F )]).
+    FLLS (CutRuleN P n) [] [] (UP [dual ( R.(ru_rgtBody) F ) ; dual (R.(ru_lftBody) F )]).
   
 Definition CutCoherenceB P (R: ruleB) :=
   forall F G n m,  
@@ -201,7 +201,7 @@ Definition CutCoherenceB P (R: ruleB) :=
     lengthUexp G m ->
     isOLFormula F -> 
     isOLFormula G->
-    flls (CutRuleN P (Nat.max n m)) [] [] (UP [dual ( R.(rb_rgtBody) F G) ; dual (R.(rb_lftBody) F G)]).
+    FLLS (CutRuleN P (Nat.max n m)) [] [] (UP [dual ( R.(rb_rgtBody) F G) ; dual (R.(rb_lftBody) F G)]).
 
   (** CUT-Coherence for quantifiers *)
 Definition CutCoherenceQ P (R: ruleQ) :=
@@ -210,7 +210,7 @@ Definition CutCoherenceQ P (R: ruleQ) :=
     ext_eq FX FX' ->
     lengthUexp (FX (Var 0%nat))  n ->
     (forall t, proper t -> isOLFormula (FX t)) -> 
-    flls (CutRuleN P n) [] [] (UP [ dual(R.(rq_rgtBody) FX) ; dual(R.(rq_lftBody) FX') ]) .
+    FLLS (CutRuleN P n) [] [] (UP [ dual(R.(rq_rgtBody) FX) ; dual(R.(rq_lftBody) FX') ]) .
 
   
 (** CUT-Coherence for the wholse Object logic *)

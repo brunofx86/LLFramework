@@ -17,127 +17,127 @@ Variable Delta : list oo. (* linear context *)
 
 Definition GenericBiPoleFailI
   F (Rule:  oo) : Prop :=
-  forall n, flln theory n Gamma (atom (up F)::Delta) ( DW Rule) -> False .
+  forall n, FLLN theory n Gamma (atom (up F)::Delta) ( DW Rule) -> False .
 
 Definition GenericBiPoleAxiomI
   (F connective: uexp) 
   (Rule:  oo)
   (RBody: oo) : Prop :=
   forall n,
-  flln theory n Gamma (atom (up F)::Delta) ( DW Rule) ->
+  FLLN theory n Gamma (atom (up F)::Delta) ( DW Rule) ->
   isOLFormula connective ->
     ( (* case the atom is taken from the linear context *)
       (exists D1,
        Permutation Delta ( atom (down connective ) :: LEncode D1) /\
-       flls theory  Gamma (atom (up F)::LEncode D1) (DW RBody) /\
+       FLLS theory  Gamma (atom (up F)::LEncode D1) (DW RBody) /\
        forall Delta1 Gamma1 (theory' : oo -> Prop),
        (theory'  (Rule)) ->
-       flls theory' Gamma1  ( atom (down ((connective)) ) :: Delta1) (UP []))
+       FLLS theory' Gamma1  ( atom (down ((connective)) ) :: Delta1) (UP []))
      \/
     ( (* case the atom is taken from the classical context *)
        In (atom ( down connective )) Gamma /\
-       flln theory 0  Gamma (atom (up F)::Delta) (UP [RBody] ) /\  
+       FLLN theory 0  Gamma (atom (up F)::Delta) (UP [RBody] ) /\  
        forall Delta1 Gamma1 (theory' : oo -> Prop),
        (theory'  Rule) ->
        In ( atom (down (connective) )) Gamma1 ->
-       flls theory' Gamma1 Delta1 (UP []))).
+       FLLS theory' Gamma1 Delta1 (UP []))).
 
 Definition GenericBiPole1PI
   (F connective: uexp) 
   (Rule RBody:  oo)  : Prop :=
   forall n,
-  flln theory n Gamma (atom (up F):: Delta) ( DW Rule) ->
+  FLLN theory n Gamma (atom (up F):: Delta) ( DW Rule) ->
   isOLFormula connective ->
   exists D1' n' n'',    
   isOLFormulaL D1' /\ 
     (
       ( exists D1,
         Permutation Delta (atom (down connective)::LEncode D1) /\ 
-        flls theory  Gamma (atom (up F)::LEncode D1) ( DW RBody) /\
-        flln theory n' Gamma (atom (up F)::LEncode (D1 ++ D1')) ( UP [])  /\
+        FLLS theory  Gamma (atom (up F)::LEncode D1) ( DW RBody) /\
+        FLLN theory n' Gamma (atom (up F)::LEncode (D1 ++ D1')) ( UP [])  /\
         n'' > 0 /\
         n = plus n' n'' /\
         forall Delta1 Gamma1 (theory' : oo -> Prop),
         (theory'  (Rule)) ->
-        flls theory' Gamma1 (Delta1 ++ LEncode D1') (UP []) -> 
-         flls theory' Gamma1 ( (atom (down ((connective)) )) :: Delta1) (UP []))
+        FLLS theory' Gamma1 (Delta1 ++ LEncode D1') (UP []) -> 
+         FLLS theory' Gamma1 ( (atom (down ((connective)) )) :: Delta1) (UP []))
      \/
       ( In (atom (down (connective))) Gamma /\
-        flls theory  Gamma (atom (up F)::Delta) (DW RBody) /\
-        flln theory n' Gamma (atom (up F):: (Delta ++ LEncode D1')) ( UP [])  /\
+        FLLS theory  Gamma (atom (up F)::Delta) (DW RBody) /\
+        FLLN theory n' Gamma (atom (up F):: (Delta ++ LEncode D1')) ( UP [])  /\
         n'' > 0 /\
         n = plus n'  n'' /\
         (forall Delta1 Gamma1 (theory' : oo -> Prop),
-          flls theory' Gamma1 (Delta1 ++ LEncode D1') (UP []) ->
-          flls theory' Gamma1 Delta1 (DW RBody))) ).
+          FLLS theory' Gamma1 (Delta1 ++ LEncode D1') (UP []) ->
+          FLLS theory' Gamma1 Delta1 (DW RBody))) ).
    
 Definition GenericBiPole2PMI
 (F connective: uexp)
   (Rule RBody: oo): Prop :=
   forall n,
-  flln theory n Gamma (atom (up F)::Delta) ( DW Rule) ->
+  FLLN theory n Gamma (atom (up F)::Delta) ( DW Rule) ->
   isOLFormula connective ->
   exists D D1' D2' n' n'',
   isOLFormulaL D1' /\
   IsPositiveAtomFormulaL D2' /\
   ( 
     ( Permutation Delta (atom (down connective):: LEncode D) /\
-       flls theory  Gamma (atom (up F)::LEncode D) (DW RBody) /\
-       flln theory n' Gamma (atom (up F)::LEncode (D ++ D1')) (UP []) /\
-       flln theory n' Gamma (D2') (UP []) /\
+       FLLS theory  Gamma (atom (up F)::LEncode D) (DW RBody) /\
+       FLLN theory n' Gamma (atom (up F)::LEncode (D ++ D1')) (UP []) /\
+       FLLN theory n' Gamma (D2') (UP []) /\
        n'' > 0 /\
        n = plus n' n'' /\
        forall Delta Gamma1 (theory' : oo -> Prop),
        theory' Rule ->
-       flls theory' Gamma1 (Delta ++ LEncode D1') (UP []) ->
-       flls theory' Gamma1 (D2') (UP []) ->
-       flls theory' Gamma1 (atom ((down (connective))) :: Delta) (UP []))
+       FLLS theory' Gamma1 (Delta ++ LEncode D1') (UP []) ->
+       FLLS theory' Gamma1 (D2') (UP []) ->
+       FLLS theory' Gamma1 (atom ((down (connective))) :: Delta) (UP []))
    \/
        ( In (atom (down (connective) )) Gamma  /\ 
           Permutation Delta (LEncode D) /\
-          flls theory  Gamma (atom (up F):: Delta) (DW RBody) /\
-          flln theory n' Gamma (atom (up F):: LEncode (D++D1')) (UP []) /\
-          flln theory n' Gamma (D2') (UP []) /\
+          FLLS theory  Gamma (atom (up F):: Delta) (DW RBody) /\
+          FLLN theory n' Gamma (atom (up F):: LEncode (D++D1')) (UP []) /\
+          FLLN theory n' Gamma (D2') (UP []) /\
           n'' > 0 /\
           n = plus n' n'' /\
           forall Delta Gamma1 (theory' : oo -> Prop),
-          flls theory' Gamma1 (Delta ++ LEncode D1') (UP []) ->
-          flls theory' Gamma1 (D2') (UP []) ->
-          flls theory' Gamma1 (Delta) (DW RBody))).
+          FLLS theory' Gamma1 (Delta ++ LEncode D1') (UP []) ->
+          FLLS theory' Gamma1 (D2') (UP []) ->
+          FLLS theory' Gamma1 (Delta) (DW RBody))).
 
 Definition GenericBiPole2PAI
   (F connective: uexp)
   (Rule RBody: oo)  : Prop :=
   forall n,
-  flln theory n Gamma (atom (up F)::Delta) (DW Rule) ->
+  FLLN theory n Gamma (atom (up F)::Delta) (DW Rule) ->
   isOLFormula connective ->
   exists D12 D1' D2'  n' n'',
   isOLFormulaL D1' /\
   isOLFormulaL D2' /\
   ( 
      ( Permutation Delta (atom (down connective):: LEncode D12) /\
-       flls theory  Gamma (atom (up F)::LEncode D12) (DW RBody) /\
-       flln theory n' Gamma (atom (up F):: LEncode (D12 ++ D1')) (UP []) /\
-       flln theory n' Gamma (atom (up F):: LEncode (D12 ++ D2')) (UP []) /\
+       FLLS theory  Gamma (atom (up F)::LEncode D12) (DW RBody) /\
+       FLLN theory n' Gamma (atom (up F):: LEncode (D12 ++ D1')) (UP []) /\
+       FLLN theory n' Gamma (atom (up F):: LEncode (D12 ++ D2')) (UP []) /\
        n'' > 0 /\
        n = plus n' n'' /\
        forall Delta12 Gamma1 (theory' : oo -> Prop),
        theory' Rule ->
-       flls theory' Gamma1 (Delta12 ++ LEncode D1') (UP []) ->
-       flls theory' Gamma1 (Delta12 ++ LEncode D2') (UP []) ->
-       flls theory' Gamma1 (atom ((down (connective))) :: Delta12) (UP [])
+       FLLS theory' Gamma1 (Delta12 ++ LEncode D1') (UP []) ->
+       FLLS theory' Gamma1 (Delta12 ++ LEncode D2') (UP []) ->
+       FLLS theory' Gamma1 (atom ((down (connective))) :: Delta12) (UP [])
      )
    \/
      ( In (atom (down (connective))) Gamma /\
-       flls theory  Gamma  (atom (up F)::Delta) (DW RBody) /\
-       flln theory n' Gamma (atom (up F):: (Delta ++ LEncode D1')) (UP []) /\
-       flln theory n' Gamma (atom (up F)::(Delta ++ LEncode D2')) (UP []) /\
+       FLLS theory  Gamma  (atom (up F)::Delta) (DW RBody) /\
+       FLLN theory n' Gamma (atom (up F):: (Delta ++ LEncode D1')) (UP []) /\
+       FLLN theory n' Gamma (atom (up F)::(Delta ++ LEncode D2')) (UP []) /\
        n'' > 0 /\
        n = plus n' n'' /\
        forall Delta12 Gamma1 (theory' : oo -> Prop),
-       flls theory' Gamma1 (Delta12 ++ LEncode D1') (UP []) ->
-       flls theory' Gamma1 (Delta12 ++ LEncode D2') (UP []) ->
-       flls theory' Gamma1 Delta12 (DW RBody))).
+       FLLS theory' Gamma1 (Delta12 ++ LEncode D1') (UP []) ->
+       FLLS theory' Gamma1 (Delta12 ++ LEncode D2') (UP []) ->
+       FLLS theory' Gamma1 Delta12 (DW RBody))).
 
 Definition GenericBiPole1P'
   (connective: uexp) 
@@ -145,30 +145,30 @@ Definition GenericBiPole1P'
   (RBody: oo)
   (predicate: uexp -> atm) : Prop :=
   forall n,
-  flln theory n Gamma Delta ( DW Rule) ->
+  FLLN theory n Gamma Delta ( DW Rule) ->
   isOLFormula connective ->
   exists D1' n' n'',    
   IsPositiveAtomBFormulaL D1' /\ 
     (
       ( exists D1,
         Permutation Delta ((atom (predicate connective))::D1) /\ 
-        flls theory  Gamma D1 ( DW RBody) /\
-        flln theory n' Gamma (D1 ++ D1') ( UP [])  /\
+        FLLS theory  Gamma D1 ( DW RBody) /\
+        FLLN theory n' Gamma (D1 ++ D1') ( UP [])  /\
         n'' > 0 /\
         n = plus n' n'' /\
         forall Delta1 Gamma1 (theory' : oo -> Prop),
         theory'  Rule ->
-        flls theory' Gamma1 (Delta1 ++ D1') (UP []) -> 
-         flls theory' Gamma1 ( (atom (predicate ((connective)) )) :: Delta1) (UP []))
+        FLLS theory' Gamma1 (Delta1 ++ D1') (UP []) -> 
+         FLLS theory' Gamma1 ( (atom (predicate ((connective)) )) :: Delta1) (UP []))
      \/
       ( In (atom (predicate (connective))) Gamma /\
-        flls theory  Gamma Delta (DW RBody) /\
-        flln theory n' Gamma (Delta ++ D1') ( UP [])  /\
+        FLLS theory  Gamma Delta (DW RBody) /\
+        FLLN theory n' Gamma (Delta ++ D1') ( UP [])  /\
         n'' > 0 /\
         n = plus n'  n'' /\
         (forall Delta1 Gamma1 (theory' : oo -> Prop),
-          flls theory' Gamma1 (Delta1 ++ D1') (UP []) ->
-          flls theory' Gamma1 Delta1 (UP [RBody]))) ).
+          FLLS theory' Gamma1 (Delta1 ++ D1') (UP []) ->
+          FLLS theory' Gamma1 Delta1 (UP [RBody]))) ).
 
 Definition GenericBiPole2PM'
   (connective: uexp)
@@ -176,34 +176,34 @@ Definition GenericBiPole2PM'
   (RBody: oo)
   (predicate: uexp -> atm) : Prop :=
   forall n,
-  flln theory n Gamma Delta ( DW Rule) ->
+  FLLN theory n Gamma Delta ( DW Rule) ->
   isOLFormula connective ->
   exists D D1' D2'  n' n'',
   IsPositiveAtomBFormulaL D1' /\
   IsPositiveAtomBFormulaL D2' /\
   ( 
     ( Permutation Delta (atom ((predicate connective )) :: D) /\
-       flls theory  Gamma D (DW RBody) /\
-       flln theory n' Gamma D1' (UP []) /\
-       flln theory n' Gamma (D ++ D2') (UP []) /\
+       FLLS theory  Gamma D (DW RBody) /\
+       FLLN theory n' Gamma D1' (UP []) /\
+       FLLN theory n' Gamma (D ++ D2') (UP []) /\
        n'' > 0 /\
        n = plus n' n'' /\
        forall Delta Gamma1 (theory' : oo -> Prop),
        theory' Rule ->
-       flls theory' Gamma1 D1' (UP []) ->
-       flls theory' Gamma1 (Delta ++ D2') (UP []) ->
-       flls theory' Gamma1 (atom ((predicate (connective))) :: Delta) (UP []))
+       FLLS theory' Gamma1 D1' (UP []) ->
+       FLLS theory' Gamma1 (Delta ++ D2') (UP []) ->
+       FLLS theory' Gamma1 (atom ((predicate (connective))) :: Delta) (UP []))
    \/
        ( In (atom (predicate (connective) )) Gamma  /\
-          flls theory  Gamma Delta (DW RBody) /\
-          flln theory n' Gamma ( D1') (UP []) /\
-          flln theory n' Gamma (Delta ++ D2') (UP []) /\
+          FLLS theory  Gamma Delta (DW RBody) /\
+          FLLN theory n' Gamma ( D1') (UP []) /\
+          FLLN theory n' Gamma (Delta ++ D2') (UP []) /\
           n'' > 0 /\
           n = plus n' n'' /\
           forall Delta Gamma1 (theory' : oo -> Prop),
-          flls theory' Gamma1 D1' (UP []) ->
-          flls theory' Gamma1 (Delta ++ D2') (UP []) ->
-          flls theory' Gamma1 (Delta) (UP [RBody]))).
+          FLLS theory' Gamma1 D1' (UP []) ->
+          FLLS theory' Gamma1 (Delta ++ D2') (UP []) ->
+          FLLS theory' Gamma1 (Delta) (UP [RBody]))).
 
 
 Definition GenericBiPole2PA'
@@ -212,35 +212,35 @@ Definition GenericBiPole2PA'
   (RBody: oo)
   (predicate: uexp -> atm) : Prop :=
   forall n,
-  flln theory n Gamma Delta (DW Rule) ->
+  FLLN theory n Gamma Delta (DW Rule) ->
   isOLFormula connective ->
   exists D12 D1' D2' n' n'',
   IsPositiveAtomBFormulaL D1' /\
   IsPositiveAtomBFormulaL D2' /\
   ( 
      ( Permutation Delta (atom ((predicate connective )) :: D12) /\
-       flls theory  Gamma D12 (DW RBody) /\
-       flln theory n' Gamma (D12 ++ D1') (UP []) /\
-       flln theory n' Gamma (D12 ++ D2') (UP []) /\
+       FLLS theory  Gamma D12 (DW RBody) /\
+       FLLN theory n' Gamma (D12 ++ D1') (UP []) /\
+       FLLN theory n' Gamma (D12 ++ D2') (UP []) /\
        n'' > 0 /\
        n = plus n' n'' /\
        forall Delta12 Gamma1 (theory' : oo -> Prop),
        theory' Rule ->
-       flls theory' Gamma1 (Delta12 ++ D1') (UP []) ->
-       flls theory' Gamma1 (Delta12 ++ D2') (UP []) ->
-       flls theory' Gamma1 ( atom ((predicate ( connective) )) :: Delta12) (UP [])
+       FLLS theory' Gamma1 (Delta12 ++ D1') (UP []) ->
+       FLLS theory' Gamma1 (Delta12 ++ D2') (UP []) ->
+       FLLS theory' Gamma1 ( atom ((predicate ( connective) )) :: Delta12) (UP [])
      )
    \/
      ( In (atom (predicate (connective))) Gamma /\
-       flls theory  Gamma Delta (DW RBody) /\
-       flln theory n' Gamma (Delta ++ D1') (UP []) /\
-       flln theory n' Gamma (Delta ++ D2') (UP []) /\
+       FLLS theory  Gamma Delta (DW RBody) /\
+       FLLN theory n' Gamma (Delta ++ D1') (UP []) /\
+       FLLN theory n' Gamma (Delta ++ D2') (UP []) /\
        n'' > 0 /\
        n = plus n' n'' /\
        forall Delta12 Gamma1 (theory' : oo -> Prop),
-       flls theory' Gamma1 (Delta12 ++ D1') (UP []) ->
-       flls theory' Gamma1 (Delta12 ++ D2') (UP []) ->
-       flls theory' Gamma1 Delta12 (UP [RBody]))).
+       FLLS theory' Gamma1 (Delta12 ++ D1') (UP []) ->
+       FLLS theory' Gamma1 (Delta12 ++ D2') (UP []) ->
+       FLLS theory' Gamma1 Delta12 (UP [RBody]))).
 
 Definition BiPoleC' (lab: ccon) (s:Side) (t : BipoleEnumCte): Prop :=
   match (sideC s) with

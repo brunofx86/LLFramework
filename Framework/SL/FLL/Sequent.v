@@ -15,7 +15,7 @@ Section FLLSequent.
   the derivation ; [B] a list representing the classical context ; [L]
   the linear context and [X] and [Arrow] that can be [DW F] (for the
   positive phase) or [UP L] (for the negative phase). *)
-  Inductive flln:  nat -> list oo -> list oo -> Arrow -> Prop :=
+  Inductive FLLN:  nat -> list oo -> list oo -> Arrow -> Prop :=
  (* axioms *)
   | tri_init1 : forall B A n,  n |-F- B ; [atom A] ; DW (perp A)
   | tri_init2 : forall B A n,  In (atom A) B -> n |-F- B ; [] ; DW (perp A)
@@ -63,11 +63,11 @@ Section FLLSequent.
   | tri_dec3 : forall B L F n,
       ~ posAtom F -> th F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []      
 
-  where " n '|-F-' B ';' L ';' X " := (flln n B L X).
+  where " n '|-F-' B ';' L ';' X " := (FLLN n B L X).
   
   Reserved Notation " '|-f-' B ';' L ';' X " (at level 80).
 
-  Inductive flls: list oo -> list oo -> Arrow -> Prop :=
+  Inductive FLLS: list oo -> list oo -> Arrow -> Prop :=
  (* axioms *)
   | tri_init1' : forall B A, |-f- B ; [atom A] ; DW (perp A)
   | tri_init2' : forall B A,  In (atom A) B -> |-f- B ; [] ; DW (perp A)
@@ -115,26 +115,26 @@ Section FLLSequent.
       ~posAtom F -> In F B -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
   | tri_dec3' : forall B L F,
       ~posAtom F -> th F -> |-f- B ; L ; DW F -> |-f- B ; L ; UP [] 
-  where "'|-f-' B ';' L ';' X " := (flls B L X).
+  where "'|-f-' B ';' L ';' X " := (FLLS B L X).
    
 End FLLSequent .
 
-Global Hint Constructors flln : core.
-Global Hint Constructors flls : core.
+Global Hint Constructors FLLN : core.
+Global Hint Constructors FLLS : core.
 
 Declare Scope FLL.
 Declare Scope FLLT.
 
-Notation "n ⊢ B ; L ⇕ X " := (flln _ n B L X)  (at level 80):FLL.
-Notation "n ⊢ B ; L ⇓ F " := (flln _ n B L (DW F))  (at level 80):FLL.
-Notation "n ⊢ B ; L ⇑ F " := (flln _ n B L (UP F))  (at level 80):FLL.
-Notation "⊢ B ; L ⇕ X " := (flls _ B L X)  (at level 80):FLL.
-Notation "⊢ B ; L ⇓ F " := (flls _ B L (DW F))  (at level 80):FLL.
-Notation "⊢ B ; L ⇑ F " := (flls _ B L (UP F))  (at level 80):FLL.
+Notation "n ⊢ B ; L ⇕ X " := (FLLN _ n B L X)  (at level 80):FLL.
+Notation "n ⊢ B ; L ⇓ F " := (FLLN _ n B L (DW F))  (at level 80):FLL.
+Notation "n ⊢ B ; L ⇑ F " := (FLLN _ n B L (UP F))  (at level 80):FLL.
+Notation "⊢ B ; L ⇕ X " := (FLLS _ B L X)  (at level 80):FLL.
+Notation "⊢ B ; L ⇓ F " := (FLLS _ B L (DW F))  (at level 80):FLL.
+Notation "⊢ B ; L ⇑ F " := (FLLS _ B L (UP F))  (at level 80):FLL.
 
-Notation "th - n ⊢ B ';' L ⇕ X " := (flln th n B L X)  (at level 80):FLLT.
-Notation "th - n ⊢ B ';' L ⇓ F " := (flln th n B L (DW F))  (at level 80):FLLT.
-Notation "th - n ⊢ B ';' L ⇑ F " := (flln th n B L (UP F))  (at level 80):FLLT.
-Notation "th - ⊢ B ';' L ⇕ X " := (flls th B L X)  (at level 80):FLLT.
-Notation "th - ⊢ B ';' L ⇓ F " := (flls th B L (DW F))  (at level 80):FLLT.
-Notation "th - ⊢ B ';' L ⇑ F " := (flls th B L (UP F))  (at level 80):FLLT.
+Notation "th - n ⊢ B ';' L ⇕ X " := (FLLN th n B L X)  (at level 80):FLLT.
+Notation "th - n ⊢ B ';' L ⇓ F " := (FLLN th n B L (DW F))  (at level 80):FLLT.
+Notation "th - n ⊢ B ';' L ⇑ F " := (FLLN th n B L (UP F))  (at level 80):FLLT.
+Notation "th - ⊢ B ';' L ⇕ X " := (FLLS th B L X)  (at level 80):FLLT.
+Notation "th - ⊢ B ';' L ⇓ F " := (FLLS th B L (DW F))  (at level 80):FLLT.
+Notation "th - ⊢ B ';' L ⇑ F " := (FLLS th B L (UP F))  (at level 80):FLLT.

@@ -70,7 +70,7 @@ Definition GenericBiPole1P
   MLLN theory n Gamma Delta ( DW Rule) ->
   isOLFormula connective ->
   exists D1' n' n'',    
-  IsPositiveAtomFormulaL D1' /\ 
+  posAtomFormulaL D1' /\ 
     (
       ( exists D1,
         Permutation Delta ((atom (predicate connective))::D1) /\ 
@@ -102,8 +102,8 @@ Definition GenericBiPole2PM
   MLLN theory n Gamma Delta ( DW Rule) ->
   isOLFormula connective ->
   exists D1 D2 D1' D2'  n' n'',
-  IsPositiveAtomFormulaL D1' /\
-  IsPositiveAtomFormulaL D2' /\
+  posAtomFormulaL D1' /\
+  posAtomFormulaL D2' /\
   ( 
     ( Permutation Delta (atom ((predicate connective )) :: (D1 ++ D2)) /\
        MLLS theory  Gamma (D1 ++ D2) (DW RBody) /\
@@ -140,8 +140,8 @@ Definition GenericBiPole2PA
   MLLN theory n Gamma Delta (DW Rule) ->
   isOLFormula connective ->
   exists D12 D1' D2' n' n'',
-  IsPositiveAtomFormulaL D1' /\
-  IsPositiveAtomFormulaL D2' /\
+  posAtomFormulaL D1' /\
+  posAtomFormulaL D2' /\
   ( 
      ( Permutation Delta (atom ((predicate connective )) :: D12) /\
        MLLS theory  Gamma D12 (DW RBody) /\

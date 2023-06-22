@@ -18,25 +18,25 @@ Proof with sauto; try dualSimpl.
    rewrite H2.
    LLleft F G (M++x);try solvell2.
    rewrite H in H0.
-   putFirst H0 (! Q ^).
+   putFirst H0 (! (dual Q )).
    cutH' Hi H0.
    rewrite Permutation_middle...
  * checkPermutationCases H...
    rewrite H2.
    LLright F G (M++x);try solvell2.
    rewrite H in H0.
-   putFirst H0 (! Q ^).
+   putFirst H0 (! dual Q).
    cutH' Hi H0.
    rewrite Permutation_middle...
  * checkPermutationCases H...
    rewrite H3.
    LLwith F G (M++x);try solvell2.
    rewrite H in H0.
-   putFirst H0 (! Q ^).
+   putFirst H0 (! dual Q).
    cutH' Hi H0.
    rewrite Permutation_middle...
    rewrite H in H1.
-   putFirst H1 (! Q ^).
+   putFirst H1 (! dual Q).
    cutH' Hi H1.
    rewrite Permutation_middle...
  * checkPermutationCases H...
@@ -48,7 +48,7 @@ Proof with sauto; try dualSimpl.
    rewrite H2.
    LLpar F G (M++x);try solvell2.
    rewrite H in H0.
-   putFirst H0 (! Q ^).
+   putFirst H0 (! dual Q).
    cutH' Hi H0.
    rewrite Permutation_middle...   
    rewrite Permutation_middle...    
@@ -58,14 +58,14 @@ Proof with sauto; try dualSimpl.
    rewrite <- H4.
    LLtensor F G (M++x0) N0;try solvell2.
    rewrite H in H0.
-   putFirst H0 (! Q ^).
+   putFirst H0 (! dual Q).
    cutH' Hi H0.
    rewrite Permutation_middle...
    rewrite H3.
    rewrite <- H4.
    LLtensor F G M0 (M++x0);try solvell2.
    rewrite H in H1.
-   putFirst H1 (! Q ^).
+   putFirst H1 (! dual Q).
    cutH' Hi H1.
    rewrite Permutation_middle...
  * checkPermutationCases H...
@@ -114,7 +114,7 @@ Proof with sauto; try dualSimpl.
      + LLcopy F.
        cutH' H0 Hj...
  * LLcopy F. 
-   putFirst H0 (! Q ^).
+   putFirst H0 (! dual Q).
    cutH' Hi H0.
    rewrite Permutation_middle...  
 Qed.   

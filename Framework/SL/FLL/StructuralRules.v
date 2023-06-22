@@ -20,7 +20,7 @@ Section StructuralPropertiesN.
 (**  Exchange Rule: Classical Context *)
 Theorem exchangeCCN: forall n CC CC' LC X,
    Permutation CC CC' ->
-   flln th n CC LC X -> flln th n CC' LC X.
+   FLLN th n CC LC X -> FLLN th n CC' LC X.
 Proof with sauto;solveLL.
   induction n using strongind;intros...
   * inversion H0...
@@ -33,7 +33,7 @@ Qed.
 (** Exchange Rule: Linear Context *)
 Theorem exchangeLCN: forall n CC LC LC' X,
    Permutation LC LC' ->
-   flln th n CC LC X -> flln th n CC LC' X.
+   FLLN th n CC LC X -> FLLN th n CC LC' X.
 Proof with sauto;solveLL.
   induction n using strongind;intros. 
   * inversion H0 ...
@@ -44,7 +44,7 @@ Qed.
 
 (**  Weakening on the classical context *)
 Theorem weakeningN: forall n CC LC F X,
-   flln th n CC LC X -> flln th n (F :: CC) LC X.
+   FLLN th n CC LC X -> FLLN th n (F :: CC) LC X.
 Proof with sauto;solveLL.
   induction n using strongind;intros.
   * inversion H...
@@ -56,7 +56,7 @@ Qed.
   
 (** Contraction on the classical context *)
 Theorem contractionN  : forall n CC LC  F X ,
-   flln th n (F :: CC) LC X -> In F CC -> flln th n CC LC X.
+   FLLN th n (F :: CC) LC X -> In F CC -> FLLN th n CC LC X.
 Proof with CleanContext;solveLL.
   induction n using strongind;intros.
   * inversion H...
@@ -71,8 +71,8 @@ Proof with CleanContext;solveLL.
 Qed.
 
 Lemma absorptionN : forall n Gamma Delta F X,
- flln th n (F :: Gamma) ( F::Delta)  X ->
-      flln th n (F :: Gamma) Delta  X.
+ FLLN th n (F :: Gamma) ( F::Delta)  X ->
+      FLLN th n (F :: Gamma) Delta  X.
 Proof with sauto;solveLL.
   intro.
   induction n using strongind ;intros. 
@@ -115,8 +115,8 @@ Proof with sauto;solveLL.
 Qed.
 
 Lemma absorptionLN : forall n Gamma Delta F X,
-   flln th n (Gamma) ( F::Delta)  X ->
-   flln th n (F:: Gamma) Delta  X.
+   FLLN th n (Gamma) ( F::Delta)  X ->
+   FLLN th n (F:: Gamma) Delta  X.
 Proof with sauto.
   intros.
   apply absorptionN...
@@ -125,8 +125,8 @@ Qed.
 
 Lemma absorptionInN : forall n Gamma Delta F X,
 In F Gamma ->
- flln th n Gamma( F::Delta)  X ->
-      flln th n Gamma Delta  X.
+ FLLN th n Gamma( F::Delta)  X ->
+      FLLN th n Gamma Delta  X.
 Proof with sauto;solveLL.
   intros.
   apply InPermutation in H...
@@ -144,7 +144,7 @@ Section Adequacy.
 
  
 Theorem FLLNtoFLLS : forall n Gamma Delta X , 
-flln th n Gamma Delta X -> flls  th Gamma Delta X.
+FLLN th n Gamma Delta X -> FLLS  th Gamma Delta X.
 Proof.
   induction n using strongind;intros;eauto.
   * inversion H;subst;eauto.
@@ -153,7 +153,7 @@ Proof.
 Qed.
 
 Axiom FLLStoFLLN : forall Gamma Delta X ,
-   flls th Gamma Delta X -> exists n, flln th n Gamma Delta X.
+   FLLS th Gamma Delta X -> exists n, FLLN th n Gamma Delta X.
 
 End Adequacy.
 Section StructuralProperties.
@@ -161,7 +161,7 @@ Section StructuralProperties.
 (**  Exchange Rule: Classical Context *)
 Theorem exchangeCC (CC CC' LC : list oo) (X: Arrow):
    Permutation CC CC' ->
-   flls th CC LC X -> flls th CC' LC X.
+   FLLS th CC LC X -> FLLS th CC' LC X.
 Proof with solveLL.
   intros Hp Hseq.
   generalize dependent CC'.
@@ -173,7 +173,7 @@ Qed.
 (** Exchange Rule: Linear Context *)
 Theorem exchangeLC LC : forall CC LC'  (X: Arrow),
    Permutation LC LC' ->
-   flls th CC LC X -> flls th CC LC' X.
+   FLLS th CC LC X -> FLLS th CC LC' X.
 Proof with sauto;solveLL.
   intros.
   revert dependent LC'.
@@ -184,7 +184,7 @@ Qed.
 
 (**  Weakening on the classical context *)
 Theorem weakening (CC LC : list oo) F X:
-   flls th CC LC X -> flls th (F :: CC) LC X.
+   FLLS th CC LC X -> FLLS th (F :: CC) LC X.
 Proof with sauto;solveLL. 
   intros.
   revert dependent F.
@@ -194,21 +194,21 @@ Proof with sauto;solveLL.
 Qed.     
 
 Lemma contraction : forall CC LC  F X ,
-  flls th  (F :: CC) LC X -> In F CC -> flls th CC LC X.
+  FLLS th  (F :: CC) LC X -> In F CC -> FLLS th CC LC X.
 Proof with sauto;solveLL.
   intros.
   dependent induction H...
   all: eauto.
   * inversion H... 
-  * rewrite <- app_comm_cons in IHflls. 
-     eapply IHflls...
+  * rewrite <- app_comm_cons in IHFLLS. 
+     eapply IHFLLS...
   * inversion H0...
      all: eauto. 
 Qed.
 
 Lemma absorption : forall Gamma Delta F X,
- flls th (Gamma++[F]) (F::Delta)  X ->
-      flls th  (Gamma++[F]) Delta  X.
+ FLLS th (Gamma++[F]) (F::Delta)  X ->
+      FLLS th  (Gamma++[F]) Delta  X.
 Proof with sauto;solveLL.
  Abort.
 
@@ -217,7 +217,7 @@ End StructuralProperties.
   
 Global Instance seq_morphismN  n:
   Proper ((@Permutation oo) ==> (@Permutation oo) ==> eq ==> iff)
-              (flln th n).
+              (FLLN th n).
 Proof.
   unfold Proper; unfold respectful.
   intros B1 L1 HP1 B2 L2 HP2.
@@ -230,7 +230,7 @@ Qed.
    
 Global Instance seq_morphism  :
    Proper ((@Permutation oo) ==> (@Permutation oo) ==> eq ==> iff)
-              (flls th).
+              (FLLS th).
 Proof.
   unfold Proper; unfold respectful.
   intros B1 L1 HP1 B2 L2 HP2.
@@ -248,7 +248,7 @@ Variable theory theory' : oo ->Prop .
     
 Theorem WeakTheoryN : forall n CC LC X ,
         (forall F, theory F -> theory' F) ->
-        flln theory n CC LC X -> flln theory' n CC LC X.
+        FLLN theory n CC LC X -> FLLN theory' n CC LC X.
 Proof.     
   induction n using strongind;intros.
   * inversion H0;eauto.
@@ -257,7 +257,7 @@ Qed.
     
 Theorem WeakTheory : forall CC LC X,
         (forall F, theory F -> theory' F) ->
-        flls theory CC LC X -> flls theory'  CC LC X.
+        FLLS theory CC LC X -> FLLS theory'  CC LC X.
 Proof.    
   intros.
   induction H0;eauto.
@@ -268,7 +268,7 @@ End WeakeningTheory.
 Definition EmptyTheory (F :oo) := False.
 
 Lemma EmptySubSetN : forall (theory : oo-> Prop) CC LC X n,
-      flln EmptyTheory n CC LC X -> flln theory n CC LC X.
+      FLLN EmptyTheory n CC LC X -> FLLN theory n CC LC X.
 Proof.    
   intros.
   apply WeakTheoryN with (theory:= EmptyTheory);auto.
@@ -277,7 +277,7 @@ Proof.
 Qed.
   
 Lemma EmptySubSet : forall (theory : oo-> Prop) CC LC X,
-      flls EmptyTheory CC LC X -> flls theory CC LC X.
+      FLLS EmptyTheory CC LC X -> FLLS theory CC LC X.
 Proof.
   intros.
   apply WeakTheory with (theory:= EmptyTheory);auto.
@@ -289,8 +289,8 @@ Section GeneralResults.
     
 (** Measure of derivations *)
 Theorem heightGeqFLLN : forall n Gamma Delta X,
-  flln th n Gamma Delta X ->
-        forall m, m>=n -> flln th m Gamma Delta X.
+  FLLN th n Gamma Delta X ->
+        forall m, m>=n -> FLLN th m Gamma Delta X.
 Proof with sauto.
   induction n;intros ...
   * inversion H ...
@@ -305,8 +305,8 @@ Qed.
  (** heightGeqFLLN with Exchange Classic Context *)
 Theorem heightGeqFLLNCEx : forall n CC LC CC' X, 
   Permutation CC' CC ->
-  flln th n CC LC X ->
-        forall m, m>=n -> (flln th m CC' LC X).
+  FLLN th n CC LC X ->
+        forall m, m>=n -> (FLLN th m CC' LC X).
 Proof with eauto.
   intros.
   eapply heightGeqFLLN with (n:=n);auto...
@@ -317,8 +317,8 @@ Qed.
 (** heightGeqFLLN with Exchange Linear Context *)
 Theorem heightGeqFLLNLEx : forall n CC LC LC' X, 
   Permutation LC LC' ->
-  flln th n CC LC' X ->
-        forall m, m>=n -> (flln th m CC LC X).
+  FLLN th n CC LC' X ->
+        forall m, m>=n -> (FLLN th m CC LC X).
 Proof with eauto.
   intros.
   eapply heightGeqFLLN with (n:=n);auto.
@@ -329,8 +329,8 @@ Qed.
 Theorem heightGeqFLLNEx : forall n CC CC' LC LC' X, 
   Permutation CC CC' ->
   Permutation LC LC' ->
-  flln th n CC' LC' X ->
-        forall m, m>=n -> (flln th m CC LC X).
+  FLLN th n CC' LC' X ->
+        forall m, m>=n -> (FLLN th m CC LC X).
 Proof with eauto.
   intros.
   eapply heightGeqFLLN with (n:=n);auto...
@@ -341,7 +341,7 @@ Proof with eauto.
 Qed.  
  
 Theorem BangCon: forall n F Gamma Delta X , posLFormula F ->
-flln th n Gamma (Bang F::Delta) X -> flls  th Gamma (F::Delta) X.
+FLLN th n Gamma (Bang F::Delta) X -> FLLS  th Gamma (F::Delta) X.
 Proof with sauto.
   induction n using strongind;intros;eauto.
   * inversion H0;subst;eauto.
@@ -375,7 +375,7 @@ Proof with sauto.
  Qed.      
 
 Theorem BangConN: forall n F Gamma Delta X , posLFormula F -> 
-flln th n Gamma (Bang F::Delta) X -> flln  th n Gamma (F::Delta) X.
+FLLN th n Gamma (Bang F::Delta) X -> FLLN  th n Gamma (F::Delta) X.
 Proof with sauto.
   induction n using strongind;intros;eauto.
   * inversion H0;subst;eauto.

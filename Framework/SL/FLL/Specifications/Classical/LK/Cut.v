@@ -458,8 +458,8 @@ Qed.
 
  Theorem FocusingForallUP :
     forall n th (y: expr con) FX D G, proper y ->
-    flln th n G D (DW (∀{ fun x : expr con => atom (up (FX x))})) ->
-      exists m , n =  S (S (S m))  /\ flln th m G (atom (up (FX y ))::D) (UP [ ]).
+    FLLN th n G D (DW (∀{ fun x : expr con => atom (up (FX x))})) ->
+      exists m , n =  S (S (S m))  /\ FLLN th m G (atom (up (FX y ))::D) (UP [ ]).
   Proof with sauto.
     intros.
     inversion H0... 
@@ -473,8 +473,8 @@ Qed.
          
    Theorem FocusingForallDW :
     forall n th (y: expr con) FX D G, proper y ->
-    flln th n G D (DW (∀{ fun x : expr con => atom (down (FX x))})) ->
-      exists m , n =  S (S (S m))  /\ uniform_oo (fun x  => atom (down (FX x))) /\ flln th m G (atom (down (FX y))::D) (UP [ ]).
+    FLLN th n G D (DW (∀{ fun x : expr con => atom (down (FX x))})) ->
+      exists m , n =  S (S (S m))  /\ uniform_oo (fun x  => atom (down (FX x))) /\ FLLN th m G (atom (down (FX y))::D) (UP [ ]).
   Proof with sauto.
     intros.
     inversion H0... 
@@ -488,8 +488,8 @@ Qed.
 
    Theorem FocusingExistsUP :
     forall n th FX D G, 
-    flln th n G D (DW (∃{ fun x : expr con => atom (up (FX x))})) ->
-      exists m t, n =  S (S (S m))  /\ proper t /\ flln th m G (atom (up (FX t))::D) (UP [ ]).
+    FLLN th n G D (DW (∃{ fun x : expr con => atom (up (FX x))})) ->
+      exists m t, n =  S (S (S m))  /\ proper t /\ FLLN th m G (atom (up (FX t))::D) (UP [ ]).
   Proof with sauto.
     intros.
     inversion H... 
@@ -502,8 +502,8 @@ Qed.
 
    Theorem FocusingExistsDW :
     forall n th FX D G, 
-    flln th n G D (DW (∃{ fun x : expr con => atom (down (FX x))})) ->
-      exists m t, n =  S (S (S m))  /\ proper t /\ flln th m G (atom (down (FX t))::D) (UP [ ]).
+    FLLN th n G D (DW (∃{ fun x : expr con => atom (down (FX x))})) ->
+      exists m t, n =  S (S (S m))  /\ proper t /\ FLLN th m G (atom (down (FX t))::D) (UP [ ]).
   Proof with sauto.
     intros.
     inversion H... 

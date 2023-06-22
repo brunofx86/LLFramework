@@ -38,20 +38,20 @@ Ltac seqPerm H S :=
     Permutation ?M ?T => match type of S with
     seq ?th ?B ?M ?Arrow => 
       assert(seq th B T Arrow); refine(exchangeLC _ S);rewrite H;auto
-      | flln ?th ?n ?B ?M ?Arrow => 
-      assert(flln th n B T Arrow); refine(exchangeLCN _ S);rewrite H;auto
+      | FLLN ?th ?n ?B ?M ?Arrow => 
+      assert(FLLN th n B T Arrow); refine(exchangeLCN _ S);rewrite H;auto
     end
       | Permutation ?T ?M => match type of S with
       seq ?th ?B ?M ?Arrow => 
       assert(seq th B T Arrow); refine(exchangeLC _ S);rewrite H;auto
-      | flln ?th ?n ?B ?M ?Arrow => 
-      assert(flln th n B T Arrow); refine(exchangeLCN _ S);rewrite H;auto
+      | FLLN ?th ?n ?B ?M ?Arrow => 
+      assert(FLLN th n B T Arrow); refine(exchangeLCN _ S);rewrite H;auto
     end                      
   end.   
 
 Section AbsorptionTheory.
 
-Theorem AbsorptionPerp :  forall n B M A X , th (perp A) -> flln th n B ((perp A) :: M) X -> flln th n B M X.
+Theorem AbsorptionPerp :  forall n B M A X , th (perp A) -> FLLN th n B ((perp A) :: M) X -> FLLN th n B M X.
 Proof with solveLL.
   induction n;intros *; intros Ht H;inversion H.
   all: subst;eauto;clear H...
@@ -72,7 +72,7 @@ Proof with solveLL.
        HProof.
 Qed.
 
-Theorem AbsorptionPerp2 :  forall n B M A L , th (perp A) -> flln th n B M (UP (L++[perp A])) -> flln th n B M (UP L).
+Theorem AbsorptionPerp2 :  forall n B M A L , th (perp A) -> FLLN th n B M (UP (L++[perp A])) -> FLLN th n B M (UP L).
 Proof with sauto;solveLL.
   intro.
   induction n;intros.
@@ -90,7 +90,7 @@ Proof with sauto;solveLL.
       perm. lia.
  Qed.      
 
-Theorem AbsorptionPerp' :  forall B M A L , th (perp A) -> flls th B M (UP (L++[perp A])) -> flls th B M (UP L).
+Theorem AbsorptionPerp' :  forall B M A L , th (perp A) -> FLLS th B M (UP (L++[perp A])) -> FLLS th B M (UP L).
 Proof with sauto.
   intros.
   apply FLLStoFLLN in H0...
@@ -111,11 +111,11 @@ Proof.
 
 Definition RUpTheory (n:nat) := forall B L  F  M , 
     th F -> ~ posAtom F -> ~ negAtom F ->
-    flln th n B M (UP (L ++ [F]))  -> flls th B M (UP L ).
+    FLLN th n B M (UP (L ++ [F]))  -> FLLS th B M (UP L ).
 
 Definition RDownTheory (n:nat) := forall B  F  M  H, 
     posLFormula F -> ~ posAtom F -> ~ negAtom F -> th F -> 
-    flln th n B (F::M) (DW H) -> flls th B M (DW H).
+    FLLN th n B (F::M) (DW H) -> FLLS th B M (DW H).
 
 Definition RIndTheory (n:nat) := RUpTheory n /\ RDownTheory (n -1). 
 
@@ -204,14 +204,14 @@ Proof with sauto;solvePolarity;solveLL.
   + checkPermutationCases  H1.
      - assert(HRI: RIndTheory (S n0)) by (apply IH;auto).
        destruct HRI as [HUp  HDown] ...
-      assert(flln th n0 B (F::x) (DW F0)).
+      assert(FLLN th n0 B (F::x) (DW F0)).
       seqPerm H0 H2. 
       LLtensor x N.  
       apply HDown in H...
       HProof. 
     - assert(HRI: RIndTheory (S n0)) by (apply IH;auto).
       destruct HRI as [HUp  HDown] ...
-      assert(flln th n0 B (F::x) (DW G)).
+      assert(FLLN th n0 B (F::x) (DW G)).
       seqPerm H0 H6. 
       apply HDown in H...
       LLtensor M0 x.   
@@ -243,7 +243,7 @@ Qed.
 (* =============================================== *)   
 Theorem AbsorptionTheory : forall B L F  M,   
 th F -> ~ posAtom F -> ~ negAtom F  -> 
-flls th B M (UP (L++[F])) -> flls th B M (UP L) .
+FLLS th B M (UP (L++[F])) -> FLLS th B M (UP L) .
 Proof.
   intros.
   assert(HRn:  forall n, RUpTheory n) by (apply InvAuxTheory).
@@ -258,11 +258,11 @@ End AbsorptionTheory.
 Section AbsorptionClassic.
 
 Definition RUp (n:nat) := forall  B L  F  M , 
-    In F B -> flln th n B M  (UP (L ++ [F]))  -> flls th B M (UP L ).  
+    In F B -> FLLN th n B M  (UP (L ++ [F]))  -> FLLS th B M (UP L ).  
 
 Definition RDown (n:nat) := forall B F  M  H, 
     posLFormula F ->
-    In F B -> flln th n B (F::M) (DW H) -> flls th B M (DW H).
+    In F B -> FLLN th n B (F::M) (DW H) -> FLLS th B M (DW H).
 
 Definition RInd (n:nat) := RUp n /\ RDown (n -1). 
 
@@ -352,14 +352,14 @@ Proof with sauto;solvePolarity;solveLL.
   + checkPermutationCases H1.
      - assert(HRI: RInd (S n0)) by (apply IH;auto).
        destruct HRI as [HUp  HDown] ...
-       assert(flln th n0 B (F::x) (DW F0)).
+       assert(FLLN th n0 B (F::x) (DW F0)).
        HProof.
       eapply HDown in H...
       LLtensor x N.  
       HProof.
      - assert(HRI: RInd (S n0)) by (apply IH;auto).
         destruct HRI as [HUp  HDown] ...
-        assert(flln th n0 B (F::x) (DW G)).
+        assert(FLLN th n0 B (F::x) (DW G)).
         HProof.
 
         eapply HDown in H...
@@ -394,8 +394,8 @@ Qed.
 (* =============================================== *)   
 Theorem AbsorptionClassic : forall B L F  M,
     In F B -> 
-    flls th B M (UP (L++[F])) ->
-    flls th B M (UP L).
+    FLLS th B M (UP (L++[F])) ->
+    FLLS th B M (UP L).
 Proof.
   intros.
   assert(HRn:  forall n, RUp n) by (apply InvAux).
@@ -407,8 +407,8 @@ Qed.
 
 Theorem AbsorptionClassic' : forall  B L F  M,
     In F B ->
-    flls th B M (UP (L++[F])) ->
-    flls th B M (UP L ).
+    FLLS th B M (UP (L++[F])) ->
+    FLLS th B M (UP L ).
 Proof.
   intros.
   assert(HRn:  forall n, RUp n) by (apply InvAux).
@@ -419,7 +419,7 @@ Qed.
 
 Theorem AbsorptionClassicSet : forall B B' L C M,
     Permutation B (C++B') -> 
-    flls th B M (UP (L ++ C)) -> flls th B M (UP L).
+    FLLS th B M (UP (L ++ C)) -> FLLS th B M (UP L).
 Proof with sauto.
   intros.
   revert dependent L.
@@ -445,11 +445,11 @@ Section InvExists.
 
 Definition RUpExists (n:nat) := forall B L M FX t, 
     uniform_oo FX -> proper t -> 
-    flln th n B M (UP (L ++ [FX t]))  -> flls th B (∃{ FX}:: M) (UP L).
+    FLLN th n B M (UP (L ++ [FX t]))  -> FLLS th B (∃{ FX}:: M) (UP L).
 
 Definition RDownExists (n:nat) := forall B M H FX t, 
     posFormula (FX t) -> uniform_oo FX -> proper t ->
-    flln th n B (FX t::M) (DW H) -> flls th B (∃{ FX} :: M) (DW H).
+    FLLN th n B (FX t::M) (DW H) -> FLLS th B (∃{ FX} :: M) (DW H).
 
 Definition RIndExists (n:nat) := RUpExists n /\ RDownExists (n -1). 
 
@@ -640,7 +640,7 @@ Qed.
 
 Theorem InvEx : forall B L FX t  M, 
     uniform_oo FX -> proper t -> 
-    flls th B M (UP (L++[FX t ])) -> flls th B (∃{ FX}::M) (UP L ).
+    FLLS th B M (UP (L++[FX t ])) -> FLLS th B (∃{ FX}::M) (UP L ).
 Proof.
   intros.
   assert(HRn:  forall n, RUpExists n) by (apply InvExAux).
@@ -654,7 +654,7 @@ Qed.
 Theorem InvExC : forall B L FX t  M, 
     In (∃{ FX}) B ->
     uniform_oo FX -> proper t -> 
-    flls th B M (UP (L ++ [FX t])) -> flls th B M (UP L).
+    FLLS th B M (UP (L ++ [FX t])) -> FLLS th B M (UP L).
 Proof.
   intros.
   eapply @AbsorptionClassic;eauto.
@@ -666,7 +666,7 @@ Qed.
 Theorem InvExT : forall B L FX t  M, 
     th (∃{ FX}) ->
     uniform_oo FX -> proper t -> 
-    flls th B M (UP (L ++ [FX t])) -> flls th B M (UP L).
+    FLLS th B M (UP (L ++ [FX t])) -> FLLS th B M (UP L).
 Proof.
   intros.
   eapply @AbsorptionTheory;eauto.
@@ -682,11 +682,11 @@ End InvExists.
 Section InvOPlus.
 
 Definition RUpPlus (n:nat) := forall B L M F G, 
-    flln th n B M (UP (L ++ [F]))  -> flls th B (F ⊕ G::M) (UP L).
+    FLLN th n B M (UP (L ++ [F]))  -> FLLS th B (F ⊕ G::M) (UP L).
 
 Definition RDownPlus (n:nat) := forall B M H F G, 
     posFormula F ->
-    flln th n B (F::M) (DW H) -> flls th B (F ⊕ G::M) (DW H).
+    FLLN th n B (F::M) (DW H) -> FLLS th B (F ⊕ G::M) (DW H).
 
 Definition RIndPlus (n:nat) := RUpPlus n /\ RDownPlus (n -1). 
 
@@ -830,7 +830,7 @@ Qed.
 (* MAIN INVERTIBILITY THEOREM *)
 (* =============================================== *)   
 Theorem InvPlus : forall B L F G  M, 
-    flls th B M (UP (L++[F])) -> flls th B (F ⊕ G:: M) (UP L).
+    FLLS th B M (UP (L++[F])) -> FLLS th B (F ⊕ G:: M) (UP L).
 Proof.
   intros.
   assert(HRn:  forall n, RUpPlus n) by (apply InvPlusAux).
@@ -842,7 +842,7 @@ Qed.
 
 Theorem InvPlusC : forall B L F G M,
     In (F ⊕ G) B ->
-    flls th B M (UP (L++[F])) -> flls th B M (UP L).
+    FLLS th B M (UP (L++[F])) -> FLLS th B M (UP L).
 Proof.
   intros.
   eapply @AbsorptionClassic;eauto.
@@ -853,7 +853,7 @@ Qed.
 
 Theorem InvPlusT : forall B L F G M,
     th (F ⊕ G) ->
-    flls th B M (UP (L++[F])) -> flls th B M (UP L).
+    FLLS th B M (UP (L++[F])) -> FLLS th B M (UP L).
 Proof.
   intros.
   eapply @AbsorptionTheory;eauto.
@@ -865,7 +865,7 @@ Qed.
 
 
 Lemma OPlusComm : forall B M F G X n,
-    flln th n B (F ⊕ G::M) X -> flln th n B (G ⊕ F::M) X.
+    FLLN th n B (F ⊕ G::M) X -> FLLN th n B (G ⊕ F::M) X.
 Proof with sauto;solvePolarity;solveLL.
     intros.
     generalize dependent B.
@@ -884,7 +884,7 @@ Proof with sauto;solvePolarity;solveLL.
         rewrite <- H5...
         apply H... HProof.
     - LLexists t. 
-    - assert (flln th n B (F ⊕ G::(M ++ [F0])) (UP M0)).
+    - assert (FLLN th n B (F ⊕ G::(M ++ [F0])) (UP M0)).
       LLExact H3.
       eapply H in H1...
       LLExact H1.
@@ -905,7 +905,7 @@ Qed.
 (* MAIN INVERTIBILITY THEOREM (FLIPPING F and G)   *)
 (* =============================================== *)   
 Theorem InvPlusComm: forall B L F G  M, 
-    flls th B M (UP (L++[G])) -> flls th B (F ⊕ G::M) (UP L).
+    FLLS th B M (UP (L++[G])) -> FLLS th B (F ⊕ G::M) (UP L).
 Proof.
   intros.
   apply InvPlus with (G:=F)in H;auto.
@@ -917,7 +917,7 @@ Qed.
 
 Theorem InvPlusCComm : forall  B L F G M, 
     In (F ⊕ G) B ->
-    flls th B M (UP (L++[G])) -> flls th B M (UP L).
+    FLLS th B M (UP (L++[G])) -> FLLS th B M (UP L).
 Proof.
   intros.
   eapply @AbsorptionClassic;eauto.
@@ -928,7 +928,7 @@ Qed.
 
 Theorem InvPlusTComm : forall  B L F G M, 
     th (F ⊕ G) ->
-    flls th B M (UP (L++[G])) -> flls th B M (UP L).
+    FLLS th B M (UP (L++[G])) -> FLLS th B M (UP L).
 Proof.
   intros.
   eapply @AbsorptionTheory;eauto.
@@ -947,15 +947,15 @@ Section InvTensor.
 
 Definition RUpTensor (nm:nat) := forall B L M L' M' F G n m, 
     nm = n + m ->  (* isFormulaL L -> *)
-    flln th n B M (UP (L ++ [F])) -> 
-    flln th m B M' (UP (L' ++ [G]))  -> 
-    flls th B (F ⊗ G:: M ++ M') (UP (L ++ L')).
+    FLLN th n B M (UP (L ++ [F])) -> 
+    FLLN th m B M' (UP (L' ++ [G]))  -> 
+    FLLS th B (F ⊗ G:: M ++ M') (UP (L ++ L')).
 
 Definition RDownTensor (nm:nat) := forall B M M' H F G n m, 
     nm = n + m -> posFormula F -> 
-    flln th n B (F::M) (DW H) -> 
-    flln th m B M' (UP [G]) -> 
-    flls th B (F ⊗ G :: M ++ M') (DW H).
+    FLLN th n B (F::M) (DW H) -> 
+    FLLN th m B M' (UP [G]) -> 
+    FLLS th B (F ⊗ G :: M ++ M') (DW H).
 
 Definition RIndTensor (n:nat) := RUpTensor n /\ RDownTensor (n -1). 
 
@@ -992,7 +992,7 @@ Qed.
 (* F ⊗ G COMMUTES *)
 (* =============================================== *)
 
-Lemma TensorComm : forall B M F G X n, flln th n B (F⊗G::M) X -> flln th n B (G⊗F::M) X.
+Lemma TensorComm : forall B M F G X n, FLLN th n B (F⊗G::M) X -> FLLN th n B (G⊗F::M) X.
 Proof with sauto;solvePolarity;solveLL.
   intros.
   generalize dependent B.
@@ -1011,7 +1011,7 @@ Proof with sauto;solvePolarity;solveLL.
       rewrite <- H5...
       apply H... HProof. 
      - LLexists t. 
-     - assert(flln th n B (F ⊗ G::(M ++ [F0])) (UP M0)).
+     - assert(FLLN th n B (F ⊗ G::(M ++ [F0])) (UP M0)).
         LLExact H3.
         apply H in H1...
        HProof.
@@ -1029,7 +1029,7 @@ Proof with sauto;solvePolarity;solveLL.
 Qed.
 
 
-Lemma TensorComm' : forall B M F G X , flls th B (F ⊗ G::M) X -> flls th B (G ⊗ F::M) X.
+Lemma TensorComm' : forall B M F G X , FLLS th B (F ⊗ G::M) X -> FLLS th B (G ⊗ F::M) X.
 Proof.
   intros.
   apply FLLStoFLLN in H.
@@ -1046,9 +1046,9 @@ Qed.
 Lemma InvTensorConsNil (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m) B (L1 M1 : list oo)
 (l : oo) (L2  M2 : list oo) (F  G : oo) (n'  m' : nat) : S nm = n' + m' -> 
     isFormulaL L1 -> 
-    flln th n' B M1 (UP (L1 ++ [F])) -> 
-    flln th m' B M2 (UP (l :: L2 ++ [G])) -> 
-    flls th B (F ⊗ G :: M1 ++ M2) ( UP (L1 ++ l :: L2)).
+    FLLN th n' B M1 (UP (L1 ++ [F])) -> 
+    FLLN th m' B M2 (UP (l :: L2 ++ [G])) -> 
+    FLLS th B (F ⊗ G :: M1 ++ M2) ( UP (L1 ++ l :: L2)).
 Proof with sauto;solvePolarity;solveLL.
   intros. 
   inversion H2...
@@ -1081,9 +1081,9 @@ Qed.
 Lemma InvTensorConsNil' (nm : nat) (IH : forall m : nat, m <= nm -> RIndTensor m) B (L1 M1 : list oo)
 (l : oo) (L2  M2 : list oo) (F  G : oo) (n'  m' : nat) : S nm = n' + m' -> 
 L1 <> [] -> 
-    flln th n' B M1 (UP (L1 ++ [F])) -> 
-    flln th m' B M2 (UP (l :: L2 ++ [G])) -> 
-    flls th B (F ⊗ G :: M1 ++ M2 ) (UP (L1 ++ l :: L2)).
+    FLLN th n' B M1 (UP (L1 ++ [F])) -> 
+    FLLN th m' B M2 (UP (l :: L2 ++ [G])) -> 
+    FLLS th B (F ⊗ G :: M1 ++ M2 ) (UP (L1 ++ l :: L2)).
 Proof with sauto;solvePolarity.
   intros. 
   inversion H1...
@@ -1149,9 +1149,9 @@ Lemma ITCaseAsyncAsync:
 forall n m B M1 M2 F G, 
     negFormula F -> 
     negFormula G -> 
-    flln th n B M1 (UP [F]) -> 
-    flln th m B M2 (UP [G]) -> 
-    flls th B (F ⊗ G:: M1 ++ M2) (UP []).
+    FLLN th n B M1 (UP [F]) -> 
+    FLLN th m B M2 (UP [G]) -> 
+    FLLS th B (F ⊗ G:: M1 ++ M2) (UP []).
 Proof.
   intros.
   LLfocus1 (F ⊗ G). 
@@ -1164,9 +1164,9 @@ Lemma ITAsyncSync  :
   forall nm n m B  M1 M2 F G,
   negFormula F ->  posLFormula G ->         
   (forall m : nat, m <= nm -> RIndTensor m) -> nm = n + m -> 
-  flln th n B M1 (UP [F]) ->  
-  flln th m B ( G::M2) (UP []) ->  
-  flls th B (F ⊗ G :: M1 ++ M2) ( UP []).
+  FLLN th n B M1 (UP [F]) ->  
+  FLLN th m B ( G::M2) (UP []) ->  
+  FLLS th B (F ⊗ G :: M1 ++ M2) ( UP []).
 Proof with subst;auto;solvePolarity;solveLL.
   intros. 
   apply posLDestruct in H0; destruct H0 as [AG | AG].
@@ -1212,9 +1212,9 @@ Lemma ITSyncSync : forall nm n m  B M1 M2 F G,
     posLFormula F -> posLFormula G ->  
     (forall m : nat, m <= nm -> RIndTensor m) -> 
     S nm = S n + S m -> 
-    flln th (S n) B M1 (UP [F]) -> 
-    flln th (S m) B M2  (UP [G]) ->  
-    flls th B (F ⊗ G::M1 ++ M2) (UP []).
+    FLLN th (S n) B M1 (UP [F]) -> 
+    FLLN th (S m) B M2  (UP [G]) ->  
+    FLLS th B (F ⊗ G::M1 ++ M2) (UP []).
 Proof with subst;auto;solvePolarity;solveLL.
   intros * . 
   intros AF AG IH Hnm HD1 HD2. 
@@ -1309,7 +1309,7 @@ Proof with sauto;solvePolarity;solveLL.
 
   try(
   match goal with
-  | [ |- flls th ?B (?F ⊗ ?G::?M1 ++ ?M2) (UP []) ]
+  | [ |- FLLS th ?B (?F ⊗ ?G::?M1 ++ ?M2) (UP []) ]
   => tryif (assert(HAFG : negFormula F /\ negFormula G) by (split;constructor;auto))
   then
   eapply ITCaseAsyncAsync ;eauto
@@ -1438,9 +1438,9 @@ Qed.
 (* =============================================== *)
 
 Theorem InvTensor : forall B L L' F G  M M',
-    flls th B M (UP (L++[F])) -> 
-    flls th B M' (UP (L'++[G])) -> 
-    flls th B (F ⊗ G :: M ++ M') (UP (L ++ L')) .
+    FLLS th B M (UP (L++[F])) -> 
+    FLLS th B M' (UP (L'++[G])) -> 
+    FLLS th B (F ⊗ G :: M ++ M') (UP (L ++ L')) .
 Proof with sauto;solvePolarity;solveLL.
   intros.
   assert(HRn:  forall n, RUpTensor n) by (apply InvTensorAux).
@@ -1451,9 +1451,9 @@ Proof with sauto;solvePolarity;solveLL.
 Qed.
 
 Theorem InvTensor' : forall B F G  M M',
-    flls th B M (UP [F]) -> 
-    flls th B M' (UP [G]) -> 
-    flls th B (F ⊗ G :: M ++ M') (UP []) .
+    FLLS th B M (UP [F]) -> 
+    FLLS th B M' (UP [G]) -> 
+    FLLS th B (F ⊗ G :: M ++ M') (UP []) .
 Proof with sauto;solvePolarity;solveLL.
   intros.
   rewrite <- (app_nil_l []). 
@@ -1462,9 +1462,9 @@ Qed.
 
 Theorem InvTensorC : forall B L L' F G M M', 
     In (F ⊗ G) B ->
-    flls th B M (UP (L++[F])) -> 
-    flls th B M' (UP (L'++[G])) -> 
-    flls th B (M ++ M') (UP (L ++ L')).
+    FLLS th B M (UP (L++[F])) -> 
+    FLLS th B M' (UP (L'++[G])) -> 
+    FLLS th B (M ++ M') (UP (L ++ L')).
 Proof.
   intros.
   eapply @AbsorptionClassic;eauto.
@@ -1474,9 +1474,9 @@ Qed.
 
 Theorem InvTensorT : forall B L L' F G M M', 
     th (F ⊗ G) ->
-    flls th B M (UP (L++[F])) -> 
-    flls th B M' (UP (L'++[G])) -> 
-    flls th B (M ++ M') (UP (L ++ L')).
+    FLLS th B M (UP (L++[F])) -> 
+    FLLS th B M' (UP (L'++[G])) -> 
+    FLLS th B (M ++ M') (UP (L ++ L')).
 Proof.
   intros. 
   eapply @AbsorptionTheory;eauto.
@@ -1488,9 +1488,9 @@ Qed.
 
 Theorem InvTensorC' : forall B  F G M M', 
     In (F ⊗ G) B ->
-    flls th B M (UP [F]) -> 
-    flls th B M' (UP [G]) -> 
-    flls th B (M ++ M') (UP []).
+    FLLS th B M (UP [F]) -> 
+    FLLS th B M' (UP [G]) -> 
+    FLLS th B (M ++ M') (UP []).
 Proof with sauto.
   intros.
   rewrite <- (app_nil_l []). 
@@ -1499,9 +1499,9 @@ Qed.
 
 Theorem InvTensorT' : forall B F G M M', 
     th (F ⊗ G) ->
-    flls th B M (UP [F]) -> 
-    flls th B M' (UP [G]) -> 
-    flls th B (M ++ M') (UP []).
+    FLLS th B M (UP [F]) -> 
+    FLLS th B M' (UP [G]) -> 
+    FLLS th B (M ++ M') (UP []).
 Proof with sauto.
   intros.
   rewrite <- (app_nil_l []). 

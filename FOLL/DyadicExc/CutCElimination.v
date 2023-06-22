@@ -9,7 +9,7 @@ Context `{OLS: OLSig}.
 
    Theorem CutC  a b P Q M N O B : CutH (complexity P) (a+b) -> CutW (complexity P) -> S (complexity Q) = complexity P ->
       LL3 a |-- Q::B; M -> 
-      LL3 b |-- B; N++[! Q ^]++O ->  
+      LL3 b |-- B; N++[! dual Q]++O ->  
       LL3 |-- B; M++N++O.
     Proof with sauto;try dualSimpl.
     intros HC WC Hc Ha Hb.
@@ -131,7 +131,7 @@ Context `{OLS: OLSig}.
      cutCH Ha H0.
      LLcopy F.
      LL3exchangeL (M ++ (F :: o :: N) ++ O).
-   + assert(Permutation  (o :: N ++ ! Q ^ :: O)  (! Q ^ :: o :: N ++ O)) by perm.
+   + assert(Permutation  (o :: N ++ ! dual Q :: O)  (! dual Q :: o :: N ++ O)) by perm.
      rewrite H1 in H. clear H1.
      apply Permutation_vs_cons_inv' in H...
      cutCH Ha H0. 

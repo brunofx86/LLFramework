@@ -250,7 +250,7 @@ Proof with simpl;sauto.
    1-2: LLinit n.
    1,3: LLtop [0].
    1-2: LLbot ['1].
-   - LLwith F1 F2 [F1 ^ ⊕ F2 ^].
+   - LLwith F1 F2 [dual F1 ⊕ dual F2].
      LLleft (dual F1) (dual F2) [F1].
      rewrite perm_takeit_8... 
      LLright (dual F1) (dual F2) [F2]...

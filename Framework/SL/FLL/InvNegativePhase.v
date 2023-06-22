@@ -34,8 +34,8 @@ Section InvNPhase .
   end;sauto.
   
  Lemma EquivAuxBot :  forall CC LC M M',
-  flls th CC LC (UP (M ++ M'))  ->
-  flls th CC LC (UP (M ++ Bot :: M') ) .
+  FLLS th CC LC (UP (M ++ M'))  ->
+  FLLS th CC LC (UP (M ++ Bot :: M') ) .
 Proof with sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -52,7 +52,7 @@ Proof with sauto;solveLL.
     destruct a; simpl in *; invTri' H0 ;solveLL; 
     try repeat rewrite app_comm_cons; 
    match goal with
-          |  [ |- flls _ _ _ (UP (?M ++ Bot :: _)) ] =>
+          |  [ |- FLLS _ _ _ (UP (?M ++ Bot :: _)) ] =>
              eapply H with (m:= complexityL M);simpl in *; try inversion HeqSizeM
           end...
     assert (Hvar : proper (VAR con 0%nat)) by constructor.
@@ -60,9 +60,9 @@ Proof with sauto;solveLL.
   Qed.
 
 Lemma EquivAuxWith :  forall F G CC LC M M',
-  flls th CC LC (UP (M ++ [F] ++ M') ) ->
-  flls th CC LC (UP (M ++ [G] ++ M') ) ->
-  flls th CC LC (UP (M ++ (AAnd F G) :: M') ) .
+  FLLS th CC LC (UP (M ++ [F] ++ M') ) ->
+  FLLS th CC LC (UP (M ++ [G] ++ M') ) ->
+  FLLS th CC LC (UP (M ++ (AAnd F G) :: M') ) .
   Proof with sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -78,7 +78,7 @@ Lemma EquivAuxWith :  forall F G CC LC M M',
     destruct a; simpl in *; invTri' H0 ;solveLL; 
     try repeat rewrite app_comm_cons; 
    match goal with
-          |  [ |- flls _ _ _ (UP (?M ++ (AAnd _ _) :: _)) ] =>
+          |  [ |- FLLS _ _ _ (UP (?M ++ (AAnd _ _) :: _)) ] =>
              eapply H with (m:= complexityL M);simpl in *; try inversion HeqSizeM;InvTriAll'
           end...
     assert (Hvar : proper (VAR con 0%nat)) by constructor.
@@ -86,8 +86,8 @@ Lemma EquivAuxWith :  forall F G CC LC M M',
   Qed.
 
 Lemma EquivAuxPar : forall F G CC LC M M',
-  flls th CC LC  (UP (M ++ [F ; G] ++ M') ) ->
-  flls th CC LC  (UP (M ++ (MOr F G) :: M') ) .
+  FLLS th CC LC  (UP (M ++ [F ; G] ++ M') ) ->
+  FLLS th CC LC  (UP (M ++ (MOr F G) :: M') ) .
 Proof with  sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -103,7 +103,7 @@ Proof with  sauto;solveLL.
      destruct a; simpl in *; invTri' H0;solveLL;
       repeat rewrite app_comm_cons;
       match goal with
-      |  [ |- flls _ _ _ (UP (?M ++ (MOr F G) :: _)) ] =>
+      |  [ |- FLLS _ _ _ (UP (?M ++ (MOr F G) :: _)) ] =>
          eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveLL;try lia
       end.
     generalize (ComplexityUniformEq H5 properX (proper_VAR con 0%nat));intro...
@@ -111,8 +111,8 @@ Proof with  sauto;solveLL.
   
 Lemma EquivAuxStore :
     forall F CC LC M M', posLFormula F ->
-  flls th CC  (F::LC) (UP (M ++ M') ) ->
-  flls th CC  LC  (UP (M ++ F :: M') ) .
+  FLLS th CC  (F::LC) (UP (M ++ M') ) ->
+  FLLS th CC  LC  (UP (M ++ F :: M') ) .
   Proof with  sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -128,7 +128,7 @@ Lemma EquivAuxStore :
     destruct a; simpl in *; invTri' H1;solveLL;
       repeat rewrite app_comm_cons;
       match goal with
-      |  [ |- flls _ _ _ (UP (?M ++ _ :: _)) ] =>
+      |  [ |- FLLS _ _ _ (UP (?M ++ _ :: _)) ] =>
          eapply H0 with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveLL;try lia
       end.
     1-7,9: LLExact H7.
@@ -137,8 +137,8 @@ Lemma EquivAuxStore :
   
   
 Lemma EquivAuxQuest : forall F CC LC M M',
-  flls th (CC ++[F]) LC  (UP (M ++  M') ) ->
-  flls th CC  LC (UP (M ++ [? F] ++ M') ) .
+  FLLS th (CC ++[F]) LC  (UP (M ++  M') ) ->
+  FLLS th CC  LC (UP (M ++ [? F] ++ M') ) .
 Proof with  sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -155,7 +155,7 @@ Proof with  sauto;solveLL.
     destruct a; simpl in *; invTri' H0;solveLL;
       repeat rewrite app_comm_cons;
             match goal with
-            |  [ |- flls _ _ _ (UP (?M ++ (? _) :: _)) ] =>
+            |  [ |- FLLS _ _ _ (UP (?M ++ (? _) :: _)) ] =>
                eapply H with (m:= complexityL M);simpl in *; try inversion HeqSizeM;solveLL;InvTriAll';sauto
             end.
     LLExact H4.        
@@ -165,7 +165,7 @@ Proof with  sauto;solveLL.
   
 Lemma EquivAuxTop :  forall CC LC M M',
   isFormulaL M ->
-  flls th CC LC (UP (M ++ Top :: M') ) .
+  FLLS th CC LC (UP (M ++ Top :: M') ) .
   Proof with  sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -181,7 +181,7 @@ Lemma EquivAuxTop :  forall CC LC M M',
       repeat rewrite app_comm_cons;
       try solve [
             match goal with
-            |  [ |- flls _ _ _ (UP (?M ++ Top :: _)) ] =>
+            |  [ |- FLLS _ _ _ (UP (?M ++ Top :: _)) ] =>
                eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveLL; inversion H0;subst;sauto
             end].
     
@@ -203,8 +203,8 @@ eapply H with (m:= complexityL (a1 ::M));simpl in * ; inversion HeqSizeM; solveL
 Lemma EquivAuxForAll : forall FX CC LC M M' ,
   isFormulaL M -> uniform_oo FX ->
   (forall t, proper t ->  
-       flls th CC LC (UP (M ++ (FX t) ::M') )) ->
-       flls th CC LC (UP (M ++ ∀{ FX} :: M') ) .
+       FLLS th CC LC (UP (M ++ (FX t) ::M') )) ->
+       FLLS th CC LC (UP (M ++ ∀{ FX} :: M') ) .
   Proof with  sauto;solveLL.
     intros.
     remember (complexityL M) as SizeM.
@@ -248,9 +248,9 @@ Lemma EquivAuxForAll : forall FX CC LC M M' ,
 
 Theorem EquivUpArrow : forall n B L L' M,
   isFormulaL L' ->
-  flln th n B M (UP L) ->
+  FLLN th n B M (UP L) ->
   Permutation L L' ->
-  flls th B M (UP L').
+  FLLS th B M (UP L').
 Proof with sauto;solveLL.
   induction n;intros...
   - inversion H0...
@@ -333,8 +333,8 @@ Proof with sauto;solveLL.
 
 Theorem EquivUpArrow2' : forall B L L' M ,
  isFormulaL L' ->
- flls th B M (UP L) -> Permutation L L' ->
- flls th B M  (UP L').
+ FLLS th B M (UP L) -> Permutation L L' ->
+ FLLS th B M  (UP L').
  Proof with sauto.
     intros.
     revert dependent L'.
@@ -347,11 +347,11 @@ Theorem EquivUpArrow2' : forall B L L' M ,
       symmetry in H1.
       apply Permutation_vs_cons_inv' in H1...
       apply EquivAuxWith.
-      eapply IHflls1...
+      eapply IHFLLS1...
       inversion H... 
       SLFormulaSolve.
       rewrite H2...
-      eapply IHflls2...
+      eapply IHFLLS2...
       inversion H... 
       SLFormulaSolve.
       rewrite H2...
@@ -359,14 +359,14 @@ Theorem EquivUpArrow2' : forall B L L' M ,
         symmetry in H1.
         apply Permutation_vs_cons_inv' in H1...
         apply EquivAuxBot.
-        refine(IHflls _ _ _ _ H3)...
+        refine(IHFLLS _ _ _ _ H3)...
         inversion H... 
         SLFormulaSolve.
    + rewrite <- H1 in H.
         symmetry in H1.
         apply Permutation_vs_cons_inv' in H1...
         apply EquivAuxPar.
-        eapply IHflls...
+        eapply IHFLLS...
         inversion H... 
         SLFormulaSolve.
         rewrite H3...
@@ -374,7 +374,7 @@ Theorem EquivUpArrow2' : forall B L L' M ,
         symmetry in H1.
         apply Permutation_vs_cons_inv' in H1...
         apply EquivAuxQuest.
-        eapply IHflls...
+        eapply IHFLLS...
         inversion H... 
         SLFormulaSolve.
    + symmetry in H3.
@@ -391,7 +391,7 @@ Theorem EquivUpArrow2' : forall B L L' M ,
    + symmetry in H2.
         apply Permutation_vs_cons_inv' in H2...
         apply EquivAuxStore...
-        eapply IHflls...
+        eapply IHFLLS...
         rewrite Permutation_cons_append in H1.
         SLFormulaSolve.
    + LLfocus1 F L'. 
@@ -401,8 +401,8 @@ Theorem EquivUpArrow2' : forall B L L' M ,
    
 Theorem EquivUpArrow2 : forall B L L' M ,
  isFormulaL L' ->
- flls th B M (UP L) -> Permutation L L' ->
- flls th B M  (UP L').
+ FLLS th B M (UP L) -> Permutation L L' ->
+ FLLS th B M  (UP L').
  Proof.
     intros.
     apply FLLStoFLLN in H0.
@@ -412,8 +412,8 @@ Theorem EquivUpArrow2 : forall B L L' M ,
 
 Lemma UpExtension: forall B M L F n,
   posLFormula F ->
-  flln th n B (F::M) (UP L) ->
-  exists m, m<= S n /\ flln th m B M (UP (L ++ [F])).
+  FLLN th n B (F::M) (UP L) ->
+  exists m, m<= S n /\ FLLN th m B M (UP (L ++ [F])).
   Proof with subst;auto.
   intros.
     remember (complexityL L) as w.
@@ -463,7 +463,7 @@ Lemma UpExtension: forall B M L F n,
         exists (S n').
         firstorder ; try lia. 
         lia.
-     - assert(forall x, proper x -> exists m, m <= S n0 /\ flln th m B M (UP ((FX x :: L)  ++ [F]))).
+     - assert(forall x, proper x -> exists m, m <= S n0 /\ FLLN th m B M (UP ((FX x :: L)  ++ [F]))).
         intros.
         generalize (H7 x H1);intro.
         eapply IH with (m:=complexity (FX x) + complexityL L);auto.
@@ -483,7 +483,7 @@ Lemma UpExtension: forall B M L F n,
         destruct H3 as [n H3].
         destruct H3 as [H3 H3'].
         eapply @heightGeqFLLN with (n:=n);try firstorder.   
-       - assert(exists m0 : nat, m0 <= S n0 /\ flln th m0 B (M ++ [o]) (UP (L ++ [F]))).
+       - assert(exists m0 : nat, m0 <= S n0 /\ FLLN th m0 B (M ++ [o]) (UP (L ++ [F]))).
         apply IH with (m:= complexityL L);auto.
         assert (complexity o > 0) by (apply Complexity0);lia.
         eapply exchangeLCN;[|exact H7].
@@ -498,7 +498,7 @@ Lemma UpExtension: forall B M L F n,
   
 Lemma UpExtension2': forall B M L F,
     posLFormula F ->
-   flls th B (F::M) (UP L) -> flls th B M (UP (L ++ [F])).
+   FLLS th B (F::M) (UP L) -> FLLS th B M (UP (L ++ [F])).
 Proof with sauto.
   intros.
     remember (complexityL L) as w.
@@ -546,7 +546,7 @@ Proof with sauto.
 
 Lemma UpExtension': forall B M L F,
   posLFormula F ->
-  flls th B (F::M) (UP L) -> flls th B M (UP (L ++ [F])).
+  FLLS th B (F::M) (UP L) -> FLLS th B M (UP (L ++ [F])).
 Proof with sauto.
   intros.
   apply FLLStoFLLN in H0.
@@ -557,8 +557,8 @@ Proof with sauto.
   
   
 Lemma UpExtensionInv n F B M L :
-   posLFormula F ->  flln th n B M (UP (L++[F])) -> 
-   flls th B  (F::M) (UP L).
+   posLFormula F ->  FLLN th n B M (UP (L++[F])) -> 
+   FLLS th B  (F::M) (UP L).
   Proof with sauto; solvePolarity;solveLL.
   intros.
   
@@ -593,7 +593,7 @@ Lemma UpExtensionInv n F B M L :
   
 Lemma UpExtensionInv2' F B M L : 
   posLFormula F -> 
-  flls th B M (UP (L++[F])) -> flls th B (F::M) (UP L).
+  FLLS th B M (UP (L++[F])) -> FLLS th B (F::M) (UP L).
   Proof with sauto.
   intros.
     remember (complexityL L) as w.
@@ -643,7 +643,7 @@ Lemma UpExtensionInv2' F B M L :
   
 Lemma UpExtensionInv' F B M L : 
   posLFormula F -> 
-  flls th B M (UP (L++[F])) -> flls th B (F::M) (UP L).
+  FLLS th B M (UP (L++[F])) -> FLLS th B (F::M) (UP L).
   Proof with sauto.
   intros.
   apply FLLStoFLLN in H0.

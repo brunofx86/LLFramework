@@ -13,14 +13,14 @@ Section FLLTheory.
 
 Ltac LLPermA M :=
     match goal with
-    | [ |- flls _ _ _ ?X ] =>
+    | [ |- FLLS _ _ _ ?X ] =>
      eapply @EquivUpArrow2 with (L:=M);[| | perm]  
   end;auto.
 
  Theorem InvTensorS th: forall B PF PG F G,
-        flls th B [] (UP [PF;F]) -> 
-        flls th B [] (UP [PG;G]) -> 
-        flls th B [F ⊗ G] (UP [PF;PG]) .
+        FLLS th B [] (UP [PF;F]) -> 
+        FLLS th B [] (UP [PG;G]) -> 
+        FLLS th B [F ⊗ G] (UP [PF;PG]) .
     Proof with sauto;solvePolarity;solveLL.
       intros.
       change [F ⊗ G] with (F ⊗ G::[]++[]).
@@ -29,20 +29,20 @@ Ltac LLPermA M :=
 Qed.
 
 Theorem InvTensorCS th: forall B PF PG F G,
-        flls th B [] (UP [PF;F]) -> 
-        flls th B [] (UP [PG;G]) -> 
-        flls th (F ⊗ G::B) [] (UP [PF;PG]) .
+        FLLS th B [] (UP [PF;F]) -> 
+        FLLS th B [] (UP [PG;G]) -> 
+        FLLS th (F ⊗ G::B) [] (UP [PF;PG]) .
     Proof with sauto;solvePolarity;solveLL.
       intros. 
-      change (flls th (F ⊗ G :: B) [] (UP [PF; PG])) with 
-                   (flls th (F ⊗ G :: B) ([]++[]) (UP ([PF] ++ [PG]))).
+      change (FLLS th (F ⊗ G :: B) [] (UP [PF; PG])) with 
+                   (FLLS th (F ⊗ G :: B) ([]++[]) (UP ([PF] ++ [PG]))).
       eapply  InvTensorC with (F:=F) (G:=G)...
      1-2: apply weakening...   
 Qed.
 
       Theorem InitGeneral th: 
         forall P B, isFormula P -> isFormula (dual P) -> isFormulaL B ->
-             flls th B [] (UP [P;dual P]) .
+             FLLS th B [] (UP [P;dual P]) .
       Proof with sauto;solveLL.
         induction P;intros;intros;
           match goal with
@@ -123,10 +123,10 @@ Qed.
        
      Theorem FLLGeneralInit1 th: 
         forall P B, isFormula P -> isFormula (dual P) -> isFormulaL B -> positiveLFormula P -> 
-                  flls th  B [P] (DW (dual P)).
+                  FLLS th  B [P] (DW (dual P)).
       Proof with sauto;solvePolarity.
         intros.
-assert(flls th  B [] (UP [P; dual P])). 
+assert(FLLS th  B [] (UP [P; dual P])). 
 apply InitGeneral...
 inversion H3...
   destruct (PositiveOrNegative P)...
@@ -138,7 +138,7 @@ simpl...
 Qed.
 
 (* 
-      Theorem FLLEquiv th : forall F, isFormula F -> isFormula (dual F) -> flls th [] []  (UP [F == F]).
+      Theorem FLLEquiv th : forall F, isFormula F -> isFormula (dual F) -> FLLS th [] []  (UP [F == F]).
       Proof with subst;auto;solveF.
         intros. 
         apply tri_with'; eapply tri_par';

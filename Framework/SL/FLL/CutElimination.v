@@ -26,8 +26,8 @@ Section CutElimination.
   Variable th : oo -> Prop.
   
   Theorem CutAtom B M N L C:
-  flls th B M (UP (atom C::L)) -> flls th B N (DW (perp C))  ->
-  flls th B (M++N) (UP L).
+  FLLS th B M (UP (atom C::L)) -> FLLS th B N (DW (perp C))  ->
+  FLLS th B (M++N) (UP L).
   Proof with sauto;solveLL.
   intros Hd1 Hd2.
   inversion Hd2...
@@ -47,38 +47,38 @@ Section CutElimination.
     Definition CutW (w: nat) :=  
     forall i j C A P M N L B, 
     complexity C < w ->
-      (flln th i B (C::M) (UP L) -> flln th j B N (UP [dual C]) -> flls th B (M ++ N) (UP L)) /\
-      (flln th i B M (UP (C :: L)) -> flln th j B N (DW (dual C)) -> flls th B (M ++ N) (UP L)) /\
+      (FLLN th i B (C::M) (UP L) -> FLLN th j B N (UP [dual C]) -> FLLS th B (M ++ N) (UP L)) /\
+      (FLLN th i B M (UP (C :: L)) -> FLLN th j B N (DW (dual C)) -> FLLS th B (M ++ N) (UP L)) /\
        (S (complexity A) = complexity C ->
-       flln th i (A::B) M (DW P) -> flln th j B [] (DW (! (dual A))) -> flls th B M (UP [P]))  /\
+       FLLN th i (A::B) M (DW P) -> FLLN th j B [] (DW (! (dual A))) -> FLLS th B M (UP [P]))  /\
       (S (complexity A) = complexity C ->
-       flln th i (A::B) M (UP L) -> flln th j B [] (DW (! (dual A))) -> flls th B M (UP L)). 
+       FLLN th i (A::B) M (UP L) -> FLLN th j B [] (DW (! (dual A))) -> FLLS th B M (UP L)). 
     
   Definition CutH (w h: nat) :=  
     forall i j C A P M N L B, 
     i + j < h ->
     complexity C = w ->
-      (flln th i B (C::M) (UP L) -> flln th j B N (UP [dual C]) -> flls th B (M ++ N) (UP L)) /\
-      (flln th i B M (UP (C :: L)) -> flln th j B N (DW (dual C)) -> flls th B (M ++ N) (UP L)) /\
+      (FLLN th i B (C::M) (UP L) -> FLLN th j B N (UP [dual C]) -> FLLS th B (M ++ N) (UP L)) /\
+      (FLLN th i B M (UP (C :: L)) -> FLLN th j B N (DW (dual C)) -> FLLS th B (M ++ N) (UP L)) /\
       (S (complexity A) = complexity C ->
-       flln th i (A::B) M (DW P) -> flln th j B [] (DW (! (dual A))) -> flls th B M (UP [P]))   /\
+       FLLN th i (A::B) M (DW P) -> FLLN th j B [] (DW (! (dual A))) -> FLLS th B M (UP [P]))   /\
       (S (complexity A) = complexity C ->
-       flln th i (A::B) M (UP L) -> flln th j B [] (DW (! (dual A))) -> flls th B M (UP L)). 
+       FLLN th i (A::B) M (UP L) -> FLLN th j B [] (DW (! (dual A))) -> FLLS th B M (UP L)). 
           
 Ltac applyCutH := 
   match goal with
   | [ H: CutH _ _ |- 
-         flln ?th ?x _ _ _ -> 
-         flln ?th ?y _ _ _ -> 
-         flls ?th _ _ _ ] => eapply H
+         FLLN ?th ?x _ _ _ -> 
+         FLLN ?th ?y _ _ _ -> 
+         FLLS ?th _ _ _ ] => eapply H
   | _ => idtac end;sauto.
   
 Ltac applyCutW := 
   match goal with
   | [ H: CutW _ |- 
-         flln ?th ?x _ _ _ -> 
-         flln ?th ?y _ _ _ -> 
-         flls ?th _ _ _ ] => eapply H
+         FLLN ?th ?x _ _ _ -> 
+         FLLN ?th ?y _ _ _ -> 
+         FLLS ?th _ _ _ ] => eapply H
   | _ => idtac end;sauto.
 
 Ltac cut1H P1 P2 :=
@@ -86,10 +86,10 @@ Ltac cut1H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 ?B (?FC::?M) (UP ?L) => 
+   | FLLN ?th ?h1 ?B (?FC::?M) (UP ?L) => 
           match tP2 with 
-          | flln ?th ?h2 ?B ?N (UP [dual ?FC]) =>  
-                      assert(H': tP1 -> tP2 -> flls th B (M++N) (UP L));applyCutH
+          | FLLN ?th ?h2 ?B ?N (UP [dual ?FC]) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B (M++N) (UP L));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -98,10 +98,10 @@ Ltac cut2H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 ?B ?M (UP (?FC::?L)) => 
+   | FLLN ?th ?h1 ?B ?M (UP (?FC::?L)) => 
           match tP2 with 
-          | flln ?th ?h2 ?B ?N (DW (dual ?FC)) =>  
-                      assert(H': tP1 -> tP2 -> flls th B (M++N) (UP L));applyCutH
+          | FLLN ?th ?h2 ?B ?N (DW (dual ?FC)) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B (M++N) (UP L));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -110,10 +110,10 @@ Ltac cut3H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 (?FC::?B) ?M (DW ?P) => 
+   | FLLN ?th ?h1 (?FC::?B) ?M (DW ?P) => 
           match tP2 with 
-          | flln ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> flls th B M (UP [P]));applyCutH
+          | FLLN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B M (UP [P]));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -122,10 +122,10 @@ Ltac cut4H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 (?FC::?B) ?M (UP ?L) => 
+   | FLLN ?th ?h1 (?FC::?B) ?M (UP ?L) => 
           match tP2 with 
-          | flln ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> flls th B M (UP L));applyCutH
+          | FLLN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B M (UP L));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end;sauto.
 
@@ -134,10 +134,10 @@ Ltac cut1W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 ?B (?FC::?M) (UP ?L) => 
+   | FLLN ?th ?h1 ?B (?FC::?M) (UP ?L) => 
           match tP2 with 
-          | flln ?th ?h2 ?B ?N (UP [dual ?FC]) =>  
-                      assert(H': tP1 -> tP2 -> flls th B (M++N) (UP L));applyCutW
+          | FLLN ?th ?h2 ?B ?N (UP [dual ?FC]) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B (M++N) (UP L));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -146,10 +146,10 @@ Ltac cut2W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 ?B ?M (UP (?FC::?L)) => 
+   | FLLN ?th ?h1 ?B ?M (UP (?FC::?L)) => 
           match tP2 with 
-          | flln ?th ?h2 ?B ?N (DW (dual ?FC)) =>  
-                      assert(H': tP1 -> tP2 -> flls th B (M++N) (UP L));applyCutW
+          | FLLN ?th ?h2 ?B ?N (DW (dual ?FC)) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B (M++N) (UP L));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -158,10 +158,10 @@ Ltac cut3W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 (?FC::?B) ?M (DW ?P) => 
+   | FLLN ?th ?h1 (?FC::?B) ?M (DW ?P) => 
           match tP2 with 
-          | flln ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> flls th B M (UP [P]));applyCutW
+          | FLLN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B M (UP [P]));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -170,18 +170,18 @@ Ltac cut4W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | flln ?th ?h1 (?FC::?B) ?M (UP ?L) => 
+   | FLLN ?th ?h1 (?FC::?B) ?M (UP ?L) => 
           match tP2 with 
-          | flln ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> flls th B M (UP L));applyCutW
+          | FLLN ?th ?h2 ?B [] (DW (Bang (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> FLLS th B M (UP L));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end;sauto.
 
 Theorem Cut1  a b P L M N B : 
 CutH (complexity P) (a+b) -> 
-  flln th a B (P::M) (UP L) ->
-  flln th b B N (UP [P ^]) ->
-  flls th B (M ++ N) (UP L ).
+  FLLN th a B (P::M) (UP L) ->
+  FLLN th b B N (UP [dual P]) ->
+  FLLS th B (M ++ N) (UP L ).
 Proof with sauto;solveLL.  
  intros CH Ha Hb.
  inversion Ha...
@@ -209,9 +209,9 @@ Proof with sauto;solveLL.
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
                  LLstore.
-                assert( flln th (S n0) B (P::(F0::x)) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((F0::x) ++ N) (UP [ ])) as Cut.
+                assert( FLLN th (S n0) B (P::(F0::x)) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
@@ -231,9 +231,9 @@ Proof with sauto;solveLL.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
                  LLstore. 
-                assert(flln th (S n0) B (P::(G::x)) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((G::x ) ++ N) (UP [ ])) as Cut.
+                assert(FLLN th (S n0) B (P::(G::x)) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((G::x ) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
@@ -249,7 +249,7 @@ Proof with sauto;solveLL.
     {  
               destruct(posOrNeg F0).
               * (* first *) 
-              assert(flln th (S n0) B (P::(F0::x0)) (UP [])).
+              assert(FLLN th (S n0) B (P::(F0::x0)) (UP [])).
               LLfocus1 F0 (P::x0)...
               HProof. 
               rewrite H1.
@@ -281,7 +281,7 @@ inversion H3;CleanContext...
 { 
               destruct(posOrNeg G).
               * (* first *) 
-              assert(flln th (S n0) B (P::(G::x0)) (UP [])).
+              assert(FLLN th (S n0) B (P::(G::x0)) (UP [])).
               LLfocus1 G (P::x0)...
               rewrite <- H2...
               rewrite H1.
@@ -309,9 +309,9 @@ inversion H3;CleanContext...
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
                  LLstore. 
-                 assert( flln th (S n0) B (P::(FX t::x) ) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((FX t::x) ++ N) (UP [ ])) as Cut.
+                 assert( FLLN th (S n0) B (P::(FX t::x) ) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((FX t::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
@@ -337,9 +337,9 @@ inversion H3;CleanContext...
      {  eapply @InvPlusC with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
-        assert(flln th (S n0) B (P::(F0::M) ) (UP [ ]) ->
-                  flln th b B N (UP [dual P]) ->
-                    flls th B ((F0::M) ++ N) (UP [ ])) as Cut.
+        assert(FLLN th (S n0) B (P::(F0::M) ) (UP [ ]) ->
+                  FLLN th b B N (UP [dual P]) ->
+                    FLLS th B ((F0::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (F0::M) ++ N)...
                apply Cut...
@@ -353,9 +353,9 @@ inversion H3;CleanContext...
      {  eapply @InvPlusCComm with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
-        assert(flln th (S n0) B (P::(G::M) ) (UP [ ]) ->
-                  flln th b B N (UP [dual P]) ->
-                    flls th B ((G::M) ++ N) (UP [ ])) as Cut.
+        assert(FLLN th (S n0) B (P::(G::M) ) (UP [ ]) ->
+                  FLLN th b B N (UP [dual P]) ->
+                    FLLS th B ((G::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (G::M) ++ N)...
                apply Cut...
@@ -375,9 +375,9 @@ inversion H3;CleanContext...
                rewrite <- (app_nil_l [F0]).
                apply UpExtension'...
                 
-                 assert(flln th (S n0) B (P::(F0::x)) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((F0::x) ++ N) (UP [ ])) as Cut.
+                 assert(FLLN th (S n0) B (P::(F0::x)) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((F0 :: x) ++ N)... apply Cut...
                LLfocus1 F0 (P::x). HProof. 
@@ -406,9 +406,9 @@ inversion H3;CleanContext...
                 HProof.
                rewrite <- (app_nil_l [G]).
                apply UpExtension'...
-                 assert(flln th (S n0) B (P::(G::x)) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((G::x) ++ N) (UP [ ])) as Cut.
+                 assert(FLLN th (S n0) B (P::(G::x)) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((G::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((G :: x) ++ N)... apply Cut...
                LLfocus1 G (P::x).  HProof.
@@ -427,9 +427,9 @@ inversion H3;CleanContext...
      { eapply @InvExC with  (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
-        assert(flln th (S n0) B (P::(FX t::M)) (UP [ ]) ->
-                  flln th b B N (UP [dual P]) ->
-                    flls th B ((FX t::M) ++ N) (UP [ ])) as Cut.
+        assert(FLLN th (S n0) B (P::(FX t::M)) (UP [ ]) ->
+                  FLLN th b B N (UP [dual P]) ->
+                    FLLS th B ((FX t::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
         LLPerm((FX t :: M) ++ N)...
         apply Cut... 
@@ -455,9 +455,9 @@ destruct(posOrNeg F).
      {  eapply @InvPlusT with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
-        assert(flln th (S n0) B (P::(F0::M)) (UP [ ]) ->
-                  flln th b B N (UP [dual P]) ->
-                    flls th B ((F0::M) ++ N) (UP [ ])) as Cut.
+        assert(FLLN th (S n0) B (P::(F0::M)) (UP [ ]) ->
+                  FLLN th b B N (UP [dual P]) ->
+                    FLLS th B ((F0::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (F0::M) ++ N)...
                apply Cut...
@@ -471,9 +471,9 @@ destruct(posOrNeg F).
      {  eapply @InvPlusTComm with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
-        assert(flln th (S n0) B (P::(G::M)) (UP [ ]) ->
-                  flln th b B N (UP [dual P]) ->
-                    flls th B ((G::M) ++ N) (UP [ ])) as Cut.
+        assert(FLLN th (S n0) B (P::(G::M)) (UP [ ]) ->
+                  FLLN th b B N (UP [dual P]) ->
+                    FLLS th B ((G::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (G::M) ++ N)...
                apply Cut...
@@ -494,9 +494,9 @@ destruct(posOrNeg F).
                rewrite <- (app_nil_l [F0]).
                apply UpExtension'...
                 
-                 assert(flln th (S n0) B (P::(F0::x)) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((F0::x) ++ N) (UP [ ])) as Cut.
+                 assert(FLLN th (S n0) B (P::(F0::x)) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((F0 :: x) ++ N)... apply Cut...
                LLfocus1 F0 (P::x). HProof. 
@@ -524,9 +524,9 @@ destruct(posOrNeg F).
                 HProof.
                rewrite <- (app_nil_l [G]).
                apply UpExtension'...
-                 assert(flln th (S n0) B (P::(G::x)) (UP [ ]) ->
-                       flln th b B N (UP [dual P]) ->
-                         flls th B ((G::x) ++ N) (UP [ ])) as Cut.
+                 assert(FLLN th (S n0) B (P::(G::x)) (UP [ ]) ->
+                       FLLN th b B N (UP [dual P]) ->
+                         FLLS th B ((G::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((G :: x) ++ N)... apply Cut...
                LLfocus1 G (P::x).  HProof.
@@ -547,9 +547,9 @@ destruct(posOrNeg F).
      {  eapply @InvExT with  (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
-        assert(flln th (S n0) B (P::(FX t::M)) (UP [ ]) ->
-                  flln th b B N (UP [dual P]) ->
-                    flls th B ((FX t::M) ++ N) (UP [ ])) as Cut.
+        assert(FLLN th (S n0) B (P::(FX t::M)) (UP [ ]) ->
+                  FLLN th b B N (UP [dual P]) ->
+                    FLLS th B ((FX t::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
        apply Cut...
        LLfocus1 (FX t) (P::M). }
@@ -575,9 +575,9 @@ destruct(posOrNeg F).
   
   Theorem Cut2  a b P L M N B : 
   CutH (complexity P) (a+b) -> CutW (complexity P) ->
-  flln th a B M (UP (P::L)) ->
-  flln th b B N (DW (dual P)) ->
-  flls th B (M ++ N) (UP L).
+  FLLN th a B M (UP (P::L)) ->
+  FLLN th b B N (DW (dual P)) ->
+  FLLS th B (M ++ N) (UP L).
 Proof with sauto;solveLL.   
  intros CH CW Ha Hb.
  inversion Ha;subst. 
@@ -618,7 +618,7 @@ Proof with sauto;solveLL.
             erewrite ComplexityUniformEq...
           
  *  apply posLDestruct in H4...
-   assert(negFormula (P ^)).
+   assert(negFormula (dual P)).
    apply posDualNeg in H...
  
      inversion Hb;subst; try match goal with
@@ -639,9 +639,9 @@ Proof with sauto;solveLL.
  Theorem Cut3 a b P Q F L B:
     CutH (complexity P) (a+b) -> CutW  (complexity P) ->
     S (complexity Q) = complexity P ->
-    flln th a (Q::B) L (DW F) -> 
-    flln th b B [] (DW (! Q ^)) ->   
-    flls th B L (UP [F]).
+    FLLN th a (Q::B) L (DW F) -> 
+    FLLN th b B [] (DW (! dual Q)) ->   
+    FLLS th B L (UP [F]).
   Proof with sauto;solveLL.
   intros HC WC Hc' Ha Hb.
     inversion Ha...
@@ -670,9 +670,9 @@ Proof with sauto;solveLL.
 
 Theorem Cut4  a b P Q L M B  : 
 CutH (complexity P) (a+b) -> CutW (complexity P) ->    S (complexity Q) = complexity P ->
-  flln th a (Q::B) M (UP L) ->
-  flln th b B [] (DW (! Q ^)) ->
-  flls th B M (UP L).
+  FLLN th a (Q::B) M (UP L) ->
+  FLLN th b B [] (DW (! dual Q)) ->
+  FLLS th B M (UP L).
 Proof with sauto;solveLL.  
   intros CH CW Hc Ha Hb.
   inversion Ha...  
@@ -688,7 +688,7 @@ Proof with sauto;solveLL.
   * cut4H H4 Hb.
   * destruct (posOrNeg F).
      cut3H H5 Hb. 
-     assert( flls th B L' (UP [F]))...
+     assert( FLLS th B L' (UP [F]))...
      inversion H0;subst;try solve [inversion H].
      rewrite <- H1.
        HProof. 
@@ -698,22 +698,22 @@ Proof with sauto;solveLL.
      cut4H H8 Hb. 
   *  inversion H1...
       + cut3H H5 Hb. 
-         assert(Hs: flls th B M (UP [F]))...
+         assert(Hs: FLLS th B M (UP [F]))...
           apply FLLStoFLLN in Hs.
           destruct Hs as [x Hs].
           inversion Hb...
             destruct(posOrNeg F).
-            assert(negFormula (F ^)).
+            assert(negFormula (dual F)).
             apply posDualNeg...
-            assert( flln th x B M  (UP [F]) -> 
-                    flln th (S n0) B [] (DW (F ^)) ->
-                      flls th B (M++[])  (UP [ ])) as Cut.
+            assert( FLLN th x B M  (UP [F]) -> 
+                    FLLN th (S n0) B [] (DW (dual F)) ->
+                      FLLS th B (M++[])  (UP [ ])) as Cut.
             eapply CW...
             CleanContext. 
            
-            assert( flln th n0 B []  (UP [F^]) -> 
-                  flln th (S x ) B M (DW ((F^)^)) ->
-                      flls th B ([]++M) (UP [ ])) as Cut.
+            assert( FLLN th n0 B []  (UP [dual F]) -> 
+                  FLLN th (S x ) B M (DW (dual (dual F))) ->
+                      FLLS th B ([]++M) (UP [ ])) as Cut.
             eapply CW...
             rewrite <- dualComplexity...
             rewrite <- dualInvolutive in Cut.
@@ -723,7 +723,7 @@ Proof with sauto;solveLL.
           cut3H H5 Hb. 
   
      * cut3H H5 Hb. 
-        assert(Hs:flls th B M (UP [F]))...
+        assert(Hs:FLLS th B M (UP [F]))...
              destruct (negAtomDec F).
               2:{  eapply @AbsorptionTheory with (F:=F)... }
              inversion H...
@@ -732,20 +732,20 @@ Proof with sauto;solveLL.
   
  
   Theorem CutElimination i j C A B L M N P: 
-      (flln th i B (C::M) (UP L) -> 
-      flln th j B N (UP [dual C]) -> 
-      flls th B (M ++ N) (UP L)) /\
-      (flln th i B M (UP (C :: L)) -> 
-      flln th j B N (DW (dual C)) -> 
-      flls th B (M ++ N) (UP L)) /\
+      (FLLN th i B (C::M) (UP L) -> 
+      FLLN th j B N (UP [dual C]) -> 
+      FLLS th B (M ++ N) (UP L)) /\
+      (FLLN th i B M (UP (C :: L)) -> 
+      FLLN th j B N (DW (dual C)) -> 
+      FLLS th B (M ++ N) (UP L)) /\
        (S (complexity A) = complexity C ->
-       flln th i (A::B) M (DW P) -> 
-       flln th j B [] (DW (! (dual A))) -> 
-       flls th B M (UP [P]))  /\
+       FLLN th i (A::B) M (DW P) -> 
+       FLLN th j B [] (DW (! (dual A))) -> 
+       FLLS th B M (UP [P]))  /\
       (S (complexity A) = complexity C ->
-       flln th i (A::B) M (UP L) -> 
-       flln th j B [] (DW (! (dual A))) -> 
-       flls th B M (UP L)).
+       FLLN th i (A::B) M (UP L) -> 
+       FLLN th j B [] (DW (! (dual A))) -> 
+       FLLS th B M (UP L)).
   Proof with sauto;solvePolarity;solveLL.
     assert(exists w, complexity C = w).
     eexists; auto.
@@ -806,9 +806,9 @@ Proof with sauto;solveLL.
           Qed.
           
   Theorem GeneralCut i j C B L M N: 
-    flln th i B M (UP (C::L)) -> 
-                   flln th j B N (DW (dual C)) -> 
-                                 flls th B (M++N ) (UP L).
+    FLLN th i B M (UP (C::L)) -> 
+                   FLLN th j B N (DW (dual C)) -> 
+                                 FLLS th B (M++N ) (UP L).
   Proof with subst;auto.
     assert(exists w, complexity C = w). 
     eexists; auto.
@@ -817,9 +817,9 @@ Proof with sauto;solveLL.
   Qed.
   
   Theorem GeneralCut' C B L M N:   
-      flls th B M  (UP (C :: L)) ->
-      flls th B N  (DW (dual C)) ->
-      flls th B (M ++ N) (UP L).
+      FLLS th B M  (UP (C :: L)) ->
+      FLLS th B N  (DW (dual C)) ->
+      FLLS th B (M ++ N) (UP L).
   Proof.
     intros.
     apply FLLStoFLLN in H.
@@ -829,9 +829,9 @@ Proof with sauto;solveLL.
   Qed.
 
   Theorem CutAndreoli i j C B M N: 
-    flln th i B M (DW C) -> 
-                   flln th j B N (DW (dual C)) -> 
-                                 flls th B (M++N) (UP []).
+    FLLN th i B M (DW C) -> 
+                   FLLN th j B N (DW (dual C)) -> 
+                                 FLLS th B (M++N) (UP []).
   Proof with subst;auto.
     intros.
     assert(exists w, complexity C = w). 
@@ -844,7 +844,7 @@ Proof with sauto;solveLL.
       inversion H0;subst;
         try solve[
               match goal with
-              | [H : _ = C ^ |- _] => rewrite <- H in H2;inversion H2
+              | [H : _ = dual C |- _] => rewrite <- H in H2;inversion H2
               end].
       eapply exchangeLC with (LC:=N++M). perm.  
       eapply GeneralCut; try assumption.

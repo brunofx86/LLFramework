@@ -126,5 +126,5 @@ Module LLNotations .
   Notation "A & B" := (AAnd A B) (at level 50) .
   Notation "! A" := (Bang A) (at level 50) .
   Notation "? A" := (Quest A) (at level 50) .
-  Notation " A ^ " := (dual A) (at level 10) .
+  Notation " A ∘" := (dual A) (at level 10) .
 End LLNotations .

@@ -93,11 +93,11 @@ Definition CutH {OL:OLSig} (w h: nat) :=
 
 Ltac dualSimpl :=
  match goal with
- | H: ?F = ?C^ |- _ => 
+ | H: ?F = dual ?C |- _ => 
     apply dualSubst in H;subst
- | H: ?C^ = ?F |- _ => 
+ | H: dual ?C = ?F |- _ => 
    symmetry in H; apply dualSubst in H;subst    
- | H: context [((?C)^)^] |- _ => 
+ | H: context [dual (dual ?C)] |- _ => 
     rewrite <- dualInvolutive in H  
 end;auto.    
 

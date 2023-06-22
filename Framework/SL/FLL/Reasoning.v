@@ -10,7 +10,7 @@ Section FLLReasoning.
  Variable th : oo -> Prop.
 
  Lemma unRelease B M P: 
- flls th B M (DW P) -> flls th B M (UP [P]).
+ FLLS th B M (DW P) -> FLLS th B M (UP [P]).
  Proof with sauto;solveLL.
   intros.
   inversion H...
@@ -18,14 +18,14 @@ Section FLLReasoning.
 Qed.
  
  Lemma select B M L P: posLFormula P ->
- flls th B M (UP (P::L)) -> flls th B (P::M) (UP L).
+ FLLS th B M (UP (P::L)) -> FLLS th B (P::M) (UP L).
  Proof with sauto;solvePolarity;solveLL.
   intros.
   inversion H0...
 Qed.
 
 Lemma TensorCommN: forall n F G B M,
-    (flln th n B M (DW (F ⊗ G))) -> (flln th n B M (DW (G ⊗ F))).
+    (FLLN th n B M (DW (F ⊗ G))) -> (FLLN th n B M (DW (G ⊗ F))).
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
@@ -34,7 +34,7 @@ Lemma TensorCommN: forall n F G B M,
  Qed.
 
 Lemma TensorComm: forall F G B M,
-    (flls th B M (DW (F ⊗ G))) -> (flls th B M (DW (G ⊗ F))).
+    (FLLS th B M (DW (F ⊗ G))) -> (FLLS th B M (DW (G ⊗ F))).
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
@@ -43,28 +43,28 @@ Lemma TensorComm: forall F G B M,
  Qed.
  
 Lemma OplusCommN: forall n F G B M,
-    (flln th n B M (DW (F ⊕ G))) -> (flln th n B M (DW (G ⊕ F))).
+    (FLLN th n B M (DW (F ⊕ G))) -> (FLLN th n B M (DW (G ⊕ F))).
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
  Qed.
 
 Lemma OplusComm: forall F G B M,
-    (flls th B M (DW (F ⊕ G))) -> (flls th B M (DW (G ⊕ F))).
+    (FLLS th B M (DW (F ⊕ G))) -> (FLLS th B M (DW (G ⊕ F))).
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
  Qed.
  
 Lemma WithCommN: forall n F G B M L,
-    flln th n B M (UP (F & G::L)) -> flln th n B M (UP (G & F::L)).
+    FLLN th n B M (UP (F & G::L)) -> FLLN th n B M (UP (G & F::L)).
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
  Qed.
 
 Lemma WithComm: forall F G B M L,
-    flls th B M (UP (F & G::L)) -> flls th B M (UP (G & F::L)).
+    FLLS th B M (UP (F & G::L)) -> FLLS th B M (UP (G & F::L)).
  Proof with sauto;solvePolarity;solveLL.
       intros.
       inversion H... 
@@ -72,7 +72,7 @@ Lemma WithComm: forall F G B M L,
 
 
 Lemma BangDistWith: forall F G B M,
-    flls th B M (DW (! (F & G))) <-> flls th B M (DW (! F ⊗ ! G)).
+    FLLS th B M (DW (! (F & G))) <-> FLLS th B M (DW (! F ⊗ ! G)).
  Proof with sauto;solvePolarity;solveLL.
     split;intros.
    *  inversion H...
@@ -83,7 +83,7 @@ Lemma BangDistWith: forall F G B M,
        inversion H6...
  Qed.
 
-  Example Tensor3 B L F: flls th B L (DW (F ⊗ Zero)) <-> flls th B L (DW Zero).
+  Example Tensor3 B L F: FLLS th B L (DW (F ⊗ Zero)) <-> FLLS th B L (DW Zero).
   Proof with sauto;solvePolarity.
     split;intros;
     inversion H...
@@ -92,7 +92,7 @@ Lemma BangDistWith: forall F G B M,
 
    
 Theorem weakeningGenN (CC LC : list oo) CC' X n:
-   flln th n CC LC X -> flln th n (CC'++ CC) LC X.
+   FLLN th n CC LC X -> FLLN th n (CC'++ CC) LC X.
 Proof.
       intro H.
       induction CC';simpl;auto.
@@ -100,7 +100,7 @@ Proof.
 Qed.
 
 Theorem weakeningGenN_rev (CC LC : list oo) CC' X n:
-   flln th n CC LC X -> flln th n (CC++ CC') LC X.
+   FLLN th n CC LC X -> FLLN th n (CC++ CC') LC X.
 Proof.      
       intros.
       eapply exchangeCCN with (CC := CC' ++ CC);auto.
@@ -109,7 +109,7 @@ Proof.
 Qed.
 
 Theorem weakening_swap (C LC : list oo) F G X:
-   flls th (F::C) LC X -> flls th (F :: G:: C) LC X.
+   FLLS th (F::C) LC X -> FLLS th (F :: G:: C) LC X.
 Proof with sauto;solveLL. 
      intros.
       eapply exchangeCC.
@@ -119,7 +119,7 @@ Proof with sauto;solveLL.
 
  
  Theorem weakening_middle (C1 C2 LC : list oo) F X:
-   flls th (C1++ C2) LC X -> flls th (C1++F :: C2) LC X.
+   FLLS th (C1++ C2) LC X -> FLLS th (C1++F :: C2) LC X.
 Proof. 
       intros.
      eapply exchangeCC.
@@ -128,7 +128,7 @@ Proof.
 Qed.
 
  Theorem weakening_last (C LC : list oo) F X:
-   flls th C LC X -> flls th (C++[F]) LC X.
+   FLLS th C LC X -> FLLS th (C++[F]) LC X.
 Proof. 
       intros.
      eapply exchangeCC.
@@ -137,7 +137,7 @@ Proof.
 Qed.
    
 Theorem weakeningGen (CC LC : list oo) CC' X:
-   flls th CC LC X -> flls th (CC' ++ CC) LC X.
+   FLLS th CC LC X -> FLLS th (CC' ++ CC) LC X.
 Proof.     
      intro H.
       induction CC';simpl;auto.
@@ -145,7 +145,7 @@ Proof.
 Qed.
 
 Theorem weakeningGen_rev (CC LC : list oo) CC' X:
-   flls th CC LC X -> flls th (CC++CC') LC X.
+   FLLS th CC LC X -> FLLS th (CC++CC') LC X.
 Proof.
       intros.
       eapply exchangeCC with (CC := CC' ++ CC);auto.
@@ -154,7 +154,7 @@ Proof.
 Qed.
 
 Theorem weakeningHead (C1 C2 C1' C2' LC : list oo) X:
-   flls th (C2++C2') LC X -> flls th ((C1++C2) ++ (C1'++C2')) LC X.
+   FLLS th (C2++C2') LC X -> FLLS th ((C1++C2) ++ (C1'++C2')) LC X.
 Proof.     
      intro H.
      eapply exchangeCC with 
@@ -164,7 +164,7 @@ Qed.
 
 
 Theorem weakeningTail (C1 C2 C1' C2' LC : list oo) X:
-   flls th (C1++C1') LC X -> flls th ((C1++C2) ++ (C1'++C2')) LC X.
+   FLLS th (C1++C1') LC X -> FLLS th ((C1++C2) ++ (C1'++C2')) LC X.
 Proof.     
      intro H.
      eapply exchangeCC with 
@@ -173,7 +173,7 @@ Proof.
 Qed.
 
 Lemma contrac : forall CC LC  F X ,
-  flls th  (F :: F::CC) LC X -> flls th (F::CC) LC X.
+  FLLS th  (F :: F::CC) LC X -> FLLS th (F::CC) LC X.
 Proof with sauto.
 intros.
   apply contraction with (F:=F)...
@@ -181,7 +181,7 @@ Qed.
 
 
 Lemma contraction_middle : forall C1 C2 LC  F X ,
-  flls th  (C1++F::F::C2) LC X -> flls th (C1++F::C2) LC X.
+  FLLS th  (C1++F::F::C2) LC X -> FLLS th (C1++F::C2) LC X.
 Proof with sauto.
 intros.
   apply contraction with (F:=F)...
@@ -189,8 +189,8 @@ intros.
 Qed.
 
 Lemma AbsorptionCSet : forall n C Gamma Delta X,
-  flln th n (C++Gamma) (Delta++ C)  X ->
-      flln th n (C ++ Gamma) Delta  X.
+  FLLN th n (C++Gamma) (Delta++ C)  X ->
+      FLLN th n (C ++ Gamma) Delta  X.
   Proof with sauto.
   induction C;simpl;intros...
   apply absorptionN. 
@@ -200,8 +200,8 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
   Qed. 
   
     Lemma AbsorptionCSet' : forall  C Gamma Delta X,
-  flls  th (C++Gamma) (Delta++ C)  X ->
-      flls  th (C ++ Gamma) Delta  X.
+  FLLS  th (C++Gamma) (Delta++ C)  X ->
+      FLLS  th (C ++ Gamma) Delta  X.
   Proof with sauto.
   intros.
   apply FLLStoFLLN in H...
@@ -210,8 +210,8 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
   Qed. 
   
  Lemma AbsorptionCSet_rev : forall C Gamma Delta X,
-  flls  th (Gamma++C) (Delta++C)  X ->
-      flls  th (Gamma++C) Delta  X.
+  FLLS  th (Gamma++C) (Delta++C)  X ->
+      FLLS  th (Gamma++C) Delta  X.
   Proof with sauto.
   intros.
   apply FLLStoFLLN in H...
@@ -223,8 +223,8 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
   Qed.
   
  Lemma AbsorptionLSet : forall n C Gamma Delta X,
-  flln th n (Gamma) (Delta++ C)  X ->
-      flln th n (C ++ Gamma) Delta  X.
+  FLLN th n (Gamma) (Delta++ C)  X ->
+      FLLN th n (C ++ Gamma) Delta  X.
   Proof with sauto.
   induction C;simpl;intros...
   rewrite app_comm_cons.
@@ -235,8 +235,8 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
   Qed. 
  
   Lemma AbsorptionLSet' : forall C Gamma Delta X,
-  flls th (Gamma) (Delta++C)  X ->
-      flls th (C ++ Gamma) Delta  X.
+  FLLS th (Gamma) (Delta++C)  X ->
+      FLLS th (C ++ Gamma) Delta  X.
   Proof with sauto.
   intros.
   apply FLLStoFLLN in H...
@@ -248,7 +248,7 @@ Lemma AbsorptionCSet : forall n C Gamma Delta X,
 (** Some inveribility lemmas *)
 
 Theorem FocusAtom: forall n Gamma Delta A,
- (flln th n Gamma Delta (DW ((perp A ) ))) ->
+ (FLLN th n Gamma Delta (DW ((perp A ) ))) ->
     Delta = [ (atom A)] \/ (Delta = [] /\ In (atom A ) Gamma) . 
  Proof with sauto.
       intros.
@@ -257,11 +257,11 @@ Theorem FocusAtom: forall n Gamma Delta A,
  Qed.
 
    Theorem FocusingClause : forall n B D A F,
-     flln th n B D (DW ((perp A) ⊗ F)) ->
+     FLLN th n B D (DW ((perp A) ⊗ F)) ->
  (exists m N, n = S m /\ Permutation D ((atom A)::N) /\
-                flln th m B N  (DW F)) \/
+                FLLN th m B N  (DW F)) \/
    (exists m, n = S m /\ In (atom A) B /\
-                flln th m B D  (DW F)).
+                FLLN th m B D  (DW F)).
   Proof with sauto.
   intros.
   InvTriAll;[left | right].
@@ -272,7 +272,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
  
   Lemma FocusingInitRuleU : forall h D A A' B,
-      flln th h B D (DW ((perp A) ⊗ (perp A') ))  -> 
+      FLLN th h B D (DW ((perp A) ⊗ (perp A') ))  -> 
       Permutation D ([atom A] ++ [atom A']) \/ 
       (D = [atom A] /\ In (atom A') B) \/ 
       (D = [atom A'] /\ In (atom A) B) \/
@@ -284,12 +284,12 @@ Theorem FocusAtom: forall n Gamma Delta A,
     Qed.
     
    Theorem FocusingStruct : forall n D B A F,
-   flln th n B D (DW ((perp A) ⊗ (? F))) ->
+   FLLN th n B D (DW ((perp A) ⊗ (? F))) ->
    (exists m N, n = S (S (S m)) /\  Permutation D ((atom A)::N) /\
-                flln th m (B++[F]) N  (UP [] )) \/
+                FLLN th m (B++[F]) N  (UP [] )) \/
     (exists m, n = S (S (S m))  /\ In (atom A) B /\
 
-                flln th m (B++[F]) D  (UP [] )).            
+                FLLN th m (B++[F]) D  (UP [] )).            
    Proof with sauto.
    intros.
    InvTriAll; [left | right].
@@ -301,9 +301,9 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
   Theorem FocusingPar :
     forall n A B D G,
-    flln th n G D (DW ((atom A) ⅋ ( atom B))) ->
+    FLLN th n G D (DW ((atom A) ⅋ ( atom B))) ->
       exists m , n =  S (S(S(S m)))  /\
-                 flln th m G (atom B::atom A::D) (UP []).
+                 FLLN th m G (atom B::atom A::D) (UP []).
   Proof with sauto.
     intros.
     InvTriAll.  
@@ -312,9 +312,9 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
   Theorem FocusingParPos :
     forall n A B D G, posLFormula A -> posLFormula B ->
-    flln th n G D (DW (A ⅋ B)) ->
+    FLLN th n G D (DW (A ⅋ B)) ->
       exists m , n =  S (S(S(S m)))  /\
-                 flln th m G (B::A::D) (UP []).
+                 FLLN th m G (B::A::D) (UP []).
   Proof with sauto.
     intros.
     InvTriAll.
@@ -325,11 +325,11 @@ Theorem FocusAtom: forall n Gamma Delta A,
   
   Theorem FocusingPlus:
     forall n A B D G ,
-    flln th n G D (DW ( (atom A) ⊕ (atom B))) ->
+    FLLN th n G D (DW ( (atom A) ⊕ (atom B))) ->
      ( exists m , n = (S(S (S m)))  /\
-                 (flln th m G (atom A ::D) (UP []) )) \/
+                 (FLLN th m G (atom A ::D) (UP []) )) \/
     ( exists m , n = (S(S (S m)))  /\
-                 flln th m G (atom B::D) (UP []) ).
+                 FLLN th m G (atom B::D) (UP []) ).
   Proof with sauto.
     intros.
     InvTriAll;[left | right].
@@ -339,11 +339,11 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
   Theorem FocusingPlusPos:
     forall n A B D G ,
-    flln th n G D (DW ( Bang (atom A) ⊕ Bang (atom B))) ->
+    FLLN th n G D (DW ( Bang (atom A) ⊕ Bang (atom B))) ->
      ( exists m , n = (S(S (S m)))  /\ D = [] /\
-                 (flln th m G [atom A] (UP []) )) \/
+                 (FLLN th m G [atom A] (UP []) )) \/
     ( exists m , n = (S(S (S m)))  /\  D = [] /\
-                 flln th m G [atom B] (UP []) ).
+                 FLLN th m G [atom B] (UP []) ).
   Proof with sauto.
     intros.
     InvTriAll;[left | right].
@@ -353,10 +353,10 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
   Theorem FocusingWith :
     forall n A B D G,
-      flln th n G D (DW ( (atom A) & (atom B))) ->
+      FLLN th n G D (DW ( (atom A) & (atom B))) ->
       exists m , n = S(S(S m))  /\
-                 ( (flln th m G (atom A::D) (UP []) ) /\
-                   (flln th m G (atom B::D) (UP []) )) .
+                 ( (FLLN th m G (atom A::D) (UP []) ) /\
+                   (FLLN th m G (atom B::D) (UP []) )) .
   Proof with sauto.
     intros.
     InvTriAll.
@@ -366,10 +366,10 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
   Theorem FocusingWithPos :
     forall n A B D G, posLFormula A -> posLFormula B ->
-      flln th n G D (DW ( A & B)) ->
+      FLLN th n G D (DW ( A & B)) ->
       exists m , n = S(S(S m))  /\
-                 ( (flln th m G (A::D) (UP []) ) /\
-                   (flln th m G (B::D) (UP []) )) .
+                 ( (FLLN th m G (A::D) (UP []) ) /\
+                   (FLLN th m G (B::D) (UP []) )) .
   Proof with sauto.
     intros.
     InvTriAll.
@@ -381,10 +381,10 @@ Theorem FocusAtom: forall n Gamma Delta A,
   
   Theorem FocusingTensor :
     forall n A B D G,
-      flln th n G D (DW ( (atom A) ⊗ (atom B))) ->
+      FLLN th n G D (DW ( (atom A) ⊗ (atom B))) ->
        exists m M N , n = S(S(S m))  /\ Permutation D (M++N) /\ 
-                  ( flln th m G (atom A::M) (UP [])) /\
-                  ( flln th m G (atom B::N) (UP [])).
+                  ( FLLN th m G (atom A::M) (UP [])) /\
+                  ( FLLN th m G (atom B::N) (UP [])).
    Proof with sauto.
     intros.
     InvTriAll.
@@ -393,10 +393,10 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
   Theorem FocusingTensorPos :
     forall n A B D G,
-      flln th n G D (DW ( Bang (atom A) ⊗ (atom B))) ->
+      FLLN th n G D (DW ( Bang (atom A) ⊗ (atom B))) ->
        exists m , n = S(S(S m))  /\
-                  ( flln th m G [atom A] (UP [])) /\
-                  ( flln th m G (atom B::D) (UP [])).
+                  ( FLLN th m G [atom A] (UP [])) /\
+                  ( FLLN th m G (atom B::D) (UP [])).
    Proof with sauto.
     intros.
     InvTriAll.
@@ -405,14 +405,14 @@ Theorem FocusAtom: forall n Gamma Delta A,
    Qed. 
    
    Theorem FocusingClauseL : forall B D A F,
-     flls th B D (DW F) -> flls th B  (atom A::D) (DW ((perp A) ⊗ F)).
+     FLLS th B D (DW F) -> FLLS th B  (atom A::D) (DW ((perp A) ⊗ F)).
    Proof with sauto.
    intros.
    LLtensor [atom A] D.
    Qed.  
 
  Theorem FocusingClauseL' : forall B D D' A F,
-   Permutation D (atom A::D') -> flls th B D' (DW F) -> flls th B  D (DW ((perp A) ⊗ F)).
+   Permutation D (atom A::D') -> FLLS th B D' (DW F) -> FLLS th B  D (DW ((perp A) ⊗ F)).
    Proof with auto using FocusingClauseL.
    intros.
    rewrite H...
@@ -420,7 +420,7 @@ Theorem FocusAtom: forall n Gamma Delta A,
 
      
    Theorem FocusingClauseC : forall B D A F,
-   In (atom A) B ->  flls th B D (DW F) -> flls th B  D (DW ((perp A) ⊗ F)).
+   In (atom A) B ->  FLLS th B D (DW F) -> FLLS th B  D (DW ((perp A) ⊗ F)).
    Proof with sauto.
    intros.
    rewrite <- (app_nil_l D).
