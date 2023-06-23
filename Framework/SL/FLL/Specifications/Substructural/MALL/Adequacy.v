@@ -74,7 +74,7 @@ Theorem SoundenessFLL: forall n L1 L2,
                             isOLFormulaL L1 ->
                                 isOLFormulaL L2 ->
                   MALLSeq (P:=wnc) (n:=n) L1 L2 ->
-                                flls (OLTheory nPnN) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
+                                FLLS (OLTheory nPnN) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
 Proof with sauto; try OLSolve. 
     intros *. 
     intros isFL1 isFL2 HM.
@@ -261,7 +261,7 @@ Require Import LL.Framework.SL.FLL.Reasoning.
 Theorem CompletenessFLL: forall x n L1 L2, 
                             isOLFormulaL L1 ->
                                 isOLFormulaL L2 ->
-                 flln (OLTheory nPnN) x []  ( (LEncode L1) ++  (REncode L2)) (UP []) ->
+                 FLLN (OLTheory nPnN) x []  ( (LEncode L1) ++  (REncode L2)) (UP []) ->
                  MALLSeq (P:=wnc) (n:=n) L1 L2.
 Proof with sauto;try solveLL; try OLSolve.
   induction x using lt_wf_ind; intros *.  
@@ -437,7 +437,7 @@ Theorem SoundenessCFLL: forall x L1 L2,
                             isOLFormulaL L1 ->
                                 isOLFormulaL L2 ->
                   MALLSeq (P:=wc) (n:=x) L1 L2 ->
-                     flls (OLTheoryCut nPnN x) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
+                     FLLS (OLTheoryCut nPnN x) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
 Proof with sauto; try solveLL; try OLSolve. 
     intros *. 
     intros isFL1 isFL2 HM.
@@ -652,7 +652,7 @@ Proof with sauto; try solveLL; try OLSolve.
 Proof with sauto.
  intros.
  apply  SoundenessCFLL in H1...
- specialize(OLCutElimination  wellTheoryMALL CutCoherenceMALL);intros.
+ specialize(OLCutElimination wellTheoryMALL CutCoherenceMALL);intros.
  apply FLLStoFLLN in H1...
  apply H2 in H1... all:clear H2.
  apply FLLStoFLLN in H1...

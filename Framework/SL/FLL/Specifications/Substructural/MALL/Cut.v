@@ -498,4 +498,4 @@ Proof.
   apply CutCoherenceOPLUS.
 Qed.
  
-Check OLCutElimination wellTheoryMALL CutCoherenceMALL. 
+Check OLCutElimination wellTheoryMALL CutCoherenceMALL.  

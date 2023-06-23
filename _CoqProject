@@ -80,18 +80,22 @@ Framework/SL/FLL/Specifications/CutCoherence.v
 Framework/SL/FLL/Specifications/Requirement1.v
 Framework/SL/FLL/Specifications/Requirement2.v
 Framework/SL/FLL/Specifications/OLTheory.v
+Framework/SL/FLL/Specifications/WellHyp.v
 
 Framework/SL/FLL/Specifications/Substructural/OLCut.v
 Framework/SL/FLL/Specifications/Substructural/MALL/Bipoles.v
 Framework/SL/FLL/Specifications/Substructural/MALL/Cut.v
+Framework/SL/FLL/Specifications/Substructural/MALL/Adequacy.v
 
 Framework/SL/FLL/Specifications/Classical/OLCut.v
 Framework/SL/FLL/Specifications/Classical/LK/Bipoles.v
 Framework/SL/FLL/Specifications/Classical/LK/Cut.v
+Framework/SL/FLL/Specifications/Classical/LK/Adequacy.v
 
 Framework/SL/FLL/Specifications/Intuitionistic/OLCut.v
 Framework/SL/FLL/Specifications/Intuitionistic/LM/Bipoles.v
 Framework/SL/FLL/Specifications/Intuitionistic/LM/Cut.v
+Framework/SL/FLL/Specifications/Intuitionistic/LM/Adequacy.v
 
 # Linear Logic with Subexponentials
 Framework/SL/SELLF/Signature.v

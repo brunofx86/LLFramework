@@ -7,11 +7,8 @@ cut-coherent in the sense of Miller & Pimentel. Roughly, a system is
 cut-coherent if the encoding of the right and left rules of each
 connective are dual. *)
 
-Require Export LL.Misc.Hybrid.
 Require Export LL.Framework.SL.FLL.Specifications.StructuralClauses. 
-
-Require Export LL.Framework.SL.FLL.Specifications.Requirement1.
-
+Require Export LL.Framework.SL.FLL.Specifications.WellHyp.
 Require Export LL.Framework.SL.FLL.Specifications.OLTheory.
 
 Require Import Coq.Init.Nat.
@@ -29,79 +26,9 @@ Set Implicit Arguments.
 Section CutElimination .
 
   Context `{OLR: OORules}.
- 
-  (** As a general hypothesis, we assume that the Object logic is cut-coherent *)
-  Hypothesis LTWell1 : wellFormedTheory.
-  Hypothesis LTCutCoherence: CutCoherence cutR1.
-   
-  Definition ctWellFormed := proj1 LTWell1.
-  Definition unWellFormed := proj1 (proj2 LTWell1).
-  Definition biWellFormed := proj1 (proj2 (proj2 LTWell1)).
-  Definition quWellFormed := proj2 (proj2 (proj2 LTWell1)).
 
-  Definition ctCutCo := proj1 LTCutCoherence.
-  Definition unCutCo := proj1 (proj2 LTCutCoherence).
-  Definition biCutCo := proj1 (proj2 (proj2 LTCutCoherence)).
-  Definition quCutCo := proj2 (proj2 (proj2 LTCutCoherence)).
-
-   (** Extracting the needed facts given that all the OL constants are well-defined *)
-   Ltac wellConstant HSeq :=
-    let HS := type of HSeq in
-    match HS with
-    | FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C)) =>
-      let Side' :=
-          match Side with 
-          makeRRuleC => Right
-           | makeLRuleC => Left end in
-        let LTWell' := fresh "LTWell'" in
-        let bpEnum := fresh "bpEnum" in 
-        generalize (ctWellFormed Rules Gamma M C Side' );intro LTWell';
-        destruct LTWell' as [bpEnum  LTWell' ];
-          destruct bpEnum;[ apply LTWell' in HSeq; contradiction (* fail case *)
-                          | generalize (LTWell' _ HSeq);intro;clear LTWell' (* axiom *)
-                          | generalize (LTWell' _ HSeq);intro;clear LTWell'] (* one premise *)
-    end.
-    
-   Ltac wellUnary HSeq  :=
-    let HS := type of HSeq in
-    match HS with
-    | (FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
-      let Side' :=
-          match Side with 
-          makeRRuleU => Right 
-          | makeLRuleU => Left end in
-        let LTWell' := fresh "LTWell'" in
-        let bpEnum := fresh "bpEnum" in 
-        generalize  (unWellFormed Rules Gamma M C Side' );
-        intro LTWell';generalize (LTWell' _ _ HSeq);intro;clear LTWell'
-    end.
- 
-  (** Extracting well-formed conditions for binary predicates *)
-  Ltac wellBinary HSeq :=
-    let HS := type of HSeq in
-    match HS with
-    | (FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F ?G))) =>
-      let Side' :=
-          match Side with makeRRuleB => Right | makeLRuleB => Left end in
-        let LTWell' := fresh "LTWell'" in
-        let bpEnum := fresh "bpEnum" in 
-        generalize (biWellFormed Rules Gamma M C Side' );intro LTWell';
-        destruct LTWell' as [bpEnum  LTWell' ]; 
-        destruct bpEnum;generalize (LTWell' _ _ _ HSeq);intro;clear LTWell'
-    end.
-
-  Ltac wellQuantifier HSeq :=
-    let HS := type of HSeq in
-    match HS with
-    | (FLLN ?Rules ?n ?Gamma ?M (DW (?Side ?C ?F))) =>
-      let Side' :=
-          match Side with makeRRuleQ => Right | makeLRuleQ => Left end in
-        let LTWell' := fresh "LTWell'" in
-        let bpEnum := fresh "bpEnum" in 
-         let HUniform := fresh "HUniform" in
-        generalize  (quWellFormed Rules Gamma M C Side' F); intro LTWell';
-      generalize (LTWell' _ HSeq); intro;clear LTWell'  
-    end.
+Hypothesis LTWell : wellFormedTheory. 
+Hypothesis LTCutCo: CutCoherence cutR1. 
 
 Definition EmptyTheory (F :oo) := False.
 
@@ -134,7 +61,7 @@ Qed.
     intros.
     apply  FLLStoFLLN in H... 
     apply FLLStoFLLN in H0...
-    generalize( ctCutCo C);intro CutC.
+    generalize( ctCutCo LTCutCo C);intro CutC.
     unfold CutCoherenceC in CutC.
     destruct CutC as [Hc CutC].
     apply EmptySubSet with (theory:= (OLTheory nPnN) ) in CutC.
@@ -169,7 +96,7 @@ Qed.
     destruct H as [h1 H].
     destruct H0 as [h2 H0].
 
-    generalize( unCutCo C);intro CutC.
+    generalize( unCutCo LTCutCo C);intro CutC.
     unfold CutCoherenceU in CutC.
     
     generalize (CutC F n1);intro Cut1. clear CutC.
@@ -208,7 +135,7 @@ Qed.
     destruct H as [h1 H].
     destruct H0 as [h2 H0].
 
-    generalize (biCutCo C);intro CutC.
+    generalize (biCutCo LTCutCo C);intro CutC.
     unfold CutCoherenceB in CutC.
     
     generalize (CutC F G n1 n2);intro Cut1. clear CutC.
@@ -252,7 +179,7 @@ Qed.
     inversion H3...
     destruct n ;[ lia | simpl].
     assert (ext_eq FX M0). eapply lbindEq;eauto.
-    generalize ( quCutCo C) ;intro CutC.
+    generalize ( quCutCo LTCutCo C) ;intro CutC.
     assert (Hsize: lengthUexp (FX (Var 0%nat)) n0).
     { rewrite H17...  apply proper_VAR.  }
     assert(HIs: (forall t : expr Econ, proper t -> isOLFormula (FX t))).
@@ -370,7 +297,6 @@ Ltac PermuteLeft :=
    | _ => idtac
        end;unformSeq.
        
-
 (** Unary Right is not principal on the left branch *)    
 Lemma UnaryRightNotPrincipalL n n' n0 n1 C FCut F Gamma M N: 
  n' <= n ->
@@ -388,7 +314,7 @@ FLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
 FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto; try OLSolve.
   intros.
-  wellUnary H9.
+  wellUnary LTWell H9.
   * Cases H10.
      - PermuteLeft.
         cutOL H8 H12. 
@@ -422,7 +348,7 @@ FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
 FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellUnary H10.
+  wellUnary LTWell H10.
   * Cases H11.
      - PermuteLeft. 
         cutOL H9 H13.
@@ -455,7 +381,7 @@ FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
 FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellBinary H9.
+  wellBinary LTWell H9.
   * Cases H10.
      - PermuteLeft. 
         cutOL H8 H12.
@@ -555,7 +481,7 @@ FLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
 FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellBinary H10.
+  wellBinary LTWell H10.
   * Cases H11.
      - PermuteLeft.  
         cutOL H9 H13.
@@ -654,7 +580,7 @@ FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
 FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellQuantifier H9.  
+  wellQuantifier LTWell H9.  
  Cases H10.
      - PermuteLeft.  
         cutOL H8 H12.
@@ -689,7 +615,7 @@ FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
 FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 Proof with sauto.
   intros.
-  wellQuantifier H10.
+  wellQuantifier LTWell H10.
   * Cases H11.
      - PermuteLeft.  
         cutOL H9 H13.
@@ -788,13 +714,13 @@ Proof with sauto.
   unfold ConnectiveRight; intros *.
    intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellConstant Hseq1'.
+  wellConstant LTWell Hseq1'.
   * Cases H. 
      2:{ LLPerm ((⌈ t_ccon C ⌉) :: x0++M)... }
     rewrite <- H4 in H2.
     clear H4.
     inversion Hth'...
-           -- wellConstant Hseq2'.   
+           -- wellConstant LTWell Hseq2'.   
                Cases H0.
                rewrite <- app_comm_cons...
                Cases H0. 
@@ -810,7 +736,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N). eauto.
                apply H10...
                LLPerm ( (M ++ x) ++ N)...
-           -- wellConstant Hseq2'.   
+           -- wellConstant LTWell Hseq2'.   
                Cases H0.
                2:{ rewrite <- app_comm_cons... }
                rewrite <- H7 in H5.
@@ -859,7 +785,7 @@ Proof with sauto.
                rewrite app_assoc_reverse... }
 
          inversion Hth'...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H2. 
                rewrite <- app_comm_cons...
            -- Cases H2. 
@@ -875,7 +801,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N). eauto.
                apply H14...
                rewrite Permutation_assoc_comm...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H2. 
                rewrite <- H11 in H9.
                rewrite <- H6 in H3.
@@ -918,7 +844,7 @@ Proof with sauto.
   unfold ConnectiveRight; intros *.
    intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellUnary Hseq1'.
+  wellUnary LTWell Hseq1'.
   * Cases H.
      2:{  PermuteLeft.
          cutOL H1 Hseq2.
@@ -933,7 +859,7 @@ Proof with sauto.
                apply H7...
                rewrite app_assoc_reverse... }
          inversion Hth'...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H2. 
                rewrite <- app_comm_cons...
            -- Cases H2. 
@@ -949,7 +875,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N). eauto.
                apply H14...
                rewrite Permutation_assoc_comm...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H2. 
               rewrite <- app_comm_cons...
            -- Cases H2. 
@@ -967,7 +893,7 @@ Proof with sauto.
                apply H14...  
                rewrite Permutation_assoc_comm... 
          - permuteUnary.
-         - wellUnary Hseq2'.
+         - wellUnary LTWell Hseq2'.
             Cases H2. 
             
             rewrite <- H6 in H3. 
@@ -1003,7 +929,7 @@ Proof with sauto.
    unfold ConnectiveRight; intros *.
     intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellBinary Hseq1'.
+  wellBinary LTWell Hseq1'.
   * Cases H. 
      2:{  rewrite H in H1.
          rewrite <- app_comm_cons in H1 . 
@@ -1019,7 +945,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N).
                apply H7...  rewrite app_assoc_reverse... }
          inversion Hth'...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H2. 
                rewrite <- app_comm_cons...
            -- Cases H2. 
@@ -1035,7 +961,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N).
                apply H14...
                rewrite Permutation_assoc_comm...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H2. 
               rewrite <- app_comm_cons...
            -- Cases H2. 
@@ -1056,7 +982,7 @@ Proof with sauto.
          - permuteUnary.
          - permuteUnary.
          - permuteBinary.
-         - wellBinary Hseq2'.
+         - wellBinary LTWell Hseq2'.
            { Cases H2. 
             
             rewrite <- H13 in H10. 
@@ -1214,7 +1140,7 @@ Proof with sauto.
                apply WeakTheory with (theory := OLTheory nPnN )... 
           rewrite app_assoc_reverse... }
          inversion Hth'...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H3. 
                rewrite <- app_comm_cons...
            -- Cases H3. 
@@ -1230,7 +1156,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N).
                apply H16...
                rewrite Permutation_assoc_comm...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H3. 
               rewrite <- app_comm_cons...
            -- Cases H3. 
@@ -1252,7 +1178,7 @@ Proof with sauto.
          - permuteUnary.
          - permuteUnary.
          - permuteBinary.
-         - wellBinary Hseq2'.
+         - wellBinary LTWell Hseq2'.
            { Cases H3. 
             
             rewrite <- H15 in H12. 
@@ -1382,7 +1308,7 @@ Proof with sauto.
          apply H9...
         1-2: rewrite app_assoc_reverse... } 
          inversion Hth'...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H3. 
                rewrite <- app_comm_cons...
            -- Cases H3. 
@@ -1398,7 +1324,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N).
                apply H16...
                rewrite Permutation_assoc_comm...
-         - wellConstant Hseq2'.
+         - wellConstant LTWell Hseq2'.
            -- Cases H3. 
               rewrite <- app_comm_cons...
            -- Cases H3.
@@ -1419,7 +1345,7 @@ Proof with sauto.
          - permuteUnary.
          - permuteUnary.
          - permuteBinary.
-         - wellBinary Hseq2'.
+         - wellBinary LTWell Hseq2'.
            { Cases H3. 
             
             rewrite <- H8 in H1. 
@@ -1531,7 +1457,7 @@ Proof with sauto.
  unfold ConnectiveRight ; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
-  wellQuantifier Hseq1'.
+  wellQuantifier LTWell Hseq1'.
   Cases H. 
   2:{ PermuteLeft. 
          cutOL H1 Hseq2.
@@ -1546,7 +1472,7 @@ Proof with sauto.
          apply H7...
          rewrite app_assoc_reverse... }         
     inversion Hth'... 
-           -- wellConstant Hseq2'.   
+           -- wellConstant LTWell Hseq2'.   
                Cases H2.
                rewrite <- app_comm_cons... 
  Cases H2. 
@@ -1562,7 +1488,7 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N). eauto.
                apply H14...
                LLPerm ( (M ++ x3) ++ N)...
-           -- wellConstant Hseq2'.   
+           -- wellConstant LTWell Hseq2'.   
                Cases H2.
                rewrite <- app_comm_cons...               Cases H2. 
                PermuteLeft.
@@ -1582,7 +1508,7 @@ Proof with sauto.
            -- permuteBinary.
            -- permuteBinary.
            -- permuteQuantifier.           
-           -- wellQuantifier Hseq2'.
+           -- wellQuantifier LTWell Hseq2'.
                destruct H5...
                checkPermutationCases H5.
                inversion H13...
@@ -1626,7 +1552,7 @@ Proof with sauto.
   unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellConstant Hseq1'.
+  wellConstant LTWell Hseq1'.
   * Cases H. 
      + LLPerm ( (⌊ t_ccon C ⌋) :: x0++M)...
   * Cases H. 
@@ -1649,7 +1575,7 @@ Proof with sauto.
   unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellUnary Hseq1'.
+  wellUnary LTWell Hseq1'.
   * Cases H. 
      + PermuteLeft.  
          cutOL H1 Hseq2.
@@ -1670,7 +1596,7 @@ Proof with sauto.
   unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellBinary Hseq1'.
+  wellBinary LTWell Hseq1'.
   * Cases H. 
    +   rewrite H in H1. 
          rewrite <- app_comm_cons in H1. 
@@ -1763,7 +1689,7 @@ Proof with sauto.
   unfold ConnectiveLeft; intros *.
   intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
   intros Hseq1' OLCut Hth.
-  wellQuantifier Hseq1'.
+  wellQuantifier LTWell Hseq1'.
   * Cases H. 
      + PermuteLeft.  
          cutOL H1 Hseq2.
@@ -1874,12 +1800,12 @@ cut(False);intros...
                            Hseq2 
                            H2 _ _)...
        - refine(QuantifierRIGHT 
-                           HL' 
+                           H7 HL' 
                            H9 
                            HisF _ _ _ _ 
                            Hseq1 
                            Hseq2 _ _ _ _ 
-                           H8 H7)...        
+                           H8)...        
        - refine(QuantifierLEFT 
                            HL' 
                            H9 
@@ -1933,7 +1859,7 @@ cut(False);intros...
        inversion H3...
        inversion H4...
       + (* constant *)
-         wellConstant H2.
+         wellConstant LTWell H2.
          Cases H6.
          apply H10... eauto.
          Cases H6.
@@ -1945,7 +1871,7 @@ cut(False);intros...
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
       + (* constant *)
-         wellConstant H2.
+         wellConstant LTWell H2.
          Cases H6.
          apply H10... eauto.
          Cases H6.
@@ -1957,7 +1883,7 @@ cut(False);intros...
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
       + (* unary *)
-         wellUnary H2.
+         wellUnary LTWell H2.
          Cases H6.
          apply H14... 
          refine (H _ _ _ _ _ _ H8)...
@@ -1967,7 +1893,7 @@ cut(False);intros...
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
       + (* unary *)
-         wellUnary H2.
+         wellUnary LTWell H2.
          Cases H6. 
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
@@ -1977,7 +1903,7 @@ cut(False);intros...
          apply H14...
          refine (H _ _ _ _ _ _ H10)...
       + (* binary *)
-         wellBinary H2.
+         wellBinary LTWell H2.
          { Cases H6.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
@@ -2018,7 +1944,7 @@ cut(False);intros...
          refine (H _ _ _ _ _ _ H11)... 
          refine (H _ _ _ _ _ _ H12)...  } 
       + (* binary *)
-         wellBinary H2.
+         wellBinary LTWell H2.
          { Cases H6.
          apply H14...
          refine (H _ _ _ _ _ _ H8)...
@@ -2059,7 +1985,7 @@ cut(False);intros...
          refine (H _ _ _ _ _ _ H11)... 
          refine (H _ _ _ _ _ _ H12)...  } 
       + (* quantifier *)
-         wellQuantifier H2.
+         wellQuantifier LTWell H2.
          Cases H7.
          apply H15...
          refine (H _ _ _ _ _ _ H9)...
@@ -2069,7 +1995,7 @@ cut(False);intros...
          apply H15...
          refine (H _ _ _ _ _ _ H11)...
       + (* quantifier *)
-         wellQuantifier H2.
+         wellQuantifier LTWell H2.
          Cases H7.
          apply H15...
          refine (H _ _ _ _ _ _ H9)...

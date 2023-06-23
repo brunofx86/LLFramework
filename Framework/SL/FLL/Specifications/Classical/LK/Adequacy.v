@@ -157,7 +157,7 @@ Theorem SoundenessFLL: forall  L1 L2,
                             isOLFormulaL L1 ->
                                 isOLFormulaL L2 ->
                   LKSeq (P:=wnc)  L1 L2 ->
-                                flls (OLTheory PN) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
+                                FLLS (OLTheory PN) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
 Proof with sauto; try OLSolve. 
     intros *. 
     intros isFL1 isFL2 HM.
@@ -380,7 +380,7 @@ end.
 Theorem CompletenessFLL: forall x L1 L2 R1 R2, 
         isOLFormulaL L1 -> isOLFormulaL L2 ->
         isOLFormulaL R1 ->  isOLFormulaL R2 ->                      
-   flln (OLTheory PN) x ((LEncode R1) ++  (REncode R2))  ( (LEncode L1) ++  (REncode L2)) (UP []) ->
+   FLLN (OLTheory PN) x ((LEncode R1) ++  (REncode R2))  ( (LEncode L1) ++  (REncode L2)) (UP []) ->
                  LKSeq (P:=wnc)  (L1++R1) (L2++R2).
 Proof with sauto;try solveLL; try OLSolve.
   induction x using lt_wf_ind; intros *.  
@@ -789,7 +789,7 @@ Theorem SoundenessCFLL: forall n L1 L2,
                             isOLFormulaL L1 ->
                                 isOLFormulaL L2 ->
                   LKSeq (P:=wc n) L1 L2 -> 
-                     flls (OLTheoryCut PN n) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
+                     FLLS (OLTheoryCut PN n) []  ( (LEncode L1) ++  (REncode L2)) (UP []).
 Proof with sauto; try solveLL; try OLSolve. 
     intros *. 
     intros isFL1 isFL2 HM.
@@ -1016,7 +1016,7 @@ Theorem SoundenessCFLL': forall x L1 L2 R1 R2,
               isOLFormulaL L1 -> isOLFormulaL L2 ->
                  isOLFormulaL R1 ->  isOLFormulaL R2 ->
                   LKSeq (P:=wc x) (L1++R1) (L2++R2) ->
-                     flls (OLTheoryCut PN x)  ((LEncode R1) ++  (REncode R2))  ( (LEncode L1) ++  (REncode L2)) (UP []).
+                     FLLS (OLTheoryCut PN x)  ((LEncode R1) ++  (REncode R2))  ( (LEncode L1) ++  (REncode L2)) (UP []).
 Proof with sauto.
    intros .
    apply SoundenessCFLL in H3...

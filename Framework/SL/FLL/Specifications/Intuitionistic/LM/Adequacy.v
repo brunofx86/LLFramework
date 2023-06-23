@@ -115,8 +115,8 @@ Lemma BangCon':
   forall {OLS : OLSig} [th : oo -> Prop] [n : nat] 
     [F : oo] [Gamma Delta : list oo] [X : Arrow],
   posLFormula F ->
-  flls th Gamma (! F :: Delta) X ->
-  flls th Gamma (F :: Delta) X.
+  FLLS th Gamma (! F :: Delta) X ->
+  FLLS th Gamma (F :: Delta) X.
 Proof with sauto.
   intros.
   apply FLLStoFLLN in H0...
@@ -128,7 +128,7 @@ Theorem SoundenessFLL: forall n L C,
                             isOLFormulaL L ->
                                 isOLFormula C ->
                   LMSeq (P:=wnc) (n:=n) L C ->
-                                flls (OLTheory PnN) (LEncode L)  [⌈C⌉] (UP []).
+                                FLLS (OLTheory PnN) (LEncode L)  [⌈C⌉] (UP []).
 Proof with sauto; try OLSolve;try solveLL. 
     intros *. 
     intros isFL1 isFL2 HM.
@@ -305,7 +305,7 @@ end.
 Theorem CompletenessFLL: forall x n L R D, 
         isOLFormulaL L->
         isOLFormulaL R ->  isOLFormula D ->                      
-   flln (OLTheory PnN) x (LEncode R)  (⌈D⌉:: (LEncode L) ) (UP []) ->
+   FLLN (OLTheory PnN) x (LEncode R)  (⌈D⌉:: (LEncode L) ) (UP []) ->
                  LMSeq (P:=wnc) (n:=n) (L++R) D.
 Proof with sauto;try solveLL; try OLSolve.
   induction x using lt_wf_ind; intros *.  
@@ -554,7 +554,7 @@ forall x L C,
                             isOLFormulaL L ->
                                 isOLFormula C ->
                   LMSeq (P:=wc) (n:=x) L C ->
-                                flls (OLTheoryCutI PnN x) (LEncode L)  [⌈C⌉] (UP []).
+                                FLLS (OLTheoryCutI PnN x) (LEncode L)  [⌈C⌉] (UP []).
 Proof with sauto; try OLSolve;try solveLL. 
     intros *. 
     intros isFL1 isFL2 HM.
@@ -734,7 +734,7 @@ apply oothc_theoryi.     apply ooth_rules .
 Theorem SoundenessCFLL': forall x L R C, 
               isOLFormulaL L -> isOLFormulaL R ->  isOLFormula C ->
                   LMSeq (P:=wc) (n:=x) (L++R) C ->
-                     flls (OLTheoryCutI PnN x)  (LEncode R)  (⌈C⌉ :: (LEncode L)) (UP []).
+                     FLLS (OLTheoryCutI PnN x)  (LEncode R)  (⌈C⌉ :: (LEncode L)) (UP []).
 Proof with sauto.
    intros .
    apply SoundenessCFLL in H2...
