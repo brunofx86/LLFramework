@@ -75,7 +75,6 @@ Proof.
 inversion H;subst; solve[constructor;auto].
 Qed.
 
-
 Lemma TheoryEmb2 {P}: forall n F  , ((CutRuleN cutR1 n) F) -> (OLTheoryCut P n) F.
 Proof.  
   intros.

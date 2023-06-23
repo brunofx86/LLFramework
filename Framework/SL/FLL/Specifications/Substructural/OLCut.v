@@ -30,29 +30,8 @@ Section CutElimination .
 Hypothesis LTWell : wellFormedTheory. 
 Hypothesis LTCutCo: CutCoherence cutR1. 
 
-Definition EmptyTheory (F :oo) := False.
-
-Lemma EmptySubSetN : forall (theory : oo-> Prop) CC LC X n,
-      FLLN EmptyTheory n CC LC X -> FLLN theory n CC LC X.
-Proof.    
-  intros.
-  apply WeakTheoryN with (theory:= EmptyTheory);auto.
-  intros.
-  inversion H0.
-Qed.
-  
-Lemma EmptySubSet : forall (theory : oo-> Prop) CC LC X,
-      FLLS EmptyTheory CC LC X -> FLLS theory CC LC X.
-Proof.
-  intros.
-  apply WeakTheory with (theory:= EmptyTheory);auto.
-  intros.
-  inversion H0.
-Qed.
-
-
  (** This is the case when a constant is principal in both premises *)
-  Theorem ConstantPrincipalCase :
+  Theorem ConPrincipalCase :
     forall Gamma M N C,
       (FLLS (OLTheory nPnN) Gamma M (DW (rc_lftBody (rulesC C)))) ->
       (FLLS (OLTheory nPnN) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
@@ -78,7 +57,7 @@ Qed.
     rewrite <- dualInvolutive;eauto.   Qed.
 
   (** This is the case when a unary connective is principal in both premises *)
-  Theorem UConnectivePrincipalCase :
+  Theorem UnaPrincipalCase :
     forall Gamma M N C F n n',
       (FLLS (OLTheory nPnN) Gamma M (DW (ru_lftBody (rulesU C) F))) ->
       (FLLS (OLTheory nPnN) Gamma N (DW (ru_rgtBody (rulesU C) F))) ->
@@ -118,7 +97,7 @@ Qed.
   Qed.
   
   (** This is the case when a binary connective is principal in both premises *)
-  Theorem BinConnectivePrincipalCase :
+  Theorem BinPrincipalCase :
     forall Gamma M N C F G n n',
       (FLLS (OLTheory nPnN) Gamma M (DW (rb_lftBody (rulesB C) F G))) ->
       (FLLS (OLTheory nPnN) Gamma N (DW (rb_rgtBody (rulesB C) F G))) ->
@@ -156,7 +135,7 @@ Qed.
   Qed.
 
   (** This is the case when a quantifier is principal in both premises *)
-  Theorem QuantifierPrincipalCase :
+  Theorem QuaPrincipalCase :
     forall Gamma M N C FX FX0 n n',
       (FLLS (OLTheory nPnN) Gamma M (DW (rq_lftBody (rulesQ C) FX0))) ->
       (FLLS (OLTheory nPnN) Gamma N (DW (rq_rgtBody (rulesQ C) FX))) ->
@@ -197,7 +176,6 @@ Qed.
     destruct H as [h1 H]. 
     destruct H0 as [h2 H0]. destruct Cut1 as [h3 Cut1].
     
-
     assert(Cut1': FLLS (OLTheoryCut nPnN n) Gamma ([] ++ N) ( UP[dual(rq_lftBody (rulesQ C) FX0) ] )).
     eapply @GeneralCut with  (C :=dual (rq_rgtBody (rulesQ C) FX) ) ;eauto.
     rewrite <- dualInvolutive;eauto.
@@ -205,7 +183,6 @@ Qed.
     apply FLLStoFLLN in Cut1'.
     destruct Cut1' as [h4 Cut1']. 
 
-    
     eapply @GeneralCut with (C := dual(rq_lftBody (rulesQ C) FX0) ) ;eauto.
     rewrite <- dualInvolutive;eauto. 
   Qed.
@@ -249,18 +226,18 @@ Ltac cutOL P1 P2 :=
 Ltac SubCases :=
 repeat 
 match goal with
-  | H: Permutation (_::_) (_::_) |- _ => checkPermutationCases H
-  | H: Permutation (_ ++ _) (_ :: _) |- _ => checkPermutationCases H
-  | H: Permutation (_ :: _) (_ ++ _) |- _ => checkPermutationCases H
-  | H:  (⌈ ?F ⌉) =  (⌈ ?G ⌉) |- _ => inversion H;sauto
-  | H:  (⌊ ?F ⌋) =  (⌊ ?G ⌋) |- _ => inversion H;sauto      
+    | H: Permutation (_::_) (_::_) |- _ => checkPermutationCases H
+    | H: Permutation (_ ++ _) (_ :: _) |- _ => checkPermutationCases H
+    | H: Permutation (_ :: _) (_ ++ _) |- _ => checkPermutationCases H
+    | H:  (⌈ ?F ⌉) =  (⌈ ?G ⌉) |- _ => inversion H;sauto
+    | H:  (⌊ ?F ⌋) =  (⌊ ?G ⌋) |- _ => inversion H;sauto      
 end.
       
 Ltac Cases H := destruct H;sauto;SubCases;
 repeat
 match goal with
-| H: Permutation ?M (_::_) |- context[?M] => rewrite H
-| H: Permutation (_++_) ?M  |- context[?M] => rewrite <- H
+  | H: Permutation ?M (_::_) |- context[?M] => rewrite H
+  | H: Permutation (_++_) ?M  |- context[?M] => rewrite <- H
 end
 .
 
@@ -272,8 +249,6 @@ repeat
    | _ => idtac
 end.
 
-
- 
 Ltac PermuteLeft :=    
   match goal with 
      |[ Hr: FLLN _ ?x ?G (?X ++ _) (UP []),   
@@ -296,24 +271,39 @@ Ltac PermuteLeft :=
        rewrite Hp in Hr
    | _ => idtac
        end;unformSeq.
-       
+   
+ Definition ConnectiveRightNotPrincipal conn Rule := forall n n' h1 h2 FCut M N Gamma,
+  n' <= n ->
+  OOCut n' (S h1 + S h2) ->
+  lengthUexp FCut n' ->
+  isOLFormula FCut ->
+  isOLFormula conn ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL Gamma ->
+  buildTheory Rule ->
+  FLLN (OLTheory nPnN) (S h1) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
+    FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule) ->
+  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+ 
+  Definition ConnectiveLeftNotPrincipal conn Rule := forall n n' h1 h2 FCut M N Gamma,
+  FCut <> conn -> n' <= n ->  
+  OOCut n' (S h1 + S h2) ->
+  lengthUexp FCut n' ->
+  isOLFormula FCut ->
+  isOLFormula conn ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL Gamma ->
+  buildTheory Rule ->
+  FLLN (OLTheory nPnN) (S h1) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
+    FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule) ->
+  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+        
 (** Unary Right is not principal on the left branch *)    
-Lemma UnaryRightNotPrincipalL n n' n0 n1 C FCut F Gamma M N: 
- n' <= n ->
-OOCut n' (S n0 + S n1) ->
-lengthUexp FCut n' ->
-isOLFormula FCut ->
-isOLFormula (t_ucon C F) ->
-posAtomFormulaL M ->
-posAtomFormulaL N ->
-posAtomFormulaL Gamma ->
-buildTheory (makeRRuleU C F) ->
-FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-FLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
-     (DW (makeRRuleU C F)) ->
-FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+Lemma UnaRightNotPrincipalL C F : ConnectiveRightNotPrincipal  (t_ucon C F) (makeRRuleU C F). 
 Proof with sauto; try OLSolve.
-  intros.
+  unfold  ConnectiveRightNotPrincipal; intros.
   wellUnary LTWell H9.
   * Cases H10.
      - PermuteLeft.
@@ -331,23 +321,9 @@ Proof with sauto; try OLSolve.
 Qed.
 
 (** Unary Left is not principal on the left branch *) 
-Lemma UnaryLeftNotPrincipalL n n' n0 n1 C FCut F Gamma M N: 
-FCut <> t_ucon C F ->
- n' <= n ->
-OOCut n' (S n0 + S n1) ->
-lengthUexp FCut n' ->
-isOLFormula FCut ->
-isOLFormula (t_ucon C F) ->
-posAtomFormulaL M ->
-posAtomFormulaL N ->
-posAtomFormulaL Gamma ->
-buildTheory (makeLRuleU C F) ->
-FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
-     (DW (makeLRuleU C F)) ->
-FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-Proof with sauto.
-  intros.
+Lemma UnaLeftNotPrincipalL C F : ConnectiveLeftNotPrincipal  (t_ucon C F) (makeLRuleU C F). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipal; intros.
   wellUnary LTWell H10.
   * Cases H11.
      - PermuteLeft. 
@@ -362,25 +338,12 @@ Proof with sauto.
         LLtensor (@nil oo) (M++N). eauto.
         apply H19...
         rewrite Permutation_assoc_comm...  
-Qed.        
-
+Qed.     
+        
 (** Binary Right is not principal on the left branch *) 
-Lemma BinaryRightNotPrincipalL n n' n0 n1 C FCut F G Gamma M N: 
- n' <= n ->
-OOCut n' (S n0 + S n1) ->
-lengthUexp FCut n' ->
-isOLFormula FCut ->
-isOLFormula (t_bcon C F G) ->
-posAtomFormulaL M ->
-posAtomFormulaL N ->
-posAtomFormulaL Gamma ->
-buildTheory (makeRRuleB C F G) ->
-FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
-     (DW (makeRRuleB C F G)) ->
-FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-Proof with sauto.
-  intros.
+Lemma BinRightNotPrincipalL C F G: ConnectiveRightNotPrincipal  (t_bcon C F G) (makeRRuleB C F G). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipal; intros.
   wellBinary LTWell H9.
   * Cases H10.
      - PermuteLeft. 
@@ -464,23 +427,9 @@ Proof with sauto.
 Qed.    
 
 (** Unary Left is not principal on the left branch *)  
-Lemma BinaryLeftNotPrincipalL n n' n0 n1 C FCut F G Gamma M N: 
-FCut <> t_bcon C F G ->
- n' <= n ->
-OOCut n' (S n0 + S n1) ->
-lengthUexp FCut n' ->
-isOLFormula FCut ->
-isOLFormula (t_bcon C F G) ->
-posAtomFormulaL M ->
-posAtomFormulaL N ->
-posAtomFormulaL Gamma ->
-buildTheory (makeLRuleB C F G) ->
-FLLN (OLTheory nPnN) (S n0) Gamma ((⌈ FCut ⌉) :: N) (UP []) ->
-FLLN (OLTheory nPnN) n1 Gamma ((⌊ FCut ⌋) :: M)
-     (DW (makeLRuleB C F G)) ->
-FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-Proof with sauto.
-  intros.
+Lemma BinLeftNotPrincipalL C F G: ConnectiveLeftNotPrincipal  (t_bcon C F G) (makeLRuleB C F G). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipal; intros.
   wellBinary LTWell H10.
   * Cases H11.
      - PermuteLeft.  
@@ -564,22 +513,9 @@ Proof with sauto.
  Qed.     
 
  (** Quantifier Right is not principal on the left branch *) 
- Lemma QuantifierRightNotPrincipalL n n' n0 n1 C FCut FX Gamma M N: 
- n' <= n ->
-OOCut n' (S n0 + S n1) ->
-lengthUexp FCut n' ->
-isOLFormula FCut ->
-isOLFormula (t_qcon C FX) ->
-posAtomFormulaL M ->
-posAtomFormulaL N ->
-posAtomFormulaL Gamma ->
-buildTheory (makeRRuleQ C FX) ->
-FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
-     (DW (makeRRuleQ C FX)) ->
-FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-Proof with sauto.
-  intros.
+ Lemma QuaRightNotPrincipalL C FX : ConnectiveRightNotPrincipal (t_qcon C FX) (makeRRuleQ C FX). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipal; intros.
   wellQuantifier LTWell H9.  
  Cases H10.
      - PermuteLeft.  
@@ -598,24 +534,10 @@ Proof with sauto.
 Qed.
 
  (** Quantifier Left is not principal on the left branch *) 
- Lemma QuantifierLeftNotPrincipalL n n' n0 n1 C FCut FX Gamma M N: 
- FCut <> t_qcon C FX -> 
- n' <= n ->
-OOCut n' (S n0 + S n1) ->
-lengthUexp FCut n' ->
-isOLFormula FCut ->
-isOLFormula (t_qcon C FX) ->
-posAtomFormulaL M ->
-posAtomFormulaL N ->
-posAtomFormulaL Gamma ->
-buildTheory (makeLRuleQ C FX) ->
-FLLN (OLTheory nPnN) (S n0) Gamma ( (⌈ FCut ⌉) :: N) (UP []) ->
-FLLN (OLTheory nPnN) n1 Gamma ( (⌊ FCut ⌋) :: M)
-     (DW (makeLRuleQ C FX)) ->
-FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-Proof with sauto.
-  intros.
-  wellQuantifier LTWell H10.
+ Lemma QuaLeftNotPrincipalL C FX : ConnectiveLeftNotPrincipal (t_qcon C FX) (makeLRuleQ C FX). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipal; intros.
+   wellQuantifier LTWell H10.
   * Cases H11.
      - PermuteLeft.  
         cutOL H9 H13.
@@ -639,13 +561,13 @@ match goal with
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeRRuleU _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
-   refine (UnaryRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
+   refine (UnaRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
       
 | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeLRuleU _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
-refine (UnaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
+refine (UnaLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
  end.     
@@ -657,12 +579,12 @@ match goal with
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeRRuleB _ _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
-   refine (BinaryRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
+   refine (BinRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
 | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeLRuleB _ _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
-refine (BinaryLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
+refine (BinLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
  end.    
@@ -673,12 +595,12 @@ match goal with
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeRRuleQ _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
-   refine (QuantifierRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
+   refine (QuaRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
 | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeLRuleQ _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
-refine (QuantifierLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
+refine (QuaLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
  end.    
@@ -693,21 +615,21 @@ Ltac Cases' H := destruct H;sauto;SubCases.
  Qed.
  
  Definition ConnectiveRight conn Rule := forall n n' h1 h2  FCut M N Gamma Rule',
- n' <= n ->
- isOLFormula conn ->
- isOLFormula FCut ->
- lengthUexp FCut n' ->
- posAtomFormulaL M ->
- posAtomFormulaL N ->
- posAtomFormulaL Gamma ->
- FLLN (OLTheory nPnN) (S h1) Gamma ((⌈ FCut ⌉) :: N) (UP [])  ->
- FLLN (OLTheory nPnN) (S h2) Gamma ((⌊ FCut ⌋) :: M) (UP [])  ->
- FLLN (OLTheory nPnN) h1 Gamma ((⌈ FCut ⌉) :: N) (DW Rule)  ->
- FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule')  ->
- OOCut n' (S h1 + S h2) ->
- buildTheory Rule ->
- buildTheory Rule' ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+   n' <= n ->
+   isOLFormula conn ->
+   isOLFormula FCut ->
+   lengthUexp FCut n' ->
+   posAtomFormulaL M ->
+   posAtomFormulaL N ->
+   posAtomFormulaL Gamma ->
+   FLLN (OLTheory nPnN) (S h1) Gamma ((⌈ FCut ⌉) :: N) (UP [])  ->
+   FLLN (OLTheory nPnN) (S h2) Gamma ((⌊ FCut ⌋) :: M) (UP [])  ->
+   FLLN (OLTheory nPnN) h1 Gamma ((⌈ FCut ⌉) :: N) (DW Rule)  ->
+   FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule')  ->
+   OOCut n' (S h1 + S h2) ->
+   buildTheory Rule ->
+   buildTheory Rule' ->
+    FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
 
 Lemma ConstantRIGHT  C : ConnectiveRight (t_ccon C) (makeRRuleC C).
 Proof with sauto.
@@ -743,13 +665,13 @@ Proof with sauto.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
 
-               refine (ConstantPrincipalCase _ H5 H2).
+               refine (ConPrincipalCase _ H5 H2).
                Cases H0. 
               rewrite <- H9 in H6.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
 
-               refine (ConstantPrincipalCase _ H6 H2).
+               refine (ConPrincipalCase _ H6 H2).
                PermuteLeft.
                cutOL Hseq1 H4.
                OLSolve.
@@ -808,7 +730,7 @@ Proof with sauto.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
 
-               refine (ConstantPrincipalCase _ H9 H3).
+               refine (ConPrincipalCase _ H9 H3).
                
                rewrite <- app_comm_cons...
            -- Cases H2. 
@@ -816,7 +738,7 @@ Proof with sauto.
                rewrite <- H6 in H3.
                rewrite Permutation_app_comm.
                apply WeakTheory with (theory := OLTheory nPnN ). auto using TheoryEmb1.
-               refine (ConstantPrincipalCase _ H10 H3).
+               refine (ConPrincipalCase _ H10 H3).
                
                rewrite <- app_comm_cons...
                PermuteLeft.
@@ -899,7 +821,7 @@ Proof with sauto.
             rewrite <- H6 in H3. 
             rewrite <- H13 in H10. 
             rewrite Permutation_app_comm.
-            refine(UConnectivePrincipalCase _ H3 _ _ HL')...
+            refine(UnaPrincipalCase _ H3 _ _ HL')...
              PermuteLeft. 
               cutOL Hseq1 H8.
                rewrite H12 in PosM.
@@ -988,7 +910,7 @@ Proof with sauto.
             rewrite <- H13 in H10. 
             rewrite <- H6 in H3. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H3 _ _ HL')...
+            refine(BinPrincipalCase _ H3 _ _ HL')...
               rewrite H2 in H8.
               rewrite <- app_comm_cons in H8.
               cutOL Hseq1 H8.
@@ -1010,7 +932,7 @@ Proof with sauto.
             rewrite <- H15 in H8. 
             rewrite <- H6 in H3. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H3 _ _ HL')...
+            refine(BinPrincipalCase _ H3 _ _ HL')...
             
             PermuteLeft.
             cutOL Hseq1 H11.
@@ -1063,7 +985,7 @@ Proof with sauto.
             rewrite <- H15 in H8. 
             rewrite <- H6 in H3. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H3 _ _ HL')...
+            refine(BinPrincipalCase _ H3 _ _ HL')...
             
             PermuteLeft.
             cutOL Hseq1 H11.
@@ -1077,8 +999,7 @@ Proof with sauto.
   LLPerm ( (⌊ t_bcon C0 F0 G0 ⌋) :: (x8 ++ N) ).
               apply H16...
             1-2:  rewrite Permutation_assoc_comm...
- 
-   
+    
                PermuteLeft.
             cutOL Hseq1 H11.
             cutOL Hseq1 H12.
@@ -1184,7 +1105,7 @@ Proof with sauto.
             rewrite <- H15 in H12. 
             rewrite <- H8 in H1. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H1 _ _ HL')...
+            refine(BinPrincipalCase _ H1 _ _ HL')...
               rewrite H3 in H10.
               rewrite <- app_comm_cons in H10.
               cutOL Hseq1 H10.
@@ -1206,7 +1127,7 @@ Proof with sauto.
             rewrite <- H8 in H1. 
             rewrite <- H17 in H10. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H1 _ _ HL')...
+            refine(BinPrincipalCase _ H1 _ _ HL')...
             
             PermuteLeft.
             cutOL Hseq1 H13.
@@ -1260,7 +1181,7 @@ Proof with sauto.
             rewrite <- H17 in H10. 
             rewrite <- H8 in H1. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H1 _ _ HL')...
+            refine(BinPrincipalCase _ H1 _ _ HL')...
             
             PermuteLeft.
             cutOL Hseq1 H13.
@@ -1293,8 +1214,6 @@ Proof with sauto.
          cutOL H5 Hseq2.
          rewrite H7 in PosN.
          OLSolve.
-         
-         
          LLPerm ((⌈ t_bcon C F G ⌉) ::M++ x4)...
          apply H9...
          1-2: rewrite app_assoc_reverse... 
@@ -1351,7 +1270,7 @@ Proof with sauto.
             rewrite <- H8 in H1. 
             rewrite <- H15 in H12. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H1 _ _ HL')...
+            refine(BinPrincipalCase _ H1 _ _ HL')...
              
              PermuteLeft.
               cutOL Hseq1 H10.
@@ -1360,8 +1279,7 @@ Proof with sauto.
                rewrite <- app_comm_cons ...
                apply H16...
                rewrite Permutation_assoc_comm...
-              
-              PermuteLeft.
+       PermuteLeft.
               cutOL Hseq1 H12.
                  LLtheory (makeLRuleB C0 F0 G0).
              LLtensor (@nil oo) (M++N).
@@ -1373,7 +1291,7 @@ Proof with sauto.
             rewrite <- H8 in H1. 
             rewrite <- H17 in H10. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H1 _ _ HL')...
+            refine(BinPrincipalCase _ H1 _ _ HL')...
             
             PermuteLeft.
             cutOL Hseq1 H13.
@@ -1427,7 +1345,7 @@ Proof with sauto.
             rewrite <- H8 in H1. 
             rewrite <- H17 in H10. 
             rewrite Permutation_app_comm.
-            refine(BinConnectivePrincipalCase _ H1 _ _ HL')...
+            refine(BinPrincipalCase _ H1 _ _ HL')...
             
             PermuteLeft.
             cutOL Hseq1 H13.
@@ -1515,7 +1433,7 @@ Proof with sauto.
                rewrite <- H6 in H3.
                rewrite <- H14 in H11.
                rewrite Permutation_app_comm.
-               refine (QuantifierPrincipalCase H11 H3 _ _ _ _ _ _ HL')...   
+               refine (QuaPrincipalCase H11 H3 _ _ _ _ _ _ HL')...   
                PermuteLeft.
                cutOL Hseq1 H9.
                OLSolve.
@@ -2047,7 +1965,7 @@ cut(False);intros...
         apply WeakTheory with (theory' := OLTheory nPnN) in H7;auto;try apply  OOTheryCut0.
 Qed.
      
-         (** Cut-elimination theorem for Object Logics satisfying cut-coherence *)
+  (** Cut-elimination theorem for Object Logics satisfying cut-coherence *)
   Theorem OLCutElimination :
     forall n h  B N ,
       posAtomFormulaL B ->

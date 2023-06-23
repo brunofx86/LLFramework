@@ -68,7 +68,6 @@ Ltac cutOL P1 P2 :=
       (FLLS (OLTheoryCut PN n) Gamma M (DW (rc_lftBody (rulesC C)))) ->
       (FLLS (OLTheoryCut PN n) Gamma N (DW (rc_rgtBody (rulesC C)))) ->
       FLLS (OLTheoryCut PN n) Gamma (N ++ M) (UP []).
-(* begin show *)
      Proof with sauto.     
     intros.
     apply FLLStoFLLN in H... 
@@ -83,8 +82,6 @@ Ltac cutOL P1 P2 :=
     assert(HCut1: FLLS (OLTheoryCut PN n) Gamma ([] ++ N)  ( UP [ dual (rc_lftBody (rulesC C))])).
     eapply @GeneralCut with  (C:=  dual (rc_rgtBody (rulesC C)));eauto. 
     rewrite <- dualInvolutive;eauto.
-    (* end show *)
-    
     apply FLLStoFLLN in HCut1.  destruct HCut1 as [h2 HCut1].
     eapply @GeneralCut with  (C:= dual (rc_lftBody (rulesC C)) ); eauto. 
     rewrite <- dualInvolutive;eauto.
