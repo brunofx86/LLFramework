@@ -456,77 +456,6 @@ Proof with sauto.
     LLExact H.
 Qed.  
 
- Theorem FocusingForallUP :
-    forall n th (y: expr con) FX D G, proper y ->
-    FLLN th n G D (DW (∀{ fun x : expr con => atom (up (FX x))})) ->
-      exists m , n =  S (S (S m))  /\ FLLN th m G (atom (up (FX y ))::D) (UP [ ]).
-  Proof with sauto.
-    intros.
-    inversion H0... 
-    inversion H6...
-    2:{ inversion H8. }
-    specialize (H9 _ H).
-    inversion H9...
-    eexists n0.
-    split;eauto.
-  Qed.
-         
-   Theorem FocusingForallDW :
-    forall n th (y: expr con) FX D G, proper y ->
-    FLLN th n G D (DW (∀{ fun x : expr con => atom (down (FX x))})) ->
-      exists m , n =  S (S (S m))  /\ uniform_oo (fun x  => atom (down (FX x))) /\ FLLN th m G (atom (down (FX y))::D) (UP [ ]).
-  Proof with sauto.
-    intros.
-    inversion H0... 
-    inversion H6...
-    2:{ inversion H8. }
-    specialize (H9 _ H).
-    inversion H9...
-    eexists n0.
-    split...
-  Qed.
-
-   Theorem FocusingExistsUP :
-    forall n th FX D G, 
-    FLLN th n G D (DW (∃{ fun x : expr con => atom (up (FX x))})) ->
-      exists m t, n =  S (S (S m))  /\ proper t /\ FLLN th m G (atom (up (FX t))::D) (UP [ ]).
-  Proof with sauto.
-    intros.
-    inversion H... 
-    2:{ inversion H1. }  
-    inversion H6...
-    inversion H8...
-    eexists n0, t.
-    split;eauto.
-  Qed.
-
-   Theorem FocusingExistsDW :
-    forall n th FX D G, 
-    FLLN th n G D (DW (∃{ fun x : expr con => atom (down (FX x))})) ->
-      exists m t, n =  S (S (S m))  /\ proper t /\ FLLN th m G (atom (down (FX t))::D) (UP [ ]).
-  Proof with sauto.
-    intros.
-    inversion H... 
-    2:{ inversion H1. }  
-    inversion H6...
-    inversion H8...
-    eexists n0, t.
-    split;eauto.
-  Qed.
-  
-
-(*   Require Import SL.FLL.InvPositivePhase. *)
-
-Require Import Coq.Logic.FunctionalExtensionality.
-
-Lemma fun_eq_implies_eq : forall A B (F G : A -> B),
-  (forall x, F x = G x) -> G = F.
-Proof.
-  intros A B F G H.
-  apply functional_extensionality. intros x.
-  rewrite H. reflexivity.
-Qed.
-
 (** *** Quantifiers *)
 Lemma wellBipoleLKQ : wellFormedQ.
 Proof with sauto.
@@ -582,46 +511,6 @@ Proof with sauto; try solveLL.
   apply InvTensor'...
 Qed. 
 
-(** We cannot prove that the size of (FX t) is independent of t
-  (assuming that FX is uniform and t is proper). This is indeed the
-  case since uniform functions cannot do patter matching to return
-  structurally different formulas. Hence, the following axiom is
-  admitted in order to prove that the definitions of the connectives
-  are cut-coherent  *)
-  Axiom OLSize: forall FX t t' n, uniform FX -> proper t -> proper t' -> lengthUexp (FX t) n -> lengthUexp (FX t') n .
-
-(* Lemma CutCoherenceALL: CutCoherenceQ cutR1  (rulesQ ALL).
-Proof with sauto. 
-  constructor. 
-constructor... constructor...   intros *. intros sF.
-  simpl.
- solveLL. 
- apply InvEx with (t:=x)...
-repeat constructor...
-solveLL... rewrite H1...
-apply CutBaseL'...
-1-2: try rewrite <- H1; try apply H3;auto.
-refine (OLSize _ _ _ H2)...
-  apply proper_VAR.
- Qed.
-
-Lemma CutCoherenceEX : CutCoherenceQ cutR1  (rulesQ EX).
-Proof with sauto. 
-  constructor. 
-constructor... constructor...   intros *. intros sF.
-  simpl.
- solveLL. 
- apply InvEx with (t:=x)...
-repeat constructor...
-solveLL... rewrite H1...
-apply CutBaseL'...
-1-2: try rewrite <- H1; try apply H3;auto.
-refine (OLSize _ _ _ H2)...
-  apply proper_VAR.
- Qed.
- *)
-
-  
 Lemma CutCoherenceLK : CutCoherence cutR1.
 Proof.
   split;intros. 
@@ -638,4 +527,4 @@ Proof.
   apply CutCoherenceIMP.
 Qed.
  
-Check OLCutElimination wellTheoryLK CutCoherenceLK. 
+Check OLCutElimination wellTheoryLK CutCoherenceLK.  
