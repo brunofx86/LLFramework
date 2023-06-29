@@ -115,7 +115,7 @@ Section LLSyntax.
  
   (**  Linear Implication *)
   Definition Limp (F G : oo) : oo := MOr (dual F) G .
-  Definition TypedFormula : Type := subexp * oo.
+  Definition location : Type := subexp * oo.
   
 
   (** Uniform Predicate (ruling out exotic terms) *)

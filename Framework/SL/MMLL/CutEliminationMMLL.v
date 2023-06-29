@@ -84,8 +84,8 @@ Qed.
 Lemma contractionK4Gen i CC D LC CC' X:
        i <> loc ->
        SetU CC' -> 
-       tri_bangK4' theory (CC'++CC'++CC) i D LC X ->
-       tri_bangK4' theory (CC'++CC) i D LC X.
+       MLLSExp theory (CC'++CC'++CC) i D LC X ->
+       MLLSExp theory (CC'++CC) i D LC X.
 Proof with sauto.
      revert CC.
      induction CC';intros...
@@ -848,8 +848,8 @@ Theorem CutK4SubCase a b i q P Q L B C D :
 CutH (complexity P) (S a+b) -> CutW (complexity P) ->   
 S (complexity Q) = complexity P -> i <> loc ->
   SetU B ->  SetL C -> SetL D ->
- tri_bangK4 theory a ((q, Q)::B ++ C) i [] [] (UP L) -> 
- b |--- B++D; []; (DW (Bang q (dual Q ))) -> tri_bangK4' theory (B++C++D) i [] [] (UP L).
+ MLLNExp theory a ((q, Q)::B ++ C) i [] [] (UP L) -> 
+ b |--- B++D; []; (DW (Bang q (dual Q ))) -> MLLSExp theory (B++C++D) i [] [] (UP L).
  Proof with sauto;solveF.
 
  intros HC WC Hcomp Hd.
@@ -1271,7 +1271,7 @@ Proof with sauto.
     inversion H...
      rewrite <- H6 in H5.
     rewrite app_comm_cons in H5.
-     pose proof (IHB1 (t::x0) C1 C2 H11 H9 H1 H2 H5)...
+     pose proof (IHB1 (l::x0) C1 C2 H11 H9 H1 H2 H5)...
     rewrite  H3 in H2.
     inversion H2... inversion H... }
    { checkPermutationCases H3.
@@ -1282,7 +1282,7 @@ Proof with sauto.
     inversion H...
      rewrite <- H6 in H5.
     rewrite app_comm_cons in H5.
-     pose proof (IHB1 (t::x0) C1 C2 H11 H9 H1 H2 H5)...
+     pose proof (IHB1 (l::x0) C1 C2 H11 H9 H1 H2 H5)...
     rewrite  H3 in H2.
     inversion H2... inversion H... }
 Qed.
@@ -1439,12 +1439,12 @@ Proof with sauto;try solveLL.
 
             destruct(posOrNeg F).
             apply posDualNeg in H3...
-             apply tri_rel in Hb...
+             apply mll_rel in Hb...
            rewrite(SETXempty D) in H...
            cut2W H Hb. LLPerm(M++[]).
            eapply OLCut0...
 
-             apply tri_rel in H...
+             apply mll_rel in H...
            rewrite(SETXempty D) in H...
              rewrite (dualInvolutive F) in H.
            cut2W Hb H. 

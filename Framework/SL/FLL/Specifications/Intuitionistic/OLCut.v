@@ -811,7 +811,7 @@ Theorem ConstantPrincipalCaseUP :
      Proof with sauto.
      intros. 
     destruct (posOrNeg (rc_lftBody (rulesC C))).              
-    2:{ apply tri_rel' in H...
+    2:{ apply fll_rel' in H...
           refine (ConstantPrincipalCase _ H H0). }
     apply posDualNeg in H1. 
     generalize( ctCutCo C);intro CutC.
@@ -877,7 +877,7 @@ Theorem ConstantPrincipalCaseUP :
   Proof with sauto.
       intros. 
     destruct (posOrNeg (ru_lftBody (rulesU C) F)).              
-    2:{ apply tri_rel' in H...
+    2:{ apply fll_rel' in H...
           refine (UConnectivePrincipalCase _ _ _  H2 H3)... }
     apply posDualNeg in H4. 
    inversion H1;subst.
@@ -949,7 +949,7 @@ Theorem ConstantPrincipalCaseUP :
   Proof with sauto.
         intros. 
     destruct (posOrNeg (rb_lftBody (rulesB C) F G)).              
-    2:{ apply tri_rel' in H...
+    2:{ apply fll_rel' in H...
           refine (BinConnectivePrincipalCase _ _ _  H2 H3)... }
     apply posDualNeg in H4. 
     inversion H1;subst.
@@ -1041,7 +1041,7 @@ Theorem ConstantPrincipalCaseUP :
   Proof with sauto.
         intros. 
     destruct (posOrNeg (rq_lftBody (rulesQ C) FX0)).              
-    2:{ apply tri_rel' in H...
+    2:{ apply fll_rel' in H...
           refine (QuantifierPrincipalCase _ _ _  _ H3 _ _ H6 H7)...  }
     apply posDualNeg in H8.  
     inversion H1. inversion H9.

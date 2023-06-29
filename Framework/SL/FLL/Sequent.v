@@ -17,50 +17,50 @@ Section FLLSequent.
   positive phase) or [UP L] (for the negative phase). *)
   Inductive FLLN:  nat -> list oo -> list oo -> Arrow -> Prop :=
  (* axioms *)
-  | tri_init1 : forall B A n,  n |-F- B ; [atom A] ; DW (perp A)
-  | tri_init2 : forall B A n,  In (atom A) B -> n |-F- B ; [] ; DW (perp A)
-  | tri_one : forall B n,  n |-F- B ; [] ; DW One
-  | tri_top : forall B L M n,
+  | fll_init1 : forall B A n,  n |-F- B ; [atom A] ; DW (perp A)
+  | fll_init2 : forall B A n,  In (atom A) B -> n |-F- B ; [] ; DW (perp A)
+  | fll_one : forall B n,  n |-F- B ; [] ; DW One
+  | fll_top : forall B L M n,
       n |-F- B ; L ; UP (Top :: M)
  (* additives *)
-  | tri_plus1 : forall B M F G n,
+  | fll_plus1 : forall B M F G n,
       n |-F- B ; M ; DW F -> S n |-F- B ; M ; DW (AOr F G)
-  | tri_plus2 : forall B M F G n,
+  | fll_plus2 : forall B M F G n,
       n |-F- B ; M ; DW G -> S n |-F- B ; M ; DW (AOr F G)
-  | tri_with : forall B L M F G n,
+  | fll_with : forall B L M F G n,
       (n |-F- B ; L ; UP (F :: M)) ->
       (n |-F- B ; L ; UP (G :: M)) -> S n|-F- B ; L ; UP ((AAnd F  G) :: M)
  (* multiplicatives *)
-  | tri_bot : forall B L M n,
+  | fll_bot : forall B L M n,
       n |-F- B ; L ; UP M -> S n  |-F- B ; L ; UP (Bot :: M)
-  | tri_par : forall B L M F G n,
+  | fll_par : forall B L M F G n,
       n |-F- B ; L ; UP (F::G::M) -> S n  |-F- B ; L ; UP((MOr F G) :: M)
-  | tri_tensor : forall B M N MN F G n, Permutation MN (M++N) ->
+  | fll_tensor : forall B M N MN F G n, Permutation MN (M++N) ->
                                         (n |-F- B ; M ; DW F) ->
                                         (n |-F- B ; N ; DW G )->
                                         S n |-F- B ; MN ; DW (MAnd F G)
  (* exponentials *)
-  | tri_quest : forall B L M F n,
+  | fll_quest : forall B L M F n,
       n |-F- F::B ; L ; UP M -> S n  |-F- B ; L ; UP ((Quest F) :: M)
-  | tri_bang : forall B F n,
+  | fll_bang : forall B F n,
       n |-F- B ; [] ; UP [F] -> S n  |-F- B ; [] ; DW (Bang F) 
  (* quantifiers *)
-  | tri_ex  : forall B FX M t n,
+  | fll_ex  : forall B FX M t n,
       uniform_oo FX -> proper t -> n |-F- B; M ; DW (FX t) -> S n|-F- B; M ; DW (Some  FX)
-  | tri_fx  : forall B L FX M n,
+  | fll_fx  : forall B L FX M n,
       uniform_oo FX -> (forall x, proper x -> n |-F- B ; L ; UP( (FX x) ::  M)) ->
       S n |-F- B ; L ; UP ((All FX) :: M)                                                                                                                           
  (* reaction rules *)
-  | tri_rel : forall B F L n,
+  | fll_rel : forall B F L n,
       negFormula F -> n |-F- B ; L ; UP [F] ->  S n |-F- B ; L ; DW F
-  | tri_store : forall B L M F n,
+  | fll_store : forall B L M F n,
       posLFormula F -> n |-F- B ; F::L ; UP M -> S n |-F- B ; L ; UP (F::M)
  (* decision rules *)
-  | tri_dec1 : forall B L L' F n,
+  | fll_dec1 : forall B L L' F n,
       posFormula F -> Permutation (F::L') L -> n |-F- B ; L' ; DW F -> S n |-F- B ; L ; UP []
-  | tri_dec2 : forall B L F n,
+  | fll_dec2 : forall B L F n,
       ~ posAtom F -> In F B -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
-  | tri_dec3 : forall B L F n,
+  | fll_dec3 : forall B L F n,
       ~ posAtom F -> th F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []      
 
   where " n '|-F-' B ';' L ';' X " := (FLLN n B L X).
@@ -69,51 +69,51 @@ Section FLLSequent.
 
   Inductive FLLS: list oo -> list oo -> Arrow -> Prop :=
  (* axioms *)
-  | tri_init1' : forall B A, |-f- B ; [atom A] ; DW (perp A)
-  | tri_init2' : forall B A,  In (atom A) B -> |-f- B ; [] ; DW (perp A)
-  | tri_one' : forall B, |-f- B ; [] ; DW One
-  | tri_top' : forall B L M,
+  | fll_init1' : forall B A, |-f- B ; [atom A] ; DW (perp A)
+  | fll_init2' : forall B A,  In (atom A) B -> |-f- B ; [] ; DW (perp A)
+  | fll_one' : forall B, |-f- B ; [] ; DW One
+  | fll_top' : forall B L M,
       |-f- B ; L ; UP (Top :: M)
  (* additives *)
-  | tri_plus1' : forall B M F G,
+  | fll_plus1' : forall B M F G,
       |-f- B ; M ; DW F -> |-f- B ; M ; DW (AOr F G)
-  | tri_plus2' : forall B M F G,
+  | fll_plus2' : forall B M F G,
       |-f- B ; M ; DW G -> |-f- B ; M ; DW (AOr F G)
-  | tri_with' : forall B L M F G,
+  | fll_with' : forall B L M F G,
       (|-f- B ; L ; UP (F :: M)) ->
       (|-f- B ; L ; UP (G :: M)) -> |-f- B ; L ; UP ((AAnd F  G) :: M)
  (* multiplicatives *)
-  | tri_bot' : forall B L M,
+  | fll_bot' : forall B L M,
       |-f- B ; L ; UP M -> |-f- B ; L ; UP (Bot :: M)
-  | tri_par' : forall B L M F G,
+  | fll_par' : forall B L M F G,
       |-f- B ; L ; UP (F::G::M) -> |-f- B ; L ; UP((MOr F G) :: M)
-  | tri_tensor' : forall B M N MN F G, Permutation MN (M++N) ->
+  | fll_tensor' : forall B M N MN F G, Permutation MN (M++N) ->
                                         (|-f- B ; M ; DW F) ->
                                         (|-f- B ; N ; DW G )->
                                          |-f- B ; MN ; DW (MAnd F G)
 
  (* exponentials *)
-  | tri_quest' : forall B L M F,
+  | fll_quest' : forall B L M F,
       |-f- B++[F] ; L ; UP M -> |-f- B ; L ; UP ((Quest F) :: M)
-  | tri_bang' : forall B F,
+  | fll_bang' : forall B F,
       |-f- B ; [] ; UP [F] -> |-f- B ; [] ; DW (Bang F)
  (* quantifiers *)
-  | tri_ex'  : forall B FX M t,
+  | fll_ex'  : forall B FX M t,
       uniform_oo FX -> proper t -> |-f- B; M ; DW (FX t) -> |-f- B; M ; DW (Some  FX)
-  | tri_fx'  : forall B L FX M,
+  | fll_fx'  : forall B L FX M,
       uniform_oo FX -> (forall x, proper x -> |-f- B ; L ; UP( (FX x) ::  M)) ->
       |-f- B ; L ; UP ((All FX) :: M)                                                                                                                           
  (* reaction rules *)
-  | tri_rel' : forall B F L,
+  | fll_rel' : forall B F L,
       negFormula F -> |-f- B ; L ; UP [F] ->  |-f- B ; L ; DW F
-  | tri_store' : forall B L M F,
+  | fll_store' : forall B L M F,
       posLFormula F -> |-f- B ; F::L ; UP M -> |-f- B ; L ; UP (F::M)
  (* decision rules *)
-  | tri_dec1' : forall B L L' F,
+  | fll_dec1' : forall B L L' F,
       posFormula F -> Permutation (F::L') L -> |-f- B ; L' ; DW F -> |-f- B ; L ; UP []
-  | tri_dec2' : forall B L F,
+  | fll_dec2' : forall B L F,
       ~posAtom F -> In F B -> |-f- B ; L ; DW F -> |-f- B ; L ; UP []
-  | tri_dec3' : forall B L F,
+  | fll_dec3' : forall B L F,
       ~posAtom F -> th F -> |-f- B ; L ; DW F -> |-f- B ; L ; UP [] 
   where "'|-f-' B ';' L ';' X " := (FLLS B L X).
    

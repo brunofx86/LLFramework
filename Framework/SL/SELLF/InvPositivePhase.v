@@ -21,8 +21,8 @@ Section Absorption.
   Context `{OLS: OLSig}.
          
  Lemma AbsorptionC : forall th n i Gamma Delta F X,
-   u i = true ->  seqN th n ((i,F) :: Gamma) ( F::Delta)  X ->
-      seqN th n ((i,F) :: Gamma) Delta  X.
+   u i = true ->  SELLN th n ((i,F) :: Gamma) ( F::Delta)  X ->
+      SELLN th n ((i,F) :: Gamma) Delta  X.
   Proof with sauto.
   do 2 intro.
     induction n using strongind ;intros.
@@ -85,8 +85,8 @@ Section Absorption.
 
 
  Lemma AbsorptionL : forall th n i Gamma Delta F X,
-  seqN th n (Gamma) ( F::Delta)  X ->
-      seqN th n ((i,F) :: Gamma) Delta  X.
+  SELLN th n (Gamma) ( F::Delta)  X ->
+      SELLN th n ((i,F) :: Gamma) Delta  X.
   Proof with sauto.
   intros.
   destruct (uDec i).
@@ -144,8 +144,8 @@ Section Absorption.
      Lemma AbsorptionC'
      : forall th i Gamma Delta F X,
        u i = true ->
-       seq th ((i, F) :: Gamma) (F :: Delta) X ->
-       seq th ((i, F) :: Gamma) Delta X.
+       SELLS th ((i, F) :: Gamma) (F :: Delta) X ->
+       SELLS th ((i, F) :: Gamma) Delta X.
  Proof.
       intros *. 
       intros Hui Hyp.
@@ -157,8 +157,8 @@ Section Absorption.
           
 Lemma AbsorptionL'
      : forall th i Gamma Delta F X,
-       seq th Gamma (F :: Delta) X ->
-       seq th ((i, F) :: Gamma) Delta X.
+       SELLS th Gamma (F :: Delta) X ->
+       SELLS th ((i, F) :: Gamma) Delta X.
  Proof.
       intros *. 
       intros  Hyp.
@@ -169,8 +169,8 @@ Lemma AbsorptionL'
  Qed.     
  
 Lemma AbsorptionCSet : forall th n C Gamma Delta X,
-  SetU C -> seqN th n (C++Gamma) (Delta++ (second C))  X ->
-      seqN th n (C ++ Gamma) Delta  X.
+  SetU C -> SELLN th n (C++Gamma) (Delta++ (second C))  X ->
+      SELLN th n (C ++ Gamma) Delta  X.
   Proof with sauto.
   induction C;simpl;intros...
   destruct a as [i F].
@@ -183,8 +183,8 @@ Lemma AbsorptionCSet : forall th n C Gamma Delta X,
   Qed. 
   
     Lemma AbsorptionCSet' : forall th C Gamma Delta X,
-   SetU C -> seq th (C++Gamma) (Delta++ (second C))  X ->
-      seq th (C ++ Gamma) Delta  X.
+   SetU C -> SELLS th (C++Gamma) (Delta++ (second C))  X ->
+      SELLS th (C ++ Gamma) Delta  X.
   Proof with sauto.
   intros.
   apply seqtoSeqN in H0...
@@ -193,8 +193,8 @@ Lemma AbsorptionCSet : forall th n C Gamma Delta X,
   Qed. 
   
  Lemma AbsorptionCSet_rev : forall th  C Gamma Delta X,
-   SetU C -> seq th (Gamma++C) (Delta++ (second C))  X ->
-      seq th (Gamma++C) Delta  X.
+   SetU C -> SELLS th (Gamma++C) (Delta++ (second C))  X ->
+      SELLS th (Gamma++C) Delta  X.
   Proof with sauto.
   intros.
   apply seqtoSeqN in H0...
@@ -205,8 +205,8 @@ Lemma AbsorptionCSet : forall th n C Gamma Delta X,
   Qed.
   
  Lemma AbsorptionLSet : forall th n C Gamma Delta X,
- seqN th n (Gamma) (Delta++ (second C))  X ->
-      seqN th n (C ++ Gamma) Delta  X.
+ SELLN th n (Gamma) (Delta++ (second C))  X ->
+      SELLN th n (C ++ Gamma) Delta  X.
   Proof with sauto.
   induction C;simpl;intros...
   rewrite app_comm_cons.
@@ -219,8 +219,8 @@ Lemma AbsorptionCSet : forall th n C Gamma Delta X,
   Qed.
  
   Lemma AbsorptionLSet' : forall th C Gamma Delta X,
-  seq th (Gamma) (Delta++ (second C))  X ->
-      seq th (C ++ Gamma) Delta  X.
+  SELLS th (Gamma) (Delta++ (second C))  X ->
+      SELLS th (C ++ Gamma) Delta  X.
   Proof with sauto.
   intros.
   apply seqtoSeqN in H...
@@ -229,8 +229,8 @@ Lemma AbsorptionCSet : forall th n C Gamma Delta X,
   Qed. 
    
  Lemma AbsorptionLSet_rev : forall th  C Gamma Delta X,
-    seq th (Gamma) (Delta++ (second C))  X ->
-      seq th (Gamma++C) Delta  X.
+    SELLS th (Gamma) (Delta++ (second C))  X ->
+      SELLS th (Gamma++C) Delta  X.
   Proof with sauto.
   intros.
   apply seqtoSeqN in H...
@@ -248,8 +248,8 @@ Section InvPosPhase.
   Context `{OLS: OLSig}.
 
   Variable theory : oo -> Prop .
-  Notation " n '|---' B ';' L ';' X " := (seqN theory n B L X) (at level 80).
-  Notation " '|--' B ';' L ';' X " := (seq theory B L X) (at level 80).
+  Notation " n '|---' B ';' L ';' X " := (SELLN theory n B L X) (at level 80).
+  Notation " '|--' B ';' L ';' X " := (SELLS theory B L X) (at level 80).
 
   Ltac solveList :=
     match goal with

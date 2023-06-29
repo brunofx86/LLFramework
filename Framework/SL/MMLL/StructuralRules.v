@@ -25,9 +25,9 @@ Section FLLBasicTheory.
     Notation " n '|-F-' B ';' L ';' X " := (MLLN theory n B L X)  (at level 80).
     Hint Constructors MLLN : core .
     Notation " '|-f-' B ';' L ';' X " := (MLLS theory B L X)  (at level 80).
-    Notation " n '|-F-' B '/' a '/' D ';' L ';' X " := (tri_bangK4 theory n B a D L X)  (at level 80).
+    Notation " n '|-F-' B '/' a '/' D ';' L ';' X " := (MLLNExp theory n B a D L X)  (at level 80).
     
-    Notation " '|-f-' B '/' a '/' D ';' L ';' X " := (tri_bangK4' theory B a D L X)  (at level 80).
+    Notation " '|-f-' B '/' a '/' D ';' L ';' X " := (MLLSExp theory B a D L X)  (at level 80).
      
     Hint Constructors MLLN : core.
     Hint Constructors MLLS : core.
@@ -35,14 +35,14 @@ Section FLLBasicTheory.
     Theorem WeakTheoryN_mutual : forall n a B CC LC X (th th':oo->Prop),
         (forall F, th F -> th' F) ->
         (MLLN th n CC LC X -> MLLN th' n CC LC X) /\
-        (tri_bangK4 th n B a CC LC X -> tri_bangK4 th' n B a CC LC X).
+        (MLLNExp th n B a CC LC X -> MLLNExp th' n B a CC LC X).
     Proof with sauto.    
       induction n using lt_wf_ind. 
       split;intros.
         - assert(Hyp : forall m : nat,
     m < n ->
     forall (a : subexp)
-      (B CC : list TypedFormula)
+      (B CC : list location)
       (LC : multiset oo) (X : Arrow),
     (MLLN th m CC LC X ->
      MLLN th' m CC LC X)).
@@ -53,7 +53,7 @@ Section FLLBasicTheory.
      1-20: eauto using Hyp.
      LLtensor M N B0 C D .
      LLwith.
-     apply tri_bang...
+     apply mll_bang...
      eapply H with (th:=th)...
      createWorld i.
      eapply H with (th:=th)...
@@ -113,8 +113,8 @@ Section FLLBasicTheory.
     
  Lemma exchangeCCNK4 : forall n CC CC' D O X i,
         Permutation CC CC' ->
-        tri_bangK4 theory n CC i  D O  X ->
-        tri_bangK4 theory n CC' i  D O X.
+        MLLNExp theory n CC i  D O  X ->
+        MLLNExp theory n CC' i  D O X.
   Proof with sauto.
   intros *.
   intros Hp HMLLS.
@@ -129,8 +129,8 @@ Section FLLBasicTheory.
    
    Lemma exchangeCCK4 : forall CC CC' D O X i,
         Permutation CC CC' ->
-        tri_bangK4' theory CC i D O X ->
-        tri_bangK4' theory CC' i D O X.
+        MLLSExp theory CC i D O X ->
+        MLLSExp theory CC' i D O X.
   Proof with sauto .
   intros *.
   intros Hp HMLLS.
@@ -162,12 +162,12 @@ Section FLLBasicTheory.
     srewrite H0 in H2...
     LLfocus3 i F B'...
     rewrite H0 in H3.
-    eapply tri_bangL...
+    eapply mll_bangL...
     eapply H;eauto.
-    apply tri_bang...
+    apply mll_bang...
     eapply exchangeCCNK4 with (CC:=CC)...
    
-    apply @tri_bangD with (i:=i)...
+    apply @mll_bangD with (i:=i)...
    
     eapply exchangeCCNK4 with (CC:=CC)...
     
@@ -193,19 +193,19 @@ Section FLLBasicTheory.
   LLfocus3 i F B'...
   eauto using Permutation_in. 
   eauto using Permutation_in.
-  eapply tri_bangL'...
+  eapply mll_bangL'...
   rewrite Hp in H;auto.
-  eapply tri_bang'...
+  eapply mll_bang'...
   eapply exchangeCCK4 with (CC:=B)...
-  apply @tri_bangD' with (i:=i)...
+  apply @mll_bangD' with (i:=i)...
   eapply exchangeCCK4 with (CC:=B)...
 
 Qed. 
    
   Lemma exchangeCCNKK4 : forall n i CC CC' B D X,
         Permutation CC CC' ->
-        tri_bangK4 theory n B i CC D X ->
-         tri_bangK4 theory n B i CC' D X.
+        MLLNExp theory n B i CC D X ->
+         MLLNExp theory n B i CC' D X.
   Proof with sauto .
   intro.
   induction n using strongind;intros.
@@ -230,18 +230,18 @@ Qed.
 
   Lemma exchangeCCKK4 : forall CC CC' i B D X,
         Permutation CC CC' ->
-        tri_bangK4' theory B i CC D X ->
-         tri_bangK4' theory B i CC' D X.
+        MLLSExp theory B i CC D X ->
+         MLLSExp theory B i CC' D X.
   Proof with sauto .
   intros.
   revert dependent CC'.
   induction H0;intros...
   * 
    copyK4 b F B'...
-   eapply IHtri_bangK4'. rewrite H3. perm.
+   eapply IHMLLSExp. rewrite H3. perm.
   * 
    copyUK b F B'...
-   eapply IHtri_bangK4'. rewrite H4. perm.
+   eapply IHMLLSExp. rewrite H4. perm.
   * 
    copyLK b F B'...
   *
@@ -250,7 +250,7 @@ Qed.
   Qed.
   
   Global Instance MLLS_morphismN  n:
-      Proper ((@Permutation TypedFormula) ==> (@Permutation oo) ==> eq ==> iff)
+      Proper ((@Permutation location) ==> (@Permutation oo) ==> eq ==> iff)
              (MLLN theory n).
     Proof.
       unfold Proper; unfold respectful.
@@ -265,7 +265,7 @@ Qed.
     Qed.
    
    Global Instance MLLS_morphism  :
-      Proper ((@Permutation TypedFormula) ==> (@Permutation oo) ==> eq ==> iff)
+      Proper ((@Permutation location) ==> (@Permutation oo) ==> eq ==> iff)
              (MLLS theory).
     Proof.
       unfold Proper; unfold respectful.
@@ -280,8 +280,8 @@ Qed.
     Qed.
     
    Global Instance MLLSK4_morphismN  n:
-      Proper ((@Permutation TypedFormula) ==> eq ==> (@Permutation TypedFormula) ==> eq ==> eq ==> iff)
-             (tri_bangK4 theory n).
+      Proper ((@Permutation location) ==> eq ==> (@Permutation location) ==> eq ==> eq ==> iff)
+             (MLLNExp theory n).
     Proof.
       unfold Proper; unfold respectful.
       intros.
@@ -299,8 +299,8 @@ Qed.
     Qed.
 
      Global Instance MLLSK4_morphism :
-      Proper ((@Permutation TypedFormula) ==> eq ==> (@Permutation TypedFormula) ==> eq ==> eq ==> iff)
-             (tri_bangK4' theory).
+      Proper ((@Permutation location) ==> eq ==> (@Permutation location) ==> eq ==> eq ==> iff)
+             (MLLSExp theory).
     Proof.
       unfold Proper; unfold respectful.
       intros.
@@ -328,8 +328,8 @@ Qed.
     
  Theorem GenK4 n a B L O D C4 CK CN : 
   a <> loc -> LtX a C4 -> LtX a CK -> SetK4 C4 -> SetK CK -> Permutation B (C4++CK++CN) ->
-  tri_bangK4 theory  (n - length (C4 ++ CK)) CN a (D++PlusT C4++Loc (getU CK)) O (UP (L ++ second (getL CK))) ->
-    tri_bangK4 theory  n B a D O (UP L).
+  MLLNExp theory  (n - length (C4 ++ CK)) CN a (D++PlusT C4++Loc (getU CK)) O (UP (L ++ second (getL CK))) ->
+    MLLNExp theory  n B a D O (UP L).
   Proof with  CleanContext.
     revert dependent L;
     revert dependent D;
@@ -403,8 +403,8 @@ Qed.
  Qed.
     
    
-Theorem tri_exp_pred n a D O L CN: n >= 1 -> SetU CN -> (* NoLtX a CN -> *)
-   n - 1 |-F- D; O; (UP L) ->  tri_bangK4 theory n CN a D O (UP L).
+Theorem mll_exp_pred n a D O L CN: n >= 1 -> SetU CN -> (* NoLtX a CN -> *)
+   n - 1 |-F- D; O; (UP L) ->  MLLNExp theory n CN a D O (UP L).
  Proof with simplifier;auto.
     destruct n;intros...
     inversion H.
@@ -412,8 +412,8 @@ Theorem tri_exp_pred n a D O L CN: n >= 1 -> SetU CN -> (* NoLtX a CN -> *)
  Qed.
 
 
-Theorem tri_exp_pred_inv' a D O L :
-   tri_bangK4' theory [] a D O (UP L) ->  |-f- D; O; (UP L).
+Theorem mll_exp_pred_inv' a D O L :
+   MLLSExp theory [] a D O (UP L) ->  |-f- D; O; (UP L).
  Proof with sauto.
  intros.
  inversion H...
@@ -425,11 +425,11 @@ Qed.
      Permutation B (C4++CK++CN) ->
     n >= length (C4 ++ CK) + 1 -> 
     n - length (C4 ++ CK) - 1 |-F- D++PlusT C4 ++ Loc (getU CK) ; O ;(UP (L ++ second (getL CK)) ) -> 
-    tri_bangK4 theory  n B a D O (UP L). 
+    MLLNExp theory  n B a D O (UP L). 
 Proof with subst;auto.
     intros.
     eapply GenK4 with (C4:=C4) (CK:=CK) (CN:= CN)... 
-    eapply tri_exp_pred...
+    eapply mll_exp_pred...
     lia.
  Qed.
 
@@ -438,17 +438,17 @@ Proof with subst;auto.
      Permutation B (C4++CK++CN) ->  SetU C4 -> SetU CK ->
     n >= length (C4 ++ CK) + 1 -> 
     n - length (C4 ++ CK) - 1 |-F- D++PlusT C4 ++ Loc CK ; O ;(UP L ) -> 
-    tri_bangK4 theory  n B a D O (UP L). 
+    MLLNExp theory  n B a D O (UP L). 
 Proof with sauto.
     intros.
     eapply GenK4 with (C4:=C4) (CK:=CK) (CN:= CN)... 
-    eapply tri_exp_pred...
+    eapply mll_exp_pred...
     rewrite SetU_then_empty;simpl... 
     simplFix...
  Qed.
    
   Lemma InvSubExpPhase n a B L D O: 
-   a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+   a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ n >= length (C4++CK) + 1  /\
         SetK4 C4 /\ SetK CK /\ SetU CN  /\ (* NoLtX a CN /\*) LtX a C4 /\ LtX a CK /\  
     n - length (C4++CK) - 1 |-F- (D++PlusT C4 ++ Loc (getU CK)) ; O ;(UP (L++ second (getL CK)) ).
@@ -521,7 +521,7 @@ Proof with sauto.
     Qed.  
       
  Lemma InvSubExpPhaseLoc n B L D O: 
-   tri_bangK4 theory n B loc D O (UP L) ->
+   MLLNExp theory n B loc D O (UP L) ->
    exists CK CN, Permutation B ((Loc (getU CK))++CN) /\ n >= length CK + 1  /\
         SetU CN  /\ 
     n - length (CK) - 1 |-F- (D++Loc (getU CK)) ; O ;(UP L).
@@ -564,7 +564,7 @@ Proof with sauto.
       Qed.  
 
  Lemma InvSubExpPhaseU n a B D O L: 
-  u a =  true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  u a =  true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\ (* NoLtX a CN /\ *) LtX a C4 /\ LtX a CK /\ n >= length (C4++CK) + 1 /\  SetU C4 /\ SetU CK  /\ SetU CN /\ 
     n - length (C4 ++ CK) - 1 |-F- D++PlusT C4 ++ Loc CK ; O ;(UP L).
@@ -584,7 +584,7 @@ Proof with sauto.
  Qed.
 
 Lemma InvSubExpPhaseSU n a B D O L: 
-  SetU B -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  SetU B -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\ LtX a C4 /\ LtX a CK /\ n >= length (C4++CK) + 1 /\  SetU C4 /\ SetU CK  /\ SetU CN /\ 
     (* NoLtX a CN /\ *) 
@@ -606,7 +606,7 @@ Lemma InvSubExpPhaseSU n a B D O L:
  Qed.
 
   Lemma InvSubExpPhaseK4 n a B D O L: 
-  m4 a =  true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  m4 a =  true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ n >= length C4 + 1 /\  SetU CN /\ (* NoLtX a CN /\ *)
     n - length C4 - 1 |-F- D++PlusT C4 ; O ;(UP L).
@@ -621,7 +621,7 @@ Lemma InvSubExpPhaseSU n a B D O L:
 
 
   Lemma InvSubExpPhaseUK4 n a B D O L: 
-  u a = true -> m4 a =  true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  u a = true -> m4 a =  true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ n >= length C4 + 1 /\  SetU CN /\  (* NoLtX a CN /\ *) SetU C4 /\ 
     n - length C4 - 1 |-F- D++PlusT C4 ; O ;(UP L).
@@ -634,7 +634,7 @@ Lemma InvSubExpPhaseSU n a B D O L:
    Qed.
    
   Lemma InvSubExpPhaseSUK4 n a B D O L: 
-  SetU B -> m4 a =  true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  SetU B -> m4 a =  true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ n >= length C4 + 1 /\  SetU CN /\ (* NoLtX a CN /\ *) SetU C4 /\ 
     n - length C4 - 1 |-F- D++PlusT C4 ; O ;(UP L).
@@ -648,7 +648,7 @@ Lemma InvSubExpPhaseSU n a B D O L:
    Qed. 
    
  Lemma InvSubExpPhaseUT n a B D O L: 
-  u a =  true -> mt a = true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  u a =  true -> mt a = true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\ LtX a C4 /\ LtX a CK /\ n >= length (C4++CK) + 1 /\  SetU C4 /\ SetU CK  /\ SetU CN 
 /\ (* NoLtX a CN /\ *) SetT C4 /\ SetT CK /\ 
@@ -669,7 +669,7 @@ Lemma InvSubExpPhaseSU n a B D O L:
  Qed.
 
 Lemma InvSubExpPhaseSUT n a B D O L: 
-  SetU B -> SetT B -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  SetU B -> SetT B -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\ LtX a C4 /\ LtX a CK /\ n >= length (C4++CK) + 1 /\  SetU C4 /\ SetU CK  /\ SetT C4 /\ 
 SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
@@ -692,7 +692,7 @@ SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
 
 
   Lemma InvSubExpPhaseUTK4 n a B D O L: 
-  u a = true -> mt a = true -> m4 a =  true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  u a = true -> mt a = true -> m4 a =  true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ n >= length C4 + 1 /\  SetU CN /\ (* NoLtX a CN /\ *) SetU C4 /\ SetT C4 /\ 
     n - length C4 - 1 |-F- D++ C4 ; O ;(UP L).
@@ -707,7 +707,7 @@ SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
    Qed.
    
   Lemma InvSubExpPhaseSUTK4 n a B D O L: 
-  SetU B -> SetT B -> m4 a =  true -> a <> loc -> tri_bangK4 theory n B a D O (UP L) ->
+  SetU B -> SetT B -> m4 a =  true -> a <> loc -> MLLNExp theory n B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ n >= length C4 + 1 /\  SetU CN /\  (* NoLtX a CN /\*) SetU C4 /\ SetT C4 /\  
     n - length C4 - 1 |-F- D++PlusT C4 ; O ;(UP L).
@@ -724,8 +724,8 @@ SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
  (** Same results for the system without height *)
  Theorem GenK4' a B L O D C4 CK CN : 
   a <> loc -> SetK4 C4 -> SetK CK ->  LtX a C4 -> LtX a CK ->Permutation B (C4++CK++CN) ->
-  tri_bangK4' theory  CN a (D++PlusT C4++ Loc (getU CK)) O (UP (L ++ second (getL CK))) ->
-    tri_bangK4' theory  B a D O (UP L).
+  MLLSExp theory  CN a (D++PlusT C4++ Loc (getU CK)) O (UP (L ++ second (getL CK))) ->
+    MLLSExp theory  B a D O (UP L).
   Proof with sauto.
     revert dependent L.
     revert dependent D.
@@ -800,11 +800,11 @@ SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
   a <> loc -> SetK4 C4 -> SetK CK -> LtX a C4 -> LtX a CK -> SetU CN  -> (* NoLtX a CN -> *)
      Permutation B (C4++CK++CN) ->
     |-f- D++PlusT C4 ++ Loc (getU CK) ; O ;(UP (L ++ second (getL CK) )) ->
-    tri_bangK4' theory B a D O (UP L). 
+    MLLSExp theory B a D O (UP L). 
     Proof with subst;auto.
     intros.
     eapply GenK4' with (C4:=C4) (CK:=CK) (CN:= CN)...
-    eapply tri_exp'...
+    eapply mll_exp'...
   Qed.
  
  
@@ -812,11 +812,11 @@ SetT CK  /\ SetU CN /\ (* NoLtX a CN /\ *)
      a <> loc -> SetK4 C4 -> SetK CK -> LtX a C4 -> LtX a CK -> SetU CN -> (* NoLtX a CN -> *)
      Permutation B (C4++CK++CN) ->  SetU C4 -> SetU CK ->
     |-f- D++PlusT C4 ++ Loc CK ; O ;(UP L ) -> 
-    tri_bangK4' theory B a D O (UP L). 
+    MLLSExp theory B a D O (UP L). 
 Proof with sauto.
     intros.
     eapply GenK4' with (C4:=C4) (CK:=CK) (CN:= CN)... 
-    eapply tri_exp'...
+    eapply mll_exp'...
     rewrite SetU_then_empty;simpl...
     simplFix... 
  Qed.
@@ -825,7 +825,7 @@ Theorem GenK4RelUT' a B D O L CK C4 CN :
      a <> loc -> SetK4 C4 -> SetT C4 -> SetK CK -> LtX a C4 -> LtX a CK -> SetU CN -> (* NoLtX a CN -> *)
      Permutation B (C4++CK++CN) ->  SetU C4 -> SetU CK ->
     |-f- D++ C4 ++ Loc CK ; O ;(UP L ) -> 
-    tri_bangK4' theory B a D O (UP L). 
+    MLLSExp theory B a D O (UP L). 
 Proof with sauto.
     intros.
     eapply GenK4RelU' with (C4:=C4) (CK:=CK) (CN:= CN)...
@@ -833,7 +833,7 @@ Proof with sauto.
  Qed.
 
   Lemma InvSubExpPhase' a B L D O: 
-   a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+   a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\
         SetK4 C4 /\ SetK CK /\  LtX a C4 /\ LtX a CK /\ SetU CN /\  (* NoLtX a CN /\ *)
      |-f- (D++PlusT C4 ++ Loc (getU CK)) ; O ;(UP (L++ second (getL CK)) ).
@@ -841,7 +841,7 @@ Proof with sauto.
     intros.
     dependent induction H0...
                 
-    edestruct IHtri_bangK4'...
+    edestruct IHMLLSExp...
      eexists ([(b, F)] ++ x).
         eexists x0.
         eexists x1... 
@@ -850,7 +850,7 @@ Proof with sauto.
     simpl;solveLT.
     eapply exchangeCC. 
     2:{ exact H12. } simpl. perm. 
-     edestruct IHtri_bangK4'...
+     edestruct IHMLLSExp...
      eexists x.
         eexists ([(b, F)] ++ x0).
         eexists x1... 
@@ -861,7 +861,7 @@ Proof with sauto.
     eapply exchangeCC. 
     2:{ exact H13. } simpl;perm. 
     
-    edestruct IHtri_bangK4'...
+    edestruct IHMLLSExp...
      eexists x.
         eexists ([(b, F)] ++ x0).
         eexists x1... 
@@ -878,7 +878,7 @@ Proof with sauto.
     Qed.
  
   Lemma InvSubExpPhaseU' a B D O L: 
-  u a =  true -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+  u a =  true -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\ LtX a C4 /\ LtX a CK /\  SetU C4 /\ SetU CK  /\ SetU CN /\ (* NoLtX a CN /\ *) 
    |-f- D++PlusT C4 ++ Loc CK ; O ;(UP L).
@@ -899,7 +899,7 @@ Proof with sauto.
 
 
  Lemma InvSubExpPhaseSU' a B D O L: 
-  SetU B -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+  SetU B -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\   LtX a C4 /\ LtX a CK /\ SetU C4 /\ SetU CK  /\ SetU CN /\  (* NoLtX a CN /\ *)
    |-f- D++PlusT C4 ++ Loc CK ; O ;(UP L).
@@ -919,7 +919,7 @@ Proof with sauto.
  Qed.
 
   Lemma InvSubExpPhaseK4'  a B D O L: 
-  m4 a =  true -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+  m4 a =  true -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ SetU CN /\ (* NoLtX a CN /\*)  
     |-f- D++PlusT C4 ; O ;(UP L).
@@ -933,7 +933,7 @@ Proof with sauto.
    Qed.  
 
  Lemma InvSubExpPhaseUK4'  a B D O L: 
- u a = true -> m4 a =  true -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+ u a = true -> m4 a =  true -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ SetU CN /\ (*  NoLtX a CN /\ *) SetU C4 /\ 
     |-f- D++PlusT C4 ; O ;(UP L).
@@ -946,7 +946,7 @@ Proof with sauto.
    Qed.
   
  Lemma InvSubExpPhaseSUK4' a B D O L: 
-  SetU B -> m4 a = true -> tri_bangK4' theory B a D O (UP L) ->
+  SetU B -> m4 a = true -> MLLSExp theory B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ SetU C4 /\ SetU CN /\ (* NoLtX a CN /\ *)
    |-f- D++PlusT C4; O ;(UP L).
@@ -961,7 +961,7 @@ Proof with sauto.
   Qed.
    
   Lemma InvSubExpPhaseUT' a B D O L: 
-  u a =  true -> mt a =  true -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+  u a =  true -> mt a =  true -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\ LtX a C4 /\ LtX a CK /\  SetU C4 /\ SetU CK  /\ SetT C4 /\ SetT CK  /\ SetU CN /\ 
 (* NoLtX a CN /\ *) 
@@ -983,7 +983,7 @@ Proof with sauto.
 
 
  Lemma InvSubExpPhaseSUT' a B D O L: 
-  SetU B -> SetT B -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+  SetU B -> SetT B -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CK CN, Permutation B (C4++CK++CN) /\ 
         SetK4 C4 /\ SetK CK /\   LtX a C4 /\ LtX a CK /\ SetU C4 /\ SetU CK  /\ SetU CN /\ 
 (* NoLtX a CN /\ *) SetT C4 /\ SetT CK  /\  
@@ -1003,7 +1003,7 @@ Proof with sauto.
  Qed.
 
  Lemma InvSubExpPhaseUTK4'  a B D O L: 
- u a = true -> mt a = true -> m4 a =  true -> a <> loc -> tri_bangK4' theory B a D O (UP L) ->
+ u a = true -> mt a = true -> m4 a =  true -> a <> loc -> MLLSExp theory B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ SetU CN /\ (* NoLtX a CN /\ *)  SetU C4 /\ SetT C4 /\ 
     |-f- D++ C4 ; O ;(UP L).
@@ -1018,7 +1018,7 @@ Proof with sauto.
    Qed.
   
  Lemma InvSubExpPhaseSUTK4' a B D O L: 
-  SetU B -> SetT B -> m4 a = true -> tri_bangK4' theory B a D O (UP L) ->
+  SetU B -> SetT B -> m4 a = true -> MLLSExp theory B a D O (UP L) ->
    exists C4 CN, Permutation B (C4++CN) /\ 
         SetK4 C4 /\ LtX a C4 /\ SetU C4 /\ SetT C4 /\ SetU CN /\ 
   (* NoLtX a CN /\ *) |-f- D++ C4; O ;(UP L).
@@ -1057,7 +1057,7 @@ Proof with sauto.
           
  (* Soundness using mutuality *)
  Lemma MLLNtoSeq_mutual : forall n a B D O L (X:Arrow),
-    (tri_bangK4 theory n B a D O (UP L )  -> tri_bangK4' theory B a D O (UP L )) /\
+    (MLLNExp theory n B a D O (UP L )  -> MLLSExp theory B a D O (UP L )) /\
     (MLLN theory n B O X -> MLLS theory B O X).   
  Proof with subst;eauto. 
       induction n using strongind;intros;eauto.
@@ -1077,7 +1077,7 @@ Proof with sauto.
           eapply H... 
         - assert(Hp: forall m : nat,
                   m <= n ->
-            forall  (B : list TypedFormula)
+            forall  (B : list location)
                     (O : multiset oo) (L : list oo) 
                     (X : Arrow),
            m |-F- B; O; X -> |-f- B; O; X).
@@ -1085,7 +1085,7 @@ Proof with sauto.
            
            inversion H0;subst. 
            1-20:eauto using Hp.
-           apply tri_bang'...
+           apply mll_bang'...
            eapply H...
            firstorder.
            createWorld i.
@@ -1124,8 +1124,8 @@ Lemma MLLNtoSeq : forall n B C X,
  
  
    Lemma HeightGeq_mutual : forall n a B D O L (X:Arrow),
-        (tri_bangK4 theory n B a D O (UP L) ->
-        forall m, m>=n -> tri_bangK4 theory m B a D O (UP L)) /\
+        (MLLNExp theory n B a D O (UP L) ->
+        forall m, m>=n -> MLLNExp theory m B a D O (UP L)) /\
         (MLLN theory n B O X ->
         forall m, m>=n -> MLLN theory m B O X).
     Proof with sauto.
@@ -1254,10 +1254,10 @@ Lemma MLLNtoSeq : forall n B C X,
  (* Weakeness using mutuality *)   
   Lemma weakeness_mutual : forall n i CC LC D O F L X,
     u (fst F)= true ->
-    (tri_bangK4 theory n CC i D O (UP L) ->
-    tri_bangK4 theory n (CC) i (D++[F]) O (UP L)) /\
-    (tri_bangK4 theory n CC i D O (UP L) ->
-    tri_bangK4 theory n (CC++[F]) i (D) O (UP L)) /\    
+    (MLLNExp theory n CC i D O (UP L) ->
+    MLLNExp theory n (CC) i (D++[F]) O (UP L)) /\
+    (MLLNExp theory n CC i D O (UP L) ->
+    MLLNExp theory n (CC++[F]) i (D) O (UP L)) /\    
     (n |-F- CC ; LC ; X -> n |-F- F :: CC ; LC ; X).
    Proof with sauto; try solveLL.   
       induction n using strongind;intros.
@@ -1332,8 +1332,8 @@ Lemma MLLNtoSeq : forall n B C X,
  
   Lemma weakeness_mutualGen X: forall n i CC D O L,
     SetU X ->
-    tri_bangK4 theory n CC i D O (UP L) ->
-    tri_bangK4 theory n (CC++X) i D O (UP L) .
+    MLLNExp theory n CC i D O (UP L) ->
+    MLLNExp theory n (CC++X) i D O (UP L) .
    Proof with sauto.
    induction X;intros...
    eapply exchangeCCNK4 with (CC:=(CC++[a])++X)...
@@ -1374,8 +1374,8 @@ Lemma MLLNtoSeq : forall n B C X,
   
   Lemma weakeness_mutual' : forall i CC  D O F L,
     u (fst F)= true ->
-    (tri_bangK4' theory CC i D O (UP L) ->
-    tri_bangK4' theory (CC++[F]) i (D) O (UP L)).
+    (MLLSExp theory CC i D O (UP L) ->
+    MLLSExp theory (CC++[F]) i (D) O (UP L)).
    Proof with sauto;try solveLL.
    intros.
    revert dependent F.
@@ -1391,8 +1391,8 @@ Lemma MLLNtoSeq : forall n B C X,
    
   
  Theorem MLLStoSeqNK4 : forall i B D O X,
-        (tri_bangK4' theory i B D O X) -> 
-        exists n, (tri_bangK4 theory n i B D O X).
+        (MLLSExp theory i B D O X) -> 
+        exists n, (MLLNExp theory n i B D O X).
   Proof with sauto.
     induction 1 ;eauto;firstorder;eauto.
     + exists  (S x).
@@ -1410,8 +1410,8 @@ Lemma MLLNtoSeq : forall n B C X,
   
   Lemma weakeness_mutualGen' X: forall i CC D O L,
     SetU X ->
-    tri_bangK4' theory CC i D O (UP L) ->
-    tri_bangK4' theory (CC++X) i D O (UP L) .
+    MLLSExp theory CC i D O (UP L) ->
+    MLLSExp theory (CC++X) i D O (UP L) .
    Proof with sauto.
    intros. 
    apply MLLStoSeqNK4 in H0...
@@ -2076,7 +2076,7 @@ apply Permutation_cons_inv in H5...
          
            {
             
-           assert(tri_bangK4 theory n ((x++[F])) i [] [] (UP [F0])).
+           assert(MLLNExp theory n ((x++[F])) i [] [] (UP [F0])).
            eapply weakeness_mutual with (F:=F)...
            exact nil. firstorder.
            apply GenK4Rel with (C4:=C4) (CK:= CK) (CN:=x3)...
@@ -2262,7 +2262,7 @@ apply Permutation_cons_inv in H5...
          
            {
           
-           assert(tri_bangK4 theory n ((x++[F])) i [] [] (UP [ ])).
+           assert(MLLNExp theory n ((x++[F])) i [] [] (UP [ ])).
            eapply weakeness_mutual with (F:=F)...
            exact nil. exact (UP nil).  
            apply GenK4Rel with (C4:=C4) (CK:= CK) (CN:=x3)...
@@ -2284,8 +2284,8 @@ apply Permutation_cons_inv in H5...
  
 
  Theorem contractionK4N  : forall n i CC D LC F X, i <> loc -> 
-       u (fst F) = true -> tri_bangK4 theory n (F :: CC) i D LC X -> In F CC -> 
-       tri_bangK4 theory n CC i D LC X. 
+       u (fst F) = true -> MLLNExp theory n (F :: CC) i D LC X -> In F CC -> 
+       MLLNExp theory n CC i D LC X. 
 Proof with sauto;try solveLL.
   intros. 
   destruct X.
@@ -2471,8 +2471,8 @@ Proof with sauto;try solveLL.
  Qed.
  
   Theorem contractionK4  : forall i CC D LC F X, i <> loc -> 
-       u (fst F) = true -> tri_bangK4' theory (F :: CC) i D LC X -> In F CC -> 
-       tri_bangK4' theory CC i D LC X. 
+       u (fst F) = true -> MLLSExp theory (F :: CC) i D LC X -> In F CC -> 
+       MLLSExp theory CC i D LC X. 
 Proof with sauto;try solveLL. 
   intros.
   destruct X...
@@ -2502,7 +2502,7 @@ Proof with sauto;try solveLL.
 
        
  Theorem contractionSetK4  : forall i CC LC D X L, i <> loc -> (forall F, In F L -> In F CC) -> SetU L ->
-        (  tri_bangK4' theory (L ++ CC) i D LC X) -> tri_bangK4' theory CC i D LC X.
+        (  MLLSExp theory (L ++ CC) i D LC X) -> MLLSExp theory CC i D LC X.
    Proof.
       intros.
       induction L.
@@ -2558,7 +2558,7 @@ Proof with sauto;try solveLL.
   Qed.
  
  Theorem contractionGetUK4  : forall i C CC LC D X, i <> loc -> 
- ( tri_bangK4' theory (getU C ++ getU C ++ CC) i D LC X) -> tri_bangK4' theory (getU C ++ CC) i D LC X.
+ ( MLLSExp theory (getU C ++ getU C ++ CC) i D LC X) -> MLLSExp theory (getU C ++ CC) i D LC X.
    Proof.
       intros.
       eapply contractionSetK4 with (L:=getU C);intros;eauto.
@@ -2567,7 +2567,7 @@ Proof with sauto;try solveLL.
   Qed.  
  
  Theorem contractionGetUK4_rev  : forall i C CC LC D X, i <> loc -> 
- ( tri_bangK4' theory (CC ++ getU C ++ getU C) i D LC X) -> tri_bangK4' theory (getU C ++ CC) i D LC X.
+ ( MLLSExp theory (CC ++ getU C ++ getU C) i D LC X) -> MLLSExp theory (getU C ++ CC) i D LC X.
    Proof.
       intros.
       eapply contractionSetK4 with (L:=getU C);intros;eauto.
@@ -2802,8 +2802,8 @@ Lemma Loc_Unb' : forall  B C L X,
   Qed.  
 
  Lemma ContractionLocK4 : forall n a C B L D X, a <> loc -> 
-   SetU C -> SetT C ->  tri_bangK4 theory n D a (Loc C++B) L (UP X) -> 
-   tri_bangK4 theory n D a (C++B) L (UP X).
+   SetU C -> SetT C ->  MLLNExp theory n D a (Loc C++B) L (UP X) -> 
+   MLLNExp theory n D a (C++B) L (UP X).
   Proof with sauto;try solveLL.
   intros.
   apply InvSubExpPhase in H2...
@@ -2816,8 +2816,8 @@ Lemma Loc_Unb' : forall  B C L X,
  Qed. 
  
  Lemma ContractionLocK4' : forall a C B L D X, a <> loc -> 
-   SetU C -> SetT C ->  tri_bangK4' theory  D a (Loc C++B) L (UP X) -> 
-   tri_bangK4' theory D a (C++B) L (UP X).
+   SetU C -> SetT C ->  MLLSExp theory  D a (Loc C++B) L (UP X) -> 
+   MLLSExp theory D a (C++B) L (UP X).
   Proof with sauto;try solveLL.
   intros.
   apply InvSubExpPhase' in H2...
@@ -2945,7 +2945,7 @@ End GeneralResults.
   Qed.    
  
  Lemma WeakTheory
-     : forall (CC : list TypedFormula)
+     : forall (CC : list location)
          (LC : multiset oo) (X : Arrow) (th th' : oo -> Prop),
        (forall F : oo, th F -> th' F) ->
        MLLS th CC LC X -> MLLS th' CC LC X.

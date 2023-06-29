@@ -844,8 +844,8 @@ Proof with sauto;try solveLL.
       
       
 Theorem CutK4SubCase (h n j w:nat) i a L B P: CutH w h -> CutW w -> complexity P = pred w -> h = S n + j -> i <> loc ->
- tri_bangK4 theory n (B ++ [(a, P)]) i [] [] (UP L) -> 
- j |--- B; []; (DW (Bang a (dual P))) -> tri_bangK4' theory B i [] [] (UP L).
+ MLLNExp theory n (B ++ [(a, P)]) i [] [] (UP L) -> 
+ j |--- B; []; (DW (Bang a (dual P))) -> MLLSExp theory B i [] [] (UP L).
  Proof with sauto;solveF.
  intros HC WC comP hH Hd Hyp Hj.
         apply InvSubExpPhaseU in Hyp;auto.
@@ -968,7 +968,7 @@ Theorem CutK4SubCase (h n j w:nat) i a L B P: CutH w h -> CutW w -> complexity P
           CleanContext.
            
            assert(Hd': S n0 |--- PlusT C4' ++ Loc CK'; []; (DW (Bang loc (dual P)))).
-          { apply tri_bangL...
+          { apply mll_bangL...
             eapply HeightGeqCEx.
             2:{ exact H23. }
             perm.

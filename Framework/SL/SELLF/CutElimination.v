@@ -28,8 +28,8 @@ Context `{SI : SigSELL}.
   Variable th : oo -> Prop.
   
   Theorem CutAtom {SIU: USigSELL} B M N L C:
-  seq th B M (UP (atom C::L)) -> seq th B N (DW (perp C))  ->
-  seq th B (M++N) (UP L).
+  SELLS th B M (UP (atom C::L)) -> SELLS th B N (DW (perp C))  ->
+  SELLS th B (M++N) (UP L).
   Proof with sauto;try solveLL.
   intros Hd1 Hd2.
   inversion Hd2...
@@ -45,38 +45,38 @@ Context `{SI : SigSELL}.
     Definition CutW (w: nat) :=  
     forall i j cF A P M N L B C D, 
     complexity cF < w -> SetU B -> SetL C -> SetL D ->
-      (seqN th i (B++C) (cF::M) (UP L) -> seqN th j (B++D) N (UP [dual cF]) -> seq th (B++C++D) (M ++ N) (UP L)) /\
-      (seqN th i (B++C) M (UP (cF :: L)) -> seqN th j (B++D) N (DW (dual cF)) -> seq th (B++C++D) (M ++ N) (UP L)) /\
+      (SELLN th i (B++C) (cF::M) (UP L) -> SELLN th j (B++D) N (UP [dual cF]) -> SELLS th (B++C++D) (M ++ N) (UP L)) /\
+      (SELLN th i (B++C) M (UP (cF :: L)) -> SELLN th j (B++D) N (DW (dual cF)) -> SELLS th (B++C++D) (M ++ N) (UP L)) /\
        (forall a, S (complexity A) = complexity cF ->
-       seqN th i ((a,A)::(B++C)) M (DW P) -> seqN th j (B++D) [] (DW (Bang a (dual A))) -> seq th (B++C++D) M (UP [P]))  /\
+       SELLN th i ((a,A)::(B++C)) M (DW P) -> SELLN th j (B++D) [] (DW (Bang a (dual A))) -> SELLS th (B++C++D) M (UP [P]))  /\
       (forall a, S (complexity A) = complexity cF ->
-       seqN th i ((a,A)::(B++C)) M (UP L) -> seqN th j (B++D) [] (DW (Bang a (dual A))) -> seq th (B++C++D) M (UP L)). 
+       SELLN th i ((a,A)::(B++C)) M (UP L) -> SELLN th j (B++D) [] (DW (Bang a (dual A))) -> SELLS th (B++C++D) M (UP L)). 
     
   Definition CutH (w h: nat) :=  
     forall i j cF A P M N L B C D, 
     i + j < h ->
     complexity cF = w -> SetU B -> SetL C -> SetL D ->
-      (seqN th i (B++C) (cF::M) (UP L) -> seqN th j (B++D) N (UP [dual cF]) -> seq th (B++C++D) (M ++ N) (UP L)) /\
-      (seqN th i (B++C) M (UP (cF :: L)) -> seqN th j (B++D) N (DW (dual cF)) -> seq th (B++C++D) (M ++ N) (UP L)) /\
+      (SELLN th i (B++C) (cF::M) (UP L) -> SELLN th j (B++D) N (UP [dual cF]) -> SELLS th (B++C++D) (M ++ N) (UP L)) /\
+      (SELLN th i (B++C) M (UP (cF :: L)) -> SELLN th j (B++D) N (DW (dual cF)) -> SELLS th (B++C++D) (M ++ N) (UP L)) /\
       (forall a, S (complexity A) = complexity cF ->
-       seqN th i ((a,A)::(B++C)) M (DW P) -> seqN th j (B++D) [] (DW (Bang a (dual A))) -> seq th (B++C++D) M (UP [P]))   /\
+       SELLN th i ((a,A)::(B++C)) M (DW P) -> SELLN th j (B++D) [] (DW (Bang a (dual A))) -> SELLS th (B++C++D) M (UP [P]))   /\
       (forall a, S (complexity A) = complexity cF ->
-       seqN th i ((a,A)::(B++C)) M (UP L) -> seqN th j (B++D) [] (DW (Bang a (dual A))) -> seq th (B++C++D) M (UP L)). 
+       SELLN th i ((a,A)::(B++C)) M (UP L) -> SELLN th j (B++D) [] (DW (Bang a (dual A))) -> SELLS th (B++C++D) M (UP L)). 
           
 Ltac applyCutH := 
   match goal with
   | [ H: CutH _ _ |- 
-         seqN ?th ?x _ _ _ -> 
-         seqN ?th ?y _ _ _ -> 
-         seq ?th _ _ _ ] => eapply H
+         SELLN ?th ?x _ _ _ -> 
+         SELLN ?th ?y _ _ _ -> 
+         SELLS ?th _ _ _ ] => eapply H
   | _ => idtac end;sauto.
   
 Ltac applyCutW := 
   match goal with
   | [ H: CutW _ |- 
-         seqN ?th ?x _ _ _ -> 
-         seqN ?th ?y _ _ _ -> 
-         seq ?th _ _ _ ] => eapply H
+         SELLN ?th ?x _ _ _ -> 
+         SELLN ?th ?y _ _ _ -> 
+         SELLS ?th _ _ _ ] => eapply H
   | _ => idtac end;sauto.
 
 Ltac cut1H P1 P2 :=
@@ -84,10 +84,10 @@ Ltac cut1H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 (?B++?C) (?FC::?M) (UP ?L) => 
+   | SELLN ?th ?h1 (?B++?C) (?FC::?M) (UP ?L) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) ?N (UP [dual ?FC]) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) (M++N) (UP L));applyCutH
+          | SELLN ?th ?h2 (?B++?D) ?N (UP [dual ?FC]) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) (M++N) (UP L));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -96,10 +96,10 @@ Ltac cut2H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 (?B++?C) ?M (UP (?FC::?L)) => 
+   | SELLN ?th ?h1 (?B++?C) ?M (UP (?FC::?L)) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) ?N (DW (dual ?FC)) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) (M++N) (UP L));applyCutH
+          | SELLN ?th ?h2 (?B++?D) ?N (DW (dual ?FC)) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) (M++N) (UP L));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -108,10 +108,10 @@ Ltac cut3H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (DW ?P) => 
+   | SELLN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (DW ?P) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) M (UP [P]));applyCutH
+          | SELLN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) M (UP [P]));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -120,10 +120,10 @@ Ltac cut4H P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (UP ?L) => 
+   | SELLN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (UP ?L) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) M (UP L));applyCutH
+          | SELLN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) M (UP L));applyCutH
            | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end;sauto.
 
@@ -132,10 +132,10 @@ Ltac cut1W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 (?B++?C) (?FC::?M) (UP ?L) => 
+   | SELLN ?th ?h1 (?B++?C) (?FC::?M) (UP ?L) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) ?N (UP [dual ?FC]) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) (M++N) (UP L));applyCutW
+          | SELLN ?th ?h2 (?B++?D) ?N (UP [dual ?FC]) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) (M++N) (UP L));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -144,10 +144,10 @@ Ltac cut2W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 (?B++?C) ?M (UP (?FC::?L)) => 
+   | SELLN ?th ?h1 (?B++?C) ?M (UP (?FC::?L)) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) ?N (DW (dual ?FC)) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) (M++N) (UP L));applyCutW
+          | SELLN ?th ?h2 (?B++?D) ?N (DW (dual ?FC)) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) (M++N) (UP L));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -156,10 +156,10 @@ Ltac cut3W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (DW ?P) => 
+   | SELLN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (DW ?P) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) M (UP [P]));applyCutW
+          | SELLN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) M (UP [P]));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
 end.
 
@@ -168,10 +168,10 @@ Ltac cut4W P1 P2 :=
    let tP2 := type of P2 in
    let H' := fresh "OLCut" in
    match tP1 with
-   | seqN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (UP ?L) => 
+   | SELLN ?th ?h1 ((?e, ?FC)::(?B++?C)) ?M (UP ?L) => 
           match tP2 with 
-          | seqN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
-                      assert(H': tP1 -> tP2 -> seq th (B++C++D) M (UP L));applyCutW
+          | SELLN ?th ?h2 (?B++?D) [] (DW (Bang ?e (dual ?FC))) =>  
+                      assert(H': tP1 -> tP2 -> SELLS th (B++C++D) M (UP L));applyCutW
            | _ => idtac "type of " P2 " is " tP2 end
    | _ => idtac "type of " P1 " is " tP1 end;sauto.
 
@@ -212,9 +212,9 @@ Qed.
 
 Theorem Cut1  a b P L M N B C D: 
 CutH (complexity P) (a+b) -> SetU B -> SetL C -> SetL D ->
-  seqN th a (B++C) (P::M) (UP L) ->
-  seqN th b (B++D) N (UP [P ^]) ->
-  seq th (B++C++D) (M ++ N) (UP L ).
+  SELLN th a (B++C) (P::M) (UP L) ->
+  SELLN th b (B++D) N (UP [P ^]) ->
+  SELLS th (B++C++D) (M ++ N) (UP L ).
 Proof with sauto;try solveLL.  
  intros CH stB stC stD Ha Hb.
  inversion Ha...
@@ -252,9 +252,9 @@ Proof with sauto;try solveLL.
                  rewrite <- app_comm_cons. 
                  apply InvPlus...
                  LLStore.
-                assert( seqN th (S n0) (B++C) (P::(F0::x)) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++C++D) ((F0::x) ++ N) (UP [ ])) as Cut.
+                assert( SELLN th (S n0) (B++C) (P::(F0::x)) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++C++D) ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
@@ -274,9 +274,9 @@ Proof with sauto;try solveLL.
                  rewrite <- app_comm_cons. 
                  apply InvPlusComm...
                  LLStore. 
-                assert(seqN th (S n0) (B++C) (P::(G::x)) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++C++D) ((G::x ) ++ N) (UP [ ])) as Cut.
+                assert(SELLN th (S n0) (B++C) (P::(G::x)) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++C++D) ((G::x ) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
@@ -292,7 +292,7 @@ Proof with sauto;try solveLL.
     {   pose proof (unformUnb  stB stC H4 H6 H7 H3)...
               destruct(posOrNeg F0).
               * (* first *) 
-                assert(seqN th (S n0) (B++C0) (P::(F0::x0)) (UP [])).
+                assert(SELLN th (S n0) (B++C0) (P::(F0::x0)) (UP [])).
               LFocus F0 (P::x0)...
               HProof. 
               rewrite H10...
@@ -330,7 +330,7 @@ Proof with sauto;try solveLL.
   {   pose proof (unformUnb  stB stC H4 H6 H7 H3)...
               destruct(posOrNeg G).
               * (* first *) 
-                assert(seqN th (S n0) (B++D0) (P::(G::x0)) (UP [])).
+                assert(SELLN th (S n0) (B++D0) (P::(G::x0)) (UP [])).
               LFocus G (P::x0)...
               HProof. 
               rewrite H10...
@@ -368,9 +368,9 @@ LLPerm(F0⊗ G::M0++(x0++N)).
                  rewrite <- app_comm_cons. 
                  apply @InvEx with (t:=t)...
                  LLStore. 
-                 assert( seqN th (S n0) (B++C) (P::(FX t::x) ) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++C++D) ((FX t::x) ++ N) (UP [ ])) as Cut.
+                 assert( SELLN th (S n0) (B++C) (P::(FX t::x) ) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++C++D) ((FX t::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                 rewrite app_comm_cons...
                 apply Cut...
@@ -400,9 +400,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
      {  eapply @InvPlusC with (F:=F0) (G:=G) (i:=i)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++C) (P::(F0::M) ) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++C++D) ((F0::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++C) (P::(F0::M) ) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++C++D) ((F0::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (F0::M) ++ N)...
                apply Cut...
@@ -416,9 +416,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
      {  eapply @InvPlusCComm with (F:=F0) (G:=G) (i:=i)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++C) (P::(G::M) ) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++C++D) ((G::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++C) (P::(G::M) ) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++C++D) ((G::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (G::M) ++ N)...
                apply Cut...
@@ -442,9 +442,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
                rewrite <- (app_nil_l [F0]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) (B++C0) (P::(F0::x)) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++C0++D) ((F0::x) ++ N) (UP [ ])) as Cut.
+                 assert(SELLN th (S n0) (B++C0) (P::(F0::x)) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++C0++D) ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((F0 :: x) ++ N)...
               apply Cut...
@@ -483,9 +483,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
                rewrite <- (app_nil_l [G]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) (B++D0) (P::(G::x)) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++D0++D) ((G::x) ++ N) (UP [ ])) as Cut.
+                 assert(SELLN th (S n0) (B++D0) (P::(G::x)) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++D0++D) ((G::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((G :: x) ++ N)...
               apply Cut...
@@ -508,9 +508,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
      { eapply @InvExC with  (t:=t) (FX:=FX) (i:=i)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++C) (P::(FX t::M)) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++C++D) ((FX t::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++C) (P::(FX t::M)) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++C++D) ((FX t::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
         LLPerm((FX t :: M) ++ N)...
         apply Cut... 
@@ -546,9 +546,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
         rewrite H2...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++x) (P::(F0::M) ) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++x++D) ((F0::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++x) (P::(F0::M) ) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++x++D) ((F0::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                rewrite H2 in stC. inversion stC... 
                LLPerm( (F0::M) ++ N)...
@@ -566,9 +566,9 @@ apply @AbsorptionClassic' with (i:=i)  (F:=perp A)...
          rewrite H2...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++x) (P::(G::M) ) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++x++D) ((G::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++x) (P::(G::M) ) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++x++D) ((G::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                rewrite H2 in stC. inversion stC... 
                LLPerm( (G::M) ++ N)...
@@ -598,9 +598,9 @@ pose proof (unformUnb  stB stX H8 H9 H10 H7)...
                  rewrite <- (app_nil_l [F0]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) (B++C0) (P::(F0::x0)) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++C0++D) ((F0::x0) ++ N) (UP [ ])) as Cut.
+                 assert(SELLN th (S n0) (B++C0) (P::(F0::x0)) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++C0++D) ((F0::x0) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((F0 :: x0) ++ N)... rewrite <- H12...
               apply Cut...
@@ -643,9 +643,9 @@ rewrite H2, H13.
                  rewrite <- (app_nil_l [G]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) (B++D0) (P::(G::x0)) (UP [ ]) ->
-                       seqN th b (B++D) N (UP [dual P]) ->
-                         seq th (B++D0++D) ((G::x0) ++ N) (UP [ ])) as Cut.
+                 assert(SELLN th (S n0) (B++D0) (P::(G::x0)) (UP [ ]) ->
+                       SELLN th b (B++D) N (UP [dual P]) ->
+                         SELLS th (B++D0++D) ((G::x0) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((G :: x0) ++ N)... rewrite <- H12...
               apply Cut...
@@ -673,9 +673,9 @@ rewrite H2, H13.
         rewrite H2...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++x) (P::(FX t::M)) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++x++D) ((FX t::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++x) (P::(FX t::M)) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++x++D) ((FX t::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
         LLPerm((FX t :: M) ++ N)...
         apply Cut... 
@@ -707,9 +707,9 @@ rewrite H2, H13.
      {  eapply @InvPlusT with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [F0]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++C) (P::(F0::M)) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++C++D) ((F0::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++C) (P::(F0::M)) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++C++D) ((F0::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (F0::M) ++ N)...
                apply Cut...
@@ -723,9 +723,9 @@ rewrite H2, H13.
      {  eapply @InvPlusTComm with (F:=F0) (G:=G)...
         rewrite <- (app_nil_l [G]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++C) (P::(G::M)) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++C++D) ((G::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++C) (P::(G::M)) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++C++D) ((G::M) ++ N) (UP [ ])) as Cut.
                 eapply CH... 
                LLPerm( (G::M) ++ N)...
                apply Cut...
@@ -753,9 +753,9 @@ pose proof (unformUnb  stB stC H4 H6 H7 H3)...
                  rewrite <- (app_nil_l [F0]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) (B0++C0) (P::(F0::x)) (UP [ ]) ->
-                       seqN th b (B0++D) N (UP [dual P]) ->
-                         seq th (B0++C0++D) ((F0::x) ++ N) (UP [ ])) as Cut.
+                 assert(SELLN th (S n0) (B0++C0) (P::(F0::x)) (UP [ ]) ->
+                       SELLN th b (B0++D) N (UP [dual P]) ->
+                         SELLS th (B0++C0++D) ((F0::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((F0 :: x) ++ N)... 
               apply Cut...
@@ -796,9 +796,9 @@ rewrite H10.
                  rewrite <- (app_nil_l [G]).
                apply UpExtension'...
                 
-                 assert(seqN th (S n0) (B0++D0) (P::(G::x)) (UP [ ]) ->
-                       seqN th b (B0++D) N (UP [dual P]) ->
-                         seq th (B0++D0++D) ((G::x) ++ N) (UP [ ])) as Cut.
+                 assert(SELLN th (S n0) (B0++D0) (P::(G::x)) (UP [ ]) ->
+                       SELLN th b (B0++D) N (UP [dual P]) ->
+                         SELLS th (B0++D0++D) ((G::x) ++ N) (UP [ ])) as Cut.
                 eapply CH...
                LLPerm((G :: x) ++ N)... 
               apply Cut...
@@ -823,9 +823,9 @@ rewrite H10.
      {  eapply @InvExT with  (t:=t) (FX:=FX)...
         rewrite <- (app_nil_l [FX t]).
         apply UpExtension'...
-        assert(seqN th (S n0) (B++C) (P::(FX t::M)) (UP [ ]) ->
-                  seqN th b (B++D) N (UP [dual P]) ->
-                    seq th (B++C++D) ((FX t::M) ++ N) (UP [ ])) as Cut.
+        assert(SELLN th (S n0) (B++C) (P::(FX t::M)) (UP [ ]) ->
+                  SELLN th b (B++D) N (UP [dual P]) ->
+                    SELLS th (B++C++D) ((FX t::M) ++ N) (UP [ ])) as Cut.
                 eapply CH...
        apply Cut...
        LFocus (FX t) (P::M). }
@@ -844,9 +844,9 @@ Qed.
   
   Theorem Cut2  a b P L M N B C D : 
   CutH (complexity P) (a+b) -> CutW (complexity P) -> SetU B -> SetL C -> SetL D ->
-  seqN th a (B++C) M (UP (P::L)) ->
-  seqN th b (B++D) N (DW (dual P)) ->
-  seq th (B++C++D) (M ++ N) (UP L).
+  SELLN th a (B++C) M (UP (P::L)) ->
+  SELLN th b (B++D) N (DW (dual P)) ->
+  SELLS th (B++C++D) (M ++ N) (UP L).
 Proof with sauto;try solveLL.   
  intros CH CW stB stC stD Ha Hb.
  inversion Ha;subst. 
@@ -929,9 +929,9 @@ HProof.
  Qed.
  
 Lemma weakeningSet
-     : forall (theory : oo -> Prop) (CC : list TypedFormula) 
+     : forall (theory : oo -> Prop) (CC : list location) 
         c (LC : list oo) (X : Arrow),
-       LtX c (getL CC) -> seq theory (getLtX c CC)  LC X -> seq theory CC LC X.
+       LtX c (getL CC) -> SELLS theory (getLtX c CC)  LC X -> SELLS theory CC LC X.
 Proof with sauto.
   intros.
   rewrite (cxtDestructNoLtX c CC).
@@ -940,9 +940,9 @@ Proof with sauto.
 Qed.
 
 Lemma weakeningSetN n
-     : forall (theory : oo -> Prop) (CC : list TypedFormula) 
+     : forall (theory : oo -> Prop) (CC : list location) 
         c (LC : list oo) (X : Arrow),
-       LtX c (getL CC) -> seqN theory n  (getLtX c CC)  LC X -> seqN theory n CC LC X.
+       LtX c (getL CC) -> SELLN theory n  (getLtX c CC)  LC X -> SELLN theory n CC LC X.
 Proof with sauto.
   intros.
   rewrite (cxtDestructNoLtX c CC).
@@ -994,7 +994,7 @@ Proof with sauto.
     inversion H...
      rewrite <- H6 in H5.
     rewrite app_comm_cons in H5.
-     pose proof (IHB1 (t::x0) C1 C2 H11 H9 H1 H2 H5)...
+     pose proof (IHB1 (l::x0) C1 C2 H11 H9 H1 H2 H5)...
     rewrite  H3 in H2.
     inversion H2... inversion H... }
    { checkPermutationCases H3.
@@ -1005,7 +1005,7 @@ Proof with sauto.
     inversion H...
      rewrite <- H6 in H5.
     rewrite app_comm_cons in H5.
-     pose proof (IHB1 (t::x0) C1 C2 H11 H9 H1 H2 H5)...
+     pose proof (IHB1 (l::x0) C1 C2 H11 H9 H1 H2 H5)...
     rewrite  H3 in H2.
     inversion H2... inversion H... }
 Qed.
@@ -1080,9 +1080,9 @@ Qed.
  Theorem Cut3 a b q P Q F L B C D:
     CutH (complexity P) (a+b) -> CutW  (complexity P) -> SetU B -> SetL C -> SetL D ->
     S (complexity Q) = complexity P ->
-    seqN th a ((q,Q)::(B++C)) L (DW F) -> 
-    seqN th b (B++D) [] (DW (Bang q  (Q ^))) ->   
-    seq th (B++C++D) L (UP [F]).
+    SELLN th a ((q,Q)::(B++C)) L (DW F) -> 
+    SELLN th b (B++D) [] (DW (Bang q  (Q ^))) ->   
+    SELLS th (B++C++D) L (UP [F]).
   Proof with sauto;try solveLL.
   intros HC WC stB stC stD Hc' Ha Hb.
     inversion Ha...
@@ -1216,7 +1216,7 @@ assert(LtX q (getL B)).
 rewrite (SetU_then_empty B)...
 apply Forall_nil.
 pose proof (ltConv' a0 q B l H2)...
-assert(seqN th (S n0) (getLtX a0 B ++ D) [] (DW ((! q) (Q ^)))).
+assert(SELLN th (S n0) (getLtX a0 B ++ D) [] (DW ((! q) (Q ^)))).
 { solveLL. rewrite getLApp'.
    rewrite <- getLtXgetL.
   apply Forall_app... 
@@ -1238,7 +1238,7 @@ assert( u q = true).
 rewrite confBang in H4...
 rewrite confBang in H6...
 pose proof(LtXgetL D H1 H5).
-assert(seqN th n ((q, Q) :: getLtX a0 B ++ C) [] (UP [F0])).
+assert(SELLN th n ((q, Q) :: getLtX a0 B ++ C) [] (UP [F0])).
 apply weakeningN...
 apply tri_store'...
 LFocus... 
@@ -1257,8 +1257,8 @@ rewrite (SetU_then_empty D) ...
   Qed. 
 
 Lemma unReleaseN n
-     : forall(B : list TypedFormula) (M : list oo) (P : oo),
-       seqN th n B M (DW P) -> exists m, (n = m +1 \/ n <= m) /\ seqN th m B M (UP [P]).
+     : forall(B : list location) (M : list oo) (P : oo),
+       SELLN th n B M (DW P) -> exists m, (n = m +1 \/ n <= m) /\ SELLN th m B M (UP [P]).
 Proof with sauto.
   intros. 
   destruct (posOrNeg P).
@@ -1294,9 +1294,9 @@ Qed.
 Theorem Cut4  a b q P Q L M B  C D: 
 CutH (complexity P) (a+b) -> CutW (complexity P) ->    
 S (complexity Q) = complexity P -> SetU B -> SetL C -> SetL D ->  
-  seqN th a ((q,Q)::(B++C)) M (UP L) ->
-  seqN th b (B++D) [] (DW (Bang q (Q ^))) ->
-  seq th (B++C++D) M (UP L).
+  SELLN th a ((q,Q)::(B++C)) M (UP L) ->
+  SELLN th b (B++D) [] (DW (Bang q (Q ^))) ->
+  SELLS th (B++C++D) M (UP L).
 Proof with sauto; try solveLL.  
   intros CH CW Hc stB stC stD Ha Hb.
   inversion Ha...  
@@ -1315,7 +1315,7 @@ Proof with sauto; try solveLL.
   * cut4H H4 Hb.
   * destruct (posOrNeg F).
      cut3H H5 Hb. 
-     assert( seq th (B++C++D) L' (UP [F]))...
+     assert( SELLS th (B++C++D) L' (UP [F]))...
      inversion H0;subst;try solve [inversion H].
      rewrite <- H1.
        HProof. 
@@ -1325,7 +1325,7 @@ Proof with sauto; try solveLL.
      cut4H H8 Hb.
   * inversion H2...
       + cut3H H6 Hb. 
-         assert(Hs: seq th (B++C++D) M (UP [F]))...
+         assert(Hs: SELLS th (B++C++D) M (UP [F]))...
           apply seqtoSeqN in Hs.
           destruct Hs as [x Hs].
           assert(SetU D). 
@@ -1336,17 +1336,17 @@ Proof with sauto; try solveLL.
             destruct(posOrNeg F).
          {   assert(negFormula (F ^)).
             apply posDualNeg...
-            assert( seqN th x (B++C) M  (UP [F]) -> 
-                    seqN th (S x0) (B++D) [] (DW (F ^)) ->
-                      seq th (B++C++D) (M++[])  (UP [ ])) as Cut1.
+            assert( SELLN th x (B++C) M  (UP [F]) -> 
+                    SELLN th (S x0) (B++D) [] (DW (F ^)) ->
+                      SELLS th (B++C++D) (M++[])  (UP [ ])) as Cut1.
             eapply CW... 
             CleanContext. 
            apply Cut1... 
            pose proof (SETXempty D H stD)... } 
           {
-            assert( seqN th x0 (B++D) []  (UP [F^]) -> 
-                  seqN th (S x ) (B++C) M (DW ((F^)^)) ->
-                      seq th (B++D++C) ([]++M) (UP [ ])) as Cut2.
+            assert( SELLN th x0 (B++D) []  (UP [F^]) -> 
+                  SELLN th (S x ) (B++C) M (DW ((F^)^)) ->
+                      SELLS th (B++D++C) ([]++M) (UP [ ])) as Cut2.
             eapply CW...
             rewrite <- dualComplexity...
             rewrite <- dualInvolutive in Cut2.
@@ -1367,15 +1367,15 @@ pose proof (SETXempty D H stD)... }
              apply Forall_app in H7...
 
           rewrite confBang in H8...
-assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
+assert(SELLN th n0 (B ++ D) [] (UP [Q ^])).
            eapply weakeningSetN with (c:=q)...
         rewrite getLApp...
              apply Forall_app... 
           rewrite confBang...
-        assert( seqN th n (B ++ C) M (DW (dual (dual Q)))).
+        assert( SELLN th n (B ++ C) M (DW (dual (dual Q)))).
        rewrite <- dualInvolutive...
-          assert( seqN th n0 (B ++ D) [] (UP [dual Q]) ->
-                     seqN th n (B ++ C) M (DW (dual (dual Q ))) -> seq th (B++D++C) M (UP [])).
+          assert( SELLN th n0 (B ++ D) [] (UP [dual Q]) ->
+                     SELLN th n (B ++ C) M (DW (dual (dual Q ))) -> SELLS th (B++D++C) M (UP [])).
         eapply CW...
         rewrite <- dualComplexity...
          LLPerm (B++D++C)...
@@ -1429,7 +1429,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
            destruct(posOrNeg F0).
        {        apply InvPlus...
                  LLStore.
-                assert( seqN th (S n0) ((q,Q)::(B++x0)) (F0::M) (UP [ ])).
+                assert( SELLN th (S n0) ((q,Q)::(B++x0)) (F0::M) (UP [ ])).
                 LFocus.
               cut4H H4 Hb. 
                LLPerm (B++x0++D).
@@ -1443,7 +1443,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
            destruct(posOrNeg G).
        {        apply InvPlusComm...
                  LLStore.
-                assert( seqN th (S n0) ((q,Q)::(B++x0)) (G::M) (UP [ ])).
+                assert( SELLN th (S n0) ((q,Q)::(B++x0)) (G::M) (UP [ ])).
                 LFocus.
               cut4H H4 Hb. 
                LLPerm (B++x0++D).
@@ -1461,7 +1461,7 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
            pose proof (unformUnb  stB H13 H16 H8 H9 (symmetry H11))...
               destruct(posOrNeg F0).
               * (* first *) 
-                assert(seqN th (S n0) (B0++C0) (F0::M0) (UP [])).
+                assert(SELLN th (S n0) (B0++C0) (F0::M0) (UP [])).
               LFocus F0.
               HProof. 
               rewrite H5 in H19.
@@ -1477,16 +1477,16 @@ assert(seqN th n0 (B ++ D) [] (UP [Q ^])).
 
 destruct(posOrNeg G).
 2:{     inversion H14;solvePolarity...  inversion H20.  
-assert( seqN th n ((q, Q) :: (B ++ D0)) N (UP [G]) ->
-        seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
-        seq th (B ++ D0 ++ D) N (UP [G])) as CutG. 
+assert( SELLN th n ((q, Q) :: (B ++ D0)) N (UP [G]) ->
+        SELLN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
+        SELLS th (B ++ D0 ++ D) N (UP [G])) as CutG. 
              eapply CH with (cF:=P)...
             pose proof (SETXempty D H3 stD)...
             apply CutG...      LLExact H26. rewrite H5, H17... }
 
-assert( seqN th (S n0) ((q, Q) :: (B ++ D0)) (G::N) (UP []) ->
-        seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
-        seq th (B ++ D0 ++ D) (G::N) (UP [])) as CutG. 
+assert( SELLN th (S n0) ((q, Q) :: (B ++ D0)) (G::N) (UP []) ->
+        SELLN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
+        SELLS th (B ++ D0 ++ D) (G::N) (UP [])) as CutG. 
              eapply CH with (cF:=P)...
             pose proof (SETXempty D H3 stD)...
              LLStore.
@@ -1505,16 +1505,16 @@ assert( seqN th (S n0) ((q, Q) :: (B ++ D0)) (G::N) (UP []) ->
 
 destruct(posOrNeg G).
 2:{     inversion H14;solvePolarity...  inversion H12.  
-assert( seqN th n ((q, Q) :: (B ++ D0)) N (UP [G]) ->
-        seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
-        seq th (B ++ D0 ++ D) N (UP [G])) as CutG. 
+assert( SELLN th n ((q, Q) :: (B ++ D0)) N (UP [G]) ->
+        SELLN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
+        SELLS th (B ++ D0 ++ D) N (UP [G])) as CutG. 
              eapply CH with (cF:=P)...
             pose proof (SETXempty D H3 stD)...
             apply CutG...      LLExact H26. rewrite H5, H17... }
 
-assert( seqN th (S(S n)) ((q, Q) :: (B ++ D0)) (G::N) (UP []) ->
-        seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
-        seq th (B ++ D0 ++ D) (G::N) (UP [])) as CutG. 
+assert( SELLN th (S(S n)) ((q, Q) :: (B ++ D0)) (G::N) (UP []) ->
+        SELLN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
+        SELLS th (B ++ D0 ++ D) (G::N) (UP [])) as CutG. 
              eapply CH with (cF:=P)...
             pose proof (SETXempty D H3 stD)...
              LLStore.
@@ -1546,9 +1546,9 @@ apply Forall_app...
 LLStore. 
 2: apply unRelease; rewrite <- H3; HProof.
   
-assert( seqN th (S n0) ((q, Q) :: (B ++ x1)) (F0::M0) (UP []) ->
-        seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
-        seq th (B ++ x1 ++ D) (F0::M0) (UP [])) as Cut. 
+assert( SELLN th (S n0) ((q, Q) :: (B ++ x1)) (F0::M0) (UP []) ->
+        SELLN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
+        SELLS th (B ++ x1 ++ D) (F0::M0) (UP [])) as Cut. 
              eapply CH with (cF:=P)...
              apply Cut...   LFocus.   LLExact H10. rewrite H5, H3... }
 rewrite H5 in H9. inversion H9... 
@@ -1577,9 +1577,9 @@ apply Forall_app...
  apply unRelease; rewrite <- H3; HProof.
 LLStore. 
   
-assert( seqN th (S n0) ((q, Q) :: (B ++ x1)) (G::N) (UP []) ->
-        seqN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
-        seq th (B ++ x1 ++ D) (G::N) (UP [])) as Cut. 
+assert( SELLN th (S n0) ((q, Q) :: (B ++ x1)) (G::N) (UP []) ->
+        SELLN th b (B ++ D) [] (DW ((! q) (Q ^))) ->
+        SELLS th (B ++ x1 ++ D) (G::N) (UP [])) as Cut. 
              eapply CH with (cF:=P)...
              apply Cut...   LFocus.   LLExact H14. rewrite H5, H3... 
 
@@ -1603,7 +1603,7 @@ rewrite confBang...
 rewrite confBang in H9, H11... 
 2:{ rewrite H2 in stC. inversion stC... }
 pose proof (ltConv' a q B l H3)...
-assert(Hb': seqN th (S n) (getLtX a B ++ D) [] (DW ((! q) (Q ^)))).
+assert(Hb': SELLN th (S n) (getLtX a B ++ D) [] (DW ((! q) (Q ^)))).
 rewrite H12. 
 LLPerm ((getLtX q B ++ D) ++ getU x).
 apply weakeningGenN_rev...
@@ -1635,7 +1635,7 @@ HProof. rewrite H2 in stC. inversion stC...
            destruct(posOrNeg (FX t)).
        {        apply InvEx with (t:=t)...
                  LLStore.
-                assert( seqN th (S n0) ((q,Q)::(B++x0)) (FX t::M) (UP [ ])).
+                assert( SELLN th (S n0) ((q,Q)::(B++x0)) (FX t::M) (UP [ ])).
                 LFocus.
               cut4H H7 Hb. 
                LLPerm (B++x0++D).
@@ -1650,7 +1650,7 @@ HProof. rewrite H2 in stC. inversion stC...
 - apply posNotNeg in H... }
 
 * cut3H H5 Hb. 
-        assert(Hs:seq th (B++C++D) M (UP [F]))...
+        assert(Hs:SELLS th (B++C++D) M (UP [F]))...
              destruct (negAtomDec F).
               2:{  eapply @AbsorptionTheory with (F:=F)... }
              inversion H...
@@ -1659,20 +1659,20 @@ HProof. rewrite H2 in stC. inversion stC...
   
  
   Theorem CutElimination i j A B C D cF L M N P: SetU B -> SetL C -> SetL D ->
-      (seqN th i (B++C) (cF::M) (UP L) -> 
-      seqN th j (B++D) N (UP [dual cF]) -> 
-      seq th (B++C++D) (M ++ N) (UP L)) /\
-      (seqN th i (B++C) M (UP (cF :: L)) -> 
-      seqN th j (B++D) N (DW (dual cF)) -> 
-      seq th (B++C++D) (M ++ N) (UP L)) /\
+      (SELLN th i (B++C) (cF::M) (UP L) -> 
+      SELLN th j (B++D) N (UP [dual cF]) -> 
+      SELLS th (B++C++D) (M ++ N) (UP L)) /\
+      (SELLN th i (B++C) M (UP (cF :: L)) -> 
+      SELLN th j (B++D) N (DW (dual cF)) -> 
+      SELLS th (B++C++D) (M ++ N) (UP L)) /\
        (forall a, S (complexity A) = complexity cF ->
-       seqN th i ((a,A)::(B++C)) M (DW P) -> 
-       seqN th j (B++D) [] (DW (Bang a (dual A))) -> 
-       seq th (B++C++D) M (UP [P]))  /\
+       SELLN th i ((a,A)::(B++C)) M (DW P) -> 
+       SELLN th j (B++D) [] (DW (Bang a (dual A))) -> 
+       SELLS th (B++C++D) M (UP [P]))  /\
       (forall a, S (complexity A) = complexity cF ->
-       seqN th i ((a,A)::(B++C)) M (UP L) -> 
-       seqN th j (B++D) [] (DW (Bang a (dual A))) -> 
-       seq th  (B++C++D) M (UP L)).
+       SELLN th i ((a,A)::(B++C)) M (UP L) -> 
+       SELLN th j (B++D) [] (DW (Bang a (dual A))) -> 
+       SELLS th  (B++C++D) M (UP L)).
   Proof with sauto;solvePolarity; try solveLL.
 
 assert(exists w, complexity cF = w).
@@ -1725,9 +1725,9 @@ assert(exists w, complexity cF = w).
 Qed.
           
   Theorem GeneralCut i j P B C D L M N: 
-   SetU B -> SetL C -> SetL D -> seqN th i (B++C) M (UP (P::L)) -> 
-                   seqN th j (B++D) N (DW (dual P)) -> 
-                                 seq th (B++C++D) (M++N ) (UP L).
+   SetU B -> SetL C -> SetL D -> SELLN th i (B++C) M (UP (P::L)) -> 
+                   SELLN th j (B++D) N (DW (dual P)) -> 
+                                 SELLS th (B++C++D) (M++N ) (UP L).
   Proof with subst;auto.
     assert(exists w, complexity P = w). 
     eexists; auto.
@@ -1736,9 +1736,9 @@ Qed.
   
   Theorem GeneralCut' P B C D L M N:  
       SetU B -> SetL C -> SetL D -> 
-      seq th (B++C) M  (UP (P :: L)) ->
-      seq th (B++D) N  (DW (dual P)) ->
-      seq th (B++C++D) (M ++ N) (UP L).
+      SELLS th (B++C) M  (UP (P :: L)) ->
+      SELLS th (B++D) N  (DW (dual P)) ->
+      SELLS th (B++C++D) (M ++ N) (UP L).
   Proof.
     intros.
     apply seqtoSeqN in H2, H3...

@@ -28,7 +28,7 @@ Section LLSequent.
   the derivation ; [B] a list representing the classical context ; [L]
   the linear context and [X] and [Arrow] that can be [DW F] (for the
   positive phase) or [UP L] (for the negative phase). *)
-  Inductive seqN:  nat -> list TypedFormula -> list oo -> Arrow -> Prop :=
+  Inductive SELLN:  nat -> list location -> list oo -> Arrow -> Prop :=
 (* axioms *) 
  | tri_init1 : forall B A n, SetU B -> n |-F- B ; [atom A] ; DW (perp A)
  | tri_init2 : forall B C A n i, SetU C -> Permutation ((i, atom A)::C) B -> n |-F- B ; [] ; DW (perp A)
@@ -79,7 +79,7 @@ Section LLSequent.
   | tri_dec3 : forall B L F n,
       theory F -> ~posAtom F -> n |-F- B ; L ; DW F -> S n |-F- B ; L ; UP []
  
-  where " n '|-F-' B ';' L ';' X " := (seqN n B L X).
+  where " n '|-F-' B ';' L ';' X " := (SELLN n B L X).
 
    
   (** Well formedness conditions for arrows. *)
@@ -92,7 +92,7 @@ Section LLSequent.
   Reserved Notation " '|-f-' B ';' L ';' X " (at level 80).
 
   (** The same system without the height of the derivation *)
-  Inductive seq:  list TypedFormula -> list oo -> Arrow -> Prop :=
+  Inductive SELLS:  list location -> list oo -> Arrow -> Prop :=
 (* axioms *) 
  | tri_init1' : forall B A, SetU B ->  |-f- B ; [atom A] ; DW (perp A)
  | tri_init2' : forall B C A i, SetU C -> Permutation ((i, atom A)::C) B ->  |-f- B ; [] ; DW (perp A)
@@ -142,20 +142,20 @@ Section LLSequent.
   | tri_dec3' : forall B L F ,
       theory F -> ~posAtom F -> |-f- B ; L ; DW F ->  |-f- B ; L ; UP []
                                                                                             
-  where "'|-f-' B ';' L ';' X " := (seq B L X).
+  where "'|-f-' B ';' L ';' X " := (SELLS B L X).
 
   
 End LLSequent .
 
 Module SELLNotations .
 
-Notation "n ⊢ B ';' L ⇕ X " := (seqN _ n B L X)  (at level 80).
-Notation "n ⊢ B ';' L ⇓ F " := (seqN _ n B L (DW F))  (at level 80).
-Notation "n ⊢ B ';' L ⇑ F " := (seqN _ n B L (UP F))  (at level 80).
-Notation "⊢ B ';' L ⇕ X " := (seq _ B L X)  (at level 80).
-Notation "⊢ B ';' L ⇓ F " := (seq _ B L (DW F))  (at level 80).
-Notation "⊢ B ';' L ⇑ F " := (seq _ B L (UP F))  (at level 80).
+Notation "n ⊢ B ';' L ⇕ X " := (SELLN _ n B L X)  (at level 80).
+Notation "n ⊢ B ';' L ⇓ F " := (SELLN _ n B L (DW F))  (at level 80).
+Notation "n ⊢ B ';' L ⇑ F " := (SELLN _ n B L (UP F))  (at level 80).
+Notation "⊢ B ';' L ⇕ X " := (SELLS _ B L X)  (at level 80).
+Notation "⊢ B ';' L ⇓ F " := (SELLS _ B L (DW F))  (at level 80).
+Notation "⊢ B ';' L ⇑ F " := (SELLS _ B L (UP F))  (at level 80).
 
 End SELLNotations .
 
-Global Hint Constructors seqN seq: core .
+Global Hint Constructors SELLN SELLS: core .

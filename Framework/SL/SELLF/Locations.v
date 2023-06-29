@@ -48,33 +48,33 @@ Section SubExpSets.
   Context `{OLS : OLSig}.
 
         
- Definition SetU (K : list TypedFormula):= 
+ Definition SetU (K : list location):= 
         Forall (fun k => u (fst k) = true) K.
   
-   Definition SetL (K : list TypedFormula):= 
+   Definition SetL (K : list location):= 
         Forall (fun k => u (fst k) = false) K.
             
- Definition LtX i (K : list TypedFormula) := Forall (fun k => lt i (fst k)) K.
+ Definition LtX i (K : list location) := Forall (fun k => lt i (fst k)) K.
 
- Fixpoint getLtX  (a: subexp) (L: list TypedFormula) :=
+ Fixpoint getLtX  (a: subexp) (L: list location) :=
   match L with
   | [] => []
   | (x,F) :: l0 => if lt_dec a x then (x,F) :: (getLtX a l0) else getLtX a l0
   end.
   
-Fixpoint getNoLtX  (a: subexp) (L: list TypedFormula)  := 
+Fixpoint getNoLtX  (a: subexp) (L: list location)  := 
   match L with
   | [] => []
   | (x, F) :: l0 => if lt_dec a x then getNoLtX a l0 else (x, F) ::  getNoLtX a l0
   end.
 
- Fixpoint getU  (L: list TypedFormula) :=
+ Fixpoint getU  (L: list location) :=
   match L with
   | [] => []
   | (x,F) :: l0 => if u x then (x,F) :: (getU l0) else getU l0
   end.
  
-  Fixpoint getL  (L: list TypedFormula) :=
+  Fixpoint getL  (L: list location) :=
   match L with
   | [] => []
   | (x,F) :: l0 => if u x then (getL l0) else (x,F) :: getL l0
@@ -133,7 +133,7 @@ Lemma SETXLTEmpty i K:
        SetL K -> LtX i K -> u i = true -> K=[].
   Proof with solveLocation.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H0;subst.
   assert(u p = true).
   { eapply uClosure.  
@@ -170,7 +170,7 @@ Lemma SETXLTEmpty i K:
   Lemma SETXempty K : SetU K -> SetL K -> K=[].
    Proof with sauto.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H...
   inversion H0...
   Qed.
@@ -210,7 +210,7 @@ Lemma SETXLTEmpty i K:
   Qed.
  
    Global Instance perm_SetU :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetU ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -220,7 +220,7 @@ Lemma SETXLTEmpty i K:
     Qed.
     
  Global Instance perm_SetL :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetL ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -230,7 +230,7 @@ Lemma SETXLTEmpty i K:
     Qed.
 
 Global Instance perm_LtX a :
-      Proper (@Permutation TypedFormula  ==>  Basics.impl)
+      Proper (@Permutation location  ==>  Basics.impl)
              (LtX a).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -257,7 +257,7 @@ Lemma SetU_then_empty K : SetU K -> getL K =[].
   Qed.
   
  Global Instance trans_SetK :
-       Proper (lt ==> @Permutation TypedFormula ==> Basics.flip Basics.impl)
+       Proper (lt ==> @Permutation location ==> Basics.flip Basics.impl)
              (LtX ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.flip; unfold Basics.impl .
@@ -407,7 +407,7 @@ Proof with subst;auto.
  * eapply (Permutation_trans IHPermutation1 IHPermutation2). Qed.
 
   Global Instance getLtX_morph a:
-      Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
+      Proper ((@Permutation location) ==> (@Permutation location))
              (getLtX a ).
     Proof.
     unfold Proper; unfold respectful.
@@ -416,7 +416,7 @@ Proof with subst;auto.
     Qed. 
     
   Global Instance getU_morph :
-      Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
+      Proper ((@Permutation location) ==> (@Permutation location))
              (getU ).
     Proof.
     unfold Proper; unfold respectful.
@@ -425,7 +425,7 @@ Proof with subst;auto.
     Qed. 
   
     Global Instance getL_morph :
-      Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
+      Proper ((@Permutation location) ==> (@Permutation location))
              (getL ).
     Proof.
     unfold Proper; unfold respectful.

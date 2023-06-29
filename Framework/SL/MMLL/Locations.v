@@ -8,19 +8,19 @@ Section SubExpSets.
   Context `{SI : SigMMLL}.
   
  
- Definition SetU  (K : list TypedFormula):= Forall (fun k => u (fst k) = true) K.
- Definition SetL  (K : list TypedFormula):= Forall (fun k => u (fst k) = false) K.
-  Definition SetT  (K : list TypedFormula):= Forall (fun k => mt (fst k) = true) K.
-  Definition SetK4  (K : list TypedFormula):= Forall (fun k => m4 (fst k) = true) K.
-  Definition SetK  (K : list TypedFormula):= Forall (fun k => m4 (fst k) = false) K.
+ Definition SetU  (K : list location):= Forall (fun k => u (fst k) = true) K.
+ Definition SetL  (K : list location):= Forall (fun k => u (fst k) = false) K.
+  Definition SetT  (K : list location):= Forall (fun k => mt (fst k) = true) K.
+  Definition SetK4  (K : list location):= Forall (fun k => m4 (fst k) = true) K.
+  Definition SetK  (K : list location):= Forall (fun k => m4 (fst k) = false) K.
 
- Definition LtX  i (K : list TypedFormula) := Forall (fun k => lt i (fst k)) K.
+ Definition LtX  i (K : list location) := Forall (fun k => lt i (fst k)) K.
  
- Definition NoLtX  i (K : list TypedFormula) := Forall (fun k => ~ lt i (fst k) ) K.
+ Definition NoLtX  i (K : list location) := Forall (fun k => ~ lt i (fst k) ) K.
  
   
  Global Instance perm_SetU :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetU ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -30,7 +30,7 @@ Section SubExpSets.
     Qed.
 
  Global Instance perm_SetL :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetL ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -40,7 +40,7 @@ Section SubExpSets.
     Qed.
 
  Global Instance perm_SetT :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetT ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -50,7 +50,7 @@ Section SubExpSets.
     Qed.
 
  Global Instance perm_SetK4 :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetK4 ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -60,7 +60,7 @@ Section SubExpSets.
     Qed.
     
  Global Instance perm_SetK :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (SetK ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -70,7 +70,7 @@ Section SubExpSets.
     Qed.
 
 Global Instance perm_LtX a :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (LtX a).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -80,7 +80,7 @@ Global Instance perm_LtX a :
     Qed.
 
 Global Instance perm_NoLtX a :
-      Proper (@Permutation TypedFormula ==>  Basics.impl)
+      Proper (@Permutation location ==>  Basics.impl)
              (NoLtX a).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.impl .
@@ -89,11 +89,11 @@ Global Instance perm_NoLtX a :
       rewrite <- H;auto.
     Qed.
    
-  Definition Loc (L:list TypedFormula):= 
+  Definition Loc (L:list location):= 
         map (fun x => (loc,(snd x))) L.
  
   Global Instance perm_Loc :
-      Proper (@Permutation TypedFormula ==> @Permutation TypedFormula)
+      Proper (@Permutation location ==> @Permutation location)
              (Loc ).
     Proof.
       unfold Proper; unfold respectful.
@@ -102,11 +102,11 @@ Global Instance perm_NoLtX a :
       rewrite <- H;auto.
     Qed.
     
-  Definition PlusT (L:list TypedFormula):=   
+  Definition PlusT (L:list location):=   
         map (fun x => (plust (fst x),snd x) ) L.
         
   Global Instance perm_PlusT :
-      Proper (@Permutation TypedFormula ==> @Permutation TypedFormula)
+      Proper (@Permutation location ==> @Permutation location)
              (PlusT ).
     Proof.
       unfold Proper; unfold respectful.
@@ -115,13 +115,13 @@ Global Instance perm_NoLtX a :
       rewrite <- H;auto.
     Qed.
   
-   Fixpoint getU  (l : list TypedFormula) :=
+   Fixpoint getU  (l : list location) :=
   match l with
   | [] => []
   | (x,F) :: l0 => if u x then (x,F) :: (getU l0) else getU l0
   end.
   
- Fixpoint getL (l : list TypedFormula) :=
+ Fixpoint getL (l : list location) :=
   match l with
   | [] => []
   | (x,F) :: l0 => if u x then getL l0 else (x,F) :: (getL l0) 
@@ -369,7 +369,7 @@ Section Properties.
   Qed.
 
   Global Instance trans_SetK :
-       Proper (lt ==> @Permutation TypedFormula ==> Basics.flip Basics.impl)
+       Proper (lt ==> @Permutation location ==> Basics.flip Basics.impl)
              (LtX ).
     Proof.
       unfold Proper; unfold respectful; unfold Basics.flip; unfold Basics.impl .
@@ -381,7 +381,7 @@ Section Properties.
   Lemma SetKK4_then_empty' i K : SetK K -> LtX i K -> m4 i = true -> K=[].
   Proof with sauto.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H...
   assert(m4 p = true).
   {
@@ -393,7 +393,7 @@ Section Properties.
   Lemma SetUL_then_empty' i K : SetL K -> LtX i K -> u i = true -> K=[].
   Proof with sauto.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H...
   assert(u p = true).
   {
@@ -458,7 +458,7 @@ Section Properties.
  Lemma SETXempty K : SetU K -> SetL K -> K=[].
    Proof with sauto.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H...
   inversion H0...
   Qed.
@@ -466,7 +466,7 @@ Section Properties.
   Lemma SetKK4_then_empty K : SetU K -> SetL K -> K=[].
    Proof with sauto.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H...
   inversion H0...
   Qed. 
@@ -474,7 +474,7 @@ Section Properties.
   Lemma SetKK4_then_empty'' K : SetK4 K -> SetK K -> K=[].
    Proof with sauto.
   destruct K;intros...
-  destruct t as [p F].
+  destruct l as [p F].
   inversion H...
   inversion H0...
   Qed. 
@@ -554,7 +554,7 @@ Proof with subst;auto.
  * eapply (Permutation_trans IHPermutation1 IHPermutation2). Qed.
 
   Global Instance getU_morph :
-      Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
+      Proper ((@Permutation location) ==> (@Permutation location))
              (getU ).
     Proof.
     unfold Proper; unfold respectful.
@@ -563,7 +563,7 @@ Proof with subst;auto.
     Qed. 
   
     Global Instance getL_morph :
-      Proper ((@Permutation TypedFormula) ==> (@Permutation TypedFormula))
+      Proper ((@Permutation location) ==> (@Permutation location))
              (getL ).
     Proof.
     unfold Proper; unfold respectful.

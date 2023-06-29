@@ -393,7 +393,7 @@ Section InvNPhase .
              lia.
              inversion H;subst;auto.
            +++ (* forall *)
-             eapply tri_fx';auto;intros.
+             eapply mll_fx';auto;intros.
              generalize (H9 x H2);intro.
              eapply IH with (m:= complexity (FX x) + complexityL L) (L' := FX x :: L') in H4;auto.
              assert(complexity (FX (VAR con 0%nat)) = complexity (FX x) ).
@@ -611,7 +611,7 @@ solveForall.
       destruct L. (* L must be empty. The second case is trivial *)
       { exists ((S n)). firstorder.
       simpl.
-      eapply tri_store;auto. }
+      eapply mll_store;auto. }
       simpl in Hw.
       apply exp_weight0LF in Hw;contradiction.
     + intros.
@@ -620,17 +620,17 @@ solveForall.
       inversion H0;auto;subst;inversion Heqw;subst.
       ++ (* top *)
         exists 0%nat. 
-        firstorder;[lia | eapply tri_top ].
+        firstorder;[lia | eapply mll_top ].
       ++ (* bot *)
         apply IH with (m:= complexityL L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
-        firstorder;[lia | eapply tri_bot;auto ].
+        firstorder;[lia | eapply mll_bot;auto ].
       ++  (* PAR *)
         apply IH with (m:= complexity F0 + complexity  G + complexityL  L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
-        firstorder ;[lia | eapply tri_par;auto ].
+        firstorder ;[lia | eapply mll_par;auto ].
         simpl. lia.
       ++ (* with *)
         apply IH with (m:= complexity  F0 + complexityL  L) in H6;try lia;auto.
@@ -639,14 +639,14 @@ solveForall.
         destruct H7 as [m'  [IHn' IHd']].
         simpl.
         exists (S (S n0)).
-        firstorder; eapply tri_with;auto.
+        firstorder; eapply mll_with;auto.
         eapply HeightGeq with (n:=n');try firstorder.  
        eapply HeightGeq with (n:=m');try firstorder.  
       ++  (* quest *)
         apply IH with (m:= complexityL  L) in H5;auto.
         destruct H5 as [n'  [IHn IHd]].
         exists (S n').
-        firstorder ;[lia | eapply tri_quest;auto ]. 
+        firstorder ;[lia | eapply mll_quest;auto ]. 
         lia.
       ++ (* Store *)
         assert(exists m0 : nat, m0 <= S n0 /\ m0 |--- B; M ++ [o]; UP (L ++ [F])).
@@ -657,7 +657,7 @@ solveForall.
         
         destruct H1 as [n'  [IHn IHd]].
         exists (S n').
-        firstorder ;[lia | eapply tri_store;[auto | LLExact IHd] ].
+        firstorder ;[lia | eapply mll_store;[auto | LLExact IHd] ].
      ++  (* FORALL *)
         assert(forall x, proper x -> exists m, m <= S n0 /\  m |--- B; M; UP ((FX x :: L)  ++ [F])).
         intros.
@@ -672,7 +672,7 @@ solveForall.
         
         simpl.
         exists (S (S n0)). 
-        split ; [auto|eapply tri_fx;auto;intros].
+        split ; [auto|eapply mll_fx;auto;intros].
         
         generalize (H1 _ H2);intro.
         

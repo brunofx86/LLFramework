@@ -154,134 +154,134 @@ Ltac solvePolarity :=
 (** Axioms *)
 
 Tactic Notation "LLinit1"  := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_init1';auto
-  | [|- FLLN _ _ _ _ _] => apply tri_init1;auto
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_init1';auto
+  | [|- FLLN _ _ _ _ _] => apply fll_init1;auto
   end.
 
 Tactic Notation "LLinit2" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  eapply @tri_init2';sauto
-  | [|- FLLN _ _ _ _ _] => eapply @tri_init2;sauto
+  | [ |- FLLS _ _ _ _ ] =>  eapply @fll_init2';sauto
+  | [|- FLLN _ _ _ _ _] => eapply @fll_init2;sauto
   end.
 
 Tactic Notation "LLone"  := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_one'
-  | [|- FLLN _ _ _ _ _] => apply tri_one
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_one'
+  | [|- FLLN _ _ _ _ _] => apply fll_one
   end.
 
 Tactic Notation "LLtop"  := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_top'
-  | [|- FLLN _ _ _ _ _] => apply tri_top
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_top'
+  | [|- FLLN _ _ _ _ _] => apply fll_top
   end.
 
 (** Additives *)
  
 Tactic Notation "LLleft" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>   apply tri_plus1';sauto
-  | [|- FLLN _ _ _ _ _] =>  apply tri_plus1;sauto
+  | [ |- FLLS _ _ _ _ ] =>   apply fll_plus1';sauto
+  | [|- FLLN _ _ _ _ _] =>  apply fll_plus1;sauto
   end.
 
 Tactic Notation "LLright" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>   apply tri_plus2';sauto
-  | [|- FLLN _ _ _ _ _] =>  apply tri_plus2;sauto
+  | [ |- FLLS _ _ _ _ ] =>   apply fll_plus2';sauto
+  | [|- FLLN _ _ _ _ _] =>  apply fll_plus2;sauto
   end.         
 
 Tactic Notation "LLwith" := match goal with
-    | [ |- FLLS _ _ _ _ ] =>  eapply @tri_with';sauto
-    | [|- FLLN _ _ _ _ _] => eapply @tri_with;sauto
+    | [ |- FLLS _ _ _ _ ] =>  eapply @fll_with';sauto
+    | [|- FLLN _ _ _ _ _] => eapply @fll_with;sauto
 end. 
   
 (** Multiplicatives *)
 
 Tactic Notation "LLbot"  := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_bot';sauto
-  | [|- FLLN _ _ _ _ _] => apply tri_bot;sauto
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_bot';sauto
+  | [|- FLLN _ _ _ _ _] => apply fll_bot;sauto
   end.
   
 Tactic Notation "LLpar" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_par';sauto
-  | [|- FLLN _ _ _ _ _] => apply tri_par;sauto
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_par';sauto
+  | [|- FLLN _ _ _ _ _] => apply fll_par;sauto
   end.
 
 Tactic Notation "LLtensor"  := match goal with
-    | [ |- FLLS _ _ [] _ ] =>  eapply @tri_tensor' with (M:=nil) (N:=nil);sauto
-    | [|- FLLN _ _ _ [] _] => eapply @tri_tensor with (M:=nil) (N:=nil);sauto
+    | [ |- FLLS _ _ [] _ ] =>  eapply @fll_tensor' with (M:=nil) (N:=nil);sauto
+    | [|- FLLN _ _ _ [] _] => eapply @fll_tensor with (M:=nil) (N:=nil);sauto
 end.
 
 Tactic Notation "LLtensor"  constr(Ctx1) constr(Ctx2) := match goal with
-    | [ |- FLLS _ _ _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2);sauto
-    | [|- FLLN _ _ _ _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2);sauto
+    | [ |- FLLS _ _ _ _ ] =>  eapply @fll_tensor' with (M:=Ctx1) (N:=Ctx2);sauto
+    | [|- FLLN _ _ _ _ _] => eapply @fll_tensor with (M:=Ctx1) (N:=Ctx2);sauto
 end.
  
 (** Exponentials *)
 
 Tactic Notation "LLstorec" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_quest';sauto
-  | [|- FLLN _ _ _ _ _] => apply tri_quest;sauto
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_quest';sauto
+  | [|- FLLN _ _ _ _ _] => apply fll_quest;sauto
   end.              
 
 Tactic Notation "LLbang"  := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_bang';sauto
-  | [|- FLLN _ _ _ _ _] => apply tri_bang;sauto
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_bang';sauto
+  | [|- FLLN _ _ _ _ _] => apply fll_bang;sauto
   end.
                           
 (** Quantifiers *)
   
 Tactic Notation "LLexists" constr(tt) :=  match goal with
-  | [ |- FLLS _ _ _ _ ] => eapply @tri_ex' with (t:=tt);try solveUniform;sauto
-  | [|- FLLN _ _ _ _ _] => eapply @tri_ex with (t:=tt);try solveUniform;sauto
+  | [ |- FLLS _ _ _ _ ] => eapply @fll_ex' with (t:=tt);try solveUniform;sauto
+  | [|- FLLN _ _ _ _ _] => eapply @fll_ex with (t:=tt);try solveUniform;sauto
   end.
 
 Tactic Notation "LLforall" := match goal with
-  | [ |- FLLS _ _ _ _ ] => eapply @tri_fx'; intros;sauto
-  | [|- FLLN _ _ _ _ _] => eapply @tri_fx; intros;sauto
+  | [ |- FLLS _ _ _ _ ] => eapply @fll_fx'; intros;sauto
+  | [|- FLLN _ _ _ _ _] => eapply @fll_fx; intros;sauto
   end.
   
 (** Reaction Rules *) 
 
 Tactic Notation "LLrelease" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_rel';[solvePolarity | auto]
-  | [|- FLLN _ _ _ _ _] => apply tri_rel;[solvePolarity | auto]
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_rel';[solvePolarity | auto]
+  | [|- FLLN _ _ _ _ _] => apply fll_rel;[solvePolarity | auto]
   end.
   
 Tactic Notation "LLstore" := match goal with
-  | [ |- FLLS _ _ _ _ ] =>  apply tri_store';[solvePolarity | auto]
-  | [|- FLLN _ _ _ _ _] => apply tri_store;[solvePolarity | auto]
+  | [ |- FLLS _ _ _ _ ] =>  apply fll_store';[solvePolarity | auto]
+  | [|- FLLN _ _ _ _ _] => apply fll_store;[solvePolarity | auto]
   end.
     
 (** Decision Rules *)  
 
 (* Focusing on a linear formula *)
 Tactic Notation "LLfocus1" := match goal with
-    | [ |- FLLS _ _ (?P::?PL) _ ] =>  eapply @tri_dec1' with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
-    | [|- FLLN _ _ _ (?P::?PL) _] => eapply @tri_dec1 with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
+    | [ |- FLLS _ _ (?P::?PL) _ ] =>  eapply @fll_dec1' with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
+    | [|- FLLN _ _ _ (?P::?PL) _] => eapply @fll_dec1 with (F:= P) (L':=PL);[solvePolarity | sauto | sauto ]
 end.
                               
 Tactic Notation "LLfocus1"  constr(R) := match goal with
-    | [ |- FLLS _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R);[solvePolarity | sauto | sauto ]
-    | [|- FLLN _ _ _ _ _] => eapply @tri_dec1 with (F:= R);[solvePolarity | sauto | sauto]
+    | [ |- FLLS _ _ _ _ ] =>  eapply @fll_dec1' with (F:= R);[solvePolarity | sauto | sauto ]
+    | [|- FLLN _ _ _ _ _] => eapply @fll_dec1 with (F:= R);[solvePolarity | sauto | sauto]
 end.
 
 
 Tactic Notation "LLfocus1"  constr(R) constr(T) := match goal with
-    | [ |- FLLS _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R) (L':=T);[solvePolarity | sauto | sauto ]
-    | [|- FLLN _ _ _ _ _] => eapply @tri_dec1 with (F:= R) (L':=T);[solvePolarity | sauto | sauto]
+    | [ |- FLLS _ _ _ _ ] =>  eapply @fll_dec1' with (F:= R) (L':=T);[solvePolarity | sauto | sauto ]
+    | [|- FLLN _ _ _ _ _] => eapply @fll_dec1 with (F:= R) (L':=T);[solvePolarity | sauto | sauto]
 end.
 
 (* Focusing on a classical formula *)
 Tactic Notation "LLfocus2" := match goal with
-    | [ |- FLLS _ (?P::_) _ _ ] =>  eapply @tri_dec2' with (F:= P);[solvePolarity | sauto | sauto]
-    | [|- FLLN _ _ (?P::_) _ _] => eapply @tri_dec2 with (F:= P);[solvePolarity | sauto | sauto ]
+    | [ |- FLLS _ (?P::_) _ _ ] =>  eapply @fll_dec2' with (F:= P);[solvePolarity | sauto | sauto]
+    | [|- FLLN _ _ (?P::_) _ _] => eapply @fll_dec2 with (F:= P);[solvePolarity | sauto | sauto ]
 end.
                                                                              
 Tactic Notation "LLfocus2"  constr(S) := match goal with
-    | [ |- FLLS _ _ _ _ ] =>  eapply @tri_dec2' with (F:= S);[solvePolarity | sauto | sauto]
-    | [|- FLLN _ _ _ _ _] => eapply @tri_dec2 with (F:= S);[solvePolarity | sauto | sauto]
+    | [ |- FLLS _ _ _ _ ] =>  eapply @fll_dec2' with (F:= S);[solvePolarity | sauto | sauto]
+    | [|- FLLN _ _ _ _ _] => eapply @fll_dec2 with (F:= S);[solvePolarity | sauto | sauto]
 end.
 
 (* Focusing on a theory *)
 Tactic Notation "LLtheory"  constr(S) := match goal with
-    | [ |- FLLS _ _ _ _ ] =>  eapply @tri_dec3' with (F:= S);[solvePolarity | sauto | sauto]
-    | [|- FLLN _ _ _ _ _] => eapply @tri_dec3 with (F:= S);[solvePolarity | sauto | sauto]
+    | [ |- FLLS _ _ _ _ ] =>  eapply @fll_dec3' with (F:= S);[solvePolarity | sauto | sauto]
+    | [|- FLLN _ _ _ _ _] => eapply @fll_dec3 with (F:= S);[solvePolarity | sauto | sauto]
 end.
                                                     
 (** This tactic applies as many positive/negative rules as
@@ -378,7 +378,7 @@ solveAxiom;
       | Some _ => LLstore;reasoningLL
       | All _ => let x:= fresh "x" in
                  let xp := fresh "properX" in
-                 apply tri_fx ;try solveUniform; intros x xp ; reasoningLL      
+                 apply fll_fx ;try solveUniform; intros x xp ; reasoningLL      
   end
   | _ => idtac 
 end.  
@@ -431,7 +431,7 @@ solveAxiom';
       | Some _ => LLstore;reasoningLL'
       | All _ => let x:= fresh "x" in
                  let xp := fresh "properX" in
-                 apply tri_fx' ;try solveUniform; intros x xp ; reasoningLL'      
+                 apply fll_fx' ;try solveUniform; intros x xp ; reasoningLL'      
   end
 | _ => idtac     
 end.  

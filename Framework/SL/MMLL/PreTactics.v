@@ -382,69 +382,69 @@ Ltac SplitContext' n :=
 
 (* Focusing on positive formulas *)
 Tactic Notation "LLfocus1" := match goal with
-    | [ |- MLLS _ _ (?P::?PL) _ ] =>  eapply @tri_dec1' with (F:= P) (L':=PL);[solveF | sauto | sauto ]
-    | [|- MLLN _ _ _ (?P::?PL) _] => eapply @tri_dec1 with (F:= P) (L':=PL);[solveF | sauto | sauto ]
+    | [ |- MLLS _ _ (?P::?PL) _ ] =>  eapply @mll_dec1' with (F:= P) (L':=PL);[solveF | sauto | sauto ]
+    | [|- MLLN _ _ _ (?P::?PL) _] => eapply @mll_dec1 with (F:= P) (L':=PL);[solveF | sauto | sauto ]
 end.
 
 Tactic Notation "LLfocus1"  constr(R) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R);[solveF | sauto | sauto ]
-    | [|- MLLN _ _ _ _ _] => eapply @tri_dec1 with (F:= R);[solveF | sauto | sauto]
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_dec1' with (F:= R);[solveF | sauto | sauto ]
+    | [|- MLLN _ _ _ _ _] => eapply @mll_dec1 with (F:= R);[solveF | sauto | sauto]
 end.
 
 Tactic Notation "LLfocus1"  constr(R) constr(T) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec1' with (F:= R) (L':=T);[solveF | sauto | sauto ]
-    | [|- MLLN _ _ _ _ _] => eapply @tri_dec1 with (F:= R) (L':=T);[solveF | sauto | sauto]
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_dec1' with (F:= R) (L':=T);[solveF | sauto | sauto ]
+    | [|- MLLN _ _ _ _ _] => eapply @mll_dec1 with (F:= R) (L':=T);[solveF | sauto | sauto]
 end.
 
 (* Focusing on unbounded formulas *)
 Tactic Notation "LLfocus2" := match goal with
-    | [ |- MLLS _ ((?a,?P)::_) _ _ ] =>  eapply @tri_dec2u' with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
-    | [|- MLLN _ _ ((?a,?P)::_) _ _] => eapply @tri_dec2u with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [ |- MLLS _ ((?a,?P)::_) _ _ ] =>  eapply @mll_dec2u' with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [|- MLLN _ _ ((?a,?P)::_) _ _] => eapply @mll_dec2u with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
                                                                      
 Tactic Notation "LLfocus2"  constr(a) constr(S) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec2u' with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
-    | [|- MLLN _ _ _ _ _] => eapply @tri_dec2u with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_dec2u' with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [|- MLLN _ _ _ _ _] => eapply @mll_dec2u with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
 
 (* Focusing on bounded formulas *)
 Tactic Notation "LLfocus3" := match goal with
-    | [ |- MLLS _ ((?a,?P)::_) _ _ ] =>  eapply @tri_dec2l' with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
-    | [|- MLLN _ _ ((?a,?P)::_) _ _] => eapply @tri_dec2l with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [ |- MLLS _ ((?a,?P)::_) _ _ ] =>  eapply @mll_dec2l' with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [|- MLLN _ _ ((?a,?P)::_) _ _] => eapply @mll_dec2l with (F:= P) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
 
 Tactic Notation "LLfocus3"  constr(a) constr(S) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec2l' with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
-    | [|- MLLN _ _ _ _ _] => eapply @tri_dec2l with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_dec2l' with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
+    | [|- MLLN _ _ _ _ _] => eapply @mll_dec2l with (F:= S) (i:=a);[sauto | sauto | solveF | sauto | sauto ]
 end.
                                                                      
 Tactic Notation "LLfocus3"  constr(a) constr(S) constr(T):= match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec2l' with (F:= S) (i:=a) (B':= T);[sauto | sauto | solveF | sauto | sauto ]
-    | [|- MLLN _ _ _ _ _] => eapply @tri_dec2l with (F:= S) (i:=a) (B':= T);[sauto | sauto | solveF | sauto | sauto ]
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_dec2l' with (F:= S) (i:=a) (B':= T);[sauto | sauto | solveF | sauto | sauto ]
+    | [|- MLLN _ _ _ _ _] => eapply @mll_dec2l with (F:= S) (i:=a) (B':= T);[sauto | sauto | solveF | sauto | sauto ]
 end.
 
 (* Focusing on formulas in theory *)
 Tactic Notation "LLtheory"  constr(S) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_dec3' with (F:= S);[sauto | solveF | sauto]
-    | [|- MLLN _ _ _ _ _] => eapply @tri_dec3 with (F:= S);[ sauto | solveF | sauto]
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_dec3' with (F:= S);[sauto | solveF | sauto]
+    | [|- MLLN _ _ _ _ _] => eapply @mll_dec3 with (F:= S);[ sauto | solveF | sauto]
 end.
 
 (* Multiplicative conjuction with bounded formulas *)
 Tactic Notation "LLtensor"  constr(Ctx1) constr(Ctx2) constr(Ctx3) constr(Ctx4) constr(Ctx5) := match goal with
-                                                       | [ |- MLLS _ _ _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2) (B:=Ctx3) (C:=Ctx4) (D:=Ctx5);solveF
-                                                       | [|- MLLN _ _ _ _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2) (B:=Ctx3) (C:=Ctx4) (D:=Ctx5);solveF
+                                                       | [ |- MLLS _ _ _ _ ] =>  eapply @mll_tensor' with (M:=Ctx1) (N:=Ctx2) (B:=Ctx3) (C:=Ctx4) (D:=Ctx5);solveF
+                                                       | [|- MLLN _ _ _ _ _] => eapply @mll_tensor with (M:=Ctx1) (N:=Ctx2) (B:=Ctx3) (C:=Ctx4) (D:=Ctx5);solveF
                                                        end.
 
 
 (* Multiplicative conjuction with no bounded formulas *)
 Tactic Notation "LLtensor"  constr(Ctx1) constr(Ctx2) := match goal with
-               | [ |- MLLS _ ?BC _ _ ] =>  eapply @tri_tensor' with (M:=Ctx1) (N:=Ctx2) (B:=BC) (C:=nil) (D:=nil);solveF
-               | [|- MLLN _ _ ?BC _ _] => eapply @tri_tensor with (M:=Ctx1) (N:=Ctx2) (B:=BC) (C:=nil) (D:=nil);solveF
+               | [ |- MLLS _ ?BC _ _ ] =>  eapply @mll_tensor' with (M:=Ctx1) (N:=Ctx2) (B:=BC) (C:=nil) (D:=nil);solveF
+               | [|- MLLN _ _ ?BC _ _] => eapply @mll_tensor with (M:=Ctx1) (N:=Ctx2) (B:=BC) (C:=nil) (D:=nil);solveF
                  end.
 
 Tactic Notation "LLtensor"  := match goal with
-               | [ |- MLLS _ ?BC [] _ ] =>  eapply @tri_tensor' with (M:=nil) (N:=nil) (B:=BC) (C:=nil) (D:=nil);solveF
-               | [|- MLLN _ _ ?BC [] _] => eapply @tri_tensor with (M:=nil) (N:=nil) (B:=BC) (C:=nil) (D:=nil);solveF
+               | [ |- MLLS _ ?BC [] _ ] =>  eapply @mll_tensor' with (M:=nil) (N:=nil) (B:=BC) (C:=nil) (D:=nil);solveF
+               | [|- MLLN _ _ ?BC [] _] => eapply @mll_tensor with (M:=nil) (N:=nil) (B:=BC) (C:=nil) (D:=nil);solveF
                  end.
 
 Lemma allSeTU (OLS: OLSig) (SI: SigMMLL) (SIU: UNoDSigMMLL) B : SetU B.
@@ -452,17 +452,17 @@ Proof with auto.
  induction B...
 Qed.
 
-Lemma allSeTLEmpty (OLS: OLSig) (SI: SigMMLL) (SIU: UNoDSigMMLL) (B : list TypedFormula) : getL B = (@nil TypedFormula).
+Lemma allSeTLEmpty (OLS: OLSig) (SI: SigMMLL) (SIU: UNoDSigMMLL) (B : list location) : getL B = (@nil location).
 Proof with auto.
  rewrite (SetU_then_empty _ (allSeTU SIU B));auto.
 Qed.
 
-Lemma permSeTL (OLS: OLSig) (SI: SigMMLL) (SIU: UNoDSigMMLL) (B : list TypedFormula) : Permutation (getL B) (getL B ++ getL B).
+Lemma permSeTL (OLS: OLSig) (SI: SigMMLL) (SIU: UNoDSigMMLL) (B : list location) : Permutation (getL B) (getL B ++ getL B).
 Proof with auto.
  erewrite allSeTLEmpty...
 Qed.
 
-Lemma permSeTL' (OLS: OLSig) (SI: SigMMLL)  (B : list TypedFormula) : SetU B -> Permutation (getL B) (getL B ++ getL B).
+Lemma permSeTL' (OLS: OLSig) (SI: SigMMLL)  (B : list location) : SetU B -> Permutation (getL B) (getL B ++ getL B).
 Proof with auto.
   intros.
   simplEmpty...
@@ -489,130 +489,130 @@ Global Hint Resolve allSeTU permSeTL permSeTL': core.
 
 (* Additive conjuction *)
 Tactic Notation "LLwith" := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_with';sauto
-    | [|- MLLN _ _ _ _ _] => eapply @tri_with;sauto
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_with';sauto
+    | [|- MLLN _ _ _ _ _] => eapply @mll_with;sauto
 end.
 
 (* Additive disjuction *)
 Tactic Notation "LLleft" := match goal with
-                           | [ |- MLLS _ _ _ _ ] =>   apply tri_plus1';sauto
-                           | [|- MLLN _ _ _ _ _] =>  apply tri_plus1;sauto
+                           | [ |- MLLS _ _ _ _ ] =>   apply mll_plus1';sauto
+                           | [|- MLLN _ _ _ _ _] =>  apply mll_plus1;sauto
                             end.
 
 Tactic Notation "LLright" := match goal with
-   | [ |- MLLS _ _ _ _ ] =>   apply tri_plus2';sauto
-   | [|- MLLN _ _ _ _ _] =>  apply tri_plus2;sauto
+   | [ |- MLLS _ _ _ _ ] =>   apply mll_plus2';sauto
+   | [|- MLLN _ _ _ _ _] =>  apply mll_plus2;sauto
 end.
 
 (* Multiplicative disjuction *)
 Tactic Notation "LLpar" := match goal with
-                         | [ |- MLLS _ _ _ _ ] =>  apply tri_par';sauto
-                         | [|- MLLN _ _ _ _ _] => apply tri_par;sauto
+                         | [ |- MLLS _ _ _ _ ] =>  apply mll_par';sauto
+                         | [|- MLLN _ _ _ _ _] => apply mll_par;sauto
                          end.
 
 (* Quantifiers *)
 Tactic Notation "LLexists" constr(tt) :=  match goal with
-   | [ |- MLLS _ _ _ _ ] => eapply @tri_ex' with (t:=tt);try solveUniform;sauto
-   | [|- MLLN _ _ _ _ _] => eapply @tri_ex with (t:=tt);try solveUniform;sauto
+   | [ |- MLLS _ _ _ _ ] => eapply @mll_ex' with (t:=tt);try solveUniform;sauto
+   | [|- MLLN _ _ _ _ _] => eapply @mll_ex with (t:=tt);try solveUniform;sauto
 end.
 
 Tactic Notation "LLforall" := match goal with
-   | [ |- MLLS _ _ _ _ ] => eapply @tri_fx'; intros;sauto
-   | [|- MLLN _ _ _ _ _] => eapply @tri_fx; intros;sauto
+   | [ |- MLLS _ _ _ _ ] => eapply @mll_fx'; intros;sauto
+   | [|- MLLN _ _ _ _ _] => eapply @mll_fx; intros;sauto
 end.
 
 (* Storing formulas *)
 Tactic Notation "LLstore" := match goal with
-       | [ |- MLLS _ _ _ _ ] =>  apply tri_store';[solveF | auto]
-       | [|- MLLN _ _ _ _ _] => apply tri_store;[solveF | auto]
+       | [ |- MLLS _ _ _ _ ] =>  apply mll_store';[solveF | auto]
+       | [|- MLLN _ _ _ _ _] => apply mll_store;[solveF | auto]
                            end. 
 
 Tactic Notation "LLstorec" := match goal with
-       | [ |- MLLS _ _ _ _ ] =>  apply tri_quest';sauto
-       | [|- MLLN _ _ _ _ _] => apply tri_quest;sauto
+       | [ |- MLLS _ _ _ _ ] =>  apply mll_quest';sauto
+       | [|- MLLN _ _ _ _ _] => apply mll_quest;sauto
                            end.
 
 (* Changing to the negative phase *)
 Tactic Notation "LLrelease" := match goal with
-                         | [ |- MLLS _ _ _ _ ] =>  apply tri_rel';[solveF | auto]
-                         | [|- MLLN _ _ _ _ _] => apply tri_rel;[solveF | auto]
+                         | [ |- MLLS _ _ _ _ ] =>  apply mll_rel';[solveF | auto]
+                         | [|- MLLN _ _ _ _ _] => apply mll_rel;[solveF | auto]
                          end. 
 
 (* Axioms *)   
 Tactic Notation "LLinit1"  := match goal with
-     | [ |- MLLS _ _ _ _ ] =>  apply tri_init1';try SLSolve;auto
-     | [|- MLLN _ _ _ _ _] => apply tri_init1;try SLSolve;auto
+     | [ |- MLLS _ _ _ _ ] =>  apply mll_init1';try SLSolve;auto
+     | [|- MLLN _ _ _ _ _] => apply mll_init1;try SLSolve;auto
                           end.
 
 
 Tactic Notation "LLinit2" constr(a) constr(b) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_init2' with (i:=a) (C:=b);[try SLSolve | auto | try perm ];auto
-    | [|- MLLN _ _ _ _ _] => eapply @tri_init2 with (i:=a) (C:=b);[try SLSolve | auto | try perm ];auto
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_init2' with (i:=a) (C:=b);[try SLSolve | auto | try perm ];auto
+    | [|- MLLN _ _ _ _ _] => eapply @mll_init2 with (i:=a) (C:=b);[try SLSolve | auto | try perm ];auto
                           end.
 
 Tactic Notation "LLinit2" constr(a) := match goal with
-    | [ |- MLLS _ _ _ _ ] =>  eapply @tri_init2' with (i:=a)
-   | [|- MLLN _ _ _ _ _] => eapply @tri_init2 with (i:=a) 
+    | [ |- MLLS _ _ _ _ ] =>  eapply @mll_init2' with (i:=a)
+   | [|- MLLN _ _ _ _ _] => eapply @mll_init2 with (i:=a) 
                           end.
                           
 Tactic Notation "LLinit2" := match goal with
-     | [ |- MLLS _ _ _ _ ] =>  eapply @tri_init2'
-    | [|- MLLN _ _ _ _ _] => eapply @tri_init2
+     | [ |- MLLS _ _ _ _ ] =>  eapply @mll_init2'
+    | [|- MLLN _ _ _ _ _] => eapply @mll_init2
                           end.
 
 Tactic Notation "LLone"  := match goal with
-                          | [ |- MLLS _ _ _ _ ] =>  apply tri_one';SLSolve
-                          | [|- MLLN _ _ _ _ _] => apply tri_one;SLSolve
+                          | [ |- MLLS _ _ _ _ ] =>  apply mll_one';SLSolve
+                          | [|- MLLN _ _ _ _ _] => apply mll_one;SLSolve
                           end.
 
 Tactic Notation "LLtop"  := match goal with
-                          | [ |- MLLS _ _ _ _ ] =>  apply tri_top'
-                          | [|- MLLN _ _ _ _ _] => apply tri_top
+                          | [ |- MLLS _ _ _ _ ] =>  apply mll_top'
+                          | [|- MLLN _ _ _ _ _] => apply mll_top
                           end.
 
 (* Others rules *)
 Tactic Notation "LLbot"  := match goal with
-                          | [ |- MLLS _ _ _ _ ] =>  apply tri_bot';sauto
-                          | [|- MLLN _ _ _ _ _] => apply tri_bot;sauto
+                          | [ |- MLLS _ _ _ _ ] =>  apply mll_bot';sauto
+                          | [|- MLLN _ _ _ _ _] => apply mll_bot;sauto
                           end.
                           
 Tactic Notation "LLbang"  := match goal with
-                          | [ |- MLLS _ _ _ _ ] =>  apply tri_bangL';sauto
-                          | [|- MLLN _ _ _ _ _] => apply tri_bangL;sauto
+                          | [ |- MLLS _ _ _ _ ] =>  apply mll_bangL';sauto
+                          | [|- MLLN _ _ _ _ _] => apply mll_bangL;sauto
                           end.
 
 Tactic Notation "createWorld" constr(a) := match goal with
-                | [ |- MLLS _ _ _ _ ] => eapply @tri_bangD' with (i:=a); try solve [intro ;subst;solveSubExp];auto
-                | [|- MLLN _ _ _ _ _] => eapply @tri_bangD with (i:=a);try solve [intro ;subst;solveSubExp];auto
+                | [ |- MLLS _ _ _ _ ] => eapply @mll_bangD' with (i:=a); try solve [intro ;subst;solveSubExp];auto
+                | [|- MLLN _ _ _ _ _] => eapply @mll_bangD with (i:=a);try solve [intro ;subst;solveSubExp];auto
                                 end.
 
 Tactic Notation "createWorld" := match goal with
-                | [ |- MLLS _ _ _ _ ] => eapply @tri_bang';sauto
-                | [|- MLLN _ _ _ _ _] => eapply @tri_bang;sauto
+                | [ |- MLLS _ _ _ _ ] => eapply @mll_bang';sauto
+                | [|- MLLN _ _ _ _ _] => eapply @mll_bang;sauto
                 end.
 
 (* Exponential phase*)                
 
 Tactic Notation "copyK4"  constr(i) constr(P) constr(B) := match goal with
-    | [ |- tri_bangK4' _ _ _ _ _ _ ] => eapply @tri_copyK4' with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | sauto | sauto]
- | [|- tri_bangK4 _ _ _ _ _ _ _] => eapply @tri_copyK4 with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | sauto | sauto]
+    | [ |- MLLSExp _ _ _ _ _ _ ] => eapply @mll_copyK4' with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | sauto | sauto]
+ | [|- MLLNExp _ _ _ _ _ _ _] => eapply @mll_copyK4 with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | sauto | sauto]
                                                        end;auto.
 
 Tactic Notation "copyUK"  constr(i) constr(P) constr(B) := match goal with
-| [ |- tri_bangK4' _ _ _ _ _ _] => eapply @tri_copyUK' with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
+| [ |- MLLSExp _ _ _ _ _ _] => eapply @mll_copyUK' with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
 
-| [|- tri_bangK4 _ _ _ _ _ _ _] => eapply @tri_copyUK with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
+| [|- MLLNExp _ _ _ _ _ _ _] => eapply @mll_copyUK with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
                                                                      end;auto. 
                                                        
 Tactic Notation "copyLK"  constr(i) constr(P) constr(B) := match goal with
- | [ |- tri_bangK4' _ _ _ _ _ _] => eapply @tri_copyLK' with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
- | [|- tri_bangK4 _ _ _ _ _ _ _] => eapply @tri_copyLK with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
+ | [ |- MLLSExp _ _ _ _ _ _] => eapply @mll_copyLK' with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
+ | [|- MLLNExp _ _ _ _ _ _ _] => eapply @mll_copyLK with (b:=i) (F:=P) (B':=B);[solveLT | solveSE | solveSE | sauto | sauto]
                                                        end;auto.   
                                                                                                             
    
 Tactic Notation "finishExp"  := match goal with
-   | [ |- tri_bangK4' _ _ _ _ _ _] => eapply @tri_exp';[solveF | sauto]
-   | [|- tri_bangK4 _ _ _ _ _ _ _] => eapply @tri_exp;[solveF | sauto]
+   | [ |- MLLSExp _ _ _ _ _ _] => eapply @mll_exp';[solveF | sauto]
+   | [|- MLLNExp _ _ _ _ _ _ _] => eapply @mll_exp;[solveF | sauto]
           end.
      
                           
@@ -628,7 +628,7 @@ Tactic Notation "finishExp"  := match goal with
   | [ |- MLLS _ _ _ (UP (Bot :: _))] => LLbot
   | [ |- MLLS _ _ _ (UP ( (All _) :: _)) ] => let x:= fresh "x" in
                                               let xp := fresh "properX" in
-                                              apply tri_fx' ; try solveUniform ; intros x xp
+                                              apply mll_fx' ; try solveUniform ; intros x xp
 
  (* Storing formulas *)
   | [H: posLFormula ?F |- MLLS _ _ _ (UP (?F :: ?M))] => LLstore
@@ -652,7 +652,7 @@ Tactic Notation "finishExp"  := match goal with
   | [ |- MLLN _ _ _ _ (UP (Bot :: _))] => LLbot
   | [ |- MLLN _ _ _ _ (UP ( (All _) :: _)) ] => let x:= fresh "x" in
                                               let xp := fresh "properX" in
-                                              apply tri_fx' ; try solveUniform ; intros x xp
+                                              apply mll_fx' ; try solveUniform ; intros x xp
 
  (* Storing formulas *)
   | [H: posLFormula ?F |- MLLN _ _ _ _ (UP (?F :: ?M))] => LLstore
@@ -673,7 +673,7 @@ Tactic Notation "finishExp"  := match goal with
   | [USI : UNoDSigMMLL |- MLLS _ _ [] (DW  (MAnd _ _))] => LLtensor (@nil oo)  (@nil oo) 
   | [H: MLLS ?th ?B ?L (DW ?F) |- MLLS ?th ?B ?L (DW (AOr ?F ?G))] => LLleft 
   | [H: MLLS ?th ?B ?L (DW ?G) |- MLLS ?th ?B ?L (DW (AOr ?F ?G))] => LLright 
-  | [ |- MLLS _ _ _ (DW (Bang loc _))] => apply tri_bangL';negativePhaseReasoning
+  | [ |- MLLS _ _ _ (DW (Bang loc _))] => apply mll_bangL';negativePhaseReasoning
  
      (* Change of polarity *)
     | [H: negFormula ?F |- MLLS _ _ _ (DW  ?F)] => LLrelease;negativePhaseReasoning
@@ -696,7 +696,7 @@ Tactic Notation "finishExp"  := match goal with
 
   | [H: MLLN _ ?th ?B ?L (DW ?F) |- MLLN _ ?th ?B ?L (DW (AOr ?F ?G))] => LLleft 
   | [H: MLLN _ ?th ?B ?L (DW ?G) |- MLLN _ ?th ?B ?L (DW (AOr ?F ?G))] => LLright 
-  | [ |- MLLN _ _ _ _ (DW (Bang loc _))] => apply tri_bangL;negativePhaseReasoningN
+  | [ |- MLLN _ _ _ _ (DW (Bang loc _))] => apply mll_bangL;negativePhaseReasoningN
  
      (* Change of polarity *)
     | [H: negFormula ?F |- MLLN _ _ _ _ (DW  ?F)] => LLrelease;negativePhaseReasoningN
@@ -786,7 +786,7 @@ In (i,atom A) L -> MLLS th L [] (DW (perp A)).
     | [ H: Permutation ?D (?B++[(?a,atom ?A)])  |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a B
     | [ H: Permutation ?D (?B++(?a,atom ?A)::?E)  |- MLLN _ _ ?D [] (DW (perp ?A))] => LLinit2 a (B++E)
 
-    | [H: tri_bangK4 _ 0 _ _ _ _ _ |- _ ] => inversion H 
+    | [H: MLLNExp _ 0 _ _ _ _ _ |- _ ] => inversion H 
     
     | [H: MLLN _ 0 _ _ (UP ( ?F::_)) |- _ ] =>
     match F with

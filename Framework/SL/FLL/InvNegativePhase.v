@@ -446,7 +446,7 @@ Lemma UpExtension: forall B M L F n,
         destruct H7 as [m'  [IHn' IHd']].
         simpl.
         exists (S (S n0)).
-        firstorder; eapply tri_with;auto.
+        firstorder; LLwith. 
         eapply heightGeqFLLN with (n:=n');try firstorder.  
        eapply heightGeqFLLN with (n:=m');try firstorder.       
        - apply IH with (m:= complexityL L) in H5;auto.
@@ -476,7 +476,7 @@ Lemma UpExtension: forall B M L F n,
         
         simpl.
         exists (S (S n0)). 
-        split ; [auto|eapply tri_fx;auto;intros].
+        split ; [auto|eapply fll_fx;auto;intros].
         
         generalize (H1 _ H2);intro.
         
@@ -492,7 +492,7 @@ Lemma UpExtension: forall B M L F n,
         destruct H1 as [n'  [IHn IHd]].
         exists (S n').
         split;auto. lia.
-        eapply tri_store;auto.
+        eapply fll_store;auto.
         LLExact IHd. 
  Qed.
   

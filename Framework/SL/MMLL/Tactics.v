@@ -74,7 +74,7 @@ auto; try
  | [ H : MLLN _ ?n ?G ?M ?X |-  MLLS _ ?G' ?M' ?X ] =>
     eapply MLLNtoSeq in H; LLExact H
 
- | [ H : tri_bangK4 _ ?n ?B ?i ?D ?M (UP ?L) |- tri_bangK4' _ ?B ?i ?D ?M (UP ?L)  ] =>
+ | [ H : MLLNExp _ ?n ?B ?i ?D ?M (UP ?L) |- MLLSExp _ ?B ?i ?D ?M (UP ?L)  ] =>
     eapply MLLNtoSeq_mutual in H;[exact H;firstorder]    
   end.
 
@@ -210,10 +210,10 @@ let G := type of H in
   | MLLS _ _ _ _  =>
           first[ apply exchangeLC with (LC' := LI) in H ;[|sauto]
                | apply exchangeCC with (CC' := LI) in H ;[|sauto]]
-  |  tri_bangK4 _ _ _ _ _ _ _ =>
+  |  MLLNExp _ _ _ _ _ _ _ =>
           first[ apply exchangeCCNK4 with (CC' := LI) in H ;[|sauto]
                | apply exchangeCCNKK4 with (CC' := LI) in H ;[|sauto]]
-  |  tri_bangK4' _ _ _ _ _ _  =>
+  |  MLLSExp _ _ _ _ _ _  =>
           first[ apply exchangeCCK4 with (CC' := LI) in H ;[|sauto]
                | apply exchangeCCKK4 with (CC' := LI) in H ;[|sauto]]
   | _ => idtac H "is not a sequent"
@@ -307,10 +307,10 @@ Ltac LLPerm LI :=
   | [ |- MLLS _ _ _ _ ] =>
           first[ apply exchangeLC with (LC := LI);[sauto|]
                | apply exchangeCC with (CC := LI);[sauto|]]
-  | [ |- tri_bangK4 _ _ _ _ _ _ _ ] =>
+  | [ |- MLLNExp _ _ _ _ _ _ _ ] =>
           first[ apply exchangeCCNK4 with (CC := LI);[sauto|]
                | apply exchangeCCNKK4 with (CC := LI);[perm|]]
-  | [ |- tri_bangK4' _ _ _ _ _ _ ] =>
+  | [ |- MLLSExp _ _ _ _ _ _ ] =>
           first[ apply exchangeCCK4 with (CC := LI);[sauto|]
                | apply exchangeCCKK4 with (CC := LI);[sauto|]]
 end.
@@ -347,14 +347,14 @@ Ltac LLSwap :=
   end.
 
 Ltac finishExponential :=  match goal with
-  | [ H: tri_bangK4 ?th ?n ?B ?a ?D ?O (UP ?L), H2: m4 ?a = true, H3: u ?a = true |- _ ] => 
+  | [ H: MLLNExp ?th ?n ?B ?a ?D ?O (UP ?L), H2: m4 ?a = true, H3: u ?a = true |- _ ] => 
        let a := fresh "CK4" in
        let c := fresh "CN" in
         apply InvSubExpPhaseUK4 in H; 
         [ destruct H as [a H];
           destruct H as [c H];CleanContext | auto | auto | try solve[auto | intro;subst;solveSubExp] ]           
 
-    | [ H: tri_bangK4 ?th ?n ?B ?a ?D ?O (UP ?L), H2: u ?a = true |- _ ] => 
+    | [ H: MLLNExp ?th ?n ?B ?a ?D ?O (UP ?L), H2: u ?a = true |- _ ] => 
      let a := fresh "CK4" in
      let b := fresh "CK" in
      let c := fresh "CN" in
@@ -364,14 +364,14 @@ Ltac finishExponential :=  match goal with
           destruct H as [c H];CleanContext | auto | try solve[auto | intro;subst;solveSubExp] ]; idtac H2    
 
    
-    | [ H: tri_bangK4 ?th ?n ?B ?a ?D ?O (UP ?L), H2: m4 ?a = true |- _ ] => 
+    | [ H: MLLNExp ?th ?n ?B ?a ?D ?O (UP ?L), H2: m4 ?a = true |- _ ] => 
        let a := fresh "CK4" in
        let c := fresh "CN" in
         apply InvSubExpPhaseK4 in H; 
         [ destruct H as [a H];
           destruct H as [c H];CleanContext | auto | try solve[auto | intro;subst;solveSubExp] ]           
    
- | [ H: tri_bangK4 ?th ?n ?B ?a ?D ?O (UP ?L), H2: UNoDSigMMLL |- _ ] => 
+ | [ H: MLLNExp ?th ?n ?B ?a ?D ?O (UP ?L), H2: UNoDSigMMLL |- _ ] => 
      let a := fresh "CK4" in
      let b := fresh "CK" in
      let c := fresh "CN" in
@@ -380,7 +380,7 @@ Ltac finishExponential :=  match goal with
           destruct H as [b H];
           destruct H as [c H];CleanContext | auto | try solve[auto | intro;subst;solveSubExp] ]; idtac H2    
 
- | [ H: tri_bangK4 ?th ?n ?B ?a ?D ?O (UP ?L) |- _ ] => 
+ | [ H: MLLNExp ?th ?n ?B ?a ?D ?O (UP ?L) |- _ ] => 
      let a := fresh "CK4" in
      let b := fresh "CK" in
      let c := fresh "CN" in

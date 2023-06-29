@@ -22,16 +22,16 @@ Section FLLBasicTheory.
   Section StructuralProperties.
     Variable theory : oo -> Prop. (* Theory Definition *)
     
-    Notation " n '|-F-' B ';' L ';' X " := (seqN theory n B L X)  (at level 80).
-    Hint Constructors seqN : core .
-    Notation " '|-f-' B ';' L ';' X " := (seq theory B L X)  (at level 80).
+    Notation " n '|-F-' B ';' L ';' X " := (SELLN theory n B L X)  (at level 80).
+    Hint Constructors SELLN : core .
+    Notation " '|-f-' B ';' L ';' X " := (SELLS theory B L X)  (at level 80).
      
-    Hint Constructors seqN : core.
-    Hint Constructors seq : core.
+    Hint Constructors SELLN : core.
+    Hint Constructors SELLS : core.
    
  Theorem WeakTheoryN : forall n CC LC X (th th':oo->Prop),
         (forall F, th F -> th' F) ->
-        (seqN th n CC LC X -> seqN th' n CC LC X).
+        (SELLN th n CC LC X -> SELLN th' n CC LC X).
     Proof with sauto.    
       induction n using lt_wf_ind. 
      intros...
@@ -132,8 +132,8 @@ Section FLLBasicTheory.
  Qed. 
    
   Global Instance seq_morphismN  n:
-      Proper ((@Permutation TypedFormula) ==> (@Permutation oo) ==> eq ==> iff)
-             (seqN theory n).
+      Proper ((@Permutation location) ==> (@Permutation oo) ==> eq ==> iff)
+             (SELLN theory n).
     Proof.
       unfold Proper; unfold respectful.
       intros.
@@ -147,8 +147,8 @@ Section FLLBasicTheory.
     Qed.
    
    Global Instance seq_morphism  :
-      Proper ((@Permutation TypedFormula) ==> (@Permutation oo) ==> eq ==> iff)
-             (seq theory).
+      Proper ((@Permutation location) ==> (@Permutation oo) ==> eq ==> iff)
+             (SELLS theory).
     Proof.
       unfold Proper; unfold respectful.
       intros.
@@ -192,7 +192,7 @@ Section FLLBasicTheory.
  
 (* Soundness using inversion lemma of bang *)   
 Lemma seqNtoSeq : forall n B C X,
-    seqN theory n B C X -> seq theory B C X.
+    SELLN theory n B C X -> SELLS theory B C X.
      Proof with sauto. 
       induction n using strongind;intros;eauto.
       + inversion H... eauto.
@@ -201,8 +201,8 @@ Lemma seqNtoSeq : forall n B C X,
   Qed.
   
      Lemma HeightGeq : forall n B O (X:Arrow),
-        seqN theory n B O X ->
-        forall m, m>=n -> seqN theory m B O X.
+        SELLN theory n B O X ->
+        forall m, m>=n -> SELLN theory m B O X.
     Proof with sauto;solveLL.
      intro.
       induction n;intros. 
@@ -228,8 +228,8 @@ Lemma seqNtoSeq : forall n B C X,
     (** HeightGeq with Exchange Classic Context *)
     Theorem HeightGeqCEx : forall n CC LC CC' X, 
         Permutation CC' CC ->
-        (seqN theory n  CC LC X) ->
-        forall m, m>=n -> (seqN theory m  CC' LC X).
+        (SELLN theory n  CC LC X) ->
+        forall m, m>=n -> (SELLN theory m  CC' LC X).
     Proof with eauto.
       intros.
       eapply HeightGeq with (n:=n);auto...
@@ -240,8 +240,8 @@ Lemma seqNtoSeq : forall n B C X,
     (** HeightGeq with Exchange Linear Context *)
     Theorem HeightGeqLEx : forall n CC LC LC' X, 
         Permutation LC LC' ->
-        (seqN theory n  CC LC' X) ->
-        forall m, m>=n -> (seqN theory m  CC LC X).
+        (SELLN theory n  CC LC' X) ->
+        forall m, m>=n -> (SELLN theory m  CC LC X).
     Proof with eauto.
       intros.
       eapply HeightGeq with (n:=n);auto...
@@ -252,8 +252,8 @@ Lemma seqNtoSeq : forall n B C X,
    Theorem HeightGeqEx : forall n CC CC' LC LC' X, 
         Permutation CC CC' ->
         Permutation LC LC' ->
-        (seqN theory n CC' LC' X) ->
-        forall m, m>=n -> (seqN theory m CC LC X).
+        (SELLN theory n CC' LC' X) ->
+        forall m, m>=n -> (SELLN theory m CC LC X).
     Proof with eauto.
       intros.
       eapply HeightGeq with (n:=n);auto...
@@ -316,7 +316,7 @@ Lemma seqNtoSeq : forall n B C X,
  
    
   Axiom seqtoSeqN : forall D O X, 
-        seq theory  D O X -> exists n, (seqN theory n D O X).
+        SELLS theory  D O X -> exists n, (SELLN theory n D O X).
   
     (**  Weakening on the classical context *)  
      Lemma weakening : forall CC LC F X ,
@@ -387,7 +387,7 @@ Lemma seqNtoSeq : forall n B C X,
        rewrite <- H0...
      * LLTensor M N B C D. 
      * LLBang. rewrite <- H1...
-        eapply IHseq.
+        eapply IHSELLS.
         rewrite H1...
      * LLExists t.
      * LFocus F... 
@@ -459,7 +459,7 @@ Lemma seqNtoSeq : forall n B C X,
   
   Definition EmptyTheory (F :oo) := False.
   Lemma EmptySubSetN : forall (theory : oo-> Prop) CC LC X n,
-      seqN EmptyTheory n CC LC X -> seqN theory n CC LC X.
+      SELLN EmptyTheory n CC LC X -> SELLN theory n CC LC X.
   Proof with sauto. 
     intros.
     eapply @WeakTheoryN with (th:= EmptyTheory)...
@@ -472,7 +472,7 @@ Lemma seqNtoSeq : forall n B C X,
   Section AdmissibleRules.
     Variable theory : oo -> Prop. 
 
-Lemma Init2In th i A L (USB: USigSELL): In (i, atom A) L -> seq th L [] (DW (perp A)).
+Lemma Init2In th i A L (USB: USigSELL): In (i, atom A) L -> SELLS th L [] (DW (perp A)).
 Proof with sauto.
   intros.
   apply InPermutation in H...
@@ -480,25 +480,25 @@ Proof with sauto.
 Qed.
 
  Theorem InitPosNegN : forall Gamma A, SetU Gamma ->
-        seqN theory 2 Gamma [atom A ; perp A ] (UP []).
+        SELLN theory 2 Gamma [atom A ; perp A ] (UP []).
       intros.
       solveLL.
     Qed.
     
     Theorem InitPosNegDwN : forall Gamma A, SetU Gamma ->
-        seqN theory 4 Gamma [perp A ] (DW (atom A)).
+        SELLN theory 4 Gamma [perp A ] (DW (atom A)).
       intros.
       solveLL.
     Qed.
 
     Theorem InitPosNeg : forall Gamma A,
-    SetU Gamma -> seq theory Gamma [atom A ; perp A ] (UP []).
+    SetU Gamma -> SELLS theory Gamma [atom A ; perp A ] (UP []).
       intros.
       solveLL. 
     Qed. 
 
     Theorem InitPosNeg' : forall Gamma A,
-     SetU Gamma -> seq theory Gamma [perp A ; atom A ] (UP []).
+     SetU Gamma -> SELLS theory Gamma [perp A ; atom A ] (UP []).
       intros.
       solveLL.
     Qed.
@@ -511,7 +511,7 @@ Qed.
 
 
  Theorem FocusAtomN: forall n Gamma Delta A,
-        (seqN theory n Gamma Delta (DW ((perp A ) ))) ->
+        (SELLN theory n Gamma Delta (DW ((perp A ) ))) ->
      SetU Gamma /\ Delta = [ (atom A)] \/ 
      (exists i C, Delta = [] /\ SetU C /\ Permutation ((i,atom A )::C) Gamma).
     Proof with subst;auto.
@@ -524,7 +524,7 @@ Qed.
 
 
   Theorem FocusAtom: forall Gamma Delta A,
-        (seq theory Gamma Delta (DW ((perp A ) ))) ->
+        (SELLS theory Gamma Delta (DW ((perp A ) ))) ->
      SetU Gamma /\ Delta = [ (atom A)] \/ 
      (exists i C, Delta = [] /\ SetU C /\ Permutation ((i,atom A )::C) Gamma).
   Proof with subst;auto.
@@ -546,10 +546,10 @@ Qed.
   Qed.  
   
    Theorem InvTensorNUnb (SIU: USigSELL) : forall n Gamma D F G,
-   seqN theory n Gamma D (DW (MAnd F G)) ->
+   SELLN theory n Gamma D (DW (MAnd F G)) ->
    exists M N, Permutation D (M++N) /\
-   (seqN theory (n -1) Gamma M (DW F)) /\ 
-   (seqN theory (n -1) Gamma N (DW G)).
+   (SELLN theory (n -1) Gamma M (DW F)) /\ 
+   (SELLN theory (n -1) Gamma N (DW G)).
   Proof with sauto.
   intros.
   inversion H...
@@ -562,10 +562,10 @@ Qed.
   Qed.
    
     Theorem InvTensorNUnb' (SIU: USigSELL) : forall n Gamma D F G,
-   seqN theory n Gamma D (DW (MAnd F  G)) ->
+   SELLN theory n Gamma D (DW (MAnd F  G)) ->
    exists M N m, Permutation D (M++N) /\ S m <= n /\ 
-   (seqN theory m Gamma M (DW F)) /\ 
-   (seqN theory m Gamma N (DW G)).
+   (SELLN theory m Gamma M (DW F)) /\ 
+   (SELLN theory m Gamma N (DW G)).
   Proof with sauto.
   intros.
   inversion H...
@@ -581,8 +581,8 @@ Qed.
   Qed.
    
     Theorem FocusAtomTensorInvN: forall n  A F,
-        (seqN theory n []  [atom A] (DW (MAnd (perp A) F))) ->
-        (seqN theory (sub n  1 ) [] [] (DW (F))).
+        (SELLN theory n []  [atom A] (DW (MAnd (perp A) F))) ->
+        (SELLN theory (sub n  1 ) [] [] (DW (F))).
     Proof with sauto.
       intros.
       inversion H... 
@@ -594,21 +594,21 @@ Qed.
     
 
     Theorem FocusAtomTensorTop: forall A B,
-        (seq theory B [atom A] (DW (MAnd (perp A) Top))).
+        (SELLS theory B [atom A] (DW (MAnd (perp A) Top))).
     Proof with sauto.
       intros.
       LLTensor [atom A] (@nil oo) (getU B) (getL B) (getL [])...
     Abort.
     
     Theorem FocusTopOplus1: forall F B D,
-        seq theory B D (DW (AOr Top F)).
+        SELLS theory B D (DW (AOr Top F)).
     Proof with sauto.
       intros.
       solveLL.
     Qed.  
     
     Theorem FocusTopOplus2: forall F B D,
-        seq theory B D (DW (AOr F Top )).
+        SELLS theory B D (DW (AOr F Top )).
     Proof with sauto.
       intros.
       solveLL.
@@ -619,8 +619,8 @@ Qed.
 
   Section GeneralResults.
     Variable theory : oo -> Prop. (* Theory Definition *)
-    Hint Constructors seqN : core .
-    Hint Constructors seq : core . 
+    Hint Constructors SELLN : core .
+    Hint Constructors SELLS : core . 
 
     
   Lemma PProp_select B D CC F : Permutation (B++ getL D)
@@ -657,7 +657,7 @@ Proof with sauto.
    
    
   Theorem contractionN  : forall n CC LC F X,
-       u (fst F) = true -> seqN theory n (F :: CC) LC X -> In F CC -> seqN theory n CC LC X. 
+       u (fst F) = true -> SELLN theory n (F :: CC) LC X -> In F CC -> SELLN theory n CC LC X. 
   Proof with CleanContext;try solveLL.
   induction n using strongind;intros. 
   * inversion H0...
@@ -737,7 +737,7 @@ inversion H6...
     
                                                                                          
  Theorem contraction  : forall CC LC F X,
-     u (fst F) = true -> seq theory (F :: CC) LC X -> In F CC -> seq theory  CC LC X. 
+     u (fst F) = true -> SELLS theory (F :: CC) LC X -> In F CC -> SELLS theory  CC LC X. 
   Proof with subst;eauto.
   intros.
   apply seqtoSeqN in H0.
@@ -748,7 +748,7 @@ inversion H6...
  
   
    Theorem contractionSet  : forall CC LC X L, (forall F, In F L -> In F CC) -> SetU L ->
-        ( seq theory (L ++ CC) LC X) -> (seq theory CC LC  X).
+        ( SELLS theory (L ++ CC) LC X) -> (SELLS theory CC LC  X).
    Proof.
       intros.
       induction L.
@@ -765,7 +765,7 @@ inversion H6...
 
        
      Theorem contractionSet'  : forall  C1 C2 CC LC X, Permutation CC (C1++C2) -> SetU C1 ->
-        ( seq theory (C1 ++ CC) LC X) -> (seq theory CC LC  X).
+        ( SELLS theory (C1 ++ CC) LC X) -> (SELLS theory CC LC  X).
    Proof with sauto.
       intro.
       induction C1;intros.
@@ -784,7 +784,7 @@ inversion H6...
   Qed. 
   
     Theorem contractionGetU  : forall  C CC LC X, 
-        ( seq theory (getU C ++ getU C ++ CC) LC X) -> (seq theory (getU C ++ CC) LC  X).
+        ( SELLS theory (getU C ++ getU C ++ CC) LC X) -> (SELLS theory (getU C ++ CC) LC  X).
    Proof with sauto.
       intros.
       eapply contractionSet'
@@ -792,7 +792,7 @@ inversion H6...
   Qed. 
   
   Theorem contractionGetU_rev  : forall  C CC LC X, 
-        ( seq theory (CC ++ getU C ++ getU C) LC X) -> (seq theory (CC ++ getU C) LC  X).
+        ( SELLS theory (CC ++ getU C ++ getU C) LC X) -> (SELLS theory (CC ++ getU C) LC  X).
    Proof with sauto.
       intros.
       eapply contractionSet'
@@ -804,7 +804,7 @@ inversion H6...
  
  
  Lemma Derivation1 D M F : 
- seq theory D M (DW F) -> seq theory D M (UP [F]).
+ SELLS theory D M (DW F) -> SELLS theory D M (UP [F]).
  Proof with sauto.
  intros.
  destruct(posOrNeg F).
@@ -814,7 +814,7 @@ inversion H6...
 Qed. 
   
   Lemma InvBangTN i j B P : u i = true -> 
-          seqN theory  j B [] (DW (Bang i P) ) -> seqN theory (j-1) B [] (UP [P]).
+          SELLN theory  j B [] (DW (Bang i P) ) -> SELLN theory (j-1) B [] (UP [P]).
   Proof with sauto.
   intros Hu Hj.
   inversion Hj...
@@ -826,7 +826,7 @@ Qed.
  Qed. 
  
   Lemma InvBangT i j B P : u i = true -> 
-          seqN theory j B [] (DW (Bang i P)) -> seq theory B [] (UP [P]).
+          SELLN theory j B [] (DW (Bang i P)) -> SELLS theory B [] (UP [P]).
   Proof with sauto.
   intros Hu Hj.
   apply InvBangTN in Hj...
@@ -846,8 +846,8 @@ End GeneralResults.
     
     Theorem WeakLinearTheoryN : forall n CC LC F X ,
         ~ posAtom F ->
-        (seqN theory n CC (F::LC) X) -> theory F ->
-        seqN theory n CC LC X.
+        (SELLN theory n CC (F::LC) X) -> theory F ->
+        SELLN theory n CC LC X.
     Proof with sauto.
       induction n;intros;subst.
       + inversion H0...
@@ -899,7 +899,7 @@ End GeneralResults.
      
   Theorem WeakLinearTheory : forall CC LC F X,
         ~ posAtom F ->
-        (seq theory CC (F::LC) X) -> theory F -> seq theory CC LC X.
+        (SELLS theory CC (F::LC) X) -> theory F -> SELLS theory CC LC X.
       intros.
       apply seqtoSeqN in H0.
       destruct H0.
@@ -908,10 +908,10 @@ End GeneralResults.
   Qed.    
  
  Lemma WeakTheory
-     : forall (CC : list TypedFormula)
+     : forall (CC : list location)
          (LC : list oo) (X : Arrow) (th th' : oo -> Prop),
        (forall F : oo, th F -> th' F) ->
-       seq th CC LC X -> seq th' CC LC X.
+       SELLS th CC LC X -> SELLS th' CC LC X.
   Proof with sauto.
   intros.
   apply seqtoSeqN in H0...

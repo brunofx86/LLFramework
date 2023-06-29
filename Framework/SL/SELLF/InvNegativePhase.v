@@ -2,7 +2,7 @@
 (** * Invertibility results for the negative phase
 
 This file proves that exchange is admissible also in the list L in
-[seq Gamma Delta (> L)]. For that, some invertibility lemmas are
+[SELLS Gamma Delta (> L)]. For that, some invertibility lemmas are
 needed.
  *)
 Require Export LL.Misc.UtilsForall.
@@ -19,11 +19,11 @@ Set Implicit Arguments.
 Section InvNPhase .
     Context `{SI : SigSELL}.
   Context `{OLS: OLSig}.
-  Hint Constructors isFormula  seqN posAtom : core .
+  Hint Constructors isFormula  SELLN posAtom : core .
 
   Variable theory : oo -> Prop .
-  Notation " n '|---' B ';' L ';' X " := (seqN theory n B L X) (at level 80).
-  Notation " '|--' B ';' L ';' X " := (seq theory B L X) (at level 80).
+  Notation " n '|---' B ';' L ';' X " := (SELLN theory n B L X) (at level 80).
+  Notation " '|--' B ';' L ';' X " := (SELLS theory B L X) (at level 80).
 
   Theorem exp_weight0LF : forall l L, 0%nat = complexity l + complexityL L -> False.
   Proof.
@@ -53,7 +53,7 @@ Section InvNPhase .
     destruct a; simpl in *; invTri' H0;solveLL; 
       repeat rewrite app_comm_cons.
     all:  try match goal with
-          |  [ |- seq _ _ _ (UP (?M ++ Bot :: _)) ] =>
+          |  [ |- SELLS _ _ _ (UP (?M ++ Bot :: _)) ] =>
              eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveF
           end. 
     assert (Hvar : proper (VAR con 0%nat)) by constructor.
@@ -82,7 +82,7 @@ Section InvNPhase .
     destruct a; simpl in *; invTri' H0;solveLL;
       repeat rewrite app_comm_cons.
    all: try solve[  match goal with
-            |  [ |- seq _ _ _ (UP (?M ++ (AAnd _ _) :: _)) ] =>
+            |  [ |- SELLS _ _ _ (UP (?M ++ (AAnd _ _) :: _)) ] =>
                eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM;solveF;FLLInversionAll;auto
             end] .
      assert (Hvar : proper (VAR con 0%nat)) by constructor.
@@ -113,7 +113,7 @@ Section InvNPhase .
     destruct a; simpl in *; invTri' H0;solveLL;
       repeat rewrite app_comm_cons;
       match goal with
-      |  [ |- seq _ _ _ (UP (?M ++ (MOr F G) :: _)) ] =>
+      |  [ |- SELLS _ _ _ (UP (?M ++ (MOr F G) :: _)) ] =>
          eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveF
       end.
     generalize (ComplexityUniformEq H5 properX (proper_VAR con 0%nat));intro...
@@ -200,7 +200,7 @@ Section InvNPhase .
       repeat rewrite app_comm_cons;
       try solve [
             match goal with
-            |  [ |- seq _ _ _ (UP (?M ++ (Quest _ _) :: _)) ] =>
+            |  [ |- SELLS _ _ _ (UP (?M ++ (Quest _ _) :: _)) ] =>
               eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM;solveF;FLLInversionAll;auto
             end] .
         
@@ -234,7 +234,7 @@ Section InvNPhase .
       repeat rewrite app_comm_cons;
       try solve [
             match goal with
-            |  [ |- seq _ _ _ (UP (?M ++ Top :: _)) ] =>
+            |  [ |- SELLS _ _ _ (UP (?M ++ Top :: _)) ] =>
                eapply H with (m:= complexityL M);simpl in *; inversion HeqSizeM; solveF; inversion H0;subst;auto
             end].
     

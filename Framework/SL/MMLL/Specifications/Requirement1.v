@@ -14,7 +14,7 @@ Section Bipoles.
 Context `{OLR: OORules}.
 
 Variable theory : oo -> Prop.
-Variable Gamma : list TypedFormula. (* classical context *)
+Variable Gamma : list location. (* classical context *)
 Variable Delta : list oo. (* linear context *)
     
    (** The following definition determines the possible shapes of
