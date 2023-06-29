@@ -21,14 +21,13 @@ Export ListNotations.
 Export LLNotations.
 Set Implicit Arguments.
 
-
 (** ** Cut Elimination Procedure *)
 Section CutElimination .
 
   Context `{OLR: OORules}.
 
 Hypothesis LTWell : wellFormedTheory. 
-Hypothesis LTCutCo: CutCoherence cutR1. 
+Hypothesis LTCutCo: CutCoherence cutR1.
 
  (** This is the case when a constant is principal in both premises *)
   Theorem ConPrincipalCase :
@@ -272,7 +271,7 @@ Ltac PermuteLeft :=
    | _ => idtac
        end;unformSeq.
    
- Definition ConnectiveRightNotPrincipal conn Rule := forall n n' h1 h2 FCut M N Gamma,
+ Definition ConnectiveRightNotPrincipalL conn Rule := forall n n' h1 h2 FCut M N Gamma,
   n' <= n ->
   OOCut n' (S h1 + S h2) ->
   lengthUexp FCut n' ->
@@ -286,7 +285,7 @@ Ltac PermuteLeft :=
     FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule) ->
   FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
  
-  Definition ConnectiveLeftNotPrincipal conn Rule := forall n n' h1 h2 FCut M N Gamma,
+  Definition ConnectiveLeftNotPrincipalL conn Rule := forall n n' h1 h2 FCut M N Gamma,
   FCut <> conn -> n' <= n ->  
   OOCut n' (S h1 + S h2) ->
   lengthUexp FCut n' ->
@@ -300,10 +299,53 @@ Ltac PermuteLeft :=
     FLLN (OLTheory nPnN) h2 Gamma ((⌊ FCut ⌋) :: M) (DW Rule) ->
   FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
         
-(** Unary Right is not principal on the left branch *)    
-Lemma UnaRightNotPrincipalL C F : ConnectiveRightNotPrincipal  (t_ucon C F) (makeRRuleU C F). 
+Lemma ConRightNotPrincipalL C : ConnectiveRightNotPrincipalL  (t_ccon C) (makeRRuleC C). 
 Proof with sauto; try OLSolve.
-  unfold  ConnectiveRightNotPrincipal; intros.
+  unfold  ConnectiveRightNotPrincipalL; intros.
+  wellConstant LTWell H9.
+  * Cases H10.
+     LLPerm ((⌈ t_ccon C ⌉) :: x0++N)...
+  * Cases H10.
+     - PermuteLeft.
+        cutOL H8 H12.
+        OLSolve.
+        rewrite <- app_comm_cons.
+        apply H18...
+        rewrite Permutation_assoc_comm...
+     - PermuteLeft.
+        cutOL H8 H14.
+        LLtheory (makeRRuleC C).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H18...
+        rewrite Permutation_assoc_comm... 
+Qed.
+
+(** Unary Left is not principal on the left branch *) 
+Lemma ConLeftNotPrincipalL C : ConnectiveLeftNotPrincipalL  (t_ccon C) (makeLRuleC C). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipalL; intros.
+  wellConstant LTWell H10.
+  * Cases H11.
+     LLPerm ((⌊ t_ccon C ⌋) :: x0++N)...
+  * Cases H11.
+     - PermuteLeft.
+        cutOL H9 H13.
+        OLSolve.
+        rewrite <- app_comm_cons.
+        apply H19...
+        rewrite Permutation_assoc_comm...
+     - PermuteLeft.
+        cutOL H9 H15.
+        LLtheory (makeLRuleC C).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H19...
+        rewrite Permutation_assoc_comm... 
+Qed.
+
+(** Unary Right is not principal on the left branch *)    
+Lemma UnaRightNotPrincipalL C F : ConnectiveRightNotPrincipalL  (t_ucon C F) (makeRRuleU C F). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipalL; intros.
   wellUnary LTWell H9.
   * Cases H10.
      - PermuteLeft.
@@ -321,9 +363,9 @@ Proof with sauto; try OLSolve.
 Qed.
 
 (** Unary Left is not principal on the left branch *) 
-Lemma UnaLeftNotPrincipalL C F : ConnectiveLeftNotPrincipal  (t_ucon C F) (makeLRuleU C F). 
+Lemma UnaLeftNotPrincipalL C F : ConnectiveLeftNotPrincipalL  (t_ucon C F) (makeLRuleU C F). 
 Proof with sauto; try OLSolve.
-  unfold  ConnectiveLeftNotPrincipal; intros.
+  unfold  ConnectiveLeftNotPrincipalL; intros.
   wellUnary LTWell H10.
   * Cases H11.
      - PermuteLeft. 
@@ -341,9 +383,9 @@ Proof with sauto; try OLSolve.
 Qed.     
         
 (** Binary Right is not principal on the left branch *) 
-Lemma BinRightNotPrincipalL C F G: ConnectiveRightNotPrincipal  (t_bcon C F G) (makeRRuleB C F G). 
+Lemma BinRightNotPrincipalL C F G: ConnectiveRightNotPrincipalL  (t_bcon C F G) (makeRRuleB C F G). 
 Proof with sauto; try OLSolve.
-  unfold  ConnectiveRightNotPrincipal; intros.
+  unfold  ConnectiveRightNotPrincipalL; intros.
   wellBinary LTWell H9.
   * Cases H10.
      - PermuteLeft. 
@@ -427,9 +469,9 @@ Proof with sauto; try OLSolve.
 Qed.    
 
 (** Unary Left is not principal on the left branch *)  
-Lemma BinLeftNotPrincipalL C F G: ConnectiveLeftNotPrincipal  (t_bcon C F G) (makeLRuleB C F G). 
+Lemma BinLeftNotPrincipalL C F G: ConnectiveLeftNotPrincipalL  (t_bcon C F G) (makeLRuleB C F G). 
 Proof with sauto; try OLSolve.
-  unfold  ConnectiveLeftNotPrincipal; intros.
+  unfold  ConnectiveLeftNotPrincipalL; intros.
   wellBinary LTWell H10.
   * Cases H11.
      - PermuteLeft.  
@@ -513,9 +555,9 @@ Proof with sauto; try OLSolve.
  Qed.     
 
  (** Quantifier Right is not principal on the left branch *) 
- Lemma QuaRightNotPrincipalL C FX : ConnectiveRightNotPrincipal (t_qcon C FX) (makeRRuleQ C FX). 
+ Lemma QuaRightNotPrincipalL C FX : ConnectiveRightNotPrincipalL (t_qcon C FX) (makeRRuleQ C FX). 
 Proof with sauto; try OLSolve.
-  unfold  ConnectiveRightNotPrincipal; intros.
+  unfold  ConnectiveRightNotPrincipalL; intros.
   wellQuantifier LTWell H9.  
  Cases H10.
      - PermuteLeft.  
@@ -534,9 +576,9 @@ Proof with sauto; try OLSolve.
 Qed.
 
  (** Quantifier Left is not principal on the left branch *) 
- Lemma QuaLeftNotPrincipalL C FX : ConnectiveLeftNotPrincipal (t_qcon C FX) (makeLRuleQ C FX). 
+ Lemma QuaLeftNotPrincipalL C FX : ConnectiveLeftNotPrincipalL (t_qcon C FX) (makeLRuleQ C FX). 
 Proof with sauto; try OLSolve.
-  unfold  ConnectiveLeftNotPrincipal; intros.
+  unfold  ConnectiveLeftNotPrincipalL; intros.
    wellQuantifier LTWell H10.
   * Cases H11.
      - PermuteLeft.  
@@ -554,8 +596,24 @@ Proof with sauto; try OLSolve.
         rewrite Permutation_assoc_comm... 
  Qed.       
         
+Ltac permuteConstantL :=
+match goal with
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?M) (DW (makeRRuleC _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+   refine (ConRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
+      
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?M) (DW (makeLRuleC _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+refine (ConLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
+  sauto;
+  intro Hf; inversion Hf
+  end.     
  
-Ltac permuteUnary :=
+Ltac permuteUnaryL :=
 match goal with
 | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
@@ -570,26 +628,26 @@ match goal with
 refine (UnaLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
- end.     
+  end.     
 
  
-Ltac permuteBinary :=
+Ltac permuteBinaryL :=
 match goal with
 | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeRRuleB _ _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
    refine (BinRightNotPrincipalL H _ _ _ _ _ _ _ _ Hl Hr);sauto
-| [H: ?n' <= ?n,
+ | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
    Hr : FLLN _ _ _ (_ :: ?M) (DW (makeLRuleB _ _ _))
   |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
 refine (BinLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
- end.    
+  end.    
  
- Ltac permuteQuantifier :=
+ Ltac permuteQuantifierL :=
 match goal with
 | [H: ?n' <= ?n,
    Hl: FLLN _ _ _ (_ :: ?N) (UP []) ,
@@ -604,6 +662,392 @@ refine (QuaLeftNotPrincipalL _ H _ _ _ _ _ _ _ _ Hl Hr);
   sauto;
   intro Hf; inversion Hf  
  end.    
+
+ Definition ConnectiveRightNotPrincipalR conn Rule := forall n n' h1 h2 FCut M N Gamma,
+  FCut <> conn -> n' <= n ->
+  OOCut n' (S h1 + S h2) ->
+  lengthUexp FCut n' ->
+  isOLFormula FCut ->
+  isOLFormula conn ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL Gamma ->
+  buildTheory Rule ->
+  FLLN (OLTheory nPnN) (S h2) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
+  FLLN (OLTheory nPnN) h1 Gamma ( (⌈ FCut ⌉) :: N) (DW Rule) ->
+  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+ 
+  Definition ConnectiveLeftNotPrincipalR conn Rule := forall n n' h1 h2 FCut M N Gamma,
+  n' <= n ->  
+  OOCut n' (S h1 + S h2) ->
+  lengthUexp FCut n' ->
+  isOLFormula FCut ->
+  isOLFormula conn ->
+  posAtomFormulaL M ->
+  posAtomFormulaL N ->
+  posAtomFormulaL Gamma ->
+  buildTheory Rule ->
+  FLLN (OLTheory nPnN) (S h2) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
+  FLLN (OLTheory nPnN) h1 Gamma ( (⌈ FCut ⌉) :: N) (DW Rule) ->
+  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
+       
+ Lemma ConLeftNotPrincipalR C : ConnectiveLeftNotPrincipalR  (t_ccon C) (makeLRuleC C). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipalR; intros.
+  wellConstant LTWell H9.
+  * Cases H10.
+     LLPerm (( ⌊ t_ccon C ⌋) :: M++x0)...
+  * Cases H10.
+     - PermuteLeft.
+        cutOL H12 H8.
+        OLSolve.
+        rewrite <- Permutation_middle.
+        apply H18...
+        rewrite app_assoc_reverse...
+     - PermuteLeft.
+        cutOL H14 H8.
+        LLtheory (makeLRuleC C).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H18...
+        rewrite app_assoc_reverse...
+Qed.
+
+(** Unary Left is not principal on the left branch *) 
+Lemma ConRightNotPrincipalR C : ConnectiveRightNotPrincipalR  (t_ccon C) (makeRRuleC C). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipalR; intros.
+  wellConstant LTWell H10.
+  * Cases H11.
+     LLPerm ((⌈ t_ccon C ⌉) ::M++x0)...
+  * Cases H11.
+     - PermuteLeft.
+        cutOL H13 H9.
+        OLSolve.
+        rewrite <- Permutation_middle.
+        apply H19...
+        rewrite app_assoc_reverse...
+     - PermuteLeft.
+        cutOL H15 H9.
+        LLtheory (makeRRuleC C).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H19...
+        rewrite app_assoc_reverse...
+Qed.
+
+(** Unary Right is not principal on the left branch *)    
+Lemma UnaLeftNotPrincipalR C F : ConnectiveLeftNotPrincipalR  (t_ucon C F) (makeLRuleU C F). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipalR; intros.
+  wellUnary LTWell H9.
+  * Cases H10.
+     - PermuteLeft.
+        cutOL H12 H8. 
+        OLSolve. 
+        rewrite  Permutation_midle.
+        apply H18...
+        rewrite app_assoc_reverse... 
+     -  PermuteLeft.
+        cutOL H14 H8.
+        LLtheory (makeLRuleU C F).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H18...
+        rewrite app_assoc_reverse...
+Qed.
+
+(** Unary Left is not principal on the left branch *) 
+Lemma UnaRightNotPrincipalR C F : ConnectiveRightNotPrincipalR  (t_ucon C F) (makeRRuleU C F). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipalR; intros.
+  wellUnary LTWell H10.
+  * Cases H11.
+     - PermuteLeft. 
+        cutOL H13 H9.
+        OLSolve.
+        rewrite Permutation_midle. 
+        apply H19...
+        rewrite app_assoc_reverse...
+     - PermuteLeft. 
+        cutOL H15 H9.
+        LLtheory (makeRRuleU C F).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H19...
+        rewrite app_assoc_reverse...
+Qed.     
+        
+(** Binary Right is not principal on the left branch *) 
+Lemma BinLeftNotPrincipalR C F G: ConnectiveLeftNotPrincipalR  (t_bcon C F G) (makeLRuleB C F G). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipalR; intros.
+  wellBinary LTWell H9.
+  * Cases H10.
+     - PermuteLeft. 
+        cutOL H12 H8.
+        OLSolve.
+        rewrite Permutation_midle. 
+        apply H18...
+        rewrite app_assoc_reverse... 
+     - PermuteLeft. 
+        cutOL H14 H8.
+        LLtheory (makeLRuleB C F G).
+        LLtensor (@nil oo) (M++N). eauto. 
+        apply H18...
+        rewrite app_assoc_reverse...
+  * Cases H10.
+     - PermuteLeft.
+       cutOL H15 H8.
+       rewrite <- H19 in H18.
+       rewrite H18 in H5.
+       inversion H5...
+       OLSolve.
+       rewrite Permutation_midle. 
+       LLPerm (⌊ t_bcon C F G ⌋ :: (M ++ x6) ++ x0).
+        apply H20...
+        rewrite app_assoc_reverse... 
+        apply FLLNtoFLLS in H16...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H16;auto using TheoryEmb1.
+    -  PermuteLeft.
+        cutOL H16 H8.
+       rewrite <- H19 in H18.
+       rewrite H18 in H5.
+       inversion H5...
+       OLSolve.
+       rewrite Permutation_midle. 
+       LLPerm (⌊ t_bcon C F G ⌋ ::x++ (M ++ x6) ).
+        apply H20...
+        apply FLLNtoFLLS in H15...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H15;auto using TheoryEmb1.
+        rewrite app_assoc_reverse...
+    -  PermuteLeft.  
+        cutOL H16 H8.
+       rewrite <- H19 in H5.
+       OLSolve.
+        LLtheory (makeLRuleB C F G).
+        LLtensor (@nil oo) ((M++x5)++ x0).  eauto.
+        apply H21...
+         rewrite app_assoc_reverse... 
+    apply FLLNtoFLLS in H17...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
+     -  PermuteLeft.  
+        cutOL H17 H8.
+       rewrite <- H19 in H5.
+       OLSolve.
+        LLtheory (makeLRuleB C F G).
+        LLtensor (@nil oo) (x++(M++x5 )). eauto.
+        apply H21...
+          apply FLLNtoFLLS in H16...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H16;auto using TheoryEmb1.       
+         rewrite app_assoc_reverse... 
+* Cases H10.
+     - PermuteLeft.
+       cutOL H15 H8.
+       rewrite H18 in H5.
+        OLSolve.
+        cutOL H16 H8.
+       rewrite H18 in H5.
+        OLSolve.
+        rewrite <- Permutation_middle. 
+        apply H20...
+        1-2: rewrite app_assoc_reverse...
+      - PermuteLeft.
+        cutOL H15 H8.
+        cutOL H16 H8.
+        LLtheory (makeLRuleB C F G).
+        LLtensor (@nil oo) (M ++ N). eauto. 
+        apply H20...
+        1-2: rewrite app_assoc_reverse... 
+Qed.
+
+(** Unary Left is not principal on the left branch *)  
+Lemma BinRightNotPrincipalR C F G: ConnectiveRightNotPrincipalR  (t_bcon C F G) (makeRRuleB C F G). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipalR; intros.
+  wellBinary LTWell H10.
+  * Cases H11.
+     - PermuteLeft.  
+        cutOL H13 H9.
+        rewrite H17 in H6.
+        OLSolve.
+        rewrite <- Permutation_middle.
+        apply H19...
+        rewrite app_assoc_reverse... 
+     - PermuteLeft.  
+        cutOL H15 H9.
+        LLtheory (makeRRuleB C F G).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H19...
+        rewrite app_assoc_reverse... 
+  * Cases H11.
+     - PermuteLeft.  
+        cutOL H16 H9.
+        rewrite <- H20 in H19.
+        rewrite H19 in H6.
+        inversion H6...
+        OLSolve.
+        rewrite <- Permutation_middle. 
+        LLPerm (⌈ t_bcon C F G ⌉ :: (M ++ x6) ++ x0).
+        apply H21...
+        rewrite app_assoc_reverse...
+        apply FLLNtoFLLS in H17...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
+     - PermuteLeft. 
+        cutOL H17 H9.
+        rewrite <- H20 in H19.
+        rewrite H19 in H6.
+        inversion H6...
+        OLSolve.
+        rewrite <- Permutation_middle.
+        LLPerm(⌈ t_bcon C F G ⌉ :: x++(M ++ x6) ).
+        apply H21...
+        apply FLLNtoFLLS in H16...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H16;auto using TheoryEmb1.
+        rewrite app_assoc_reverse...
+     - PermuteLeft.
+       cutOL H17 H9.
+       rewrite <- H20 in H6.
+       OLSolve.
+       LLtheory  (makeRRuleB C F G).
+       LLtensor (@nil oo) ((M++x5) ++ x0). eauto.
+       apply H22...
+       rewrite app_assoc_reverse...
+       apply FLLNtoFLLS in H18...
+       apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H18;auto using TheoryEmb1.
+     - PermuteLeft.  
+        cutOL H18 H9.
+        rewrite <- H20 in H6.
+        OLSolve.
+         LLtheory  (makeRRuleB C F G).
+       LLtensor (@nil oo) (x++(M++x5)). eauto.
+        apply H22...
+        apply FLLNtoFLLS in H17...
+        apply WeakTheory with (theory' := OLTheoryCut nPnN (pred n)) in H17;auto using TheoryEmb1.
+         rewrite app_assoc_reverse...
+  * Cases H11.
+     - PermuteLeft.  
+        cutOL H16 H9.
+        rewrite H19 in H6.
+        OLSolve.
+        cutOL H17 H9.
+        rewrite H19 in H6.
+        OLSolve.
+        rewrite <- Permutation_middle.
+        apply H21...
+        1-2: rewrite app_assoc_reverse... 
+     - PermuteLeft.  
+        cutOL H16 H9.
+        cutOL H17 H9.
+         LLtheory  (makeRRuleB C F G).
+       LLtensor (@nil oo) (M++N). eauto.      
+        apply H21...
+        1-2: rewrite app_assoc_reverse... 
+ Qed.     
+
+ (** Quantifier Right is not principal on the left branch *) 
+ Lemma QuaLeftNotPrincipalR C FX : ConnectiveLeftNotPrincipalR (t_qcon C FX) (makeLRuleQ C FX). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveLeftNotPrincipalR; intros.
+  wellQuantifier LTWell H9.  
+ Cases H10.
+     - PermuteLeft.  
+        cutOL H12 H8.
+        rewrite H16 in H5.
+        OLSolve.
+        rewrite <- Permutation_middle. 
+        apply H18...
+        rewrite app_assoc_reverse...
+     - PermuteLeft.  
+        cutOL H14 H8.
+        LLtheory (makeLRuleQ C FX).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H18...
+        rewrite app_assoc_reverse...
+Qed.
+
+ (** Quantifier Left is not principal on the left branch *) 
+ Lemma QuaRightNotPrincipalR C FX : ConnectiveRightNotPrincipalR (t_qcon C FX) (makeRRuleQ C FX). 
+Proof with sauto; try OLSolve.
+  unfold  ConnectiveRightNotPrincipalR; intros.
+   wellQuantifier LTWell H10.
+  * Cases H11.
+     - PermuteLeft.  
+        cutOL H13 H9.
+        rewrite H17 in H6.
+        OLSolve.
+        rewrite <- Permutation_middle.
+        apply H19...
+        rewrite app_assoc_reverse...
+     - PermuteLeft.  
+        cutOL H15 H9.
+        LLtheory (makeRRuleQ C FX).
+        LLtensor (@nil oo) (M++N). eauto.
+        apply H19...
+        rewrite app_assoc_reverse...
+ Qed.       
+
+Ltac permuteConstantR :=
+match goal with
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeLRuleC _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+   refine (ConLeftNotPrincipalR H _ _ _ _ _ _ _ _ Hl Hr);sauto
+      
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeRRuleC _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+refine (ConRightNotPrincipalR _ H _ _ _ _ _ _ _ _ Hl Hr);
+  sauto;
+  intro Hf; inversion Hf 
+  end.    
+        
+Ltac permuteUnaryR :=
+match goal with
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeLRuleU _ _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+   refine (UnaLeftNotPrincipalR H _ _ _ _ _ _ _ _ Hl Hr);sauto
+      
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeRRuleU _ _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+refine (UnaRightNotPrincipalR _ H _ _ _ _ _ _ _ _ Hl Hr);
+  sauto;
+  intro Hf; inversion Hf 
+  end.     
+
+Ltac permuteBinaryR :=
+match goal with
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeLRuleB _ _ _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+   refine (BinLeftNotPrincipalR H _ _ _ _ _ _ _ _ Hl Hr);sauto
+ | [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeRRuleB _ _ _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+refine (BinRightNotPrincipalR _ H _ _ _ _ _ _ _ _ Hl Hr);
+  sauto;
+  intro Hf; inversion Hf  
+  end.    
+ 
+ Ltac permuteQuantifierR :=
+match goal with
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeLRuleQ _ _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+   refine (QuaLeftNotPrincipalR H _ _ _ _ _ _ _ _ Hl Hr);sauto
+| [H: ?n' <= ?n,
+   Hl: FLLN _ _ _ (_ :: ?M) (UP []) ,
+   Hr : FLLN _ _ _ (_ :: ?N) (DW (makeRRuleQ _ _))
+  |-  FLLS _ _ (?M ++ ?N) (UP []) ] =>
+refine (QuaRightNotPrincipalR _ H _ _ _ _ _ _ _ _ Hl Hr);
+  sauto;
+  intro Hf; inversion Hf  
+ end.    
        
 Ltac Cases' H := destruct H;sauto;SubCases.
 
@@ -613,7 +1057,7 @@ Ltac Cases' H := destruct H;sauto;SubCases.
  rewrite H...
  rewrite <- dualInvolutive...
  Qed.
- 
+
  Definition ConnectiveRight conn Rule := forall n n' h1 h2  FCut M N Gamma Rule',
    n' <= n ->
    isOLFormula conn ->
@@ -642,22 +1086,7 @@ Proof with sauto.
     rewrite <- H4 in H2.
     clear H4.
     inversion Hth'...
-           -- wellConstant LTWell Hseq2'.   
-               Cases H0.
-               rewrite <- app_comm_cons...
-               Cases H0. 
-               PermuteLeft.
-               cutOL Hseq1 H4.
-               OLSolve.
-               rewrite <- app_comm_cons...
-               apply H10...
-               LLPerm ((x3 ++ x) ++ N)...
-               PermuteLeft.
-               cutOL Hseq1 H6.
-               LLtheory (makeRRuleC C0).
-               LLtensor (@nil oo) (M++N). eauto.
-               apply H10...
-               LLPerm ( (M ++ x) ++ N)...
+           -- permuteConstantL. 
            -- wellConstant LTWell Hseq2'.   
                Cases H0.
                2:{ rewrite <- app_comm_cons... }
@@ -684,15 +1113,15 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N). eauto.
                apply H10...
                LLPerm ( (M ++ x) ++ N)...
-           -- permuteUnary.
-           -- permuteUnary.
-           -- permuteBinary.
-           -- permuteBinary.
-           -- permuteQuantifier.
-           -- permuteQuantifier.
+           -- permuteUnaryL.
+           -- permuteUnaryL.
+           -- permuteBinaryL.
+           -- permuteBinaryL.
+           -- permuteQuantifierL.
+           -- permuteQuantifierL.
  (** 1.2 ONE PREMISSE *)        
   * Cases H.
-     2:{
+     2:{    
        PermuteLeft.
          cutOL H1 Hseq2.
          OLSolve.
@@ -752,12 +1181,12 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N). eauto.
                apply H14...
                rewrite Permutation_assoc_comm...
-         - permuteUnary.
-         - permuteUnary.
-         - permuteBinary.
-         - permuteBinary.
-         - permuteQuantifier.
-         - permuteQuantifier.
+         - permuteUnaryL.
+         - permuteUnaryL.
+         - permuteBinaryL.
+         - permuteBinaryL.
+         - permuteQuantifierL.
+         - permuteQuantifierL.
  Qed.        
                        
 
@@ -767,54 +1196,23 @@ Proof with sauto.
    intros HL' HisFC HisF HL PosM PosN PosG Hseq1 Hseq2.
   intros Hseq1' Hseq2' OLCut Hth Hth'.
   wellUnary LTWell Hseq1'.
-  * Cases H.
+  Cases H.
      2:{  PermuteLeft.
          cutOL H1 Hseq2.
          OLSolve.
          LLPerm ((⌈ t_ucon C F ⌉) ::(M++ x3))...
          apply H7...
          rewrite app_assoc_reverse... }
-     2:{ PermuteLeft. 
+     2:{  PermuteLeft. 
         cutOL H3 Hseq2.
                LLtheory (makeRRuleU C F).
                LLtensor (@nil oo) (M++N). eauto.
                apply H7...
                rewrite app_assoc_reverse... }
          inversion Hth'...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H2. 
-               rewrite <- app_comm_cons...
-           -- Cases H2. 
-               rewrite <- app_comm_cons...
-               PermuteLeft.
-               cutOL Hseq1 H8.
-               OLSolve.
-               apply H14...
-               rewrite Permutation_assoc_comm...
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               LLtheory (makeRRuleC C0).
-               LLtensor (@nil oo) (M++N). eauto.
-               apply H14...
-               rewrite Permutation_assoc_comm...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H2. 
-              rewrite <- app_comm_cons...
-           -- Cases H2. 
-              PermuteLeft. 
-              cutOL Hseq1 H8.
-               rewrite H12 in PosM.
-               OLSolve.
-               rewrite <- app_comm_cons ...
-               apply H14...
-               rewrite Permutation_assoc_comm...
-              PermuteLeft.
-              cutOL Hseq1 H10.
-                 LLtheory (makeLRuleC C0).
-             LLtensor (@nil oo) (M++N). eauto.
-               apply H14...  
-               rewrite Permutation_assoc_comm... 
-         - permuteUnary.
+         -   permuteConstantL.
+         -   permuteConstantL. 
+         - permuteUnaryL.
          - wellUnary LTWell Hseq2'.
             Cases H2. 
             
@@ -836,10 +1234,10 @@ PermuteLeft.
              LLtensor (@nil oo) (M++N). eauto.
                apply H14...  
                rewrite Permutation_assoc_comm... 
-         - permuteBinary.
-         - permuteBinary.
-         - permuteQuantifier.
-         - permuteQuantifier.
+         - permuteBinaryL.
+         - permuteBinaryL.
+         - permuteQuantifierL.
+         - permuteQuantifierL.
   Qed.                               
     
 Ltac doubleH H :=
@@ -867,43 +1265,11 @@ Proof with sauto.
                LLtensor (@nil oo) (M++N).
                apply H7...  rewrite app_assoc_reverse... }
          inversion Hth'...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H2. 
-               rewrite <- app_comm_cons...
-           -- Cases H2. 
-               rewrite <- app_comm_cons...
-               PermuteLeft.
-               cutOL Hseq1 H8.
-               OLSolve.
-               apply H14...
-               rewrite Permutation_assoc_comm...
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               LLtheory (makeRRuleC C0).
-               LLtensor (@nil oo) (M++N).
-               apply H14...
-               rewrite Permutation_assoc_comm...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H2. 
-              rewrite <- app_comm_cons...
-           -- Cases H2. 
-              rewrite H2 in H8.
-              rewrite <- app_comm_cons in H8.
-              cutOL Hseq1 H8.
-               rewrite H12 in PosM.
-               OLSolve.
-               rewrite <- app_comm_cons ...
-               apply H14...
-               rewrite Permutation_assoc_comm...
-              rewrite <- app_comm_cons in H10.
-              cutOL Hseq1 H10.
-                 LLtheory (makeLRuleC C0).
-             LLtensor (@nil oo) (M++N).
-               apply H14...  
-               rewrite Permutation_assoc_comm... 
-         - permuteUnary.
-         - permuteUnary.
-         - permuteBinary.
+         - permuteConstantL.
+         - permuteConstantL. 
+         - permuteUnaryL.
+         - permuteUnaryL.
+         - permuteBinaryL.
          - wellBinary LTWell Hseq2'.
            { Cases H2. 
             
@@ -1007,8 +1373,8 @@ Proof with sauto.
              LLtensor (@nil oo) (M++N).
                apply H16...  
                1-2: rewrite Permutation_assoc_comm... }
-          - permuteQuantifier.
-         - permuteQuantifier.
+          - permuteQuantifierL.
+         - permuteQuantifierL.
   * Cases H. 
      2:{   rewrite H3 in H4.
          rewrite <- app_comm_cons in H4. 
@@ -1061,44 +1427,11 @@ Proof with sauto.
                apply WeakTheory with (theory := OLTheory nPnN )... 
           rewrite app_assoc_reverse... }
          inversion Hth'...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H3. 
-               rewrite <- app_comm_cons...
-           -- Cases H3. 
-               rewrite <- app_comm_cons...
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               OLSolve.
-               apply H16...
-               rewrite Permutation_assoc_comm...
-               PermuteLeft.
-               cutOL Hseq1 H12.
-               LLtheory (makeRRuleC C0).
-               LLtensor (@nil oo) (M++N).
-               apply H16...
-               rewrite Permutation_assoc_comm...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H3. 
-              rewrite <- app_comm_cons...
-           -- Cases H3. 
-              rewrite H3 in H10.
-              rewrite <- app_comm_cons in H10.
-              cutOL Hseq1 H10.
-               rewrite H14 in PosM.
-               OLSolve.
-               rewrite <- app_comm_cons ...
-               apply H16...
-               rewrite Permutation_assoc_comm...
-              
-              rewrite <- app_comm_cons in H12.
-              cutOL Hseq1 H12.
-                 LLtheory (makeLRuleC C0).
-             LLtensor (@nil oo) (M++N).
-               apply H16...  
-               rewrite Permutation_assoc_comm... 
-         - permuteUnary.
-         - permuteUnary.
-         - permuteBinary.
+        -  permuteConstantL.
+         -  permuteConstantL.
+         - permuteUnaryL.
+         - permuteUnaryL.
+         - permuteBinaryL.
          - wellBinary LTWell Hseq2'.
            { Cases H3. 
             
@@ -1202,8 +1535,8 @@ Proof with sauto.
                apply H18...
             1-2:  rewrite Permutation_assoc_comm... }
                            
-          - permuteQuantifier.
-         - permuteQuantifier.
+          - permuteQuantifierL.
+         - permuteQuantifierL.
   * Cases H. 
      2:{ 
          rewrite H3 in H4, H5.
@@ -1227,43 +1560,12 @@ Proof with sauto.
          apply H9...
         1-2: rewrite app_assoc_reverse... } 
          inversion Hth'...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H3. 
-               rewrite <- app_comm_cons...
-           -- Cases H3. 
-               rewrite <- app_comm_cons...
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               OLSolve.
-               apply H16...
-               rewrite Permutation_assoc_comm...
-               PermuteLeft.
-               cutOL Hseq1 H12.
-               LLtheory (makeRRuleC C0).
-               LLtensor (@nil oo) (M++N).
-               apply H16...
-               rewrite Permutation_assoc_comm...
-         - wellConstant LTWell Hseq2'.
-           -- Cases H3. 
-              rewrite <- app_comm_cons...
-           -- Cases H3.
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               rewrite H14 in PosM.
-               OLSolve.
-               rewrite <- app_comm_cons ...
-               apply H16...
-               rewrite Permutation_assoc_comm...
-              
-              PermuteLeft.
-              cutOL Hseq1 H12.
-                 LLtheory (makeLRuleC C0).
-             LLtensor (@nil oo) (M++N).
-               apply H16...  
-               rewrite Permutation_assoc_comm... 
-         - permuteUnary.
-         - permuteUnary.
-         - permuteBinary.
+         -  permuteConstantL.
+         -  permuteConstantL.
+
+         - permuteUnaryL.
+         - permuteUnaryL.
+         - permuteBinaryL.
          - wellBinary LTWell Hseq2'.
            { Cases H3. 
             
@@ -1364,8 +1666,8 @@ Proof with sauto.
                apply H18...
             1-2:  rewrite Permutation_assoc_comm... }
                            
-          - permuteQuantifier.
-         - permuteQuantifier.         
+          - permuteQuantifierL.
+         - permuteQuantifierL.         
   Qed.                        
    
 
@@ -1389,43 +1691,14 @@ Proof with sauto.
          LLtensor (@nil oo) (M++N). eauto.
          apply H7...
          rewrite app_assoc_reverse... }         
-    inversion Hth'... 
-           -- wellConstant LTWell Hseq2'.   
-               Cases H2.
-               rewrite <- app_comm_cons... 
- Cases H2. 
-               PermuteLeft.
-               cutOL Hseq1 H8.
-               OLSolve.
-               rewrite <- app_comm_cons...
-               apply H14...
-               LLPerm ((x7 ++ x3) ++ N)...
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               LLtheory (makeRRuleC C0).
-               LLtensor (@nil oo) (M++N). eauto.
-               apply H14...
-               LLPerm ( (M ++ x3) ++ N)...
-           -- wellConstant LTWell Hseq2'.   
-               Cases H2.
-               rewrite <- app_comm_cons...               Cases H2. 
-               PermuteLeft.
-               cutOL Hseq1 H8.
-               OLSolve.
-               rewrite <- app_comm_cons...
-               apply H14...
-               LLPerm ((x7 ++ x3) ++ N)...
-               PermuteLeft.
-               cutOL Hseq1 H10.
-               LLtheory (makeLRuleC C0).
-               LLtensor (@nil oo) (M++N). eauto.
-               apply H14...
-               LLPerm ( (M ++ x3) ++ N)...
-           -- permuteUnary.
-           -- permuteUnary.
-           -- permuteBinary.
-           -- permuteBinary.
-           -- permuteQuantifier.           
+    inversion Hth'...
+           --  permuteConstantL.
+           --  permuteConstantL.
+           -- permuteUnaryL.
+           -- permuteUnaryL.
+           -- permuteBinaryL.
+           -- permuteBinaryL.
+           -- permuteQuantifierL.           
            -- wellQuantifier LTWell Hseq2'.
                destruct H5...
                checkPermutationCases H5.
@@ -1449,179 +1722,7 @@ Proof with sauto.
                apply H15...
                LLPerm ((M ++ x3) ++ N)...
      Qed.         
-             
-Definition ConnectiveLeft conn rule := forall n n' n0 n1  FCut M N Gamma,
-  n' <= n ->
-  isOLFormula conn ->
-  isOLFormula FCut ->
-  lengthUexp FCut n' ->
-  posAtomFormulaL M ->
-  posAtomFormulaL N ->
-  posAtomFormulaL Gamma ->
-  FLLN (OLTheory nPnN) (S n1) Gamma ((⌊ FCut ⌋) :: M) (UP []) ->
-  FLLN (OLTheory nPnN) n0 Gamma ( (⌈ FCut ⌉) :: N) (DW rule) ->
-  OOCut n' (S n0 + S n1) ->
-  buildTheory rule ->
-  FLLS (OLTheoryCut nPnN (pred n)) Gamma (M ++ N) (UP []).
-     
-
-Lemma ConstantLEFT C : ConnectiveLeft (t_ccon C) (makeLRuleC C).
-Proof with sauto.
-  unfold ConnectiveLeft; intros *.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
-  intros Hseq1' OLCut Hth.
-  wellConstant LTWell Hseq1'.
-  * Cases H. 
-     + LLPerm ( (⌊ t_ccon C ⌋) :: x0++M)...
-  * Cases H. 
-     + PermuteLeft.  
-         cutOL H1 Hseq2.
-         OLSolve.
-         LLPerm ( (⌊ t_ccon C ⌋) ::(M++ x3)).
-         apply H7...
-         LLPerm(M ++ x3 ++ x)...
-    + PermuteLeft.   
-         cutOL H3 Hseq2.
-         LLtheory (makeLRuleC C).
-         LLtensor (@nil oo) (M++N). eauto.
-         apply H7... 
-         LLPerm(M ++ N ++ x)...
-Qed.                  
-         
- Lemma UnaryLEFT C F : ConnectiveLeft (t_ucon C F) (makeLRuleU C F).
-Proof with sauto.
-  unfold ConnectiveLeft; intros *.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
-  intros Hseq1' OLCut Hth.
-  wellUnary LTWell Hseq1'.
-  * Cases H. 
-     + PermuteLeft.  
-         cutOL H1 Hseq2.
-         OLSolve.
-         LLPerm ( (⌊ t_ucon C F ⌋) ::(M++ x3)).
-         apply H7...
-         LLPerm(M ++ x3 ++ x)...
-     + PermuteLeft.  
-         cutOL H3 Hseq2.
-         LLtheory (makeLRuleU C F).
-         LLtensor (@nil oo) (M++N). eauto.
-         apply H7... 
-         LLPerm(M ++ N ++ x)...
-Qed.       
-
- Lemma BinaryLEFT C F G : ConnectiveLeft (t_bcon C F G) (makeLRuleB C F G).
-Proof with sauto.
-  unfold ConnectiveLeft; intros *.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
-  intros Hseq1' OLCut Hth.
-  wellBinary LTWell Hseq1'.
-  * Cases H. 
-   +   rewrite H in H1. 
-         rewrite <- app_comm_cons in H1. 
-         cutOL H1 Hseq2.
-         OLSolve.
-         LLPerm ( (⌊t_bcon C F G ⌋) ::(M++ x3)).
-         apply H7...
-         LLPerm(M ++ x3 ++ x)...
-     + rewrite <- app_comm_cons in H3. 
-         cutOL H3 Hseq2.
-         LLtheory (makeLRuleB C F G).
-         LLtensor (@nil oo) (M++N).
-         apply H7... 
-         LLPerm(M ++ N ++ x)...
-  * Cases H. 
-     + 
-         rewrite H3 in H4.
-         rewrite <- app_comm_cons in H4. 
-         cutOL H4 Hseq2.
-         rewrite  <- H8 in H7. 
-         rewrite H7 in PosN.
-         inversion PosN...
-         OLSolve.
-         LLPerm ((⌊ t_bcon C F G ⌋) :: (M++x6) ++ x0).
-         apply H9...
-         rewrite app_assoc_reverse...
-         apply FLLNtoFLLS in H5...
-         apply WeakTheory with (theory := OLTheory nPnN )... 
-     + 
-         rewrite H3 in H5.
-         rewrite <- app_comm_cons in H5. 
-         cutOL H5 Hseq2.
-         rewrite  <- H8 in H7. 
-         rewrite H7 in PosN.
-         inversion PosN...
-         OLSolve.
-         LLPerm ( (⌊ t_bcon C F G ⌋) :: x++(M++x6)).
-         apply H9...
-         apply FLLNtoFLLS in H4...
-         apply WeakTheory with (theory := OLTheory nPnN )... 
-          
-         rewrite app_assoc_reverse...
-     + 
-         rewrite H1 in H5.
-         rewrite <- app_comm_cons in H5. 
-         cutOL H5 Hseq2.
-         rewrite  <- H8 in PosN.
-         OLSolve.
-         LLtheory  (makeLRuleB C F G).
-         LLtensor (@nil oo) ((M ++ x5) ++ x0).
-         apply H10...
-         rewrite app_assoc_reverse...
-         apply FLLNtoFLLS in H6...
-         apply WeakTheory with (theory := OLTheory nPnN )... 
-     + 
-         rewrite H1 in H6.
-         rewrite <- app_comm_cons in H6. 
-         cutOL H6 Hseq2.
-         rewrite  <- H8 in PosN.
-         OLSolve.
-         LLtheory  (makeLRuleB C F G).
-         LLtensor (@nil oo) (x++(M ++ x5)).
-         apply H10...
-         apply FLLNtoFLLS in H5...
-         apply WeakTheory with (theory := OLTheory nPnN )... 
-           rewrite app_assoc_reverse...
-  * Cases H. 
-     + rewrite H3 in H4, H5.
-         rewrite <- app_comm_cons in H4, H5. 
-         cutOL H4 Hseq2.
-         rewrite H7 in PosN.
-         OLSolve.
-         cutOL H5 Hseq2.
-         rewrite H7 in PosN.
-         OLSolve.
-         LLPerm ( (⌊ t_bcon C F G ⌋) :: M++x4).
-         apply H9...
-         1-2: rewrite app_assoc_reverse...
-     + rewrite <- app_comm_cons in H4, H5. 
-         cutOL H4 Hseq2.
-         cutOL H5 Hseq2.
-         LLtheory (makeLRuleB C F G). 
-         LLtensor (@nil oo) (M++N).
-         apply H9...
-         1-2: rewrite app_assoc_reverse... 
-Qed.         
- 
-Lemma QuantifierLEFT  C FX : ConnectiveLeft (t_qcon C FX) (makeLRuleQ C FX). 
-Proof with sauto.
-  unfold ConnectiveLeft; intros *.
-  intros HL' HisFC HisF HL PosM PosN PosG Hseq2.
-  intros Hseq1' OLCut Hth.
-  wellQuantifier LTWell Hseq1'.
-  * Cases H. 
-     + PermuteLeft.  
-         cutOL H1 Hseq2.
-         OLSolve.
-         LLPerm ( (⌊ t_qcon C FX ⌋) ::(M++ x3)).
-         apply H7...
-         LLPerm(M ++ x3 ++ x)...
-     + PermuteLeft.  
-         cutOL H3 Hseq2.
-         LLtheory (makeLRuleQ C FX).
-         LLtensor (@nil oo) (M++N). eauto.
-         apply H7... 
-         LLPerm(M ++ N ++ x)...
-Qed.
+            
  
  (** Main theorem showing that it is possible to fins a proof with
   the theory [ (OLTheoryCut nPnN (pred n))] *)
@@ -1685,12 +1786,7 @@ cut(False);intros...
                            Hseq1 
                            Hseq2 _ _ _ _ 
                            H8)... 
-       - refine(ConstantLEFT 
-                           HL' 
-                           H7 
-                           HisF _ _ _ _ 
-                           Hseq2 
-                           H2 _ _)...
+       - permuteConstantR.
        - refine(UnaryRIGHT 
                            HL' 
                            H7 
@@ -1698,12 +1794,7 @@ cut(False);intros...
                            Hseq1 
                            Hseq2 _ _ _ _ 
                            H8)... 
-       - refine(UnaryLEFT 
-                           HL' 
-                           H7 
-                           HisF _ _ _ _ 
-                           Hseq2 
-                           H2 _ _)...
+       - permuteUnaryR. 
        - refine(BinaryRIGHT 
                            HL' 
                            H7 
@@ -1711,12 +1802,7 @@ cut(False);intros...
                            Hseq1 
                            Hseq2 _ _ _ _ 
                            H8)... 
-       - refine(BinaryLEFT 
-                           HL' 
-                           H7 
-                           HisF _ _ _ _ 
-                           Hseq2 
-                           H2 _ _)...
+       - permuteBinaryR. 
        - refine(QuantifierRIGHT 
                            H7 HL' 
                            H9 
@@ -1724,12 +1810,7 @@ cut(False);intros...
                            Hseq1 
                            Hseq2 _ _ _ _ 
                            H8)...        
-       - refine(QuantifierLEFT 
-                           HL' 
-                           H9 
-                           HisF _ _ _ _ 
-                           Hseq2 
-                           H2 _ _)...
+       - permuteQuantifierR. 
     * apply FocusingInitRuleU in H5...
        - checkPermutationCases H7. 
           inversion H7...
